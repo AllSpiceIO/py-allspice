@@ -20,9 +20,9 @@ class RawRequestEndpointMissing(Exception):
     pass
 
 
-class MissiongEqualyImplementation(Exception):
+class MissingEqualityImplementation(Exception):
     """
-    Each Object obtained from the gitea api must be able to check itself for equality in relation to its
+    Each Object obtained from the AllSpice Hub api must be able to check itself for equality in relation to its
     fields obtained from gitea. Risen if an api object is lacking the proper implementation.
     """
     pass

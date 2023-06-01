@@ -1,21 +1,21 @@
 import pytest
 import uuid
 
-from gitea import Gitea, User, Organization, Team, Repository, Issue
-from gitea import NotFoundException, AlreadyExistsException
+from allspice import AllSpice, User, Organization, Team, Repository, Issue
+from allspice import NotFoundException, AlreadyExistsException
 
-# put a ".token" file into your directory containg only the token for gitea
+# put a ".token" file into your directory containg only the token for AllSpice Hub
 @pytest.fixture
 def instance(scope="module"):
     try:
-        g = Gitea("http://localhost:3000", open(".token", "r").read().strip())
-        print("Gitea Version: " + g.get_version())
+        g = AllSpice("http://localhost:3000", open(".token", "r").read().strip())
+        print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except:
         assert (
             False
-        ), "Gitea could not load. \
+        ), "AllSpice Hub could not load. \
                 - Instance running at http://localhost:3000 \
                 - Token at .token   \
                     ?"

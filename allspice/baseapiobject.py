@@ -1,56 +1,56 @@
-from .exceptions import ObjectIsInvalid, MissiongEqualyImplementation, RawRequestEndpointMissing
+from .exceptions import ObjectIsInvalid, MissingEqualityImplementation, RawRequestEndpointMissing
 
 
 class ReadonlyApiObject:
 
-    def __init__(self, gitea):
-        self.gitea = gitea
+    def __init__(self, allspice_client):
+        self.allspice_client = allspice_client
         self.deleted = False  # set if .delete was called, so that an exception is risen
 
     def __str__(self):
-        return "GiteaAPIObject (%s):" % (type(self))
+        return "AllSpiceObject (%s):" % (type(self))
 
     def __eq__(self, other):
         """Compare only fields that are part of the gitea-data identity"""
-        raise MissiongEqualyImplementation()
+        raise MissingEqualityImplementation()
 
     def __hash__(self):
         """Hash only fields that are part of the gitea-data identity"""
-        raise MissiongEqualyImplementation()
+        raise MissingEqualityImplementation()
 
     _fields_to_parsers = {}
 
     @classmethod
-    def request(cls, gitea):
+    def request(cls, allspice_client):
         if hasattr("API_OBJECT", cls):
-            return cls._request(gitea)
+            return cls._request(allspice_client)
         else:
             raise RawRequestEndpointMissing()
 
     @classmethod
-    def _request(cls, gitea, args):
-        result = cls._get_gitea_api_object(gitea, args)
-        api_object = cls.parse_response(gitea, result)
+    def _request(cls, allspice_client, args):
+        result = cls._get_gitea_api_object(allspice_client, args)
+        api_object = cls.parse_response(allspice_client, result)
         return api_object
 
     @classmethod
-    def _get_gitea_api_object(cls, gitea, args):
+    def _get_gitea_api_object(cls, allspice_client, args):
         """Retrieving an object always as GET_API_OBJECT """
-        return gitea.requests_get(cls.API_OBJECT.format(**args))
+        return allspice_client.requests_get(cls.API_OBJECT.format(**args))
 
     @classmethod
-    def parse_response(cls, gitea, result) -> "ReadonlyApiObject":
-        # gitea.logger.debug("Found api object of type %s (id: %s)" % (type(cls), id))
-        api_object = cls(gitea)
-        cls._initialize(gitea, api_object, result)
+    def parse_response(cls, allspice_client, result) -> "ReadonlyApiObject":
+        # allspice_client.logger.debug("Found api object of type %s (id: %s)" % (type(cls), id))
+        api_object = cls(allspice_client)
+        cls._initialize(allspice_client, api_object, result)
         return api_object
 
     @classmethod
-    def _initialize(cls, gitea, api_object, result):
+    def _initialize(cls, allspice_client, api_object, result):
         for name, value in result.items():
             if name in cls._fields_to_parsers and value is not None:
                 parse_func = cls._fields_to_parsers[name]
-                value = parse_func(gitea, value)
+                value = parse_func(allspice_client, value)
             cls._add_read_property(name, value, api_object)
         # add all patchable fields missing in the request to be writable
         for name in cls._fields_to_parsers.keys():
@@ -76,8 +76,8 @@ class ReadonlyApiObject:
 class ApiObject(ReadonlyApiObject):
     _patchable_fields = set()
 
-    def __init__(self, gitea):
-        super().__init__(gitea)
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
         self._dirty_fields = set()
 
     def commit(self):
@@ -96,8 +96,8 @@ class ApiObject(ReadonlyApiObject):
         return dirty_fields_values
 
     @classmethod
-    def _initialize(cls, gitea, api_object, result):
-        super()._initialize(gitea, api_object, result)
+    def _initialize(cls, allspice_client, api_object, result):
+        super()._initialize(allspice_client, api_object, result)
         for name in cls._patchable_fields:
             cls._add_write_property(name, None, api_object)
 

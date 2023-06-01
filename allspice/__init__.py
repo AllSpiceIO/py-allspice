@@ -1,5 +1,5 @@
-from .gitea import (
-    Gitea,
+from .allspice import (
+    AllSpice,
     NotFoundException,
     AlreadyExistsException,
 )
@@ -19,7 +19,7 @@ from .apiobject import (
 )
 
 __all__ = [
-    'Gitea',
+    'AllSpice',
     'User',
     'Organization',
     'Team',
