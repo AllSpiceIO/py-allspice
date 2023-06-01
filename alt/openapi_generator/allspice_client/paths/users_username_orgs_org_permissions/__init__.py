@@ -1,0 +1,7 @@
+# do not import all endpoints into this module because that uses a lot of memory and stack frames
+# if you need the ability to import all endpoints from this module, import them with
+# from allspice_client.paths.users_username_orgs_org_permissions import Api
+
+from allspice_client.paths import PathValues
+
+path = PathValues.USERS_USERNAME_ORGS_ORG_PERMISSIONS

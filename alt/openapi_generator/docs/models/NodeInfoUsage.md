@@ -1,0 +1,19 @@
+# allspice_client.model.node_info_usage.NodeInfoUsage
+
+NodeInfoUsage contains usage statistics for this server
+
+## Model Type Info
+Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+dict, frozendict.frozendict,  | frozendict.frozendict,  | NodeInfoUsage contains usage statistics for this server | 
+
+### Dictionary Keys
+Key | Input Type | Accessed Type | Description | Notes
+------------ | ------------- | ------------- | ------------- | -------------
+**localComments** | decimal.Decimal, int,  | decimal.Decimal,  |  | [optional] value must be a 64 bit integer
+**localPosts** | decimal.Decimal, int,  | decimal.Decimal,  |  | [optional] value must be a 64 bit integer
+**users** | [**NodeInfoUsageUsers**](NodeInfoUsageUsers.md) | [**NodeInfoUsageUsers**](NodeInfoUsageUsers.md) |  | [optional] 
+**any_string_name** | dict, frozendict.frozendict, str, date, datetime, int, float, bool, decimal.Decimal, None, list, tuple, bytes, io.FileIO, io.BufferedReader | frozendict.frozendict, str, BoolClass, decimal.Decimal, NoneClass, tuple, bytes, FileIO | any string name can be used but the value must be the correct type | [optional]
+
+[[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
+
