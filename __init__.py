@@ -1,5 +1,5 @@
 from .gitea import (
-    Gitea,
+    AllSpice,
     User,
     Organization,
     Team,

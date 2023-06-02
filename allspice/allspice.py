@@ -10,28 +10,28 @@ from .apiobject import User, Organization, Repository, Team
 from .exceptions import NotFoundException, ConflictException, AlreadyExistsException
 
 
-class Gitea:
-    """ Object to establish a session with Gitea. """
+class AllSpice:
+    """ Object to establish a session with AllSpice Hub. """
     ADMIN_CREATE_USER = """/admin/users"""
     GET_USERS_ADMIN = """/admin/users"""
     ADMIN_REPO_CREATE = """/admin/users/%s/repos"""  # <ownername>
-    GITEA_VERSION = """/version"""
+    ALLSPICE_HUB_VERSION = """/version"""
     GET_USER = """/user"""
     CREATE_ORG = """/admin/users/%s/orgs"""  # <username>
     CREATE_TEAM = """/orgs/%s/teams"""  # <orgname>
 
     def __init__(
             self,
-            gitea_url: str,
+            allspice_hub_url="https://hub.allspice.io",
             token_text=None,
             auth=None,
             verify=True,
             log_level="INFO"
         ):
-        """ Initializing Gitea-instance
+        """ Initializing an instance of the AllSpice Hub Client
 
         Args:
-            gitea_url (str): The Gitea instance URL.
+            allspice_hub_url (str): The URL for the AllSpice Hub instance.
             token_text (str, None): The access token, by default None.
             auth (tuple, None): The user credentials
                 `(username, password)`, by default None.
@@ -39,12 +39,13 @@ class Gitea:
                 when using SSL.
             log_level (str): The log level, by default `INFO`.
         """
+
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
         self.headers = {
             "Content-type": "application/json",
         }
-        self.url = gitea_url
+        self.url = allspice_hub_url
         self.requests = requests.Session()
 
         # Manage authentification
@@ -149,15 +150,15 @@ class Gitea:
         return [Organization.parse_response(self, result) for result in results]
 
     def get_user(self):
-        result = self.requests_get(Gitea.GET_USER)
+        result = self.requests_get(AllSpice.GET_USER)
         return User.parse_response(self, result)
 
     def get_version(self) -> str:
-        result = self.requests_get(Gitea.GITEA_VERSION)
+        result = self.requests_get(AllSpice.ALLSPICE_HUB_VERSION)
         return result["version"]
 
     def get_users(self) -> List[User]:
-        results = self.requests_get(Gitea.GET_USERS_ADMIN)
+        results = self.requests_get(AllSpice.GET_USERS_ADMIN)
         return [User.parse_response(self, result) for result in results]
 
     def get_user_by_email(self, email: str) -> User:
@@ -206,7 +207,7 @@ class Gitea:
         }
 
         self.logger.debug("Gitea post payload: %s", request_data)
-        result = self.requests_post(Gitea.ADMIN_CREATE_USER, data=request_data)
+        result = self.requests_post(AllSpice.ADMIN_CREATE_USER, data=request_data)
         if "id" in result:
             self.logger.info(
                 "Successfully created User %s <%s> (id %s)",
@@ -242,13 +243,13 @@ class Gitea:
 
         Note:
             Non-admin users can not use this method. Please use instead
-            `gitea.User.create_repo` or `gitea.Organization.create_repo`.
+            `allspice.User.create_repo` or `allspice.Organization.create_repo`.
         """
         # although this only says user in the api, this also works for
         # organizations
         assert isinstance(repoOwner, User) or isinstance(repoOwner, Organization)
         result = self.requests_post(
-            Gitea.ADMIN_REPO_CREATE % repoOwner.username,
+            AllSpice.ADMIN_REPO_CREATE % repoOwner.username,
             data={
                 "name": repoName,
                 "description": description,
@@ -279,7 +280,7 @@ class Gitea:
     ):
         assert isinstance(owner, User)
         result = self.requests_post(
-            Gitea.CREATE_ORG % owner.username,
+            AllSpice.CREATE_ORG % owner.username,
             data={
                 "username": orgName,
                 "description": description,
@@ -329,7 +330,7 @@ class Gitea:
             permission (str): Optional, 'read', What permissions the members
         """
         result = self.requests_post(
-            Gitea.CREATE_TEAM % org.username,
+            AllSpice.CREATE_TEAM % org.username,
             data={
                 "name": name,
                 "description": description,
