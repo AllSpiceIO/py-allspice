@@ -8,7 +8,7 @@ import urllib3
 
 from .apiobject import User, Organization, Repository, Team
 from .exceptions import NotFoundException, ConflictException, AlreadyExistsException, NotYetGeneratedException
-
+from .ratelimiter import RateLimitedSession
 
 class AllSpice:
     """ Object to establish a session with AllSpice Hub. """
@@ -27,18 +27,27 @@ class AllSpice:
             token_text=None,
             auth=None,
             verify=True,
-            log_level="INFO"
+            log_level="INFO",
+            max_rps=10,
         ):
         """ Initializing an instance of the AllSpice Hub Client
 
         Args:
             allspice_hub_url (str): The URL for the AllSpice Hub instance.
+                Defaults to `https://hub.allspice.io`.
+
             token_text (str, None): The access token, by default None.
+
             auth (tuple, None): The user credentials
                 `(username, password)`, by default None.
+
             verify (bool): If True, allow insecure server connections
                 when using SSL.
+
             log_level (str): The log level, by default `INFO`.
+
+            max_rps (int, None): The maximum number of requests per second.
+                If None, no rate limiting is applied.
         """
 
         self.logger = logging.getLogger(__name__)
@@ -47,7 +56,11 @@ class AllSpice:
             "Content-type": "application/json",
         }
         self.url = allspice_hub_url
-        self.requests = requests.Session()
+
+        if max_rps is None:
+            self.requests = requests.Session()
+        else:
+            self.requests = RateLimitedSession(max_calls=max_rps)
 
         # Manage authentification
         if not token_text and not auth:
