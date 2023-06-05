@@ -28,7 +28,7 @@ class RateLimiter:
 
     def __call__(self, func):
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def ratelimiting_wrapper(*args, **kwargs):
             if time.time() - self.reset_time > self.period:
                 self.calls = 0
                 self.reset_time = time.time()
@@ -37,18 +37,30 @@ class RateLimiter:
                 self.calls += 1
             else:
                 time.sleep(self.period - (time.time() - self.reset_time))
-                return wrapper(*args, **kwargs)
+                return ratelimiting_wrapper(*args, **kwargs)
 
             return func(*args, **kwargs)
 
-        return wrapper
+        return ratelimiting_wrapper
 
 
 class RateLimitedSession(requests.Session):
+    """
+    A requests.Session that is rate limited using the RateLimiter decorator.
+
+    :param max_calls: Maximum number of calls per period
+    :param period: Time period in seconds
+
+    Example:
+
+        session = RateLimitedSession(max_calls=10, period=1)
+        session.get("https://example.com") # Will be rate limited
+    """
+
     def __init__(self, max_calls, period=1.0):
         super().__init__()
         self.rate_limiter = RateLimiter(max_calls, period)
-        self.request = self.rate_limiter(self.request)
+        self.request = self.rate_limiter(self.wrapped_request)
 
-    def request(self, *args, **kwargs):
+    def wrapped_request(self, *args, **kwargs):
         return super().request(*args, **kwargs)
