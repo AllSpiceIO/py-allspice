@@ -13,6 +13,15 @@ class ObjectIsInvalid(Exception):
 class ConflictException(Exception):
     pass
 
+class NotYetGeneratedException(Exception):
+    """
+    For AllSpice generated objects, this exception is raised when the
+    object has not yet been generated.
+
+    Usually, retrying after a while will be successful.
+    """
+    pass
+
 
 class RawRequestEndpointMissing(Exception):
     """This ApiObject can only be obtained through other api objects and does not have

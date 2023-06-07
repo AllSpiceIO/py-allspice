@@ -7,7 +7,7 @@ import requests
 import urllib3
 
 from .apiobject import User, Organization, Repository, Team
-from .exceptions import NotFoundException, ConflictException, AlreadyExistsException
+from .exceptions import NotFoundException, ConflictException, AlreadyExistsException, NotYetGeneratedException
 
 
 class AllSpice:
@@ -17,6 +17,7 @@ class AllSpice:
     ADMIN_REPO_CREATE = """/admin/users/%s/repos"""  # <ownername>
     ALLSPICE_HUB_VERSION = """/version"""
     GET_USER = """/user"""
+    GET_REPOSITORY = """/repos/{owner}/{name}"""
     CREATE_ORG = """/admin/users/%s/orgs"""  # <username>
     CREATE_TEAM = """/orgs/%s/teams"""  # <orgname>
 
@@ -67,19 +68,8 @@ class AllSpice:
         self.logger.debug("Url: %s" % url)
         return url
 
-    @staticmethod
-    def parse_result(result) -> Dict:
-        """ Parses the result-JSON to a dict. """
-        if result.text and len(result.text) > 3:
-            return json.loads(result.text)
-        return {}
-
-    def requests_get(self, endpoint: str, params=frozendict(), sudo=None):
-        combined_params = {}
-        combined_params.update(params)
-        if sudo:
-            combined_params["sudo"] = sudo.username
-        request = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=combined_params)
+    def __get(self, endpoint: str, params=frozendict()) -> requests.Response:
+        request = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=params)
         if request.status_code not in [200, 201]:
             message = f"Received status code: {request.status_code} ({request.url})"
             if request.status_code in [404]:
@@ -88,8 +78,32 @@ class AllSpice:
                 raise Exception(f"Unauthorized: {request.url} - Check your permissions and try again! ({message})")
             if request.status_code in [409]:
                 raise ConflictException(message)
+            if request.status_code in [503]:
+                raise NotYetGeneratedException(message)
             raise Exception(message)
-        return self.parse_result(request)
+        return request
+
+    @staticmethod
+    def parse_result(result) -> Dict:
+        """ Parses the result-JSON to a dict. """
+        if result.text and len(result.text) > 3:
+            return json.loads(result.text)
+        return {}
+
+
+    def requests_get(self, endpoint: str, params=frozendict(), sudo=None):
+        combined_params = {}
+        combined_params.update(params)
+        if sudo:
+            combined_params["sudo"] = sudo.username
+        return self.parse_result(self.__get(endpoint, combined_params))
+
+    def requests_get_raw(self, endpoint: str, params=frozendict(), sudo=None) -> bytes:
+        combined_params = {}
+        combined_params.update(params)
+        if sudo:
+            combined_params["sudo"] = sudo.username
+        return self.__get(endpoint, combined_params).content
 
     def requests_get_paginated(self, endpoint: str, params=frozendict(), sudo=None, page_key: str = "page"):
         page = 1
@@ -174,6 +188,11 @@ class AllSpice:
             if user.username == username:
                 return user
         return None
+
+    def get_repository(self, owner: str, name: str) -> Repository:
+        path = self.GET_REPOSITORY.format(owner=owner, name=name)
+        result = self.requests_get(path)
+        return Repository.parse_response(self, result)
 
     def create_user(
             self,

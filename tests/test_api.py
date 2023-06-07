@@ -127,6 +127,12 @@ def test_create_repo_orgowned(instance):
     assert repo.name == test_repo
     assert not repo.private
 
+def test_get_repository(instance):
+    repo = instance.get_repository(test_org, test_repo)
+    assert repo is not None
+    assert repo.name == test_repo
+    assert repo.owner.username == test_org
+
 
 def test_patch_repo(instance):
     fields = {
@@ -386,3 +392,18 @@ def test_delete_user(instance):
     user.delete()
     with pytest.raises(NotFoundException) as e:
         User.request(instance, user_name)
+
+def test_get_generated_json(instance):
+    # Note: this expects the test repo to have a file called test.pcbdoc,
+    # which will have json and svg generated from it.
+    repo = instance.get_repository("test", "test")
+    json = repo.get_generated_json("test.pcbdoc")
+    assert json is not None
+    assert json["type"] == "Pcb"
+
+
+def test_get_generated_svg(instance):
+    repo = instance.get_repository("test", "test")
+    svg = repo.get_generated_svg("test.pcbdoc")
+    assert svg is not None
+    assert svg.startswith(b"<svg")

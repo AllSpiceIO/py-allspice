@@ -327,6 +327,7 @@ class Repository(ApiObject):
     REPO_IS_COLLABORATOR = """/repos/%s/%s/collaborators/%s"""  # <owner>, <reponame>, <username>
     REPO_SEARCH = """/repos/search/%s"""  # <reponame>
     REPO_BRANCHES = """/repos/%s/%s/branches"""  # <owner>, <reponame>
+    REPO_BRANCH = """/repos/{owner}/{repo}/branches/{branch}"""
     REPO_ISSUES = """/repos/{owner}/{repo}/issues"""  # <owner, reponame>
     REPO_DELETE = """/repos/%s/%s"""  # <owner>, <reponame>
     REPO_TIMES = """/repos/%s/%s/times"""  # <owner>, <reponame>
@@ -397,6 +398,14 @@ class Repository(ApiObject):
             Repository.REPO_BRANCHES % (self.owner.username, self.name)
         )
         return [Branch.parse_response(self.allspice_client, result) for result in results]
+
+    def get_branch(self, name: str) -> 'Branch':
+        """Get a specific Branch of this Repository."""
+        result = self.allspice_client.requests_get(
+            Repository.REPO_BRANCH.format(owner=self.owner.username, name=self.name, branch=name)
+        )
+        return Branch.parse_response(self.allspice_client, result)
+
 
     def add_branch(self, create_from: Branch, newname: str) -> "Branch":
         """Add a branch to the repository"""
@@ -537,21 +546,72 @@ class Repository(ApiObject):
         self.allspice_client.requests_post(url, data=data)
         # TODO: make sure this instance is either updated or discarded
 
-    def get_git_content(self: str = None, commit: "Commit" = None) -> List["Content"]:
-        """https://hub.allspice.io/api/swagger#/repository/repoGetContentsList"""
+    def get_git_content(
+            self: str = None,
+            ref: Optional["Ref"] = None,
+            commit: "Commit" = None
+    ) -> List["Content"]:
+        """https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
+
+        :param ref: branch or commit to get content from
+        :param commit: commit to get content from (deprecated)
+        """
         url = f"/repos/{self.owner.username}/{self.name}/contents"
-        data = {"ref": commit.sha} if commit else {}
+        data = Util.data_params_for_ref(ref or commit)
+
         result = [Content.parse_response(self.allspice_client, f) for f in self.allspice_client.requests_get(url, data)]
         return result
 
-    def get_file_content(self, content: "Content", commit: "Commit" = None) -> Union[str, List["Content"]]:
+    def get_file_content(
+            self,
+            content: "Content",
+            ref: "Ref" = None,
+            commit: "Commit" = None,
+    ) -> Union[str, List["Content"]]:
         """https://hub.allspice.io/api/swagger#/repository/repoGetContents"""
         url = f"/repos/{self.owner.username}/{self.name}/contents/{content.path}"
-        data = {"ref": commit.sha} if commit else {}
+        data = Util.data_params_for_ref(ref or commit)
+
         if content.type == Content.FILE:
             return self.allspice_client.requests_get(url, data)["content"]
         else:
             return [Content.parse_response(self.allspice_client, f) for f in self.allspice_client.requests_get(url, data)]
+
+    def get_generated_json(self, content: Union["Content", str], ref: Optional["Ref"] = None) -> dict:
+        """
+        Get the json blob for a cad file if it exists, otherwise enqueue
+        a new job and return a 503 status.
+
+        Note: This is still experimental and not yet recommended for
+        critical applications.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceJSON
+        """
+
+        if isinstance(content, Content):
+            content = content.path
+
+        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/json/{content}"
+        data = Util.data_params_for_ref(ref)
+        return self.allspice_client.requests_get(url, data)
+
+    def get_generated_svg(self, content: Union["Content", str], ref: Optional[str] = None) -> bytes:
+        """
+        Get the svg blob for a cad file if it exists, otherwise enqueue
+        a new job and return a 503 status.
+
+        Note: This is still experimental and not yet recommended for
+        critical applications.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceSVG
+        """
+
+        if isinstance(content, Content):
+            content = content.path
+
+        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/svg/{content}"
+        data = {"ref": ref} if ref else {}
+        return self.allspice_client.requests_get_raw(url, data)
 
     def create_file(self, file_path: str, content: str, data: dict = None):
         """https://hub.allspice.io/api/swagger#/repository/repoCreateFile"""
@@ -844,6 +904,7 @@ class Content(ReadonlyApiObject):
     def __hash__(self):
         return hash(self.repo) ^ hash(self.sha) ^ hash(self.name)
 
+Ref = Union[Branch, Commit, str]
 
 class Util:
     @staticmethod
@@ -853,3 +914,14 @@ class Util:
             return datetime.strptime(time[:-3] + "00", "%Y-%m-%dT%H:%M:%S%z")
         except ValueError:
             return datetime.strptime(time[:-3] + "00", "%Y-%m-%dT%H:%M:%S")
+
+    @staticmethod
+    def data_params_for_ref(ref: Optional[Ref]) -> Dict:
+        if isinstance(ref, Branch):
+            return {"ref": ref.name}
+        elif isinstance(ref, Commit):
+            return {"ref": ref.sha}
+        elif ref:
+            return {"ref": ref}
+        else:
+            return {}
