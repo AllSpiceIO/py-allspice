@@ -55,6 +55,7 @@ class AllSpice:
         if token_text:
             self.headers["Authorization"] = "token " + token_text
         if auth:
+            self.logger.warning("Using basic auth is not recommended. Prefer using a token instead.")
             self.requests.auth = auth
 
         # Manage SSL certification verification

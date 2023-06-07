@@ -133,6 +133,10 @@ def test_get_repository(instance):
     assert repo.name == test_repo
     assert repo.owner.username == test_org
 
+def test_get_repository_non_existent(instance):
+    with pytest.raises(NotFoundException) as e:
+        instance.get_repository("doesnotexist", "doesnotexist")
+
 
 def test_patch_repo(instance):
     fields = {
@@ -158,6 +162,20 @@ def test_list_branches(instance):
     assert len(branches) > 0
     master = [b for b in branches if b.name == "master"]
     assert len(master) > 0
+
+
+def test_get_branch(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    branch = repo.get_branch("master")
+    assert branch is not None
+    assert branch.name == "master"
+
+def test_get_branch_non_existent(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    with pytest.raises(NotFoundException) as e:
+        repo.get_branch("doesnotexist")
 
 def test_list_files_and_content(instance):
     org = Organization.request(instance, test_org)

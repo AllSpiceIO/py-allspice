@@ -4,12 +4,27 @@
 # For more information, read the README file in this directory.
 
 import argparse
+import base64
 import csv
 import os
 import re
 import sys
+import time
 
 from allspice import AllSpice
+from allspice.exceptions import NotYetGeneratedException
+
+
+def split_repo_name(name):
+    """
+    Split a repo name into a tuple of (owner, repo).
+    """
+
+    if "/" not in name:
+        raise ValueError(f"Invalid repo name {name}")
+
+    owner, repo = name.split("/")
+    return owner, repo
 
 
 def get_file_content(repo, file_path, branch):
@@ -24,7 +39,8 @@ def get_file_content(repo, file_path, branch):
             f"File {file_path} not found in repo {repo.name} on branch {branch.name}"
         )
 
-    return repo.get_file_content(file, ref=branch)
+    content = repo.get_file_content(file, ref=branch)
+    return base64.b64decode(content).decode("utf-8")
 
 
 def get_schdoc_list_from_prjpcb(prjpcb_file_content):
@@ -38,23 +54,27 @@ def get_schdoc_list_from_prjpcb(prjpcb_file_content):
 
 def extract_attributes_from_schdoc(schdoc_file_content):
     """
-    Extract the attributes from a schdoc file. You can edit this function to get
-    the attributes you want from the SchDoc file. To see what attributes are
-    available, print the schdoc_file_content variable.
+    Extract all the components and their attributes from a schdoc file. You can
+    edit this function to get the attributes you want from the SchDoc file. To
+    see what attributes are available, print the schdoc_file_content variable.
     """
 
     attributes_list = []
 
     for value in schdoc_file_content.values():
-        attributes = value["attributes"]
+        try:
+            if isinstance(value, dict):
+                attributes = value["attributes"]
 
-        attributes_list.push(
-            [
-                attributes.get("Designator", {}).get("text"),
-                attributes.get("MANUFACTURER", {}).get("text"),
-                attributes.get("MANUFACTURER #", {}).get("text"),
-            ]
-        )
+                attributes_list.append(
+                    [
+                        attributes.get("Designator", {}).get("text"),
+                        attributes.get("MANUFACTURER", {}).get("text"),
+                        attributes.get("MANUFACTURER #", {}).get("text"),
+                    ]
+                )
+        except KeyError:
+            continue
 
     return attributes_list
 
@@ -80,7 +100,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--schdoc_branch",
-        help="The branch containing the SchDoc files. Defaults to main.",
+        help="The branch containing the SchDoc files. Defaults to the same branch as PrjPcb.",
         default="main",
     )
     parser.add_argument(
@@ -109,31 +129,70 @@ if __name__ == "__main__":
             token_text=auth_token, allspice_hub_url=args.allspice_hub_url
         )
 
-    source_repo = args.source_repo
+    source_repo_owner, source_repo_name = split_repo_name(args.source_repo)
     source_file = args.source_file
-    schdoc_repo = args.schdoc_repo if args.schdoc_repo is not None else source_repo
+    if args.schdoc_repo is not None:
+        schdoc_repo_owner, schdoc_repo_name = split_repo_name(args.schdoc_repo)
+    else:
+        schdoc_repo_owner = source_repo_owner
+        schdoc_repo_name = source_repo_name
     source_branch = args.source_branch
-    schdoc_branch = args.schdoc_branch
+    schdoc_branch = args.schdoc_branch if args.schdoc_branch else source_branch
+
+    print("Generating BOM with the given arguements:")
+    print(
+        f"{source_repo_owner=} {source_repo_name=} {source_branch=} \
+          {source_file=} {schdoc_repo_owner=} {schdoc_repo_name=} \
+          {schdoc_branch=} {args.output_file=}"
+    )
 
     # Get the PrjPcb file from the source repo.
-    prjpcb_repo = allspice.get_repo(source_repo)
+    prjpcb_repo = allspice.get_repository(source_repo_owner, source_repo_name)
     prjpcb_branch = prjpcb_repo.get_branch(source_branch)
     prjpcb_file = get_file_content(prjpcb_repo, source_file, prjpcb_branch)
     schdoc_files_in_proj = {x for x in get_schdoc_list_from_prjpcb(prjpcb_file)}
 
+    print(f"{schdoc_files_in_proj=}")
+
     # Get the SchDoc files from the SchDoc repo.
-    schdoc_repo = allspice.get_repo(schdoc_repo)
+    schdoc_repo = allspice.get_repository(schdoc_repo_owner, schdoc_repo_name)
     schdoc_branch = schdoc_repo.get_branch(schdoc_branch)
     schdoc_files_in_repo = schdoc_repo.get_git_content(ref=schdoc_branch)
 
+    # Extract attributes from the SchDoc files. See thhe
+    # `extract_attributes_from_schdoc` function for more information.
     bom_rows = []
 
+    # Note: we're going through the files in the repo and checkin if they're
+    # in the PrjPcb file. This may miss some files in the proj if they're
+    # not in the repo. If you're seeing inconsistent or missing results,
+    # check that all the SchDoc files are in the repo, or uncomment this line:
+
+    # breakpoint()
+
+    # And run the script. You'll be dropped into a debugger where you can
+    # print() variables and see what's going on.
     for schdoc_file in schdoc_files_in_repo:
         if schdoc_file.path in schdoc_files_in_proj:
-            schdoc_file_json = schdoc_repo.get_generated_json(
-                schdoc_file, ref=schdoc_branch
-            )
-            bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json))
+            # If the file is not yet generated, we'll retry a few times.
+            retry_count = 0
+            while True:
+                retry_count += 1
+
+                try:
+                    schdoc_file_json = schdoc_repo.get_generated_json(
+                        schdoc_file, ref=schdoc_branch
+                    )
+                    bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json))
+                    break
+                except NotYetGeneratedException:
+                    if retry_count > 5:
+                        print(f"Failed to get {schdoc_file.path}, skipping...")
+                        break
+
+                    print(f"Failed to get {schdoc_file.path}, retrying...")
+                    time.sleep(1)
+                    continue
 
     if args.output_file is not None:
         f = open(args.output_file, "w")

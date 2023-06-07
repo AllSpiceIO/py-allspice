@@ -402,7 +402,7 @@ class Repository(ApiObject):
     def get_branch(self, name: str) -> 'Branch':
         """Get a specific Branch of this Repository."""
         result = self.allspice_client.requests_get(
-            Repository.REPO_BRANCH.format(owner=self.owner.username, name=self.name, branch=name)
+            Repository.REPO_BRANCH.format(owner=self.owner.username, repo=self.name, branch=name)
         )
         return Branch.parse_response(self.allspice_client, result)
 
@@ -917,6 +917,13 @@ class Util:
 
     @staticmethod
     def data_params_for_ref(ref: Optional[Ref]) -> Dict:
+        """
+        Given a "ref", returns a dict with the ref parameter for the API call.
+
+        If the ref is None, returns an empty dict. You can pass this to the API
+        directly.
+        """
+
         if isinstance(ref, Branch):
             return {"ref": ref.name}
         elif isinstance(ref, Commit):
