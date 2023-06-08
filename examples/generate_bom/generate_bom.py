@@ -52,11 +52,17 @@ def get_schdoc_list_from_prjpcb(prjpcb_file_content):
     return [match.group(1) for match in pattern.finditer(prjpcb_file_content)]
 
 
-def extract_attributes_from_schdoc(schdoc_file_content):
+def extract_attributes_from_schdoc(schdoc_file_content, attributes_to_extract):
     """
     Extract all the components and their attributes from a schdoc file. You can
     edit this function to get the attributes you want from the SchDoc file. To
     see what attributes are available, print the schdoc_file_content variable.
+
+    :param schdoc_file_content: The content of the SchDoc file. This should be
+        a dictionary.
+
+    :param attributes_to_extract: A list of attributes to extract. Note that if
+        an attribute is not found for a component, its value will be None.
     """
 
     attributes_list = []
@@ -66,13 +72,12 @@ def extract_attributes_from_schdoc(schdoc_file_content):
             if isinstance(value, dict):
                 attributes = value["attributes"]
 
-                attributes_list.append(
-                    [
-                        attributes.get("Designator", {}).get("text"),
-                        attributes.get("MANUFACTURER", {}).get("text"),
-                        attributes.get("MANUFACTURER #", {}).get("text"),
-                    ]
-                )
+                current_attributes = []
+                for attribute in attributes_to_extract:
+                    current_attributes.append(attributes.get(attribute, {}).get("text"))
+
+                attributes_list.append(current_attributes)
+
         except KeyError:
             continue
 
@@ -110,7 +115,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output_file",
         help="The path to the output file. If absent, the CSV will be output to the command line.",
-        default=None,
+    )
+    parser.add_argument(
+        "--attributes_to_extract",
+        help="A comma-seperated list of attributes to extract.",
     )
 
     args = parser.parse_args()
@@ -129,6 +137,11 @@ if __name__ == "__main__":
             token_text=auth_token, allspice_hub_url=args.allspice_hub_url
         )
 
+    if args.attributes_to_extract is not None:
+        attributes_to_extract = args.attributes_to_extract.split(",")
+    else:
+        attributes_to_extract = ["Designator", "MANUFACTURER", "MANUFACTURER #"]
+
     source_repo_owner, source_repo_name = split_repo_name(args.source_repo)
     source_file = args.source_file
     if args.schdoc_repo is not None:
@@ -143,7 +156,7 @@ if __name__ == "__main__":
     print(
         f"{source_repo_owner=} {source_repo_name=} {source_branch=} \
           {source_file=} {schdoc_repo_owner=} {schdoc_repo_name=} \
-          {schdoc_branch=} {args.output_file=}"
+          {schdoc_branch=} {args.output_file=} {attributes_to_extract=}"
     )
 
     # Get the PrjPcb file from the source repo.
@@ -183,7 +196,7 @@ if __name__ == "__main__":
                     schdoc_file_json = schdoc_repo.get_generated_json(
                         schdoc_file, ref=schdoc_branch
                     )
-                    bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json))
+                    bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json, attributes_to_extract))
                     break
                 except NotYetGeneratedException:
                     if retry_count > 5:
@@ -202,5 +215,5 @@ if __name__ == "__main__":
 
     # If you're extracting more or fewer attributes, you can change the header
     # row here.
-    writer.writerow(["Designator", "Manufacturer", "Manufacturer Part Number"])
+    writer.writerow(attributes_to_extract)
     writer.writerows(bom_rows)

@@ -16,6 +16,7 @@ usage: generate_bom [-h] [--schdoc_repo SCHDOC_REPO]
                     [--schdoc_branch SCHDOC_BRANCH]
                     [--allspice_hub_url ALLSPICE_HUB_URL]
                     [--output_file OUTPUT_FILE]
+                    [--attributes_to_extract ATTRIBUTES_TO_EXTRACT]
                     source_repo source_file
 
 Generate a BOM from a PrjPcb file.
@@ -34,13 +35,15 @@ options:
                         main.
   --schdoc_branch SCHDOC_BRANCH
                         The branch containing the SchDoc files. Defaults to
-                        main.
+                        the same branch as PrjPcb.
   --allspice_hub_url ALLSPICE_HUB_URL
                         The URL of your AllSpice Hub instance. Defaults to
                         https://hub.allspice.io.
   --output_file OUTPUT_FILE
                         The path to the output file. If absent, the CSV will
                         be output to the command line.
+  --attributes_to_extract ATTRIBUTES_TO_EXTRACT
+                        A comma-seperated list of attributes to extract.
 ```
 
 Some examples of how you could run this are:
@@ -51,6 +54,8 @@ export ALLSPICE_AUTH_TOKEN= # some token
 python3 generate_bom.py "test/test" "test.PrjPcb" # Note that the options are not required!
 
 python3 generate_bom.py "test/test" "test.PrjPcb" --schdoc_repo "test/test_schdoc" --allspice_hub_url "https://my.selfhosted.example.org" --output_file bom.csv
+
+python3 generate_bom.py "test/test" "test.PrjPcb" --attribute_list "Designator,Manufacturer" # Will only extract these two attributes
 ```
 
 You can also import this python file in another file to use the methods defined
