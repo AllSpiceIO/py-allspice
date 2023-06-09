@@ -357,6 +357,7 @@ class AllSpice:
                     "repo.releases",
                     "repo.ext_wiki",
             ),
+            units_map={},
     ):
         """ Creates a Team.
 
@@ -365,7 +366,12 @@ class AllSpice:
             name (str): The Name of the Team to be created.
             description (str): Optional, None, short description of the new Team.
             permission (str): Optional, 'read', What permissions the members
+            units_map (dict): Optional, {}, a mapping of units to their
+                permissions. If None or empty, the `permission` permission will
+                be applied to all units. Note: When both `units` and `units_map`
+                are given, `units_map` will be preferred.
         """
+
         result = self.requests_post(
             AllSpice.CREATE_TEAM % org.username,
             data={
@@ -375,8 +381,10 @@ class AllSpice:
                 "can_create_org_repo": can_create_org_repo,
                 "includes_all_repositories": includes_all_repositories,
                 "units": units,
+                "units_map": units_map,
             },
         )
+
         if "id" in result:
             self.logger.info("Successfully created Team %s" % result["name"])
         else:

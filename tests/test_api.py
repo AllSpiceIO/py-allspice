@@ -238,6 +238,24 @@ def test_create_team(instance):
     assert team.description == "descr"
     assert team.organization == org
 
+def test_create_team_without_units_map(instance):
+    org = Organization.request(instance, test_org)
+    team = instance.create_team(org, test_team + "1", "descr")
+    permission = team.permission
+    assert set(team.units_map.keys()) == set(team.units)
+    assert list(team.units_map.values()) == [permission] * len(team.units)
+
+def test_create_team_with_units_map(instance):
+    org = Organization.request(instance, test_org)
+    team = instance.create_team(
+        org,
+        test_team + "2",
+        "descr",
+        units_map = {"repo.code": "write", "repo.wiki": "admin"}
+    )
+    assert set(team.units) == set(["repo.code", "repo.wiki"])
+    assert team.units_map == {"repo.code": "write", "repo.wiki": "admin"}
+
 def test_patch_team(instance):
     fields = {
         "can_create_org_repo": True,
