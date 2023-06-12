@@ -10,6 +10,13 @@ Forked from https://github.com/Langenfeld/py-gitea.
 
 ## Usage
 
+### Examples
+
+Check the [examples directory](./examples/) for full, working example scripts
+that you can adapt or refer to for your own needs.
+
+### Quickstart
+
 First get an `allspice_client` object wrapping access and authentication (via an api token) for your instance of AllSpice Hub.
 
 ```python

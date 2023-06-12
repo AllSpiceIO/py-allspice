@@ -127,6 +127,16 @@ def test_create_repo_orgowned(instance):
     assert repo.name == test_repo
     assert not repo.private
 
+def test_get_repository(instance):
+    repo = instance.get_repository(test_org, test_repo)
+    assert repo is not None
+    assert repo.name == test_repo
+    assert repo.owner.username == test_org
+
+def test_get_repository_non_existent(instance):
+    with pytest.raises(NotFoundException) as e:
+        instance.get_repository("doesnotexist", "doesnotexist")
+
 
 def test_patch_repo(instance):
     fields = {
@@ -152,6 +162,20 @@ def test_list_branches(instance):
     assert len(branches) > 0
     master = [b for b in branches if b.name == "master"]
     assert len(master) > 0
+
+
+def test_get_branch(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    branch = repo.get_branch("master")
+    assert branch is not None
+    assert branch.name == "master"
+
+def test_get_branch_non_existent(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    with pytest.raises(NotFoundException) as e:
+        repo.get_branch("doesnotexist")
 
 def test_list_files_and_content(instance):
     org = Organization.request(instance, test_org)
@@ -386,3 +410,18 @@ def test_delete_user(instance):
     user.delete()
     with pytest.raises(NotFoundException) as e:
         User.request(instance, user_name)
+
+def test_get_generated_json(instance):
+    # Note: this expects the test repo to have a file called test.pcbdoc,
+    # which will have json and svg generated from it.
+    repo = instance.get_repository("test", "test")
+    json = repo.get_generated_json("test.pcbdoc")
+    assert json is not None
+    assert json["type"] == "Pcb"
+
+
+def test_get_generated_svg(instance):
+    repo = instance.get_repository("test", "test")
+    svg = repo.get_generated_svg("test.pcbdoc")
+    assert svg is not None
+    assert svg.startswith(b"<svg")
