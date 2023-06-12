@@ -27,13 +27,6 @@ def instance(scope="module"):
                     ?"
 
 
-# make up some fresh names for the tests run
-test_org = "org_" + uuid.uuid4().hex[:8]
-test_user = "user_" + uuid.uuid4().hex[:8]
-test_team = "team_" + uuid.uuid4().hex[:8]
-test_repo = "repo_" + uuid.uuid4().hex[:8]
-
-
 def test_access_is_ratelimited(instance):
     start_time = time.time()
 

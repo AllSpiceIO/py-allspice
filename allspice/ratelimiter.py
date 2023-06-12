@@ -1,52 +1,10 @@
-import functools
 import time
-
 import requests
-
-
-class RateLimiter:
-    """
-    A decorator to rate limit a function call.
-
-    :param max_calls: Maximum number of calls per period
-    :param period: Time period in seconds
-
-    Example:
-
-        @RateLimiter(max_calls=10, period=1)  # 10 requests per second
-        def make_request(url):
-            pass
-    """
-
-    def __init__(self, max_calls, period=1.0):
-        assert period > 0, "Period should be a positive number"
-        assert max_calls >= 1, "max_calls should be at least one"
-        self.max_calls = int(max_calls)
-        self.period = float(period)
-        self.calls = 0
-        self.reset_time = time.time()
-
-    def __call__(self, func):
-        @functools.wraps(func)
-        def ratelimiting_wrapper(*args, **kwargs):
-            if time.time() - self.reset_time > self.period:
-                self.calls = 0
-                self.reset_time = time.time()
-
-            if self.calls < self.max_calls:
-                self.calls += 1
-            else:
-                time.sleep(self.period - (time.time() - self.reset_time))
-                return ratelimiting_wrapper(*args, **kwargs)
-
-            return func(*args, **kwargs)
-
-        return ratelimiting_wrapper
 
 
 class RateLimitedSession(requests.Session):
     """
-    A requests.Session that is rate limited using the RateLimiter decorator.
+    A requests.Session that is rate limited.
 
     :param max_calls: Maximum number of calls per period
     :param period: Time period in seconds
@@ -57,10 +15,30 @@ class RateLimitedSession(requests.Session):
         session.get("https://example.com") # Will be rate limited
     """
 
-    def __init__(self, max_calls, period=1.0):
-        super().__init__()
-        self.rate_limiter = RateLimiter(max_calls, period)
-        self.request = self.rate_limiter(self.wrapped_request)
+    max_calls: int
+    period: float
 
-    def wrapped_request(self, *args, **kwargs):
+    _calls: int
+    _reset_time: float
+
+    def __init__(self, max_calls, period=1.0):
+        self.max_calls = max_calls
+        self.period = period
+
+        self._calls = 0
+        self._reset_time = time.time()
+        super().__init__()
+
+    def request(self, *args, **kwargs):
+        if time.time() - self._reset_time > self.period:
+            self._calls = 0
+            self._reset_time = time.time()
+
+        if self._calls < self.max_calls:
+            self._calls += 1
+        else:
+            time.sleep(self.period - (time.time() - self._reset_time))
+            # Note that this is self.request, not super().request.
+            return self.request(*args, **kwargs)
+
         return super().request(*args, **kwargs)
