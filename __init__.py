@@ -1,4 +1,4 @@
-from .gitea import (
+from .allspice import (
     AllSpice,
     User,
     Organization,
