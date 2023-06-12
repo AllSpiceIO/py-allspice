@@ -8,7 +8,7 @@ from allspice import NotFoundException, AlreadyExistsException
 @pytest.fixture
 def instance(scope="module"):
     try:
-        g = AllSpice("http://localhost:3000", open(".token", "r").read().strip())
+        g = AllSpice("http://localhost:3000", open(".token", "r").read().strip(), ratelimiting=None)
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g

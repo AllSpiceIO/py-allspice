@@ -8,10 +8,12 @@ import urllib3
 
 from .apiobject import User, Organization, Repository, Team
 from .exceptions import NotFoundException, ConflictException, AlreadyExistsException, NotYetGeneratedException
+from .ratelimiter import RateLimitedSession
 
 
 class AllSpice:
-    """ Object to establish a session with AllSpice Hub. """
+    """Object to establish a session with AllSpice Hub."""
+
     ADMIN_CREATE_USER = """/admin/users"""
     GET_USERS_ADMIN = """/admin/users"""
     ADMIN_REPO_CREATE = """/admin/users/%s/repos"""  # <ownername>
@@ -22,23 +24,33 @@ class AllSpice:
     CREATE_TEAM = """/orgs/%s/teams"""  # <orgname>
 
     def __init__(
-            self,
-            allspice_hub_url="https://hub.allspice.io",
-            token_text=None,
-            auth=None,
-            verify=True,
-            log_level="INFO"
-        ):
-        """ Initializing an instance of the AllSpice Hub Client
+        self,
+        allspice_hub_url="https://hub.allspice.io",
+        token_text=None,
+        auth=None,
+        verify=True,
+        log_level="INFO",
+        ratelimiting=(100, 60),
+    ):
+        """Initializing an instance of the AllSpice Hub Client
 
         Args:
             allspice_hub_url (str): The URL for the AllSpice Hub instance.
+                Defaults to `https://hub.allspice.io`.
+
             token_text (str, None): The access token, by default None.
+
             auth (tuple, None): The user credentials
                 `(username, password)`, by default None.
+
             verify (bool): If True, allow insecure server connections
                 when using SSL.
+
             log_level (str): The log level, by default `INFO`.
+
+            ratelimiting (tuple[int, int], None): `(max_calls, period)`,
+                If None, no rate limiting is applied. By default, 100 calls
+                per minute are allowed.
         """
 
         self.logger = logging.getLogger(__name__)
@@ -47,7 +59,12 @@ class AllSpice:
             "Content-type": "application/json",
         }
         self.url = allspice_hub_url
-        self.requests = requests.Session()
+
+        if ratelimiting is None:
+            self.requests = requests.Session()
+        else:
+            (max_calls, period) = ratelimiting
+            self.requests = RateLimitedSession(max_calls=max_calls, period=period)
 
         # Manage authentification
         if not token_text and not auth:
