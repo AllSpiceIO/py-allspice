@@ -82,6 +82,13 @@ for team in teams:
 
 Use ``pip install py-allspice`` to install.
 
+## A Note on Versioning
+
+This repository does not follow the same versioning policy as py-gitea. After v1.17.x,
+py-allspice switched to Semantic Versioning with v2.0.0. In general, versions of
+py-allspice do NOT conform to versions of AllSpice Hub, and the latest version of
+py-allspice should be compatible with the current version of AllSpice Hub.
+
 ## Tests
 
 Tests can be run with:
