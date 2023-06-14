@@ -3,7 +3,8 @@ import base64
 import pytest
 import uuid
 
-from allspice import AllSpice, User, Organization, Team, Repository, Issue, Milestone
+from allspice import AllSpice, User, Organization, Team, Repository, Issue, Milestone, \
+    Comment
 from allspice import NotFoundException, AlreadyExistsException
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
@@ -344,6 +345,102 @@ def test_change_issue(instance):
     issues = repo.get_issues()
     assert len([issue for issue in issues
                 if issue.milestone is not None and issue.milestone.title == ms_title]) > 0
+
+
+def test_create_issue_comment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.create_comment("this is a comment")
+    assert comment.body == "this is a comment"
+    assert comment.user.username == "test"
+
+
+def test_get_issue_comments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comments = issue.get_comments()
+    assert len(comments) > 0
+    assert comments[0].body == "this is a comment"
+
+
+def test_edit_issue_comment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    comment.body = "this is a new comment"
+    comment.commit()
+    assert comment.body == "this is a new comment"
+    comment_id = comment.id
+    comment2 = Comment.request(instance, org.username, repo.name, comment_id)
+    assert comment2.body == "this is a new comment"
+
+
+def test_delete_issue_comment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    comment_id = comment.id
+    comment.delete()
+    with pytest.raises(NotFoundException) as _:
+        Comment.request(instance, org.username, repo.name, comment_id)
+
+
+def test_create_issue_attachment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.create_comment("this is a comment that will have an attachment")
+    attachment = comment.create_attachment(open("requirements.txt", "rb"))
+    assert attachment.name == "requirements.txt"
+    assert attachment.download_count == 0
+
+
+def test_create_issue_attachment_with_name(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.create_comment("this is a comment that will have an attachment")
+    attachment = comment.create_attachment(open("requirements.txt", "rb"),
+                                           "something else.txt")
+    assert attachment.name == "something else.txt"
+    assert attachment.download_count == 0
+
+
+def test_get_issue_attachments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    attachments = comment.get_attachments()
+    assert len(attachments) > 0
+    assert attachments[0].name == "requirements.txt"
+
+
+def test_edit_issue_attachment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    attachment = comment.get_attachments()[0]
+    comment.edit_attachment(attachment, {"name": "this is a new attachment"})
+    del attachment
+    attachment2 = comment.get_attachments()[0]
+    assert attachment2.name == "this is a new attachment"
+
+
+def test_delete_issue_attachment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    attachment = comment.get_attachments()[0]
+    comment.delete_attachment(attachment)
+    assert len(comment.get_attachments()) == 0
+
 
 def test_team_get_org(instance):
     org = Organization.request(instance, test_org)
