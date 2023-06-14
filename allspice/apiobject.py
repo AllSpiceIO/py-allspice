@@ -118,6 +118,38 @@ class Organization(ApiObject):
                 return team
         raise NotFoundException("Team not existent in organization.")
 
+    def create_team(
+            self,
+            name: str,
+            description: str = "",
+            permission: str = "read",
+            can_create_org_repo: bool = False,
+            includes_all_repositories: bool = False,
+            units=(
+                    "repo.code",
+                    "repo.issues",
+                    "repo.ext_issues",
+                    "repo.wiki",
+                    "repo.pulls",
+                    "repo.releases",
+                    "repo.ext_wiki",
+            ),
+            units_map={},
+    ) -> "Team":
+        """Alias for AllSpice#create_team"""
+        # TODO: Move AllSpice#create_team to Organization#create_team and
+        #       deprecate AllSpice#create_team.
+        return self.allspice_client.create_team(
+            org=self,
+            name=name,
+            description=description,
+            permission=permission,
+            can_create_org_repo=can_create_org_repo,
+            includes_all_repositories=includes_all_repositories,
+            units=units,
+            units_map=units_map,
+        )
+
     def get_members(self) -> List["User"]:
         results = self.allspice_client.requests_get(Organization.ORG_GET_MEMBERS % self.username)
         return [User.parse_response(self.allspice_client, result) for result in results]
