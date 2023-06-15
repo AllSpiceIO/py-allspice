@@ -893,7 +893,8 @@ class Issue(ApiObject):
         super().__init__(allspice_client)
 
     def __eq__(self, other):
-        if not isinstance(other, Issue): return False
+        if not isinstance(other, Issue):
+            return False
         return self.repo == other.repo and self.id == other.id
 
     def __hash__(self):
