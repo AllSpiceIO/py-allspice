@@ -1099,7 +1099,7 @@ class Issue(ApiObject):
 
 class DesignReview(ApiObject):
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
-    MERGE_DR = "/repos/{owner}/{repo}/pulls/{index}/merge"
+    MERGE_DESIGN_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/merge"
     GET_COMMENTS = "/repos/{owner}/{repo}/issues/{index}/comments"
 
     OPEN = "open"
@@ -1143,6 +1143,7 @@ class DesignReview(ApiObject):
                                       result["base"]["repo"]),
             api_object
         )
+        # Only base is patchable, so it needs to be a writable property.
         cls._add_write_property(
             "base",
             Branch.request(
@@ -1153,7 +1154,7 @@ class DesignReview(ApiObject):
             ),
             api_object
         )
-        cls._add_write_property(
+        cls._add_read_property(
             "head",
             Branch.request(
                 allspice_client,
@@ -1223,9 +1224,9 @@ class DesignReview(ApiObject):
         """
 
         self.allspice_client.requests_put(
-            self.MERGE_DR.format(owner=self.repository.owner.username,
-                                 repo=self.repository.name,
-                                 index=self.number),
+            self.MERGE_DESIGN_REVIEW.format(owner=self.repository.owner.username,
+                                            repo=self.repository.name,
+                                            index=self.number),
             data={"Do": merge_type.value},
         )
 
