@@ -1,7 +1,8 @@
 import logging
-from datetime import datetime
 from functools import cached_property
 from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO
+from datetime import datetime, timezone
+from enum import Enum
 
 from .baseapiobject import ReadonlyApiObject, ApiObject
 from .exceptions import *
@@ -333,6 +334,7 @@ class User(ApiObject):
 
 
 class Branch(ReadonlyApiObject):
+    API_OBJECT = """/repos/{owner}/{repo}/branches/{branch}"""
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
@@ -351,8 +353,8 @@ class Branch(ReadonlyApiObject):
     }
 
     @classmethod
-    def request(cls, allspice_client: 'AllSpice', owner: str, repo: str, ref: str):
-        return cls._request(allspice_client, {"owner": owner, "repo": repo, "ref": ref})
+    def request(cls, allspice_client: 'AllSpice', owner: str, repo: str, branch: str):
+        return cls._request(allspice_client, {"owner": owner, "repo": repo, "branch": branch})
 
 
 class Repository(ApiObject):
@@ -362,6 +364,7 @@ class Repository(ApiObject):
     REPO_BRANCHES = """/repos/%s/%s/branches"""  # <owner>, <reponame>
     REPO_BRANCH = """/repos/{owner}/{repo}/branches/{branch}"""
     REPO_ISSUES = """/repos/{owner}/{repo}/issues"""  # <owner, reponame>
+    REPO_DESIGN_REVIEWS = """/repos/{owner}/{repo}/pulls"""
     REPO_DELETE = """/repos/%s/%s"""  # <owner>, <reponame>
     REPO_TIMES = """/repos/%s/%s/times"""  # <owner>, <reponame>
     REPO_USER_TIME = """/repos/%s/%s/times/%s"""  # <owner>, <reponame>, <username>
@@ -453,6 +456,29 @@ class Repository(ApiObject):
         """Get all Issues of this Repository (open and closed)"""
         return self.get_issues_state(Issue.OPENED) + self.get_issues_state(Issue.CLOSED)
 
+    def get_design_reviews(self, state: Optional[str] = None) -> List["DesignReview"]:
+        """
+        Get all Design Reviews of this Repository.
+
+        https://hub.allspice.io/api/swagger#/repository/repoListPullRequests
+
+        :param state: The state of the Design Reviews to get. If None, all Design Reviews
+                      are returned.
+        :return: A list of Design Reviews.
+        """
+
+        params = {}
+        if state:
+            params["state"] = state
+
+        results = self.allspice_client.requests_get_paginated(
+            self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username,
+                                            repo=self.name),
+            params=params,
+        )
+        return [DesignReview.parse_response(self.allspice_client, result) for result in
+                results]
+
     def get_commits(self) -> List["Commit"]:
         """Get all the Commits of this Repository."""
         try:
@@ -512,6 +538,61 @@ class Repository(ApiObject):
             Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name), data=data
         )
         return Issue.parse_response(self.allspice_client, result)
+
+    def create_design_review(
+            self,
+            title: str,
+            head: Union[Branch, str],
+            base: Union[Branch, str],
+            assignees: Optional[Set[Union[User, str]]] = None,
+            body: Optional[str] = None,
+            due_date: Optional[datetime] = None,
+            milestone: Optional['Milestone'] = None,
+    ) -> 'DesignReview':
+        """
+        Create a new Design Review.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoCreatePullRequest
+
+        :param title: Title of the Design Review
+        :param head: Branch or name of the branch to merge into the base branch
+        :param base: Branch or name of the branch to merge into
+        :param assignees: Optional. A list of users to assign this review. List can be of
+                          User objects or of usernames.
+        :param body: An Optional Description for the Design Review.
+        :param due_date: An Optional Due date for the Design Review.
+        :param milestone: An Optional Milestone for the Design Review
+        :return: The created Design Review
+        """
+
+        data = {
+            "title": title,
+        }
+
+        if isinstance(head, Branch):
+            data["head"] = head.name
+        else:
+            data["head"] = head
+        if isinstance(base, Branch):
+            data["base"] = base.name
+        else:
+            data["base"] = base
+        if assignees:
+            data["assignees"] = [a.username if isinstance(a, User) else a for a in
+                                 assignees]
+        if body:
+            data["body"] = body
+        if due_date:
+            data["due_date"] = Util.format_time(due_date)
+        if milestone:
+            data["milestone"] = milestone.id
+
+        result = self.allspice_client.requests_post(
+            self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username, repo=self.name),
+            data=data
+        )
+
+        return DesignReview.parse_response(self.allspice_client, result)
 
     def create_milestone(self, title: str, description: str, due_date: str = None, state: str = "open") -> "Milestone":
         url = Repository.REPO_MILESTONES.format(owner=self.owner.username, repo=self.name)
@@ -1016,6 +1097,180 @@ class Issue(ApiObject):
         return Comment.parse_response(self.allspice_client, response)
 
 
+class DesignReview(ApiObject):
+    API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
+    MERGE_DR = "/repos/{owner}/{repo}/pulls/{index}/merge"
+    GET_COMMENTS = "/repos/{owner}/{repo}/issues/{index}/comments"
+
+    OPEN = "open"
+    CLOSED = "closed"
+
+    class MergeType(Enum):
+        MERGE = "merge"
+        REBASE = "rebase"
+        REBASE_MERGE = "rebase-merge"
+        SQUASH = "squash"
+        MANUALLY_MERGED = "manually-merged"
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    def __eq__(self, other):
+        if not isinstance(other, DesignReview):
+            return False
+        return self.repo == other.repo and self.id == other.id
+
+    def __hash__(self):
+        return hash(self.repo) ^ hash(self.id)
+
+    @classmethod
+    def request(cls, allspice_client: 'AllSpice', owner: str, repo: str, number: str):
+        api_object = cls._request(allspice_client,
+                                  {"owner": owner, "repo": repo, "index": number})
+        return api_object
+
+    @classmethod
+    def parse_response(cls, allspice_client, result) -> 'DesignReview':
+        api_object = super().parse_response(allspice_client, result)
+        # These properties are in the response, but not in ways that make them easy
+        # to parse with the _fields_to_parsers dict. So we have to delete the attributes,
+        # request them separately, and then add them back as read-only properties.
+        delattr(api_object, "_base")
+        delattr(api_object, "_head")
+        cls._add_read_property(
+            "repository",
+            Repository.parse_response(allspice_client,
+                                      result["base"]["repo"]),
+            api_object
+        )
+        cls._add_write_property(
+            "base",
+            Branch.request(
+                allspice_client,
+                api_object.repository.owner.username,
+                api_object.repository.name,
+                result["base"]["ref"]
+            ),
+            api_object
+        )
+        cls._add_write_property(
+            "head",
+            Branch.request(
+                allspice_client,
+                api_object.repository.owner.username,
+                api_object.repository.name,
+                result["head"]["ref"]
+            ),
+            api_object
+        )
+
+        return api_object
+
+    @classmethod
+    def request(cls, allspice_client, owner: str, repo: str, number: str):
+        """See https://hub.allspice.io/api/swagger#/repository/repoGetPullRequest"""
+        return cls._request(allspice_client,
+                            {"owner": owner, "repo": repo, "index": number})
+
+    _fields_to_parsers = {
+        "assignee": lambda allspice_client, u: User.parse_response(allspice_client, u),
+        "assignees": lambda allspice_client, us: [User.parse_response(allspice_client, u)
+                                                  for u in us],
+        "merged_by": lambda allspice_client, u: User.parse_response(allspice_client, u),
+        "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client,
+                                                                         m),
+        "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
+    }
+
+    _patchable_fields = {
+        "allow_maintainer_edits",
+        "assignee",
+        "assignees",
+        "base",
+        "body",
+        "due_date",
+        "milestone",
+        "state",
+        "title",
+    }
+
+    _parsers_to_fields = {
+        "assignee": lambda u: u.username,
+        "assignees": lambda us: [u.username for u in us],
+        "base": lambda b: b.name,
+        "milestone": lambda m: m.id,
+    }
+
+    def commit(self):
+        data = self.get_dirty_fields()
+        if "due_date" in data and data["due_date"] is None:
+            data["unset_due_date"] = True
+
+        self.allspice_client.requests_patch(
+            self.API_OBJECT.format(owner=self.repository.owner.username,
+                                   repo=self.repository.name,
+                                   index=self.number),
+            data=data,
+        )
+        self.dirty_fields = {}
+
+    def merge(self, merge_type: MergeType):
+        """
+        Merge the pull request. See
+        https://hub.allspice.io/api/swagger#/repository/repoMergePullRequest
+
+        :param merge_type: The type of merge to perform. See the MergeType enum.
+        """
+
+        self.allspice_client.requests_put(
+            self.MERGE_DR.format(owner=self.repository.owner.username,
+                                 repo=self.repository.name,
+                                 index=self.number),
+            data={"Do": merge_type.value},
+        )
+
+    def get_comments(self) -> List[Comment]:
+        """
+        Get the comments on this pull request, but not specifically on a review.
+
+        https://hub.allspice.io/api/swagger#/issue/issueGetComments
+
+        :return: A list of comments on this pull request.
+        """
+
+        results = self.allspice_client.requests_get(
+            self.GET_COMMENTS.format(
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number
+            )
+        )
+        return [
+            Comment.parse_response(self.allspice_client, result) for result in results
+        ]
+
+    def create_comment(self, body: str):
+        """
+        Create a comment on this pull request. This uses the same endpoint as the
+        comments on issues, and will not be associated with any reviews.
+
+        https://hub.allspice.io/api/swagger#/issue/issueCreateComment
+
+        :param body: The body of the comment.
+        :return: The comment that was created.
+        """
+
+        result = self.allspice_client.requests_post(
+            self.GET_COMMENTS.format(
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number
+            ),
+            data={"body": body}
+        )
+        return Comment.parse_response(self.allspice_client, result)
+
+
 class Team(ApiObject):
     API_OBJECT = """/teams/{id}"""  # <id>
     ADD_REPO = """/teams/%s/repos/%s/%s"""  # <id, org, repo>
@@ -1097,7 +1352,9 @@ class Content(ReadonlyApiObject):
     def __hash__(self):
         return hash(self.repo) ^ hash(self.sha) ^ hash(self.name)
 
+
 Ref = Union[Branch, Commit, str]
+
 
 class Util:
     @staticmethod
@@ -1107,6 +1364,17 @@ class Util:
             return datetime.strptime(time[:-3] + "00", "%Y-%m-%dT%H:%M:%S%z")
         except ValueError:
             return datetime.strptime(time[:-3] + "00", "%Y-%m-%dT%H:%M:%S")
+
+    @staticmethod
+    def format_time(time: datetime) -> str:
+        """
+        Format a datetime object to Gitea's time format.
+
+        :param time: The time to format
+        :return: Formatted time
+        """
+
+        return time.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S") + "Z"
 
     @staticmethod
     def data_params_for_ref(ref: Optional[Ref]) -> Dict:

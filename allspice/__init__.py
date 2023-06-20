@@ -15,7 +15,8 @@ from .apiobject import (
     Milestone,
     Commit,
     Comment,
-    Content
+    Content,
+    DesignReview
 )
 
 __all__ = [
@@ -31,5 +32,6 @@ __all__ = [
     'Milestone',
     'Commit',
     'Comment',
-    'Content'
+    'Content',
+    'DesignReview'
 ]
