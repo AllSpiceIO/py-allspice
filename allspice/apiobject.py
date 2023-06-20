@@ -803,13 +803,32 @@ class Comment(ApiObject):
         )
         self.deleted = True
 
-    def get_attachments(self):
+    def get_attachments(self) -> List[Attachment]:
+        """
+        Get all attachments on this comment. This returns Attachment objects, which
+        contain a link to download the attachment.
+
+        https://hub.allspice.io/api/swagger#/issue/issueListIssueCommentAttachments
+        """
+
         results = self.allspice_client.requests_get(
             self.GET_ATTACHMENTS_PATH.format(**self.__fields_for_path())
         )
-        return [Attachment.parse_response(self.allspice_client, result) for result in results]
+        return [Attachment.parse_response(self.allspice_client, result) for result in
+                results]
 
     def create_attachment(self, file: IO, name: Optional[str] = None) -> Attachment:
+        """
+        Create an attachment on this comment.
+
+        https://hub.allspice.io/api/swagger#/issue/issueCreateIssueCommentAttachment
+
+        :param file: The file to attach. This should be a file-like object.
+        :param name: The name of the file. If not provided, the name of the file will be
+                     used.
+        :return: The created attachment.
+        """
+
         args = {
             "files": {"attachment": file},
         }
@@ -845,6 +864,8 @@ class Comment(ApiObject):
         return Attachment.parse_response(self.allspice_client, result)
 
     def delete_attachment(self, attachment: Attachment):
+        """https://hub.allspice.io/api/swagger#/issue/issueDeleteIssueCommentAttachment"""
+
         args = {
             **self.__fields_for_path(),
             "attachment_id": attachment.id,
@@ -968,6 +989,8 @@ class Issue(ApiObject):
         )
 
     def get_comments(self) -> List[Comment]:
+        """https://hub.allspice.io/api/swagger#/issue/issueGetComments"""
+
         results = self.allspice_client.requests_get(
             self.GET_COMMENTS.format(
                 owner=self.owner.username,
@@ -981,6 +1004,8 @@ class Issue(ApiObject):
         ]
 
     def create_comment(self, body: str) -> Comment:
+        """https://hub.allspice.io/api/swagger#/issue/issueCreateComment"""
+
         path = self.GET_COMMENTS.format(
             owner=self.owner.username,
             repo=self.repo.name,
