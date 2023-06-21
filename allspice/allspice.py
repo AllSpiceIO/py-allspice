@@ -1,6 +1,6 @@
 import logging
 import json
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 
 from frozendict import frozendict
 import requests
@@ -152,8 +152,37 @@ class AllSpice:
             self.logger.error(message)
             raise Exception(message)
 
-    def requests_post(self, endpoint: str, data: dict):
-        request = self.requests.post(self.__get_url(endpoint), headers=self.headers, data=json.dumps(data))
+    def requests_post(
+            self,
+            endpoint: str,
+            data: Optional[dict] = None,
+            params: Optional[dict] = None,
+            files: Optional[dict] = None,
+    ):
+        """
+        Make a POST call to the endpoint.
+
+        :param endpoint: The path to the endpoint
+        :param data: A dictionary for JSON data
+        :param params: A dictionary of query params
+        :param files: A dictionary of files, see requests.post. Using both files and data
+                      can lead to unexpected results!
+        :return: The JSON response parsed as a dict
+        """
+
+        args = {
+            "headers": self.headers.copy(),
+        }
+        if data is not None:
+            args["data"] = json.dumps(data)
+        if params is not None:
+            args["params"] = params
+        if files is not None:
+            args["headers"].pop("Content-type")
+            args["files"] = files
+
+        request = self.requests.post(self.__get_url(endpoint), **args)
+
         if request.status_code not in [200, 201, 202]:
             if ("already exists" in request.text or "e-mail already in use" in request.text):
                 self.logger.warning(request.text)

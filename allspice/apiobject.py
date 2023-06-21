@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
-from typing import List, Tuple, Dict, Sequence, Optional, Union, Set
+from functools import cached_property
+from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO
 
 from .baseapiobject import ReadonlyApiObject, ApiObject
 from .exceptions import *
@@ -708,23 +709,169 @@ class Milestone(ApiObject):
         return cls._request(allspice_client, {"owner": owner, "repo": repo, "number": number})
 
 
-class Comment(ApiObject):
+class Attachment(ReadonlyApiObject):
+    """
+    An asset attached to a comment.
+
+    You cannot edit or delete the attachment from this object - see the instance methods
+    Comment.edit_attachment and delete_attachment for that.
+    """
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
 
     def __eq__(self, other):
-        if not isinstance(other, Comment): return False
+        if not isinstance(other, Attachment):
+            return False
+
+        return self.uuid == other.uuid
+
+    def __hash__(self):
+        return hash(self.uuid)
+
+
+class Comment(ApiObject):
+    API_OBJECT = """/repos/{owner}/{repo}/issues/comments/{id}"""
+    GET_ATTACHMENTS_PATH = """/repos/{owner}/{repo}/issues/comments/{id}/assets"""
+    ATTACHMENT_PATH = """/repos/{owner}/{repo}/issues/comments/{id}/assets/{attachment_id}"""
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    def __eq__(self, other):
+        if not isinstance(other, Comment):
+            return False
         return self.repo == other.repo and self.id == other.id
 
     def __hash__(self):
         return hash(self.repo) ^ hash(self.id)
+
+    @classmethod
+    def request(
+            cls,
+            allspice_client: 'AllSpice',
+            owner: str,
+            repo: str,
+            id: str
+    ) -> 'Comment':
+        return cls._request(allspice_client, {"owner": owner, "repo": repo, "id": id})
 
     _fields_to_parsers = {
         "user": lambda allspice_client, r: User.parse_response(allspice_client, r),
         "created_at": lambda allspice_client, t: Util.convert_time(t),
         "updated_at": lambda allspice_client, t: Util.convert_time(t),
     }
+
+    _patchable_fields = {
+        "body"
+    }
+
+    @property
+    def parent_url(self) -> str:
+        """URL of the parent of this comment (the issue or the pull request)"""
+
+        if self.issue_url is not None:
+            return self.issue_url
+        else:
+            return self.pull_request_url
+
+    @cached_property
+    def repository(self) -> Repository:
+        """The repository this comment was posted on."""
+
+        owner_name, repo_name = self.parent_url.split("/")[-4:-2]
+        return Repository.request(self.allspice_client, owner_name, repo_name)
+
+    def __fields_for_path(self):
+        return {
+            "owner": self.repository.owner.username,
+            "repo": self.repository.name,
+            "id": self.id,
+        }
+
+    def commit(self):
+        values = self.get_dirty_fields()
+
+        self.allspice_client.requests_patch(
+            self.API_OBJECT.format(**self.__fields_for_path()), data=values
+        )
+        self.dirty_fields = {}
+
+    def delete(self):
+        self.allspice_client.requests_delete(
+            self.API_OBJECT.format(**self.__fields_for_path())
+        )
+        self.deleted = True
+
+    def get_attachments(self) -> List[Attachment]:
+        """
+        Get all attachments on this comment. This returns Attachment objects, which
+        contain a link to download the attachment.
+
+        https://hub.allspice.io/api/swagger#/issue/issueListIssueCommentAttachments
+        """
+
+        results = self.allspice_client.requests_get(
+            self.GET_ATTACHMENTS_PATH.format(**self.__fields_for_path())
+        )
+        return [Attachment.parse_response(self.allspice_client, result) for result in
+                results]
+
+    def create_attachment(self, file: IO, name: Optional[str] = None) -> Attachment:
+        """
+        Create an attachment on this comment.
+
+        https://hub.allspice.io/api/swagger#/issue/issueCreateIssueCommentAttachment
+
+        :param file: The file to attach. This should be a file-like object.
+        :param name: The name of the file. If not provided, the name of the file will be
+                     used.
+        :return: The created attachment.
+        """
+
+        args = {
+            "files": {"attachment": file},
+        }
+        if name is not None:
+            args["params"] = {"name": name}
+
+        result = self.allspice_client.requests_post(
+            self.GET_ATTACHMENTS_PATH.format(**self.__fields_for_path()),
+            **args,
+        )
+        return Attachment.parse_response(self.allspice_client, result)
+
+    def edit_attachment(self, attachment: Attachment, data: dict) -> Attachment:
+        """
+        Edit an attachment.
+
+        The list of params that can be edited is available at
+        https://hub.allspice.io/api/swagger#/issue/issueEditIssueCommentAttachment
+
+        :param attachment: The attachment to be edited
+        :param data: The data parameter should be a dictionary of the fields to edit.
+        :return: The edited attachment
+        """
+
+        args = {
+            **self.__fields_for_path(),
+            "attachment_id": attachment.id,
+        }
+        result = self.allspice_client.requests_patch(
+            self.ATTACHMENT_PATH.format(**args),
+            data=data,
+        )
+        return Attachment.parse_response(self.allspice_client, result)
+
+    def delete_attachment(self, attachment: Attachment):
+        """https://hub.allspice.io/api/swagger#/issue/issueDeleteIssueCommentAttachment"""
+
+        args = {
+            **self.__fields_for_path(),
+            "attachment_id": attachment.id,
+        }
+        self.allspice_client.requests_delete(self.ATTACHMENT_PATH.format(**args))
+        attachment.deleted = True
 
 
 class Commit(ReadonlyApiObject):
@@ -757,7 +904,7 @@ class Commit(ReadonlyApiObject):
 class Issue(ApiObject):
     API_OBJECT = """/repos/{owner}/{repo}/issues/{index}"""  # <owner, repo, index>
     GET_TIME = """/repos/%s/%s/issues/%s/times"""  # <owner, repo, index>
-    GET_COMMENTS = """/repos/%s/%s/issues/comments"""
+    GET_COMMENTS = """/repos/{owner}/{repo}/issues/{index}/comments"""
     CREATE_ISSUE = """/repos/{owner}/{repo}/issues"""
 
     OPENED = "open"
@@ -767,7 +914,8 @@ class Issue(ApiObject):
         super().__init__(allspice_client)
 
     def __eq__(self, other):
-        if not isinstance(other, Issue): return False
+        if not isinstance(other, Issue):
+            return False
         return self.repo == other.repo and self.id == other.id
 
     def __hash__(self):
@@ -840,19 +988,32 @@ class Issue(ApiObject):
             path, data={"created": created, "time": int(time), "user_name": user_name}
         )
 
-    def get_comments(self) -> List[ApiObject]:
+    def get_comments(self) -> List[Comment]:
+        """https://hub.allspice.io/api/swagger#/issue/issueGetComments"""
+
         results = self.allspice_client.requests_get(
-            Issue.GET_COMMENTS % (self.owner.username, self.repo.name)
+            self.GET_COMMENTS.format(
+                owner=self.owner.username,
+                repo=self.repo.name,
+                index=self.number
+            )
         )
-        allProjectComments = [
+
+        return [
             Comment.parse_response(self.allspice_client, result) for result in results
         ]
-        # Comparing the issue id with the URL seems to be the only (!) way to get to the comments of one issue
-        return [
-            comment
-            for comment in allProjectComments
-            if comment.issue_url.endswith("/" + str(self.number))
-        ]
+
+    def create_comment(self, body: str) -> Comment:
+        """https://hub.allspice.io/api/swagger#/issue/issueCreateComment"""
+
+        path = self.GET_COMMENTS.format(
+            owner=self.owner.username,
+            repo=self.repo.name,
+            index=self.number
+        )
+
+        response = self.allspice_client.requests_post(path, data={"body": body})
+        return Comment.parse_response(self.allspice_client, response)
 
 
 class Team(ApiObject):
