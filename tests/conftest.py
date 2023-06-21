@@ -13,6 +13,7 @@ import pytest
 
 from allspice import AllSpice
 
+
 @pytest.fixture
 def instance(scope="module"):
     try:

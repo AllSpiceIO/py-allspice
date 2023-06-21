@@ -196,7 +196,11 @@ if __name__ == "__main__":
                     schdoc_file_json = schdoc_repo.get_generated_json(
                         schdoc_file, ref=schdoc_branch
                     )
-                    bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json, attributes_to_extract))
+                    bom_rows.extend(
+                        extract_attributes_from_schdoc(
+                            schdoc_file_json, attributes_to_extract
+                        )
+                    )
                     break
                 except NotYetGeneratedException:
                     if retry_count > 5:

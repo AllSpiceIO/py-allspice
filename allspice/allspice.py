@@ -7,7 +7,12 @@ import requests
 import urllib3
 
 from .apiobject import User, Organization, Repository, Team
-from .exceptions import NotFoundException, ConflictException, AlreadyExistsException, NotYetGeneratedException
+from .exceptions import (
+    NotFoundException,
+    ConflictException,
+    AlreadyExistsException,
+    NotYetGeneratedException,
+)
 from .ratelimiter import RateLimitedSession
 
 
@@ -72,7 +77,9 @@ class AllSpice:
         if token_text:
             self.headers["Authorization"] = "token " + token_text
         if auth:
-            self.logger.warning("Using basic auth is not recommended. Prefer using a token instead.")
+            self.logger.warning(
+                "Using basic auth is not recommended. Prefer using a token instead."
+            )
             self.requests.auth = auth
 
         # Manage SSL certification verification
@@ -80,20 +87,23 @@ class AllSpice:
         if not verify:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
     def __get_url(self, endpoint):
         url = self.url + "/api/v1" + endpoint
         self.logger.debug("Url: %s" % url)
         return url
 
     def __get(self, endpoint: str, params=frozendict()) -> requests.Response:
-        request = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=params)
+        request = self.requests.get(
+            self.__get_url(endpoint), headers=self.headers, params=params
+        )
         if request.status_code not in [200, 201]:
             message = f"Received status code: {request.status_code} ({request.url})"
             if request.status_code in [404]:
                 raise NotFoundException(message)
             if request.status_code in [403]:
-                raise Exception(f"Unauthorized: {request.url} - Check your permissions and try again! ({message})")
+                raise Exception(
+                    f"Unauthorized: {request.url} - Check your permissions and try again! ({message})"
+                )
             if request.status_code in [409]:
                 raise ConflictException(message)
             if request.status_code in [503]:
@@ -103,11 +113,10 @@ class AllSpice:
 
     @staticmethod
     def parse_result(result) -> Dict:
-        """ Parses the result-JSON to a dict. """
+        """Parses the result-JSON to a dict."""
         if result.text and len(result.text) > 3:
             return json.loads(result.text)
         return {}
-
 
     def requests_get(self, endpoint: str, params=frozendict(), sudo=None):
         combined_params = {}
@@ -123,7 +132,9 @@ class AllSpice:
             combined_params["sudo"] = sudo.username
         return self.__get(endpoint, combined_params).content
 
-    def requests_get_paginated(self, endpoint: str, params=frozendict(), sudo=None, page_key: str = "page"):
+    def requests_get_paginated(
+        self, endpoint: str, params=frozendict(), sudo=None, page_key: str = "page"
+    ):
         page = 1
         combined_params = {}
         combined_params.update(params)
@@ -139,7 +150,9 @@ class AllSpice:
     def requests_put(self, endpoint: str, data: dict = None):
         if not data:
             data = {}
-        request = self.requests.put(self.__get_url(endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.put(
+            self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
+        )
         if request.status_code not in [200, 204]:
             message = f"Received status code: {request.status_code} ({request.url}) {request.text}"
             self.logger.error(message)
@@ -153,11 +166,11 @@ class AllSpice:
             raise Exception(message)
 
     def requests_post(
-            self,
-            endpoint: str,
-            data: Optional[dict] = None,
-            params: Optional[dict] = None,
-            files: Optional[dict] = None,
+        self,
+        endpoint: str,
+        data: Optional[dict] = None,
+        params: Optional[dict] = None,
+        files: Optional[dict] = None,
     ):
         """
         Make a POST call to the endpoint.
@@ -184,19 +197,30 @@ class AllSpice:
         request = self.requests.post(self.__get_url(endpoint), **args)
 
         if request.status_code not in [200, 201, 202]:
-            if ("already exists" in request.text or "e-mail already in use" in request.text):
+            if (
+                "already exists" in request.text
+                or "e-mail already in use" in request.text
+            ):
                 self.logger.warning(request.text)
                 raise AlreadyExistsException()
-            self.logger.error(f"Received status code: {request.status_code} ({request.url})")
+            self.logger.error(
+                f"Received status code: {request.status_code} ({request.url})"
+            )
             self.logger.error(f"With info: {data} ({self.headers})")
             self.logger.error(f"Answer: {request.text}")
-            raise Exception(f"Received status code: {request.status_code} ({request.url}), {request.text}")
+            raise Exception(
+                f"Received status code: {request.status_code} ({request.url}), {request.text}"
+            )
         return self.parse_result(request)
 
     def requests_patch(self, endpoint: str, data: dict):
-        request = self.requests.patch(self.__get_url(endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.patch(
+            self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
+        )
         if request.status_code not in [200, 201]:
-            error_message = f"Received status code: {request.status_code} ({request.url}) {data}"
+            error_message = (
+                f"Received status code: {request.status_code} ({request.url}) {data}"
+            )
             self.logger.error(error_message)
             raise Exception(error_message)
         return self.parse_result(request)
@@ -242,17 +266,17 @@ class AllSpice:
         return Repository.parse_response(self, result)
 
     def create_user(
-            self,
-            user_name: str,
-            email: str,
-            password: str,
-            full_name: str = None,
-            login_name: str = None,
-            change_pw=True,
-            send_notify=True,
-            source_id=0,
+        self,
+        user_name: str,
+        email: str,
+        password: str,
+        full_name: str = None,
+        login_name: str = None,
+        change_pw=True,
+        send_notify=True,
+        source_id=0,
     ):
-        """ Create User.
+        """Create User.
         Throws:
             AlreadyExistsException, if the User exists already
             Exception, if something else went wrong.
@@ -289,19 +313,19 @@ class AllSpice:
         return user
 
     def create_repo(
-            self,
-            repoOwner: Union[User, Organization],
-            repoName: str,
-            description: str = "",
-            private: bool = False,
-            autoInit=True,
-            gitignores: str = None,
-            license: str = None,
-            readme: str = "Default",
-            issue_labels: str = None,
-            default_branch="master",
+        self,
+        repoOwner: Union[User, Organization],
+        repoName: str,
+        description: str = "",
+        private: bool = False,
+        autoInit=True,
+        gitignores: str = None,
+        license: str = None,
+        readme: str = "Default",
+        issue_labels: str = None,
+        default_branch="master",
     ):
-        """ Create a Repository as the administrator
+        """Create a Repository as the administrator
 
         Throws:
             AlreadyExistsException: If the Repository exists already.
@@ -336,13 +360,13 @@ class AllSpice:
         return Repository.parse_response(self, result)
 
     def create_org(
-            self,
-            owner: User,
-            orgName: str,
-            description: str,
-            location="",
-            website="",
-            full_name="",
+        self,
+        owner: User,
+        orgName: str,
+        description: str,
+        location="",
+        website="",
+        full_name="",
     ):
         assert isinstance(owner, User)
         result = self.requests_post(
@@ -370,25 +394,25 @@ class AllSpice:
         return Organization.parse_response(self, result)
 
     def create_team(
-            self,
-            org: Organization,
-            name: str,
-            description: str = "",
-            permission: str = "read",
-            can_create_org_repo: bool = False,
-            includes_all_repositories: bool = False,
-            units=(
-                    "repo.code",
-                    "repo.issues",
-                    "repo.ext_issues",
-                    "repo.wiki",
-                    "repo.pulls",
-                    "repo.releases",
-                    "repo.ext_wiki",
-            ),
-            units_map={},
+        self,
+        org: Organization,
+        name: str,
+        description: str = "",
+        permission: str = "read",
+        can_create_org_repo: bool = False,
+        includes_all_repositories: bool = False,
+        units=(
+            "repo.code",
+            "repo.issues",
+            "repo.ext_issues",
+            "repo.wiki",
+            "repo.pulls",
+            "repo.releases",
+            "repo.ext_wiki",
+        ),
+        units_map={},
     ):
-        """ Creates a Team.
+        """Creates a Team.
 
         Args:
             org (Organization): Organization the Team will be part of.

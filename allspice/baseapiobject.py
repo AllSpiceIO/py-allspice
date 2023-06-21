@@ -1,8 +1,12 @@
-from .exceptions import ObjectIsInvalid, MissingEqualityImplementation, RawRequestEndpointMissing
+from __future__ import annotations
+
+from .exceptions import (
+    ObjectIsInvalid,
+    MissingEqualityImplementation,
+)
 
 
 class ReadonlyApiObject:
-
     def __init__(self, allspice_client):
         self.allspice_client = allspice_client
         self.deleted = False  # set if .delete was called, so that an exception is risen
@@ -22,10 +26,7 @@ class ReadonlyApiObject:
 
     @classmethod
     def request(cls, allspice_client):
-        if hasattr("API_OBJECT", cls):
-            return cls._request(allspice_client)
-        else:
-            raise RawRequestEndpointMissing()
+        raise NotImplemented()
 
     @classmethod
     def _request(cls, allspice_client, args):
@@ -35,11 +36,11 @@ class ReadonlyApiObject:
 
     @classmethod
     def _get_gitea_api_object(cls, allspice_client, args):
-        """Retrieving an object always as GET_API_OBJECT """
+        """Retrieving an object always as GET_API_OBJECT"""
         return allspice_client.requests_get(cls.API_OBJECT.format(**args))
 
     @classmethod
-    def parse_response(cls, allspice_client, result) -> "ReadonlyApiObject":
+    def parse_response(cls, allspice_client, result) -> ReadonlyApiObject:
         # allspice_client.logger.debug("Found api object of type %s (id: %s)" % (type(cls), id))
         api_object = cls(allspice_client)
         cls._initialize(allspice_client, api_object, result)
@@ -61,8 +62,7 @@ class ReadonlyApiObject:
     def _add_read_property(cls, name, value, api_object):
         if not hasattr(api_object, name):
             setattr(api_object, "_" + name, value)
-            prop = property(
-                (lambda n: lambda self: self._get_var(n))(name))
+            prop = property((lambda n: lambda self: self._get_var(n))(name))
             setattr(cls, name, prop)
         else:
             raise AttributeError(f"Attribute {name} already exists on api object.")
@@ -107,7 +107,8 @@ class ApiObject(ReadonlyApiObject):
             setattr(api_object, "_" + name, value)
         prop = property(
             (lambda n: lambda self: self._get_var(n))(name),
-            (lambda n: lambda self, v: self.__set_var(n, v))(name))
+            (lambda n: lambda self, v: self.__set_var(n, v))(name),
+        )
         setattr(cls, name, prop)
 
     def __set_var(self, name, i):
