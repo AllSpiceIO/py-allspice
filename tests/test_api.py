@@ -1,11 +1,14 @@
 import base64
+import datetime
 
 import pytest
 import uuid
 
 from allspice import AllSpice, User, Organization, Team, Repository, Issue, Milestone, \
-    Comment
-from allspice import NotFoundException, AlreadyExistsException
+    DesignReview, Branch, Comment
+from allspice import NotFoundException
+from allspice.apiobject import Util
+
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
 @pytest.fixture
@@ -229,8 +232,11 @@ def test_create_branch(instance):
     repo = org.get_repository(test_repo)
     branches = repo.get_branches()
     master = [b for b in branches if b.name == "master"]
+    number_of_branches = len(branches)
     assert len(master) > 0
     repo.add_branch(master[0], "test_branch")
+    branches = repo.get_branches()
+    assert len(branches) == number_of_branches + 1
 
 def test_create_team(instance):
     org = Organization.request(instance, test_org)
@@ -440,6 +446,77 @@ def test_delete_issue_attachment(instance):
     attachment = comment.get_attachments()[0]
     comment.delete_attachment(attachment)
     assert len(comment.get_attachments()) == 0
+
+
+def test_create_design_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    branch = Branch.request(instance, org.username, test_repo, "master")
+    due_date = datetime.datetime.now() + datetime.timedelta(days=7)
+    review = repo.create_design_review(
+        "TestDesignReview",
+        "test_branch",
+        branch,
+        body="This is a test review",
+        assignees=["test"],
+        due_date=due_date,
+    )
+
+    assert review.state == DesignReview.OPEN
+    assert review.title == "TestDesignReview"
+    assert review.base.name == "master"
+    assert review.head.name == "test_branch"
+    assert review.body == "This is a test review"
+    assert review.assignees[0].username == "test"
+    assert Util.format_time(Util.convert_time(review.due_date)) == Util.format_time(
+        due_date)
+
+
+def test_get_design_reviews(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+
+    assert dr.title == "TestDesignReview"
+    assert dr.base.name == "master"
+    assert dr.head.name == "test_branch"
+    assert dr.body == "This is a test review"
+
+
+def test_edit_design_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    new_branch = repo.add_branch(repo.get_branch("master"), "test_branch2")
+    dr.title = "TestDesignReview2"
+    dr.body = "This is a test review2"
+    dr.due_date = None
+    dr.base = new_branch
+    dr.commit()
+    del dr
+    dr = repo.get_design_reviews()[0]
+    assert dr.title == "TestDesignReview2"
+    assert dr.base.name == "test_branch2"
+    assert dr.head.name == "test_branch"
+    assert dr.body == "This is a test review2"
+    assert dr.due_date is None
+
+
+def test_create_design_review_comment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    comment = dr.create_comment("This is a test comment")
+    assert comment.body == "This is a test comment"
+
+
+def test_get_design_review_comments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    comments = dr.get_comments()
+    assert len(comments) > 0
+    assert comments[0].body == "This is a test comment"
 
 
 def test_team_get_org(instance):
