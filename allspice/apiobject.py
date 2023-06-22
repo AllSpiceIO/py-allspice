@@ -47,12 +47,8 @@ class Organization(ApiObject):
     _patchable_fields = {"description", "full_name", "location", "visibility", "website"}
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"name": self.name}
-        self.allspice_client.requests_patch(
-            Organization.API_OBJECT.format(**args), data=values
-        )
-        self.dirty_fields = {}
+        self._commit(args)
 
     def create_repo(
             self,
@@ -250,7 +246,7 @@ class User(ApiObject):
         )
         args = {"username": self.username}
         self.allspice_client.requests_patch(User.ADMIN_EDIT_USER.format(**args), data=values)
-        self.dirty_fields = {}
+        self._dirty_fields = {}
 
     def create_repo(
             self,
@@ -425,10 +421,8 @@ class Repository(ApiObject):
     }
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"owner": self.owner.username, "name": self.name}
-        self.allspice_client.requests_patch(self.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        self._commit(args)
 
     def get_branches(self) -> List['Branch']:
         """Get all the Branches of this Repository."""
@@ -978,12 +972,7 @@ class Comment(ApiObject):
         }
 
     def commit(self):
-        values = self.get_dirty_fields()
-
-        self.allspice_client.requests_patch(
-            self.API_OBJECT.format(**self.__fields_for_path()), data=values
-        )
-        self.dirty_fields = {}
+        self._commit(self.__fields_for_path())
 
     def delete(self):
         self.allspice_client.requests_delete(
@@ -1134,10 +1123,13 @@ class Issue(ApiObject):
     }
 
     def commit(self):
-        values = self.get_dirty_fields()
-        args = {"owner": self.repository.owner.username, "repo": self.repository.name, "index": self.number}
-        self.allspice_client.requests_patch(Issue.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        args = {
+            "owner": self.repository.owner.username,
+            "repo": self.repository.name,
+            "index": self.number,
+        }
+        self._commit(args)
+
 
     @classmethod
     def request(cls, allspice_client: 'AllSpice', owner: str, repo: str, number: str):
@@ -1314,13 +1306,12 @@ class DesignReview(ApiObject):
         if "due_date" in data and data["due_date"] is None:
             data["unset_due_date"] = True
 
-        self.allspice_client.requests_patch(
-            self.API_OBJECT.format(owner=self.repository.owner.username,
-                                   repo=self.repository.name,
-                                   index=self.number),
-            data=data,
-        )
-        self.dirty_fields = {}
+        args = {
+            "owner": self.repository.owner.username,
+            "repo": self.repository.name,
+            "index": self.number
+        }
+        self._commit(args, data)
 
     def merge(self, merge_type: MergeType):
         """
@@ -1415,10 +1406,8 @@ class Team(ApiObject):
         return cls._request(allspice_client, {"id": id})
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"id": self.id}
-        self.allspice_client.requests_patch(self.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        self._commit(args)
 
     def add_user(self, user: User):
         """https://hub.allspice.io/api/swagger#/organization/orgAddTeamMember"""
