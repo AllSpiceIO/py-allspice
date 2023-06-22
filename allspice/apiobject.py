@@ -426,7 +426,8 @@ class Repository(ApiObject):
 
     def get_branches(self) -> List['Branch']:
         """Get all the Branches of this Repository."""
-        results = self.allspice_client.requests_get(
+
+        results = self.allspice_client.requests_get_paginated(
             Repository.REPO_BRANCHES % (self.owner.username, self.name)
         )
         return [Branch.parse_response(self.allspice_client, result) for result in results]
@@ -507,7 +508,9 @@ class Repository(ApiObject):
         issues = []
         for result in results:
             issue = Issue.parse_response(self.allspice_client, result)
-            Issue._add_read_property("repository", self, issue)
+            # This is mostly for compatibility with the older implementation, as the
+            # `repository` property already has this info in the parsed Issue.
+            Issue._add_read_property("repo", self, issue)
             Issue._add_read_property("owner", self.owner, issue)
             issues.append(issue)
 
