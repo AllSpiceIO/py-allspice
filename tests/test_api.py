@@ -464,8 +464,8 @@ def test_create_design_review(instance):
 
     assert review.state == DesignReview.OPEN
     assert review.title == "TestDesignReview"
-    assert review.base.name == "master"
-    assert review.head.name == "test_branch"
+    assert review.base == "master"
+    assert review.head == "test_branch"
     assert review.body == "This is a test review"
     assert review.assignees[0].username == "test"
     assert Util.format_time(Util.convert_time(review.due_date)) == Util.format_time(
@@ -478,8 +478,8 @@ def test_get_design_reviews(instance):
     dr = repo.get_design_reviews()[0]
 
     assert dr.title == "TestDesignReview"
-    assert dr.base.name == "master"
-    assert dr.head.name == "test_branch"
+    assert dr.base == "master"
+    assert dr.head == "test_branch"
     assert dr.body == "This is a test review"
 
 
@@ -496,8 +496,8 @@ def test_edit_design_review(instance):
     del dr
     dr = repo.get_design_reviews()[0]
     assert dr.title == "TestDesignReview2"
-    assert dr.base.name == "test_branch2"
-    assert dr.head.name == "test_branch"
+    assert dr.base == "test_branch2"
+    assert dr.head == "test_branch"
     assert dr.body == "This is a test review2"
     assert dr.due_date is None
 

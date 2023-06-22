@@ -550,8 +550,8 @@ class Repository(ApiObject):
                                             repo=self.name),
             params=params,
         )
-        return [DesignReview.parse_response(self.allspice_client, result) for result in
-                results]
+        return [DesignReview.parse_response(self.allspice_client, result)
+                for result in results]
 
     def get_commits(
             self,
@@ -1200,6 +1200,17 @@ class Issue(ApiObject):
 
 
 class DesignReview(ApiObject):
+    """
+    A Design Review. See
+    https://hub.allspice.io/api/swagger#/repository/repoGetPullRequest.
+
+    Note: The base and head fields are not `Branch` objects - they are plain strings
+    referring to the branch names. This is because DRs can exist for branches that have
+    been deleted, which don't have an associated `Branch` object from the API. You can use
+    the `Repository.get_branch` method to get a `Branch` object for a branch if you know
+    it exists.
+    """
+
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
     MERGE_DESIGN_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/merge"
     GET_COMMENTS = "/repos/{owner}/{repo}/issues/{index}/comments"
@@ -1234,36 +1245,10 @@ class DesignReview(ApiObject):
     @classmethod
     def parse_response(cls, allspice_client, result) -> 'DesignReview':
         api_object = super().parse_response(allspice_client, result)
-        # These properties are in the response, but not in ways that make them easy
-        # to parse with the _fields_to_parsers dict. So we have to delete the attributes,
-        # request them separately, and then add them back as read-only properties.
-        delattr(api_object, "_base")
-        delattr(api_object, "_head")
         cls._add_read_property(
             "repository",
             Repository.parse_response(allspice_client,
                                       result["base"]["repo"]),
-            api_object
-        )
-        # Only base is patchable, so it needs to be a writable property.
-        cls._add_write_property(
-            "base",
-            Branch.request(
-                allspice_client,
-                api_object.repository.owner.username,
-                api_object.repository.name,
-                result["base"]["ref"]
-            ),
-            api_object
-        )
-        cls._add_read_property(
-            "head",
-            Branch.request(
-                allspice_client,
-                api_object.repository.owner.username,
-                api_object.repository.name,
-                result["head"]["ref"]
-            ),
             api_object
         )
 
@@ -1279,6 +1264,8 @@ class DesignReview(ApiObject):
         "assignee": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "assignees": lambda allspice_client, us: [User.parse_response(allspice_client, u)
                                                   for u in us],
+        "base": lambda allspice_client, b: b["ref"],
+        "head": lambda allspice_client, h: h["ref"],
         "merged_by": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client,
                                                                          m),
@@ -1300,7 +1287,7 @@ class DesignReview(ApiObject):
     _parsers_to_fields = {
         "assignee": lambda u: u.username,
         "assignees": lambda us: [u.username for u in us],
-        "base": lambda b: b.name,
+        "base": lambda b: b.name if isinstance(b, Branch) else b,
         "milestone": lambda m: m.id,
     }
 
