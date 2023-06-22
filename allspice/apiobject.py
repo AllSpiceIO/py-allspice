@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 from functools import cached_property
-from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO
+from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO, Literal
 from datetime import datetime, timezone
 from enum import Enum
 
@@ -452,11 +454,77 @@ class Repository(ApiObject):
         )
         return Branch.parse_response(self.allspice_client, result)
 
-    def get_issues(self) -> List["Issue"]:
-        """Get all Issues of this Repository (open and closed)"""
-        return self.get_issues_state(Issue.OPENED) + self.get_issues_state(Issue.CLOSED)
+    def get_issues(
+            self,
+            state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+            search_query: Optional[str] = None,
+            labels: Optional[List[str]] = None,
+            milestones: Optional[List[Union[Milestone, str]]] = None,
+            assignee: Optional[Union[User, str]] = None,
+            since: Optional[datetime] = None,
+            before: Optional[datetime] = None,
+    ) -> List["Issue"]:
+        """
+        Get all Issues of this Repository (open and closed)
 
-    def get_design_reviews(self, state: Optional[str] = None) -> List["DesignReview"]:
+        https://hub.allspice.io/api/swagger#/repository/repoListIssues
+
+        All params of this method are optional filters. If you don't specify a filter, it
+        will not be applied.
+
+        :param state: The state of the Issues to get. If None, all Issues are returned.
+        :param search_query: Filter issues by text. This is equivalent to searching for
+                             `search_query` in the Issues on the web interface.
+        :param labels: Filter issues by labels.
+        :param milestones: Filter issues by milestones.
+        :param assignee: Filter issues by the assigned user.
+        :param since: Filter issues by the date they were created.
+        :param before: Filter issues by the date they were created.
+        :return: A list of Issues.
+        """
+
+        data = {
+            "state": state,
+        }
+        if search_query:
+            data["q"] = search_query
+        if labels:
+            data["labels"] = ",".join(labels)
+        if milestones:
+            data["milestone"] = ",".join(
+                [milestone.name if isinstance(milestone, Milestone) else milestone for
+                 milestone in milestones]
+            )
+        if assignee:
+            if isinstance(assignee, User):
+                data["assignee"] = assignee.username
+            else:
+                data["assignee"] = assignee
+        if since:
+            data["since"] = Util.format_time(since)
+        if before:
+            data["before"] = Util.format_time(before)
+
+        results = self.allspice_client.requests_get_paginated(
+            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name),
+            params=data,
+        )
+
+        issues = []
+        for result in results:
+            issue = Issue.parse_response(self.allspice_client, result)
+            Issue._add_read_property("repository", self, issue)
+            Issue._add_read_property("owner", self.owner, issue)
+            issues.append(issue)
+
+        return issues
+
+    def get_design_reviews(
+            self,
+            state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+            milestone: Optional[Union[Milestone, str]] = None,
+            labels: Optional[List[str]] = None,
+    ) -> List["DesignReview"]:
         """
         Get all Design Reviews of this Repository.
 
@@ -464,12 +532,21 @@ class Repository(ApiObject):
 
         :param state: The state of the Design Reviews to get. If None, all Design Reviews
                       are returned.
+        :param milestone: The milestone of the Design Reviews to get.
+        :param labels: A list of label IDs to filter DRs by.
         :return: A list of Design Reviews.
         """
 
-        params = {}
-        if state:
-            params["state"] = state
+        params = {
+            "state": state,
+        }
+        if milestone:
+            if isinstance(milestone, Milestone):
+                params["milestone"] = milestone.name
+            else:
+                params["milestone"] = milestone
+        if labels:
+            params["labels"] = ",".join(labels)
 
         results = self.allspice_client.requests_get_paginated(
             self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username,
@@ -479,11 +556,36 @@ class Repository(ApiObject):
         return [DesignReview.parse_response(self.allspice_client, result) for result in
                 results]
 
-    def get_commits(self) -> List["Commit"]:
-        """Get all the Commits of this Repository."""
+    def get_commits(
+            self,
+            sha: Optional[str] = None,
+            path: Optional[str] = None,
+            stat: bool = True,
+    ) -> List["Commit"]:
+        """
+        Get all the Commits of this Repository.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetAllCommits
+
+        :param sha: The SHA of the commit to start listing commits from.
+        :param path: filepath of a file/dir.
+        :param stat: Include the number of additions and deletions in the response.
+                     Disable for speedup.
+        :return: A list of Commits.
+        """
+
+        data = {}
+        if sha:
+            data["sha"] = sha
+        if path:
+            data["path"] = path
+        if not stat:
+            data["stat"] = False
+
         try:
             results = self.allspice_client.requests_get_paginated(
-                Repository.REPO_COMMITS % (self.owner.username, self.name)
+                Repository.REPO_COMMITS % (self.owner.username, self.name),
+                params=data,
             )
         except ConflictException as err:
             logging.warning(err)
@@ -494,7 +596,12 @@ class Repository(ApiObject):
         return [Commit.parse_response(self.allspice_client, result) for result in results]
 
     def get_issues_state(self, state) -> List["Issue"]:
-        """Get issues of state Issue.open or Issue.closed of a repository."""
+        """
+        DEPRECATED: Use get_issues() instead.
+
+        Get issues of state Issue.open or Issue.closed of a repository.
+        """
+
         assert state in [Issue.OPENED, Issue.CLOSED]
         issues = []
         data = {"state": state}
