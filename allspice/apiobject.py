@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 from functools import cached_property
-from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO
+from typing import List, Tuple, Dict, Sequence, Optional, Union, Set, IO, Literal
 from datetime import datetime, timezone
 from enum import Enum
 
@@ -45,12 +47,8 @@ class Organization(ApiObject):
     _patchable_fields = {"description", "full_name", "location", "visibility", "website"}
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"name": self.name}
-        self.allspice_client.requests_patch(
-            Organization.API_OBJECT.format(**args), data=values
-        )
-        self.dirty_fields = {}
+        self._commit(args)
 
     def create_repo(
             self,
@@ -248,7 +246,7 @@ class User(ApiObject):
         )
         args = {"username": self.username}
         self.allspice_client.requests_patch(User.ADMIN_EDIT_USER.format(**args), data=values)
-        self.dirty_fields = {}
+        self._dirty_fields = {}
 
     def create_repo(
             self,
@@ -423,14 +421,13 @@ class Repository(ApiObject):
     }
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"owner": self.owner.username, "name": self.name}
-        self.allspice_client.requests_patch(self.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        self._commit(args)
 
     def get_branches(self) -> List['Branch']:
         """Get all the Branches of this Repository."""
-        results = self.allspice_client.requests_get(
+
+        results = self.allspice_client.requests_get_paginated(
             Repository.REPO_BRANCHES % (self.owner.username, self.name)
         )
         return [Branch.parse_response(self.allspice_client, result) for result in results]
@@ -452,11 +449,79 @@ class Repository(ApiObject):
         )
         return Branch.parse_response(self.allspice_client, result)
 
-    def get_issues(self) -> List["Issue"]:
-        """Get all Issues of this Repository (open and closed)"""
-        return self.get_issues_state(Issue.OPENED) + self.get_issues_state(Issue.CLOSED)
+    def get_issues(
+            self,
+            state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+            search_query: Optional[str] = None,
+            labels: Optional[List[str]] = None,
+            milestones: Optional[List[Union[Milestone, str]]] = None,
+            assignee: Optional[Union[User, str]] = None,
+            since: Optional[datetime] = None,
+            before: Optional[datetime] = None,
+    ) -> List["Issue"]:
+        """
+        Get all Issues of this Repository (open and closed)
 
-    def get_design_reviews(self, state: Optional[str] = None) -> List["DesignReview"]:
+        https://hub.allspice.io/api/swagger#/repository/repoListIssues
+
+        All params of this method are optional filters. If you don't specify a filter, it
+        will not be applied.
+
+        :param state: The state of the Issues to get. If None, all Issues are returned.
+        :param search_query: Filter issues by text. This is equivalent to searching for
+                             `search_query` in the Issues on the web interface.
+        :param labels: Filter issues by labels.
+        :param milestones: Filter issues by milestones.
+        :param assignee: Filter issues by the assigned user.
+        :param since: Filter issues by the date they were created.
+        :param before: Filter issues by the date they were created.
+        :return: A list of Issues.
+        """
+
+        data = {
+            "state": state,
+        }
+        if search_query:
+            data["q"] = search_query
+        if labels:
+            data["labels"] = ",".join(labels)
+        if milestones:
+            data["milestone"] = ",".join(
+                [milestone.name if isinstance(milestone, Milestone) else milestone for
+                 milestone in milestones]
+            )
+        if assignee:
+            if isinstance(assignee, User):
+                data["assignee"] = assignee.username
+            else:
+                data["assignee"] = assignee
+        if since:
+            data["since"] = Util.format_time(since)
+        if before:
+            data["before"] = Util.format_time(before)
+
+        results = self.allspice_client.requests_get_paginated(
+            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name),
+            params=data,
+        )
+
+        issues = []
+        for result in results:
+            issue = Issue.parse_response(self.allspice_client, result)
+            # This is mostly for compatibility with the older implementation, as the
+            # `repository` property already has this info in the parsed Issue.
+            Issue._add_read_property("repo", self, issue)
+            Issue._add_read_property("owner", self.owner, issue)
+            issues.append(issue)
+
+        return issues
+
+    def get_design_reviews(
+            self,
+            state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+            milestone: Optional[Union[Milestone, str]] = None,
+            labels: Optional[List[str]] = None,
+    ) -> List["DesignReview"]:
         """
         Get all Design Reviews of this Repository.
 
@@ -464,26 +529,60 @@ class Repository(ApiObject):
 
         :param state: The state of the Design Reviews to get. If None, all Design Reviews
                       are returned.
+        :param milestone: The milestone of the Design Reviews to get.
+        :param labels: A list of label IDs to filter DRs by.
         :return: A list of Design Reviews.
         """
 
-        params = {}
-        if state:
-            params["state"] = state
+        params = {
+            "state": state,
+        }
+        if milestone:
+            if isinstance(milestone, Milestone):
+                params["milestone"] = milestone.name
+            else:
+                params["milestone"] = milestone
+        if labels:
+            params["labels"] = ",".join(labels)
 
         results = self.allspice_client.requests_get_paginated(
             self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username,
                                             repo=self.name),
             params=params,
         )
-        return [DesignReview.parse_response(self.allspice_client, result) for result in
-                results]
+        return [DesignReview.parse_response(self.allspice_client, result)
+                for result in results]
 
-    def get_commits(self) -> List["Commit"]:
-        """Get all the Commits of this Repository."""
+    def get_commits(
+            self,
+            sha: Optional[str] = None,
+            path: Optional[str] = None,
+            stat: bool = True,
+    ) -> List["Commit"]:
+        """
+        Get all the Commits of this Repository.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetAllCommits
+
+        :param sha: The SHA of the commit to start listing commits from.
+        :param path: filepath of a file/dir.
+        :param stat: Include the number of additions and deletions in the response.
+                     Disable for speedup.
+        :return: A list of Commits.
+        """
+
+        data = {}
+        if sha:
+            data["sha"] = sha
+        if path:
+            data["path"] = path
+        if not stat:
+            data["stat"] = False
+
         try:
             results = self.allspice_client.requests_get_paginated(
-                Repository.REPO_COMMITS % (self.owner.username, self.name)
+                Repository.REPO_COMMITS % (self.owner.username, self.name),
+                params=data,
             )
         except ConflictException as err:
             logging.warning(err)
@@ -494,7 +593,12 @@ class Repository(ApiObject):
         return [Commit.parse_response(self.allspice_client, result) for result in results]
 
     def get_issues_state(self, state) -> List["Issue"]:
-        """Get issues of state Issue.open or Issue.closed of a repository."""
+        """
+        DEPRECATED: Use get_issues() instead.
+
+        Get issues of state Issue.open or Issue.closed of a repository.
+        """
+
         assert state in [Issue.OPENED, Issue.CLOSED]
         issues = []
         data = {"state": state}
@@ -871,12 +975,7 @@ class Comment(ApiObject):
         }
 
     def commit(self):
-        values = self.get_dirty_fields()
-
-        self.allspice_client.requests_patch(
-            self.API_OBJECT.format(**self.__fields_for_path()), data=values
-        )
-        self.dirty_fields = {}
+        self._commit(self.__fields_for_path())
 
     def delete(self):
         self.allspice_client.requests_delete(
@@ -1027,10 +1126,13 @@ class Issue(ApiObject):
     }
 
     def commit(self):
-        values = self.get_dirty_fields()
-        args = {"owner": self.repository.owner.username, "repo": self.repository.name, "index": self.number}
-        self.allspice_client.requests_patch(Issue.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        args = {
+            "owner": self.repository.owner.username,
+            "repo": self.repository.name,
+            "index": self.number,
+        }
+        self._commit(args)
+
 
     @classmethod
     def request(cls, allspice_client: 'AllSpice', owner: str, repo: str, number: str):
@@ -1098,6 +1200,17 @@ class Issue(ApiObject):
 
 
 class DesignReview(ApiObject):
+    """
+    A Design Review. See
+    https://hub.allspice.io/api/swagger#/repository/repoGetPullRequest.
+
+    Note: The base and head fields are not `Branch` objects - they are plain strings
+    referring to the branch names. This is because DRs can exist for branches that have
+    been deleted, which don't have an associated `Branch` object from the API. You can use
+    the `Repository.get_branch` method to get a `Branch` object for a branch if you know
+    it exists.
+    """
+
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
     MERGE_DESIGN_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/merge"
     GET_COMMENTS = "/repos/{owner}/{repo}/issues/{index}/comments"
@@ -1132,36 +1245,10 @@ class DesignReview(ApiObject):
     @classmethod
     def parse_response(cls, allspice_client, result) -> 'DesignReview':
         api_object = super().parse_response(allspice_client, result)
-        # These properties are in the response, but not in ways that make them easy
-        # to parse with the _fields_to_parsers dict. So we have to delete the attributes,
-        # request them separately, and then add them back as read-only properties.
-        delattr(api_object, "_base")
-        delattr(api_object, "_head")
         cls._add_read_property(
             "repository",
             Repository.parse_response(allspice_client,
                                       result["base"]["repo"]),
-            api_object
-        )
-        # Only base is patchable, so it needs to be a writable property.
-        cls._add_write_property(
-            "base",
-            Branch.request(
-                allspice_client,
-                api_object.repository.owner.username,
-                api_object.repository.name,
-                result["base"]["ref"]
-            ),
-            api_object
-        )
-        cls._add_read_property(
-            "head",
-            Branch.request(
-                allspice_client,
-                api_object.repository.owner.username,
-                api_object.repository.name,
-                result["head"]["ref"]
-            ),
             api_object
         )
 
@@ -1177,6 +1264,8 @@ class DesignReview(ApiObject):
         "assignee": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "assignees": lambda allspice_client, us: [User.parse_response(allspice_client, u)
                                                   for u in us],
+        "base": lambda allspice_client, b: b["ref"],
+        "head": lambda allspice_client, h: h["ref"],
         "merged_by": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client,
                                                                          m),
@@ -1198,7 +1287,7 @@ class DesignReview(ApiObject):
     _parsers_to_fields = {
         "assignee": lambda u: u.username,
         "assignees": lambda us: [u.username for u in us],
-        "base": lambda b: b.name,
+        "base": lambda b: b.name if isinstance(b, Branch) else b,
         "milestone": lambda m: m.id,
     }
 
@@ -1207,13 +1296,12 @@ class DesignReview(ApiObject):
         if "due_date" in data and data["due_date"] is None:
             data["unset_due_date"] = True
 
-        self.allspice_client.requests_patch(
-            self.API_OBJECT.format(owner=self.repository.owner.username,
-                                   repo=self.repository.name,
-                                   index=self.number),
-            data=data,
-        )
-        self.dirty_fields = {}
+        args = {
+            "owner": self.repository.owner.username,
+            "repo": self.repository.name,
+            "index": self.number
+        }
+        self._commit(args, data)
 
     def merge(self, merge_type: MergeType):
         """
@@ -1308,10 +1396,8 @@ class Team(ApiObject):
         return cls._request(allspice_client, {"id": id})
 
     def commit(self):
-        values = self.get_dirty_fields()
         args = {"id": self.id}
-        self.allspice_client.requests_patch(self.API_OBJECT.format(**args), data=values)
-        self.dirty_fields = {}
+        self._commit(args)
 
     def add_user(self, user: User):
         """https://hub.allspice.io/api/swagger#/organization/orgAddTeamMember"""

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .exceptions import ObjectIsInvalid, MissingEqualityImplementation, RawRequestEndpointMissing
 
 
@@ -78,6 +80,21 @@ class ApiObject(ReadonlyApiObject):
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
+        self._dirty_fields = set()
+
+    def _commit(self, route_fields: dict, dirty_fields: Optional[dict] = None):
+        if self.deleted:
+            raise ObjectIsInvalid()
+        if not hasattr(self, "API_OBJECT"):
+            raise RawRequestEndpointMissing()
+
+        if dirty_fields is None:
+            dirty_fields = self.get_dirty_fields()
+
+        self.allspice_client.requests_patch(
+            self.API_OBJECT.format(**route_fields),
+            dirty_fields,
+        )
         self._dirty_fields = set()
 
     def commit(self):
