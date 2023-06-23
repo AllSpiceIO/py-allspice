@@ -369,6 +369,15 @@ class Repository(ApiObject):
     REPO_COMMITS = "/repos/%s/%s/commits"  # <owner>, <reponame>
     REPO_TRANSFER = "/repos/{owner}/{repo}/transfer"
     REPO_MILESTONES = """/repos/{owner}/{repo}/milestones"""
+    REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
+
+    class ArchiveFormat(Enum):
+        """
+        Archive formats for Repository.get_archive
+        """
+
+        TAR = "tar.gz"
+        ZIP = "zip"
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
@@ -846,6 +855,30 @@ class Repository(ApiObject):
         url = f"/repos/{self.owner.username}/{self.name}/contents/{file_path}"
         data.update({"sha": file_sha, "content": content})
         return self.allspice_client.requests_put(url, data)
+
+    def get_archive(
+            self,
+            ref: Ref = "main",
+            archive_format: ArchiveFormat = ArchiveFormat.ZIP,
+    ) -> bytes:
+        """
+        Download all the files in a specific ref of a repository as a zip or tarball
+        archive.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetArchive
+
+        :param ref: branch or commit to get content from, defaults to the "main" branch
+        :param archive_format: zip or tar, defaults to zip
+        """
+
+        ref_string = Util.data_params_for_ref(ref)["ref"]
+        url = self.REPO_GET_ARCHIVE.format(
+            owner=self.owner.username,
+            repo=self.name,
+            ref=ref_string,
+            format=archive_format.value,
+        )
+        return self.allspice_client.requests_get_raw(url)
 
     def delete(self):
         self.allspice_client.requests_delete(

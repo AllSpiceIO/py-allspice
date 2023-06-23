@@ -519,6 +519,13 @@ def test_get_design_review_comments(instance):
     assert comments[0].body == "This is a test comment"
 
 
+def test_get_repo_archive(instance):
+    # This requires a repo with actual files in it, so we use the test repo
+    repo = Repository.request(instance, "test", "test")
+    archive = repo.get_archive()
+    assert archive is not None
+
+
 def test_team_get_org(instance):
     org = Organization.request(instance, test_org)
     user = instance.get_user_by_name(test_user)
