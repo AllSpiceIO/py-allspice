@@ -154,9 +154,9 @@ if __name__ == "__main__":
 
     print("Generating BOM with the given arguements:")
     print(
-        f"{source_repo_owner=} {source_repo_name=} {source_branch=} \
-          {source_file=} {schdoc_repo_owner=} {schdoc_repo_name=} \
-          {schdoc_branch=} {args.output_file=} {attributes_to_extract=}"
+        f"{source_repo_owner=} {source_repo_name=} {source_branch=}"
+        f"{source_file=} {schdoc_repo_owner=} {schdoc_repo_name=}"
+        f"{schdoc_branch=} {args.output_file=} {attributes_to_extract=}"
     )
 
     # Get the PrjPcb file from the source repo.
@@ -196,7 +196,11 @@ if __name__ == "__main__":
                     schdoc_file_json = schdoc_repo.get_generated_json(
                         schdoc_file, ref=schdoc_branch
                     )
-                    bom_rows.extend(extract_attributes_from_schdoc(schdoc_file_json, attributes_to_extract))
+                    bom_rows.extend(
+                        extract_attributes_from_schdoc(
+                            schdoc_file_json, attributes_to_extract
+                        )
+                    )
                     break
                 except NotYetGeneratedException:
                     if retry_count > 5:

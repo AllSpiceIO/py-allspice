@@ -369,6 +369,17 @@ class Repository(ApiObject):
     REPO_COMMITS = "/repos/%s/%s/commits"  # <owner>, <reponame>
     REPO_TRANSFER = "/repos/{owner}/{repo}/transfer"
     REPO_MILESTONES = """/repos/{owner}/{repo}/milestones"""
+    REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
+    REPO_GET_ALLSPICE_JSON = "/repos/{owner}/{repo}/allspice_generated/json/{content}"
+    REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
+
+    class ArchiveFormat(Enum):
+        """
+        Archive formats for Repository.get_archive
+        """
+
+        TAR = "tar.gz"
+        ZIP = "zip"
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
@@ -769,7 +780,10 @@ class Repository(ApiObject):
             ref: Optional["Ref"] = None,
             commit: "Commit" = None
     ) -> List["Content"]:
-        """https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
+        """
+        Get a list of all files in the repository.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
 
         :param ref: branch or commit to get content from
         :param commit: commit to get content from (deprecated)
@@ -795,13 +809,18 @@ class Repository(ApiObject):
         else:
             return [Content.parse_response(self.allspice_client, f) for f in self.allspice_client.requests_get(url, data)]
 
-    def get_generated_json(self, content: Union["Content", str], ref: Optional["Ref"] = None) -> dict:
+    def get_generated_json(
+            self,
+            content: Union[Content, str],
+            ref: Optional[Ref] = None
+    ) -> dict:
         """
         Get the json blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
-        Note: This is still experimental and not yet recommended for
-        critical applications.
+        WARNING: This is still experimental and not recommended for critical
+        applications. The structure and content of the returned dictionary can
+        change at any time.
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceJSON
         """
@@ -809,17 +828,26 @@ class Repository(ApiObject):
         if isinstance(content, Content):
             content = content.path
 
-        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/json/{content}"
+        url = self.REPO_GET_ALLSPICE_JSON.format(
+            owner=self.owner.username,
+            repo=self.name,
+            content=content,
+        )
         data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get(url, data)
 
-    def get_generated_svg(self, content: Union["Content", str], ref: Optional[str] = None) -> bytes:
+    def get_generated_svg(
+            self,
+            content: Union[Content, str],
+            ref: Optional[Ref] = None
+    ) -> bytes:
         """
         Get the svg blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
-        Note: This is still experimental and not yet recommended for
-        critical applications.
+        WARNING: This is still experimental and not yet recommended for
+        critical applications. The content of the returned svg can change
+        at any time.
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceSVG
         """
@@ -827,8 +855,12 @@ class Repository(ApiObject):
         if isinstance(content, Content):
             content = content.path
 
-        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/svg/{content}"
-        data = {"ref": ref} if ref else {}
+        url = self.REPO_GET_ALLSPICE_SVG.format(
+            owner=self.owner.username,
+            repo=self.name,
+            content=content,
+        )
+        data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, data)
 
     def create_file(self, file_path: str, content: str, data: dict = None):
@@ -846,6 +878,30 @@ class Repository(ApiObject):
         url = f"/repos/{self.owner.username}/{self.name}/contents/{file_path}"
         data.update({"sha": file_sha, "content": content})
         return self.allspice_client.requests_put(url, data)
+
+    def get_archive(
+            self,
+            ref: Ref = "main",
+            archive_format: ArchiveFormat = ArchiveFormat.ZIP,
+    ) -> bytes:
+        """
+        Download all the files in a specific ref of a repository as a zip or tarball
+        archive.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetArchive
+
+        :param ref: branch or commit to get content from, defaults to the "main" branch
+        :param archive_format: zip or tar, defaults to zip
+        """
+
+        ref_string = Util.data_params_for_ref(ref)["ref"]
+        url = self.REPO_GET_ARCHIVE.format(
+            owner=self.owner.username,
+            repo=self.name,
+            ref=ref_string,
+            format=archive_format.value,
+        )
+        return self.allspice_client.requests_get_raw(url)
 
     def delete(self):
         self.allspice_client.requests_delete(
