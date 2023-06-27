@@ -818,11 +818,9 @@ class Repository(ApiObject):
         Get the json blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
-        !!!WARNING: Here be dragons!!!
-        This is still experimental and not recommended for critical applications.
-        The structure and content of the returned dictionary can change at any
-        time. If you are using this, be prepared for things to silently break
-        at any time!
+        WARNING: This is still experimental and not recommended for critical
+        applications. The structure and content of the returned dictionary can
+        change at any time.
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceJSON
         """
@@ -847,10 +845,9 @@ class Repository(ApiObject):
         Get the svg blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
-        Note: This is still experimental and not yet recommended for
+        WARNING: This is still experimental and not yet recommended for
         critical applications. The content of the returned svg can change
-        at any time. If you are using this, be prepared for things to
-        silently break at any time!
+        at any time.
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceSVG
         """
