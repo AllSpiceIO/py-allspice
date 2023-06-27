@@ -370,6 +370,8 @@ class Repository(ApiObject):
     REPO_TRANSFER = "/repos/{owner}/{repo}/transfer"
     REPO_MILESTONES = """/repos/{owner}/{repo}/milestones"""
     REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
+    REPO_GET_ALLSPICE_JSON = "/repos/{owner}/{repo}/allspice_generated/json/{content}"
+    REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
 
     class ArchiveFormat(Enum):
         """
@@ -778,7 +780,10 @@ class Repository(ApiObject):
             ref: Optional["Ref"] = None,
             commit: "Commit" = None
     ) -> List["Content"]:
-        """https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
+        """
+        Get a list of all files in the repository.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
 
         :param ref: branch or commit to get content from
         :param commit: commit to get content from (deprecated)
@@ -804,13 +809,20 @@ class Repository(ApiObject):
         else:
             return [Content.parse_response(self.allspice_client, f) for f in self.allspice_client.requests_get(url, data)]
 
-    def get_generated_json(self, content: Union["Content", str], ref: Optional["Ref"] = None) -> dict:
+    def get_generated_json(
+            self,
+            content: Union[Content, str],
+            ref: Optional[Ref] = None
+    ) -> dict:
         """
         Get the json blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
-        Note: This is still experimental and not yet recommended for
-        critical applications.
+        !!!WARNING: Here be dragons!!!
+        This is still experimental and not recommended for critical applications.
+        The structure and content of the returned dictionary can change at any
+        time. If you are using this, be prepared for things to silently break
+        at any time!
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceJSON
         """
@@ -818,17 +830,27 @@ class Repository(ApiObject):
         if isinstance(content, Content):
             content = content.path
 
-        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/json/{content}"
+        url = self.REPO_GET_ALLSPICE_JSON.format(
+            owner=self.owner.username,
+            repo=self.name,
+            content=content,
+        )
         data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get(url, data)
 
-    def get_generated_svg(self, content: Union["Content", str], ref: Optional[str] = None) -> bytes:
+    def get_generated_svg(
+            self,
+            content: Union[Content, str],
+            ref: Optional[Ref] = None
+    ) -> bytes:
         """
         Get the svg blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
 
         Note: This is still experimental and not yet recommended for
-        critical applications.
+        critical applications. The content of the returned svg can change
+        at any time. If you are using this, be prepared for things to
+        silently break at any time!
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceSVG
         """
@@ -836,8 +858,12 @@ class Repository(ApiObject):
         if isinstance(content, Content):
             content = content.path
 
-        url = f"/repos/{self.owner.username}/{self.name}/allspice_generated/svg/{content}"
-        data = {"ref": ref} if ref else {}
+        url = self.REPO_GET_ALLSPICE_SVG.format(
+            owner=self.owner.username,
+            repo=self.name,
+            content=content,
+        )
+        data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, data)
 
     def create_file(self, file_path: str, content: str, data: dict = None):

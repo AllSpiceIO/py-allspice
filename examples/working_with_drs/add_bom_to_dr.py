@@ -19,16 +19,18 @@ dr = DesignReview.request(allspice, repo_owner, repo_name, args.dr)
 # This uses the generate_bom example script to generate a BOM.
 # See: https://github.com/AllSpiceIO/py-allspice/tree/main/examples/generate_bom
 
-subprocess.run([
-    "python",
-    "generate_bom.py",
-    args.repo,
-    "main.PrjPcb",
-    "--source-branch",
-    dr.head,
-    "--output-file",
-    "bom.csv",
-])
+subprocess.run(
+    [
+        "python",
+        "generate_bom.py",
+        args.repo,
+        "main.PrjPcb",
+        "--source-branch",
+        dr.head,
+        "--output-file",
+        "bom.csv",
+    ]
+)
 
 # This identifier helps us find the comment in the DR that we want to replace. This means
 # we can re-use the existing comment, instead of making a new comment every time.
