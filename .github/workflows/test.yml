@@ -1,0 +1,61 @@
+name: Test py-allspice
+
+on: [push]
+
+jobs:
+  test:
+    name: Test py-allspice
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    services:
+      gitea:
+        image: gitea/gitea:1.19.3
+        env:
+          USER_UID: 1000
+          USER_GID: 1000
+          # This is required to bypass gitea's "setup" page for a new install.
+          # We'll create an account and token in the "Set up gitea" step.
+          GITEA__security__INSTALL_LOCK: true
+        ports:
+          - 3000:3000
+        options: >-
+          --health-cmd="curl --fail http://localhost:3000/ || exit 1"
+          --health-interval=1s
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          pip install -r requirements.txt
+      - name: Lint with ruff
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          ruff --format=github --select=E9,F63,F7,F82 --target-version=py39 .
+      - name: Set up gitea
+        run: |
+          # The only way to create a user is to either use the CLI or the web
+          # interface, so we'll use curl to create a user and then use the API
+          # to create a token.
+          curl 'http://localhost:3000/user/sign_up' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            --data-raw 'user_name=test&email=secondarytest%40test.org&password=password&retype=password'
+          curl 'http://localhost:3000/api/v1/users/test/tokens' \
+            -H "Content-Type: application/json" \
+            -d '{"name":"test", "scopes": ["all", "sudo"]}' \
+            -u test:password > token.json
+          python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
+          # This token is only used with the job's container, so it is safe to
+          # echo it here.
+          echo "Gitea token = $(cat .token)"
+      - name: Test with pytest
+        run: |
+          python -m pytest
