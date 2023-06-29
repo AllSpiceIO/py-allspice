@@ -1,17 +1,18 @@
-# Example: Check if a Part is in a Schematic Library
+# Example: Check if a Part is in a Repository
 
 This is an advanced example that checks every branch of a repository to see if:
 
 1. It has a Schematic Document called "Main.SchDoc"
 2. That Schematic Document contains a part with a given name
 
-You can change the name of the SchDoc file it looks for via CLI args. This
-example only works with py-allspice v2.0.0 and above.
+You can change the name of the SchDoc file it looks for via CLI args, and check
+all Schematic Documents in a repo too. This example only works with py-allspice
+v2.0.0 and above.
 
 One use case here could be to see if a repository is using a part that has since been
 deprecated, or to find out which repositories are using a part that you want to update.
 
-The example is in [this python script](./check_parts_in_libraries.py). To get started,
+The example is in [this python script](./check_parts_in_schematics.py). To get started,
 run:
 
 ```bash
