@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.9", "3.10", "3.11"]
+    if: github.repository == 'AllSpiceIO/py-allspice'
 
     services:
       gitea:
@@ -55,7 +56,7 @@ jobs:
           python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
           # This token is only used with the job's container, so it is safe to
           # echo it here.
-          echo "Gitea token = $(cat .token)"
+          echo "AllSpice Hub token = $(cat .token)"
       - name: Test with pytest
         run: |
           python -m pytest
