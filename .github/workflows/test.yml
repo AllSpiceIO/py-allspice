@@ -12,19 +12,45 @@ jobs:
     if: github.repository == 'AllSpiceIO/py-allspice'
 
     services:
-      gitea:
-        image: gitea/gitea:1.19.3
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: allspice_hub
+          POSTGRES_PASSWORD: allspice
+          POSTGRES_DB: allspice_hub
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      allspice_hub:
+        image: allspice/allspice-hub:latest
+        credentials:
+          username: ${{ secrets.DOCKER_PULL_USER }}
+          password: ${{ secrets.DOCKER_PULL_TOKEN }}
+
         env:
           USER_UID: 1000
           USER_GID: 1000
-          # This is required to bypass gitea's "setup" page for a new install.
-          # We'll create an account and token in the "Set up gitea" step.
-          GITEA__security__INSTALL_LOCK: true
+          RUN_USER: git
+          # This is required to bypass allspice_hub's "setup" page for a new install.
+          # We'll create an account and token in the "Set up allspice_hub" step.
+          ALLSPICE__security__INSTALL_LOCK: true
+          ALLSPICE__database__DB_TYPE: postgres
+          ALLSPICE__database__HOST: postgres:5432
+          ALLSPICE__database__NAME: allspice_hub
+          ALLSPICE__database__USER: allspice_hub
+          ALLSPICE__database__PASSWD: allspice
+
         ports:
           - 3000:3000
         options: >-
+          --health-start-period=10s
           --health-cmd="curl --fail http://localhost:3000/ || exit 1"
-          --health-interval=1s
+          --health-interval=10s
+          --health-timeout=10s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v3
@@ -41,7 +67,7 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py39 .
-      - name: Set up gitea
+      - name: Set up allspice_hub
         run: |
           # The only way to create a user is to either use the CLI or the web
           # interface, so we'll use curl to create a user and then use the API
