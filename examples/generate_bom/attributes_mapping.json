@@ -1,0 +1,6 @@
+{
+	"description": ["PART DESCRIPTION"],
+    "designator": ["Designator"],
+    "manufacturer": ["Manufacturer", "MANUFACTURER"],
+    "part_number": ["PART", "MANUFACTURER #"]
+}

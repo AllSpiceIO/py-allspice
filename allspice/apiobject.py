@@ -776,9 +776,9 @@ class Repository(ApiObject):
         # TODO: make sure this instance is either updated or discarded
 
     def get_git_content(
-            self: str = None,
+            self,
             ref: Optional["Ref"] = None,
-            commit: "Commit" = None
+            commit: Optional["Commit"] = None
     ) -> List["Content"]:
         """
         Get a list of all files in the repository.
