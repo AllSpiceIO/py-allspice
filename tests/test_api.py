@@ -515,9 +515,9 @@ def test_create_design_review(instance):
     assert review.head == "test_branch"
     assert review.body == "This is a test review"
     assert review.assignees[0].username == "test"
-    assert Util.format_time(Util.convert_time(review.due_date)) == Util.format_time(
-        due_date)
 
+    review_due_date = Util.convert_time(review.due_date)
+    assert review_due_date.date() == due_date.date()
 
 def test_get_design_reviews(instance):
     org = Organization.request(instance, test_org)

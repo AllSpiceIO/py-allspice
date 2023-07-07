@@ -1,6 +1,10 @@
-name: Test py-allspice
+name: Test py-allspice in CI
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
@@ -37,6 +41,8 @@ jobs:
           # This is required to bypass allspice_hub's "setup" page for a new install.
           # We'll create an account and token in the "Set up allspice_hub" step.
           ALLSPICE__security__INSTALL_LOCK: true
+          # This isn't noted in the allspice hub docs for docker-compose, but
+          # without it the container will fail to start.
           ALLSPICE__database__DB_TYPE: postgres
           ALLSPICE__database__HOST: postgres:5432
           ALLSPICE__database__NAME: allspice_hub
