@@ -149,16 +149,47 @@ def test_add_content_to_repo(instance):
     assert len(repo.get_commits()) == 2
     assert [content.name for content in repo.get_git_content()] == ["README.md", "test.pcbdoc"]
 
-    # As an optimization, we call the generated json and svg methods so we kick off
-    # the generation of the files in the background
-    try:
+
+def test_get_json_before_generated(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    with pytest.raises(NotYetGeneratedException) as e:
         repo.get_generated_json("test.pcbdoc")
-    except NotYetGeneratedException:
-        pass
-    try:
+
+
+def test_get_svg_before_generated(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    with pytest.raises(NotYetGeneratedException) as e:
         repo.get_generated_svg("test.pcbdoc")
-    except NotYetGeneratedException:
-        pass
+
+
+def test_get_generated_json(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    # This is scuffed but not much better we can do :(
+    while True:
+        try:
+            json = repo.get_generated_json("test.pcbdoc", branch)
+            break
+        except NotYetGeneratedException:
+            time.sleep(1)
+            pass
+    assert json is not None
+    assert json["type"] == "Pcb"
+
+
+def test_get_generated_svg(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    while True:
+        try:
+            svg = repo.get_generated_svg("test.pcbdoc", branch)
+            break
+        except NotYetGeneratedException:
+            time.sleep(1)
+            pass
+    assert svg is not None
+    assert svg.startswith(b"<svg")
+
 
 def test_get_repository_non_existent(instance):
     with pytest.raises(NotFoundException) as e:
@@ -574,33 +605,6 @@ def test_get_repo_archive(instance):
     assert archive is not None
 
 
-def test_get_generated_json(instance):
-    repo = Repository.request(instance, test_org, test_repo)
-    branch = repo.get_branches()[0]
-    # This is scuffed but not much better we can do :(
-    while True:
-        try:
-            json = repo.get_generated_json("test.pcbdoc", branch)
-            time.sleep(1)
-            break
-        except NotYetGeneratedException:
-            pass
-    assert json is not None
-    assert json["type"] == "Pcb"
-
-
-def test_get_generated_svg(instance):
-    repo = Repository.request(instance, test_org, test_repo)
-    branch = repo.get_branches()[0]
-    while True:
-        try:
-            svg = repo.get_generated_svg("test.pcbdoc", branch)
-            time.sleep(1)
-            break
-        except NotYetGeneratedException:
-            pass
-    assert svg is not None
-    assert svg.startswith(b"<svg")
 
 
 def test_team_get_org(instance):
