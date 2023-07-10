@@ -1,7 +1,11 @@
-# Example: Generate a BOM from a PrjDoc file
+# Examples: Generate a BOM and Compute COGS from a PrjDoc file
 
-This script example shows you how you can use the AllSpice client to generate
-a BOM from an Altium PrjPcb file. To use the script, start by running:
+These script examples show you how to use the AllSpice client to generate a BOM
+and then compute the COGS from an Altium PrjPcb file. 
+
+## BOM Generation
+
+To use the script, start by running:
 
 ```bash
 python3 generate_bom.py -h
@@ -57,7 +61,7 @@ python3 generate_bom.py "test/test" "test.PrjPcb" --schdoc_repo "test/test_schdo
 python3 generate_bom.py "test/test" "test.PrjPcb" --attribute_list "Designator,Manufacturer" # Will only extract these two attributes
 ```
 
-## Customizing the Attributes Extracted by this Script
+### Customizing the Attributes Extracted by the BOM Script
 
 This script relies on the presence of an `attributes_mapping.json` file next to
 it. This file maps the Component Attributes in the SchDoc files to the columns
@@ -88,3 +92,50 @@ component attributes may change!
 You can also import this python file in another file to use the methods defined
 in it. If you want the BOM in a different format, or have other requirements,
 you can read and adapt this code, or use it as a reference for your own code.
+
+## COGS Calculation
+
+The COGS script depends on the BOM script. It takes a BOM CSV file and computes
+the COGS at various quantities of PCBs made. The COGS is computed by looking up 
+the part number using an API you define in the script via the
+`fetch_price_for_part` method. An example is implemented using the cofactr API.
+
+To use the script, start by running:
+
+```bash
+python3 compute_cogs.py -h
+```
+
+Which prints the following help text:
+
+```
+usage: compute_cogs.py [-h] [--quantities QUANTITIES]
+                       [--output-file OUTPUT_FILE]
+                       bom_file
+
+positional arguments:
+  bom_file              The path to the BOM file.
+
+options:
+  -h, --help            show this help message and exit
+  --quantities QUANTITIES
+                        A comma-separated list of quantities of PCBs to
+                        compute the COGS for. E.g. 1,10,100,1000. Defaults to
+                        the example.
+  --output-file OUTPUT_FILE
+                        The path to the output file. Defaults to stdout, i.e.
+                        printing to the console.
+```
+
+If you have generated a BOM using `generate_bom.py`, you should first take a
+look at the bom and remove rows for testpoints and other parts which don't need
+to be in the COGS computation. This step is not strictly necessary, but will
+make the COGS computation faster and more accurate, as the price lookup may get
+confused by testpoints and other parts.
+
+Once that is done, you can run:
+
+```bash
+python3 compute_cogs.py bom.csv --quantities 1,10,100,1000 --output-file cogs.csv
+```
+
