@@ -31,6 +31,8 @@ test_org = "org_" + uuid.uuid4().hex[:8]
 test_user = "user_" + uuid.uuid4().hex[:8]
 test_team = "team_" + uuid.uuid4().hex[:8]  # team names seem to have a rather low max lenght
 test_repo = "repo_" + uuid.uuid4().hex[:8]
+# Topic names can't have underscores.
+test_topic = "topic-" + uuid.uuid4().hex[:8]
 
 
 def test_token_owner(instance):
@@ -140,6 +142,30 @@ def test_get_repository(instance):
 def test_get_repository_non_existent(instance):
     with pytest.raises(NotFoundException) as e:
         instance.get_repository("doesnotexist", "doesnotexist")
+
+
+def test_repo_topics(instance):
+    # Since topics aren't part of the Repository object directly, we
+    # have to test both get and add at the same time.
+    repo = Repository.request(instance, test_org, test_repo)
+    topics = repo.get_topics()
+    assert len(topics) == 0
+
+    repo.add_topic(test_topic)
+    topics = repo.get_topics()
+    assert len(topics) == 1
+    assert topics[0] == test_topic
+
+
+def test_search_repos(instance):
+    repos = Repository.search(instance, test_repo)
+    # Two repos have been made with this name so far!
+    assert len(repos) == 2
+    assert repos[0].name == test_repo
+
+    repos = Repository.search(instance, test_topic, topic=True)
+    assert len(repos) == 1
+    assert repos[0].name == test_repo
 
 
 def test_patch_repo(instance):
@@ -624,3 +650,4 @@ def test_get_generated_svg(instance):
     svg = repo.get_generated_svg("test.pcbdoc")
     assert svg is not None
     assert svg.startswith(b"<svg")
+

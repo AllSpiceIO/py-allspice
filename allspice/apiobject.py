@@ -358,7 +358,7 @@ class Branch(ReadonlyApiObject):
 class Repository(ApiObject):
     API_OBJECT = """/repos/{owner}/{name}"""  # <owner>, <reponame>
     REPO_IS_COLLABORATOR = """/repos/%s/%s/collaborators/%s"""  # <owner>, <reponame>, <username>
-    REPO_SEARCH = """/repos/search/%s"""  # <reponame>
+    REPO_SEARCH = """/repos/search/"""
     REPO_BRANCHES = """/repos/%s/%s/branches"""  # <owner>, <reponame>
     REPO_BRANCH = """/repos/{owner}/{repo}/branches/{branch}"""
     REPO_ISSUES = """/repos/{owner}/{repo}/issues"""  # <owner, reponame>
@@ -372,6 +372,8 @@ class Repository(ApiObject):
     REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
     REPO_GET_ALLSPICE_JSON = "/repos/{owner}/{repo}/allspice_generated/json/{content}"
     REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
+    REPO_GET_TOPICS = "/repos/{owner}/{repo}/topics"
+    REPO_ADD_TOPIC = "/repos/{owner}/{repo}/topics/{topic}"
 
     class ArchiveFormat(Enum):
         """
@@ -401,6 +403,53 @@ class Repository(ApiObject):
     @classmethod
     def request(cls, allspice_client: 'AllSpice', owner: str, name: str):
         return cls._request(allspice_client, {"owner": owner, "name": name})
+
+    @classmethod
+    def search(
+        cls, 
+        allspice_client: 'AllSpice',
+        query: Optional[str] = None,
+        topic: bool = False,
+        include_description: bool = False,
+        user: Optional[User] = None,
+        owner_to_prioritize: Union[User, Organization, None] = None,
+    ) -> list[Repository]:
+        """
+        Search for repositories.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoSearch 
+
+        :param query: The query string to search for
+        :param topic: If true, the query string will only be matched against the 
+            repository's topic.
+        :param include_description: If true, the query string will be matched 
+            against the repository's description as well.
+        :param user: If specified, only repositories that this user owns or
+            contributes to will be searched.
+        :param owner_to_prioritize: If specified, repositories owned by the
+            given entity will be prioritized in the search.
+        :returns: All repositories matching the query. If there are many
+            repositories matching this query, this may take some time.
+        """
+
+        params = {}
+
+        if query is not None:
+            params["q"] = query
+        if topic:
+            params["topic"] = topic
+        if include_description:
+            params["include_description"] = include_description
+        if user is not None:
+            params["user"] = user.id
+        if owner_to_prioritize is not None:
+            params["owner_to_prioritize"] = owner_to_prioritize.id
+
+        responses = allspice_client.requests_get_paginated(cls.REPO_SEARCH, params=params)
+
+        return [Repository.parse_response(allspice_client, response) 
+                for response in responses]
+
 
     _patchable_fields = {
         "allow_manual_merge",
@@ -902,6 +951,40 @@ class Repository(ApiObject):
             format=archive_format.value,
         )
         return self.allspice_client.requests_get_raw(url)
+
+    def get_topics(self) -> list[str]:
+        """
+        Gets the list of topics on this repository.
+
+        See http://localhost:3000/api/swagger#/repository/repoListTopics
+        """
+
+        url = self.REPO_GET_TOPICS.format(
+            owner=self.owner.username,
+            repo=self.name,
+        )
+        return self.allspice_client.requests_get(url)["topics"]
+
+
+    def add_topic(self, topic: str):
+        """
+        Adds a topic to the repository.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoAddTopic 
+
+        :param topic: The topic to add. Topic names must consist only of
+            lowercase letters, numnbers and dashes (-), and cannot start with
+            dashes. Topic names also must be under 35 characters long.
+        """
+
+        url = self.REPO_ADD_TOPIC.format(
+            owner=self.owner.username, 
+            repo=self.name, 
+            topic=topic
+        )
+        self.allspice_client.requests_put(url)
+
+
 
     def delete(self):
         self.allspice_client.requests_delete(
