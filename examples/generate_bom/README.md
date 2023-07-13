@@ -1,7 +1,7 @@
 # Examples: Generate a BOM and Compute COGS from a PrjDoc file
 
 These script examples show you how to use the AllSpice client to generate a BOM
-and then compute the COGS from an Altium PrjPcb file. 
+and then compute the COGS from an Altium PrjPcb file.
 
 ## BOM Generation
 
@@ -53,7 +53,7 @@ Some examples of how you could run this are:
 ```bash
 export ALLSPICE_AUTH_TOKEN= # some token
 
-python3 generate_bom.py "test/test" "test.PrjPcb" "test.PcbDoc" 
+python3 generate_bom.py "test/test" "test.PrjPcb" "test.PcbDoc"
 # Note that the options are not required!
 
 python3 generate_bom.py "test/test" "test.PrjPcb" --schdoc_repo "test/test_schdoc" --allspice_hub_url "https://my.selfhosted.example.org" --output_file bom.csv
@@ -96,7 +96,7 @@ you can read and adapt this code, or use it as a reference for your own code.
 ## COGS Calculation
 
 The COGS script depends on the BOM script. It takes a BOM CSV file and computes
-the COGS at various quantities of PCBs made. The COGS is computed by looking up 
+the COGS at various quantities of PCBs made. The COGS is computed by looking up
 the part number using an API you define in the script via the
 `fetch_price_for_part` method. An example is implemented using the cofactr API.
 
@@ -130,12 +130,12 @@ options:
 If you have generated a BOM using `generate_bom.py`, you should first take a
 look at the bom and remove rows for testpoints and other parts which don't need
 to be in the COGS computation. This step is not strictly necessary, but will
-make the COGS computation faster and more accurate, as the price lookup may get
-confused by testpoints and other parts.
+make the COGS computation faster and more accurate. If an invalid part number is
+present, the script will still try to look up a price for it, and the response
+might include an invalid price, which can skew the results.
 
 Once that is done, you can run:
 
 ```bash
 python3 compute_cogs.py bom.csv --quantities 1,10,100,1000 --output-file cogs.csv
 ```
-

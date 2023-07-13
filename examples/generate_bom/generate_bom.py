@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import base64
 from collections import defaultdict
+from contextlib import ExitStack
 import csv
 import dataclasses
 from dataclasses import dataclass
@@ -126,7 +127,8 @@ def extract_components_from_schdoc(schdoc_file_content) -> list[Component]:
 
     components_list = []
 
-    mapper = json.loads(open("attributes_mapping.json", "r").read())
+    with open("attributes_mapping.json", "r") as f:
+        mapper = json.loads(f.read())
 
     for value in schdoc_file_content.values():
         if isinstance(value, dict):
@@ -353,21 +355,22 @@ if __name__ == "__main__":
             ]
         )
 
-    if args.output_file is not None:
-        f = open(args.output_file, "w")
-        writer = csv.writer(f)
-    else:
-        writer = csv.writer(sys.stdout)
+    with ExitStack() as stack:
+        if args.output_file is not None:
+            f = stack.enter_context(open(args.output_file, "w"))
+            writer = csv.writer(f)
+        else:
+            writer = csv.writer(sys.stdout)
 
-    header = [
-        "Description",
-        "Designator",
-        "Quantity",
-        "Manufacturer",
-        "Part Number",
-    ]
+        header = [
+            "Description",
+            "Designator",
+            "Quantity",
+            "Manufacturer",
+            "Part Number",
+        ]
 
-    writer.writerow(header)
-    writer.writerows(bom_rows)
+        writer.writerow(header)
+        writer.writerows(bom_rows)
 
     print("Generated bom.", file=sys.stderr)

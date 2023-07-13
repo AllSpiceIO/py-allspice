@@ -6,6 +6,7 @@
 # a BOM CSV.
 
 from argparse import ArgumentParser
+from contextlib import ExitStack
 import csv
 import os
 import sys
@@ -86,7 +87,6 @@ def fetch_price_for_part(part_number: str) -> dict[int, float]:
         )
         return {}
 
-
     prices = {
         int(price["quantity"]): float(price["price"]) for price in reference_prices
     }
@@ -118,7 +118,9 @@ if __name__ == "__main__":
 
     quantities = [int(quantity) for quantity in args.quantities.split(",")]
 
-    bom_csv = csv.DictReader(open(args.bom_file, "r"))
+    with open(args.bom_file, "r") as bom_file:
+        bom_csv = csv.DictReader(bom_file)
+
     parts = [
         part
         for part in bom_csv
@@ -183,19 +185,21 @@ if __name__ == "__main__":
 
         rows.append(current_row)
 
-    if args.output_file:
-        writer = csv.writer(open(args.output_file, "w"))
-    else:
-        writer = csv.writer(sys.stdout)
+    with ExitStack() as stack:
+        if args.output_file:
+            file = stack.enter_context(open(args.output_file, "w"))
+            writer = csv.writer(file)
+        else:
+            writer = csv.writer(sys.stdout)
 
-    writer.writerow(headers)
-    writer.writerows(rows)
+        writer.writerow(headers)
+        writer.writerows(rows)
 
-    totals_row = ["Totals", None]
-    for quantity in quantities:
-        totals_row.append(None)
-        totals_row.append(totals[quantity])
+        totals_row = ["Totals", None]
+        for quantity in quantities:
+            totals_row.append(None)
+            totals_row.append(totals[quantity])
 
-    writer.writerow(totals_row)
+        writer.writerow(totals_row)
 
     print("Computed COGS", file=sys.stderr)
