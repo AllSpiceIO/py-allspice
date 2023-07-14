@@ -131,9 +131,23 @@ class AllSpice:
         while True:
             combined_params[page_key] = page
             result = self.requests_get(endpoint, combined_params, sudo)
+
             if not result:
                 return aggregated_result
-            aggregated_result.extend(result)
+
+            if isinstance(result, dict):
+                if "data" in result:
+                    data = result["data"]
+                    if len(data) == 0:
+                        return aggregated_result
+                    aggregated_result.extend(data)
+                else:
+                    raise NotImplementedError(
+                        "requests_get_paginated does not know how to handle responses of this type."
+                    )
+            else:
+                aggregated_result.extend(result)
+            
             page += 1
 
     def requests_put(self, endpoint: str, data: dict = None):
