@@ -1,0 +1,5 @@
+mytopic:
+  - "test/test"
+  - "test/archimajor"
+myothertopic:
+  - "test/archimajor"
