@@ -22,6 +22,11 @@ from typing import Optional, Union
 from allspice import AllSpice
 from allspice.exceptions import NotYetGeneratedException
 
+global attributes_mapper
+
+with open("attributes_mapping.json", "r") as f:
+    attributes_mapper = json.loads(f.read())
+
 
 @dataclass
 class Component:
@@ -127,14 +132,16 @@ def extract_components_from_schdoc(schdoc_file_content) -> list[Component]:
 
     components_list = []
 
-    with open("attributes_mapping.json", "r") as f:
-        mapper = json.loads(f.read())
-
     for value in schdoc_file_content.values():
         if isinstance(value, dict):
             if value.get("type") == "Component":
                 attributes = value["attributes"]
-                components_list.append(map_json_to_component(attributes, mapper))
+                components_list.append(
+                    map_json_to_component(
+                        attributes,
+                        attributes_mapper,
+                    )
+                )
 
     return components_list
 

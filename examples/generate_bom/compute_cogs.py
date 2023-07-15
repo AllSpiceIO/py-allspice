@@ -121,11 +121,11 @@ if __name__ == "__main__":
     with open(args.bom_file, "r") as bom_file:
         bom_csv = csv.DictReader(bom_file)
 
-    parts = [
-        part
-        for part in bom_csv
-        if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
-    ]
+        parts = [
+            part
+            for part in bom_csv
+            if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
+        ]
 
     print(f"Computing COGS for {len(parts)} parts", file=sys.stderr)
     print(f"Fetching prices for {len(parts)} parts", file=sys.stderr)
