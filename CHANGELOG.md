@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.2.0
+
+This is a minor version bump. Only new functionality was added, and you may not
+need to change your scripts to update to this version.
+
+- Add Repository search API. See `Repository.search` for more details.
+- Add APIs to get and set topics on a repository. See `Repository.add_topic` and
+  `Repository.get_topics` for more details. Also added example scripts to bulk
+  add topics and clone all repos with a certain topic.
+
 ## v2.1.0
 
 This is a minor version bump. Only new functionality was added, and you may not
@@ -24,19 +34,19 @@ This is a breaking change. You will need to update your scripts to use py-allspi
 
 - Renamed Gitea across py-allspice to AllSpice. For example,
 
-    ```py
-    from gitea import Gitea
+  ```py
+  from gitea import Gitea
 
-    gitea = Gitea(URL, TOKEN)
-    ```
+  gitea = Gitea(URL, TOKEN)
+  ```
 
-    to
+  to
 
-    ```py
-    from allspice import AllSpice
+  ```py
+  from allspice import AllSpice
 
-    allspice_client = AllSpice(token_text=TOKEN)
-    ```
+  allspice_client = AllSpice(token_text=TOKEN)
+  ```
 
 - Added example scripts in [the examples directory](./examples).
 - Added functions to get AllSpice generated svg and json for CAD files.
