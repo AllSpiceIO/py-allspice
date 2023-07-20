@@ -4,7 +4,7 @@ import base64
 from dataclasses import dataclass
 import re
 import time
-from typing import Optional, TypeAlias, Union
+from typing import Optional, Union
 
 from ..allspice import AllSpice
 from ..apiobject import Content, Ref, Repository
