@@ -4,84 +4,18 @@
 # For more information, read the README file in this directory.
 
 import argparse
-import base64
 import csv
+import json
 import os
-import re
 import sys
-import time
+from contextlib import ExitStack
 
 from allspice import AllSpice
-from allspice.exceptions import NotYetGeneratedException
+from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
 
 
-def split_repo_name(name):
-    """
-    Split a repo name into a tuple of (owner, repo).
-    """
-
-    if "/" not in name:
-        raise ValueError(f"Invalid repo name {name}")
-
-    owner, repo = name.split("/")
-    return owner, repo
-
-
-def get_file_content(repo, file_path, branch):
-    """
-    Get the content of a file in a repo on a branch.
-    """
-
-    files_in_repo = repo.get_git_content(ref=branch)
-    file = next((x for x in files_in_repo if x.path == file_path), None)
-    if not file:
-        raise ValueError(
-            f"File {file_path} not found in repo {repo.name} on branch {branch.name}"
-        )
-
-    content = repo.get_file_content(file, ref=branch)
-    return base64.b64decode(content).decode("utf-8")
-
-
-def get_schdoc_list_from_prjpcb(prjpcb_file_content):
-    """
-    Get a list of SchDoc files from a PrjPcb file.
-    """
-
-    pattern = re.compile(r"DocumentPath=(.*?SchDoc)\r\n")
-    return [match.group(1) for match in pattern.finditer(prjpcb_file_content)]
-
-
-def extract_attributes_from_schdoc(schdoc_file_content, attributes_to_extract):
-    """
-    Extract all the components and their attributes from a schdoc file. You can
-    edit this function to get the attributes you want from the SchDoc file. To
-    see what attributes are available, print the schdoc_file_content variable.
-
-    :param schdoc_file_content: The content of the SchDoc file. This should be
-        a dictionary.
-
-    :param attributes_to_extract: A list of attributes to extract. Note that if
-        an attribute is not found for a component, its value will be None.
-    """
-
-    attributes_list = []
-
-    for value in schdoc_file_content.values():
-        try:
-            if isinstance(value, dict):
-                attributes = value["attributes"]
-
-                current_attributes = []
-                for attribute in attributes_to_extract:
-                    current_attributes.append(attributes.get(attribute, {}).get("text"))
-
-                attributes_list.append(current_attributes)
-
-        except KeyError:
-            continue
-
-    return attributes_list
+with open("attributes_mapping.json", "r") as f:
+    attributes_mapper = AttributesMapping.from_dict(json.loads(f.read()))
 
 
 if __name__ == "__main__":
@@ -90,22 +24,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="generate_bom", description="Generate a BOM from a PrjPcb file."
     )
-    parser.add_argument("source_repo", help="The repo containing the PrjPcb file.")
+    parser.add_argument("repository", help="The repo containing the project")
     parser.add_argument(
-        "source_file", help="The path to the PrjPcb file in the source repo."
+        "prjpcb_file", help="The path to the PrjPcb file in the source repo."
     )
     parser.add_argument(
-        "--schdoc_repo",
-        help="The repo containing the SchDoc files. Defaults to the same repo as the PrjPcb file.",
+        "pcb_file",
+        help="The path to the PCB file in the source repo.",
     )
     parser.add_argument(
         "--source_branch",
         help="The branch containing the PrjPcb file. Defaults to main.",
-        default="main",
-    )
-    parser.add_argument(
-        "--schdoc_branch",
-        help="The branch containing the SchDoc files. Defaults to the same branch as PrjPcb.",
         default="main",
     )
     parser.add_argument(
@@ -137,87 +66,48 @@ if __name__ == "__main__":
             token_text=auth_token, allspice_hub_url=args.allspice_hub_url
         )
 
-    if args.attributes_to_extract is not None:
-        attributes_to_extract = args.attributes_to_extract.split(",")
-    else:
-        attributes_to_extract = ["Designator", "MANUFACTURER", "MANUFACTURER #"]
+    repo_owner, repo_name = args.repository.split("/")
+    repository = allspice.get_repository(repo_owner, repo_name)
+    prjpcb_file = args.prjpcb_file
+    pcb_file = args.pcb_file
 
-    source_repo_owner, source_repo_name = split_repo_name(args.source_repo)
-    source_file = args.source_file
-    if args.schdoc_repo is not None:
-        schdoc_repo_owner, schdoc_repo_name = split_repo_name(args.schdoc_repo)
-    else:
-        schdoc_repo_owner = source_repo_owner
-        schdoc_repo_name = source_repo_name
-    source_branch = args.source_branch
-    schdoc_branch = args.schdoc_branch if args.schdoc_branch else source_branch
+    print("Generating BOM...", file=sys.stderr)
 
-    print("Generating BOM with the given arguements:")
-    print(
-        f"{source_repo_owner=} {source_repo_name=} {source_branch=}"
-        f"{source_file=} {schdoc_repo_owner=} {schdoc_repo_name=}"
-        f"{schdoc_branch=} {args.output_file=} {attributes_to_extract=}"
+    bom_rows = generate_bom_for_altium(
+        allspice,
+        repository,
+        prjpcb_file,
+        pcb_file,
+        attributes_mapper,
+        args.source_branch,
     )
+    bom_rows = [
+        [
+            bom_row.description,
+            ", ".join(bom_row.designators),
+            bom_row.quantity,
+            bom_row.manufacturer,
+            bom_row.part_number,
+        ]
+        for bom_row in bom_rows
+    ]
 
-    # Get the PrjPcb file from the source repo.
-    prjpcb_repo = allspice.get_repository(source_repo_owner, source_repo_name)
-    prjpcb_branch = prjpcb_repo.get_branch(source_branch)
-    prjpcb_file = get_file_content(prjpcb_repo, source_file, prjpcb_branch)
-    schdoc_files_in_proj = {x for x in get_schdoc_list_from_prjpcb(prjpcb_file)}
+    with ExitStack() as stack:
+        if args.output_file is not None:
+            f = stack.enter_context(open(args.output_file, "w"))
+            writer = csv.writer(f)
+        else:
+            writer = csv.writer(sys.stdout)
 
-    print(f"{schdoc_files_in_proj=}")
+        header = [
+            "Description",
+            "Designator",
+            "Quantity",
+            "Manufacturer",
+            "Part Number",
+        ]
 
-    # Get the SchDoc files from the SchDoc repo.
-    schdoc_repo = allspice.get_repository(schdoc_repo_owner, schdoc_repo_name)
-    schdoc_branch = schdoc_repo.get_branch(schdoc_branch)
-    schdoc_files_in_repo = schdoc_repo.get_git_content(ref=schdoc_branch)
+        writer.writerow(header)
+        writer.writerows(bom_rows)
 
-    # Extract attributes from the SchDoc files. See thhe
-    # `extract_attributes_from_schdoc` function for more information.
-    bom_rows = []
-
-    # Note: we're going through the files in the repo and checkin if they're
-    # in the PrjPcb file. This may miss some files in the proj if they're
-    # not in the repo. If you're seeing inconsistent or missing results,
-    # check that all the SchDoc files are in the repo, or uncomment this line:
-
-    # breakpoint()
-
-    # And run the script. You'll be dropped into a debugger where you can
-    # print() variables and see what's going on.
-    for schdoc_file in schdoc_files_in_repo:
-        if schdoc_file.path in schdoc_files_in_proj:
-            # If the file is not yet generated, we'll retry a few times.
-            retry_count = 0
-            while True:
-                retry_count += 1
-
-                try:
-                    schdoc_file_json = schdoc_repo.get_generated_json(
-                        schdoc_file, ref=schdoc_branch
-                    )
-                    bom_rows.extend(
-                        extract_attributes_from_schdoc(
-                            schdoc_file_json, attributes_to_extract
-                        )
-                    )
-                    break
-                except NotYetGeneratedException:
-                    if retry_count > 5:
-                        print(f"Failed to get {schdoc_file.path}, skipping...")
-                        break
-
-                    print(f"Failed to get {schdoc_file.path}, retrying...")
-                    time.sleep(1)
-                    continue
-
-    if args.output_file is not None:
-        f = open(args.output_file, "w")
-        writer = csv.writer(f)
-    else:
-        writer = csv.writer(sys.stdout)
-
-    # If you're extracting more or fewer attributes, you can change the header
-    # row here.
-    writer.writerow(attributes_to_extract)
-    writer.writerows(bom_rows)
+    print("Generated bom.", file=sys.stderr)
