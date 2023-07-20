@@ -401,7 +401,12 @@ class Repository(ApiObject):
     }
 
     @classmethod
-    def request(cls, allspice_client: 'AllSpice', owner: str, name: str):
+    def request(
+            cls,
+            allspice_client: 'AllSpice',
+            owner: str,
+            name: str,
+    ) -> Repository:
         return cls._request(allspice_client, {"owner": owner, "name": name})
 
     @classmethod

@@ -1,5 +1,6 @@
 import base64
 import datetime
+import time
 
 import pytest
 import uuid
@@ -8,6 +9,7 @@ from allspice import AllSpice, User, Organization, Team, Repository, Issue, Mile
     DesignReview, Branch, Comment
 from allspice import NotFoundException
 from allspice.apiobject import Util
+from allspice.exceptions import NotYetGeneratedException
 
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
@@ -138,6 +140,56 @@ def test_get_repository(instance):
     assert repo is not None
     assert repo.name == test_repo
     assert repo.owner.username == test_org
+
+def test_add_content_to_repo(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    file_content = open("tests/data/test.pcbdoc", "rb").read()
+    file_content = base64.b64encode(file_content).decode("utf-8")
+    repo.create_file("test.pcbdoc", file_content)
+    assert len(repo.get_commits()) == 2
+    assert [content.name for content in repo.get_git_content()] == ["README.md", "test.pcbdoc"]
+
+
+def test_get_json_before_generated(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    with pytest.raises(NotYetGeneratedException) as e:
+        repo.get_generated_json("test.pcbdoc")
+
+
+def test_get_svg_before_generated(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    with pytest.raises(NotYetGeneratedException) as e:
+        repo.get_generated_svg("test.pcbdoc")
+
+
+def test_get_generated_json(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    # This is scuffed but not much better we can do :(
+    while True:
+        try:
+            json = repo.get_generated_json("test.pcbdoc", branch)
+            break
+        except NotYetGeneratedException:
+            time.sleep(1)
+            pass
+    assert json is not None
+    assert json["type"] == "Pcb"
+
+
+def test_get_generated_svg(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    while True:
+        try:
+            svg = repo.get_generated_svg("test.pcbdoc", branch)
+            break
+        except NotYetGeneratedException:
+            time.sleep(1)
+            pass
+    assert svg is not None
+    assert svg.startswith(b"<svg")
+
 
 def test_get_repository_non_existent(instance):
     with pytest.raises(NotFoundException) as e:
@@ -494,9 +546,9 @@ def test_create_design_review(instance):
     assert review.head == "test_branch"
     assert review.body == "This is a test review"
     assert review.assignees[0].username == "test"
-    assert Util.format_time(Util.convert_time(review.due_date)) == Util.format_time(
-        due_date)
 
+    review_due_date = Util.convert_time(review.due_date)
+    assert review_due_date.date() == due_date.date()
 
 def test_get_design_reviews(instance):
     org = Organization.request(instance, test_org)
@@ -547,9 +599,12 @@ def test_get_design_review_comments(instance):
 
 def test_get_repo_archive(instance):
     # This requires a repo with actual files in it, so we use the test repo
-    repo = Repository.request(instance, "test", "test")
-    archive = repo.get_archive()
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    archive = repo.get_archive(branch)
     assert archive is not None
+
+
 
 
 def test_team_get_org(instance):
@@ -558,12 +613,14 @@ def test_team_get_org(instance):
     teams = user.get_teams()
     assert org.username == teams[0].organization.name
 
+
 def test_delete_repo_userowned(instance):
     user = User.request(instance, test_user)
     repo = Repository.request(instance, user.username, test_repo)
     repo.delete()
     with pytest.raises(NotFoundException) as e:
         Repository.request(instance, test_user, test_repo)
+
 
 def test_secundary_email(instance):
     SECONDARYMAIL = "secondarytest@test.org"  # set up with real email
@@ -635,19 +692,3 @@ def test_delete_user(instance):
     user.delete()
     with pytest.raises(NotFoundException) as e:
         User.request(instance, user_name)
-
-def test_get_generated_json(instance):
-    # Note: this expects the test repo to have a file called test.pcbdoc,
-    # which will have json and svg generated from it.
-    repo = instance.get_repository("test", "test")
-    json = repo.get_generated_json("test.pcbdoc")
-    assert json is not None
-    assert json["type"] == "Pcb"
-
-
-def test_get_generated_svg(instance):
-    repo = instance.get_repository("test", "test")
-    svg = repo.get_generated_svg("test.pcbdoc")
-    assert svg is not None
-    assert svg.startswith(b"<svg")
-

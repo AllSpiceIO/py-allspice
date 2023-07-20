@@ -1,0 +1,94 @@
+name: Test py-allspice in CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test py-allspice
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    if: github.repository == 'AllSpiceIO/py-allspice'
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: allspice_hub
+          POSTGRES_PASSWORD: allspice
+          POSTGRES_DB: allspice_hub
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      allspice_hub:
+        image: allspice/allspice-hub:latest
+        credentials:
+          username: ${{ secrets.DOCKER_PULL_USER }}
+          password: ${{ secrets.DOCKER_PULL_TOKEN }}
+
+        env:
+          USER_UID: 1000
+          USER_GID: 1000
+          RUN_USER: git
+          # This is required to bypass allspice_hub's "setup" page for a new install.
+          # We'll create an account and token in the "Set up allspice_hub" step.
+          ALLSPICE__security__INSTALL_LOCK: true
+          # This isn't noted in the allspice hub docs for docker-compose, but
+          # without it the container will fail to start.
+          ALLSPICE__database__DB_TYPE: postgres
+          ALLSPICE__database__HOST: postgres:5432
+          ALLSPICE__database__NAME: allspice_hub
+          ALLSPICE__database__USER: allspice_hub
+          ALLSPICE__database__PASSWD: allspice
+
+        ports:
+          - 3000:3000
+        options: >-
+          --health-start-period=10s
+          --health-cmd="curl --fail http://localhost:3000/ || exit 1"
+          --health-interval=10s
+          --health-timeout=10s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          pip install -r requirements.txt
+      - name: Lint with ruff
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          ruff --format=github --select=E9,F63,F7,F82 --target-version=py39 .
+      - name: Set up allspice_hub
+        run: |
+          # The only way to create a user is to either use the CLI or the web
+          # interface, so we'll use curl to create a user and then use the API
+          # to create a token.
+          curl 'http://localhost:3000/user/sign_up' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            --data-raw 'user_name=test&email=secondarytest%40test.org&password=password&retype=password'
+          curl 'http://localhost:3000/api/v1/users/test/tokens' \
+            -H "Content-Type: application/json" \
+            -d '{"name":"test", "scopes": ["all", "sudo"]}' \
+            -u test:password > token.json
+          python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
+          # This token is only used with the job's container, so it is safe to
+          # echo it here.
+          echo "AllSpice Hub token = $(cat .token)"
+      - name: Test with pytest
+        run: |
+          python -m pytest
