@@ -12,7 +12,7 @@ from ..exceptions import NotYetGeneratedException
 
 
 @dataclass
-class SchdocComponent:
+class SchematicComponent:
     description: str
     manufacturer: str
     part_number: str
@@ -183,7 +183,7 @@ def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> list[str]:
 def _schdoc_component_from_attributes(
     attributes: dict,
     mapper: AttributesMapping,
-) -> SchdocComponent:
+) -> SchematicComponent:
     """
     Make a SchDoc Component object out of the JSON for it in the SchDoc file.
 
@@ -193,7 +193,7 @@ def _schdoc_component_from_attributes(
     :returns: A SchodocComponent object representing that component.
     """
 
-    return SchdocComponent(
+    return SchematicComponent(
         description=_find_first_matching_key(mapper.description, attributes),
         designator=_find_first_matching_key(mapper.designator, attributes) or "",
         manufacturer=_find_first_matching_key(mapper.manufacturer, attributes),
@@ -204,7 +204,7 @@ def _schdoc_component_from_attributes(
 def _extract_components_from_schdoc(
     schdoc_file_content: dict,
     attributes_mapper: AttributesMapping,
-) -> list[SchdocComponent]:
+) -> list[SchematicComponent]:
     """
     Extract all the components from a schdoc file. To see what attributes are
     available, print the schdoc_file_content variable.
@@ -234,7 +234,7 @@ def _extract_all_schdoc_components(
     ref: Ref,
     schdoc_files_in_proj: set[str],
     attributes_mapping: AttributesMapping,
-) -> list[SchdocComponent]:
+) -> list[SchematicComponent]:
     """
     Fetch all the components from all the SchDoc files in the repo that are in
     the project.
@@ -296,7 +296,7 @@ def _extract_all_pcbdoc_components(
 
 
 def _combine_components_to_ungrouped_bom(
-    schdoc_components: list[SchdocComponent],
+    schdoc_components: list[SchematicComponent],
     pcbdoc_components: list[PcbComponent],
 ) -> list[BomEntry]:
     """
