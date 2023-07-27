@@ -1,5 +1,33 @@
 # Changelog
 
+## v2.3.0
+
+This is a minor version bump. Only new functionality was added, and you may not
+need to change your scripts to update to this version.
+
+- New feature: BOM Generation. Instead of an example script, BOM generation is
+  included as a util within the library. See `allspice.utils.generate_bom` for
+  more details, and there is an example script in
+  [the examples/generate_bom directory](./examples/generate_bom/) that shows how
+  to use it, along with how to compute COGS from a generated BOM.
+- `Team.add_repo` now takes either a string as a repo name or a `Repository`
+  object, instead of just a string as before. So you can:
+
+  ```py
+  team.add_repo(team_org, "repo_name")
+  ```
+
+  Instead of:
+
+  ```py
+  repo = Repository.request(allspice_client, "team_org", "repo_name")
+  team.add_repo(team_org, repo)
+  ```
+
+  This is useful if you are making a large number of changes in bulk, as you can
+  save time by not having to make a request for each repo you want to add to a
+  team.
+
 ## v2.2.0
 
 This is a minor version bump. Only new functionality was added, and you may not
