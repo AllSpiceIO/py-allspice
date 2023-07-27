@@ -411,7 +411,7 @@ class Repository(ApiObject):
 
     @classmethod
     def search(
-        cls, 
+        cls,
         allspice_client: 'AllSpice',
         query: Optional[str] = None,
         topic: bool = False,
@@ -422,12 +422,12 @@ class Repository(ApiObject):
         """
         Search for repositories.
 
-        See https://hub.allspice.io/api/swagger#/repository/repoSearch 
+        See https://hub.allspice.io/api/swagger#/repository/repoSearch
 
         :param query: The query string to search for
-        :param topic: If true, the query string will only be matched against the 
+        :param topic: If true, the query string will only be matched against the
             repository's topic.
-        :param include_description: If true, the query string will be matched 
+        :param include_description: If true, the query string will be matched
             against the repository's description as well.
         :param user: If specified, only repositories that this user owns or
             contributes to will be searched.
@@ -452,7 +452,7 @@ class Repository(ApiObject):
 
         responses = allspice_client.requests_get_paginated(cls.REPO_SEARCH, params=params)
 
-        return [Repository.parse_response(allspice_client, response) 
+        return [Repository.parse_response(allspice_client, response)
                 for response in responses]
 
 
@@ -975,7 +975,7 @@ class Repository(ApiObject):
         """
         Adds a topic to the repository.
 
-        See https://hub.allspice.io/api/swagger#/repository/repoAddTopic 
+        See https://hub.allspice.io/api/swagger#/repository/repoAddTopic
 
         :param topic: The topic to add. Topic names must consist only of
             lowercase letters, numnbers and dashes (-), and cannot start with
@@ -983,8 +983,8 @@ class Repository(ApiObject):
         """
 
         url = self.REPO_ADD_TOPIC.format(
-            owner=self.owner.username, 
-            repo=self.name, 
+            owner=self.owner.username,
+            repo=self.name,
             topic=topic
         )
         self.allspice_client.requests_put(url)
@@ -1548,8 +1548,12 @@ class Team(ApiObject):
         url = f"/teams/{self.id}/members/{user.login}"
         self.allspice_client.requests_put(url)
 
-    def add_repo(self, org: Organization, repo: Repository):
-        self.allspice_client.requests_put(Team.ADD_REPO % (self.id, org, repo.name))
+    def add_repo(self, org: Organization, repo: Union[Repository, str]):
+        if isinstance(repo, Repository):
+            repo_name = repo.name
+        else:
+            repo_name = repo
+        self.allspice_client.requests_put(Team.ADD_REPO % (self.id, org.username, repo_name))
 
     def get_members(self):
         """ Get all users assigned to the team. """
