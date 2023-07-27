@@ -13,6 +13,7 @@ import pytest
 
 from allspice import AllSpice
 
+
 @pytest.fixture
 def instance(scope="module"):
     try:
@@ -27,7 +28,7 @@ def instance(scope="module"):
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
-    except:
+    except Exception:
         assert (
             False
         ), "AllSpice Hub could not load. \

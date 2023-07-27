@@ -13,6 +13,7 @@ class ObjectIsInvalid(Exception):
 class ConflictException(Exception):
     pass
 
+
 class NotYetGeneratedException(Exception):
     """
     For AllSpice generated objects, this exception is raised when the

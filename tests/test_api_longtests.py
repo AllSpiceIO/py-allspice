@@ -1,10 +1,11 @@
 import pytest
 import uuid
 
-from allspice import AllSpice, User, Organization, Team, Repository, Issue
-from allspice import NotFoundException, AlreadyExistsException
+from allspice import AllSpice, Organization, Issue
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
+
+
 @pytest.fixture
 def instance(scope="module"):
     try:
@@ -12,13 +13,14 @@ def instance(scope="module"):
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
-    except:
+    except Exception:
         assert (
             False
         ), "AllSpice Hub could not load. \
                 - Instance running at http://localhost:3000 \
                 - Token at .token   \
                     ?"
+
 
 # make up some fresh names for the tests run
 test_org = "org_" + uuid.uuid4().hex[:8]
@@ -28,7 +30,8 @@ test_repo = "repo_" + uuid.uuid4().hex[:8]
 
 
 def test_list_repos(instance):
-    user = instance.create_user(test_user, test_user + "@example.org", "abcdefg1.23AB", send_notify=False)
+    user = instance.create_user(test_user, test_user + "@example.org",
+                                "abcdefg1.23AB", send_notify=False)
     org = instance.create_org(user, test_org, "some Description for longtests")
     repos = org.get_repositories()
     assert len(repos) == 0
@@ -41,8 +44,10 @@ def test_list_repos(instance):
 
 def test_list_issue(instance):
     org = Organization.request(instance, test_org)
-    repo = instance.create_repo(org, test_repo, "Testing a huge number of Issues and how they are listed")
+    repo = instance.create_repo(
+        org, test_repo, "Testing a huge number of Issues and how they are listed")
     for x in range(0, 100):
-        Issue.create_issue(instance, repo, "TestIssue" + str(x), "We will be too many to be listed on one page")
+        Issue.create_issue(instance, repo, "TestIssue" + str(x),
+                           "We will be too many to be listed on one page")
     issues = repo.get_issues()
     assert len(issues) > 98

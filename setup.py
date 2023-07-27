@@ -13,7 +13,7 @@ setup_args = dict(
     packages=find_packages(),
     author='AllSpice, Inc.',
     author_email='maintainers@allspice.io',
-    keywords=['AllSpice','AllSpice Hub','api','wrapper'],
+    keywords=['AllSpice', 'AllSpice Hub', 'api', 'wrapper'],
     url='https://github.com/Langenfeld/py-gitea',
     download_url='https://github.com/AllSpiceIO/py-allspice'
 )

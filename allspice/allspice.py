@@ -72,14 +72,14 @@ class AllSpice:
         if token_text:
             self.headers["Authorization"] = "token " + token_text
         if auth:
-            self.logger.warning("Using basic auth is not recommended. Prefer using a token instead.")
+            self.logger.warning(
+                "Using basic auth is not recommended. Prefer using a token instead.")
             self.requests.auth = auth
 
         # Manage SSL certification verification
         self.requests.verify = verify
         if not verify:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
     def __get_url(self, endpoint):
         url = self.url + "/api/v1" + endpoint
@@ -93,7 +93,8 @@ class AllSpice:
             if request.status_code in [404]:
                 raise NotFoundException(message)
             if request.status_code in [403]:
-                raise Exception(f"Unauthorized: {request.url} - Check your permissions and try again! ({message})")
+                raise Exception(
+                    f"Unauthorized: {request.url} - Check your permissions and try again! ({message})")
             if request.status_code in [409]:
                 raise ConflictException(message)
             if request.status_code in [503]:
@@ -107,7 +108,6 @@ class AllSpice:
         if result.text and len(result.text) > 3:
             return json.loads(result.text)
         return {}
-
 
     def requests_get(self, endpoint: str, params=frozendict(), sudo=None):
         combined_params = {}
@@ -147,13 +147,14 @@ class AllSpice:
                     )
             else:
                 aggregated_result.extend(result)
-            
+
             page += 1
 
-    def requests_put(self, endpoint: str, data: dict = None):
+    def requests_put(self, endpoint: str, data: Optional[dict] = None):
         if not data:
             data = {}
-        request = self.requests.put(self.__get_url(endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.put(self.__get_url(
+            endpoint), headers=self.headers, data=json.dumps(data))
         if request.status_code not in [200, 204]:
             message = f"Received status code: {request.status_code} ({request.url}) {request.text}"
             self.logger.error(message)
@@ -204,11 +205,13 @@ class AllSpice:
             self.logger.error(f"Received status code: {request.status_code} ({request.url})")
             self.logger.error(f"With info: {data} ({self.headers})")
             self.logger.error(f"Answer: {request.text}")
-            raise Exception(f"Received status code: {request.status_code} ({request.url}), {request.text}")
+            raise Exception(
+                f"Received status code: {request.status_code} ({request.url}), {request.text}")
         return self.parse_result(request)
 
     def requests_patch(self, endpoint: str, data: dict):
-        request = self.requests.patch(self.__get_url(endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.patch(self.__get_url(
+            endpoint), headers=self.headers, data=json.dumps(data))
         if request.status_code not in [200, 201]:
             error_message = f"Received status code: {request.status_code} ({request.url}) {data}"
             self.logger.error(error_message)
@@ -260,8 +263,8 @@ class AllSpice:
             user_name: str,
             email: str,
             password: str,
-            full_name: str = None,
-            login_name: str = None,
+            full_name: str | None = None,
+            login_name: str | None = None,
             change_pw=True,
             send_notify=True,
             source_id=0,
@@ -309,10 +312,10 @@ class AllSpice:
             description: str = "",
             private: bool = False,
             autoInit=True,
-            gitignores: str = None,
-            license: str = None,
+            gitignores: str | None = None,
+            license: str | None = None,
             readme: str = "Default",
-            issue_labels: str = None,
+            issue_labels: str | None = None,
             default_branch="master",
     ):
         """ Create a Repository as the administrator
@@ -392,13 +395,13 @@ class AllSpice:
             can_create_org_repo: bool = False,
             includes_all_repositories: bool = False,
             units=(
-                    "repo.code",
-                    "repo.issues",
-                    "repo.ext_issues",
-                    "repo.wiki",
-                    "repo.pulls",
-                    "repo.releases",
-                    "repo.ext_wiki",
+                "repo.code",
+                "repo.issues",
+                "repo.ext_issues",
+                "repo.wiki",
+                "repo.pulls",
+                "repo.releases",
+                "repo.ext_wiki",
             ),
             units_map={},
     ):
