@@ -323,6 +323,23 @@ def test_create_team(instance):
     assert team.description == "descr"
     assert team.organization == org
 
+def test_add_repo_to_team(instance):
+    org = Organization.request(instance, test_org)
+    team = org.get_team(test_team)
+    repository = Repository.request(instance, test_org, test_repo)
+
+    # First with name
+    team.add_repo(org, test_repo)
+    assert test_repo in [repo.name for repo in team.get_repos()]
+
+    team.delete()
+
+    team = instance.create_team(org, test_team, "descr")
+    # Then with object
+    team.add_repo(org, repository)
+    assert test_repo in [repo.name for repo in team.get_repos()]
+
+
 def test_create_team_without_units_map(instance):
     org = Organization.request(instance, test_org)
     team = instance.create_team(org, test_team + "1", "descr")
