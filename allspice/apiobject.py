@@ -63,10 +63,10 @@ class Organization(ApiObject):
             description: str = "",
             private: bool = False,
             autoInit=True,
-            gitignores: str | None = None,
-            license: str | None = None,
+            gitignores: Optional[str] = None,
+            license: Optional[str] = None,
             readme: str = "Default",
-            issue_labels: str | None = None,
+            issue_labels: Optional[str] = None,
             default_branch="master",
     ):
         """Create an organization Repository
@@ -263,10 +263,10 @@ class User(ApiObject):
             description: str = "",
             private: bool = False,
             autoInit=True,
-            gitignores: str | None = None,
-            license: str | None = None,
+            gitignores: Optional[str] = None,
+            license: Optional[str] = None,
             readme: str = "Default",
-            issue_labels: str | None = None,
+            issue_labels: Optional[str] = None,
             default_branch="master",
     ):
         """Create a user Repository
@@ -771,7 +771,7 @@ class Repository(ApiObject):
 
         return DesignReview.parse_response(self.allspice_client, result)
 
-    def create_milestone(self, title: str, description: str, due_date: str | None = None, state: str = "open") -> "Milestone":
+    def create_milestone(self, title: str, description: str, due_date: Optional[str] = None, state: str = "open") -> "Milestone":
         url = Repository.REPO_MILESTONES.format(owner=self.owner.username, repo=self.name)
         data = {"title": title, "description": description, "state": state}
         if due_date:
@@ -839,9 +839,9 @@ class Repository(ApiObject):
         # TODO: make sure this instance is either updated or discarded
 
     def get_git_content(
-            self: str | None = None,
+            self: Optional[str] = None,
             ref: Optional["Ref"] = None,
-            commit: "Commit | None" = None
+            commit: "Optional[Commit]" = None
     ) -> List["Content"]:
         """
         Get a list of all files in the repository.
@@ -860,9 +860,9 @@ class Repository(ApiObject):
 
     def get_file_content(
             self,
-            content: "Content",
-            ref: "Ref | None" = None,
-            commit: "Commit | None" = None,
+            content: Content,
+            ref: Optional[Ref] = None,
+            commit: Optional[Commit] = None,
     ) -> Union[str, List["Content"]]:
         """https://hub.allspice.io/api/swagger#/repository/repoGetContents"""
         url = f"/repos/{self.owner.username}/{self.name}/contents/{content.path}"
@@ -927,7 +927,7 @@ class Repository(ApiObject):
         data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, data)
 
-    def create_file(self, file_path: str, content: str, data: dict | None = None):
+    def create_file(self, file_path: str, content: str, data: Optional[dict] = None):
         """https://hub.allspice.io/api/swagger#/repository/repoCreateFile"""
         if not data:
             data = {}
@@ -935,7 +935,7 @@ class Repository(ApiObject):
         data.update({"content": content})
         return self.allspice_client.requests_post(url, data)
 
-    def change_file(self, file_path: str, file_sha: str, content: str, data: dict | None = None):
+    def change_file(self, file_path: str, file_sha: str, content: str, data: Optional[dict] = None):
         """https://hub.allspice.io/api/swagger#/repository/repoCreateFile"""
         if not data:
             data = {}
@@ -1317,7 +1317,7 @@ class Issue(ApiObject):
         path = f"/repos/{self.owner.username}/{self.repository.name}/issues/{self.number}/times/{time_id}"
         self.allspice_client.requests_delete(path)
 
-    def add_time(self, time: int, created: str | None = None, user_name: User | None = None):
+    def add_time(self, time: int, created: Optional[str] = None, user_name: Optional[User] = None):
         path = f"/repos/{self.owner.username}/{self.repository.name}/issues/{self.number}/times"
         self.allspice_client.requests_post(
             path, data={"created": created, "time": int(time), "user_name": user_name}
