@@ -1,7 +1,5 @@
 from .allspice import (
     AllSpice,
-    NotFoundException,
-    AlreadyExistsException,
 )
 from .apiobject import (
     User,
@@ -9,14 +7,16 @@ from .apiobject import (
     Team,
     Repository,
     Branch,
-    NotFoundException,
-    AlreadyExistsException,
     Issue,
     Milestone,
     Commit,
     Comment,
     Content,
     DesignReview
+)
+from .exceptions import (
+    NotFoundException,
+    AlreadyExistsException
 )
 
 __all__ = [

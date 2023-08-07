@@ -1,9 +1,7 @@
 import pytest
 import time
-import uuid
 
-from allspice import AllSpice, User, Organization, Team, Repository, Issue
-from allspice import NotFoundException, AlreadyExistsException
+from allspice import AllSpice
 
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
@@ -18,7 +16,7 @@ def instance(scope="module"):
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
-    except:
+    except Exception:
         assert (
             False
         ), "AllSpice Hub could not load. \

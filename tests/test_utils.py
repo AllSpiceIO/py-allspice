@@ -24,7 +24,7 @@ def instance():
         _setup_for_bom_generation(g)
 
         return g
-    except:
+    except Exception:
         breakpoint()
         assert (
             False
@@ -51,7 +51,7 @@ def _setup_for_bom_generation(instance):
     for file in files:
         try:
             repo.get_generated_json(file.path)
-        except:
+        except Exception:
             pass
 
 

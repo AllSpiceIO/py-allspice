@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import ClassVar, Optional
 
 from .exceptions import ObjectIsInvalid, MissingEqualityImplementation, RawRequestEndpointMissing
 
@@ -20,7 +20,7 @@ class ReadonlyApiObject:
         """Hash only fields that are part of the gitea-data identity"""
         raise MissingEqualityImplementation()
 
-    _fields_to_parsers = {}
+    _fields_to_parsers: ClassVar[dict] = {}
 
     @classmethod
     def request(cls, allspice_client):
@@ -76,7 +76,7 @@ class ReadonlyApiObject:
 
 
 class ApiObject(ReadonlyApiObject):
-    _patchable_fields = set()
+    _patchable_fields: ClassVar[set[str]] = set()
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
@@ -98,9 +98,9 @@ class ApiObject(ReadonlyApiObject):
         self._dirty_fields = set()
 
     def commit(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
-    _parsers_to_fields = {}
+    _parsers_to_fields: ClassVar[dict] = {}
 
     def get_dirty_fields(self):
         dirty_fields_values = {}
