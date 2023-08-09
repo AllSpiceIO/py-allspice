@@ -71,7 +71,7 @@ def test_create_user(instance):
     assert email in user.emails
     assert user.email == email
     assert not user.is_admin
-    assert type(user.id) is int
+    assert isinstance(user.id, int)
     assert user.is_admin is False
 
 
