@@ -123,8 +123,15 @@ class AllSpice:
             combined_params["sudo"] = sudo.username
         return self.__get(endpoint, combined_params).content
 
-    def requests_get_paginated(self, endpoint: str, params=frozendict(), sudo=None, page_key: str = "page"):
-        page = 1
+    def requests_get_paginated(
+        self,
+        endpoint: str,
+        params=frozendict(),
+        sudo=None,
+        page_key: str = "page",
+        first_page: int = 1,
+    ):
+        page = first_page
         combined_params = {}
         combined_params.update(params)
         aggregated_result = []
