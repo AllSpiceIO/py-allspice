@@ -408,9 +408,18 @@ def test_user_teams(instance):
     org = Organization.request(instance, test_org)
     team = org.get_team(test_team)
     user = instance.get_user_by_name(test_user)
+
     team.add_user(user)
     teams = user.get_teams()
     assert team in teams
+    team_members = team.get_members()
+    assert user in team_members
+
+    team.remove_team_member(user.login)
+    teams = user.get_teams()
+    assert team not in teams
+    team_members = team.get_members()
+    assert user not in team_members
 
 
 def test_get_accessible_repositories(instance):
@@ -643,9 +652,8 @@ def test_get_repo_archive(instance):
 
 def test_team_get_org(instance):
     org = Organization.request(instance, test_org)
-    user = instance.get_user_by_name(test_user)
-    teams = user.get_teams()
-    assert org.username == teams[0].organization.name
+    team = org.get_team(test_team)
+    assert org.username == team.organization.name
 
 
 def test_delete_repo_userowned(instance):
