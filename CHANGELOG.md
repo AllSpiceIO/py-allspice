@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.3.1
+
+This is a patch release. You should be able to update to this version without
+changing your scripts.
+
+- Fix a bug where `Team.get_members` would not return all members if there
+  were more than 30 members in a team.
+
 ## v2.3.0
 
 This is a minor version bump. Only new functionality was added, and you may not

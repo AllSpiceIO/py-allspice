@@ -51,3 +51,21 @@ def test_list_issue(instance):
                            "We will be too many to be listed on one page")
     issues = repo.get_issues()
     assert len(issues) > 98
+
+
+def test_list_team_members(instance):
+    org = Organization.request(instance, test_org)
+    team = org.create_team(test_team, "Team for longtests")
+    users = []
+    for i in range(100):
+        users.append(
+            instance.create_user(
+                test_user + str(i),
+                test_user + str(i) + "@example.org",
+                "abcdefg1.23AB",
+                send_notify=False
+            ),
+        )
+    for user in users:
+        team.add_user(user)
+    assert len(team.get_members()) == len(users)

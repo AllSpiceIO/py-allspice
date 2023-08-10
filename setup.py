@@ -14,7 +14,7 @@ setup_args = dict(
     author='AllSpice, Inc.',
     author_email='maintainers@allspice.io',
     keywords=['AllSpice', 'AllSpice Hub', 'api', 'wrapper'],
-    url='https://github.com/Langenfeld/py-gitea',
+    url='https://github.com/AllSpiceIO/py-allspice',
     download_url='https://github.com/AllSpiceIO/py-allspice'
 )
 
