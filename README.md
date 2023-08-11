@@ -12,8 +12,9 @@ Forked from https://github.com/Langenfeld/py-gitea.
 
 ### Examples
 
-Check the [examples directory](./examples/) for full, working example scripts
-that you can adapt or refer to for your own needs.
+Check the [examples directory](https://github.com/AllSpiceIO/py-allspice/tree/main/examples)
+for full, working example scripts that you can adapt or refer to for your own
+needs.
 
 ### Quickstart
 
@@ -36,7 +37,7 @@ print("AllSpice Version: " + allspice_client.get_version())
 print("API-Token belongs to user: " + allspice_client.get_user().username)
 ```
 
-Adding entities like Users, Organizations, ...  also is done via the allspice_client object.
+Adding entities like Users, Organizations, ... also is done via the allspice_client object.
 
 ```python
 user = allspice_client.create_user("Test Testson", "test@test.test", "password")
@@ -52,7 +53,6 @@ print(other_user.username)
 
 Note that the fields of the User, Organization,... classes are dynamically created at runtime, and thus not visible during divelopment. Refer to the AllSpice API documentation for the fields names.
 
-
 Fields that can not be altered via allspice-api, are read only. After altering a field, the `.commit` method of the according object must be called to synchronize the changed fields with your allspice_client instance.
 
 ```python
@@ -63,11 +63,13 @@ org.commit()
 ```
 
 An entity in allspice can be deleted by calling delete.
+
 ```python
 org.delete()
 ```
 
 All entity objects do have methods to execute some of the requests possible though the AllSpice api:
+
 ```python
 org = Organization.request(allspice_client, ORGNAME)
 teams = org.get_teams()
@@ -77,10 +79,9 @@ for team in teams:
 		print(repo.name)
 ```
 
-
 ## Installation
 
-Use ``pip install py-allspice`` to install.
+Use `pip install py-allspice` to install.
 
 ## A Note on Versioning
 
@@ -93,7 +94,7 @@ py-allspice should be compatible with the current version of AllSpice Hub.
 
 Tests can be run with:
 
-```python3 -m pytest test_api.py```
+`python3 -m pytest test_api.py`
 
 Make sure to have an instance of AllSpice Hub running on `http://localhost:3000`, and an admin-user token at `.token`.
-The admin user must be named ``test``, with email ``secondarytest@test.org``.
+The admin user must be named `test`, with email `secondarytest@test.org`.
