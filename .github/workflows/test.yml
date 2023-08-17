@@ -7,7 +7,8 @@ on:
     branches: [main]
   schedule:
     # Run every day to ensure that the latest version of allspice_hub works.
-    - cron: "0 0 * * *"
+    # The 10 and 1 are to avoid GitHub Actions' peak hours.
+    - cron: "10 1 * * *"
 
 jobs:
   test:

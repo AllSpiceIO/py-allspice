@@ -25,7 +25,6 @@ def instance():
 
         return g
     except Exception:
-        breakpoint()
         assert (
             False
         ), "AllSpice Hub could not load. Is there: \
