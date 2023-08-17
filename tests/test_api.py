@@ -322,6 +322,8 @@ def test_create_branch(instance):
     number_of_branches = len(branches)
     assert len(master) > 0
     repo.add_branch(master[0], "test_branch")
+    # Gitea seems to take a while before reporting the new branch
+    time.sleep(0.5)
     branches = repo.get_branches()
     assert len(branches) == number_of_branches + 1
 
