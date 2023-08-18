@@ -53,6 +53,7 @@ def test_list_issue(instance):
     assert len(issues) > 98
 
 
+@pytest.mark.ashub()
 def test_list_team_members(instance):
     org = Organization.request(instance, test_org)
     team = org.create_team(test_team, "Team for longtests")
