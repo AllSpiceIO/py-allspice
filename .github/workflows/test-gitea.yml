@@ -60,4 +60,4 @@ jobs:
           echo "Gitea token = $(cat .token)"
       - name: Run tests which are not AS Hub specific
         run: |
-          ./test-gitea.sh
+          python -m pytest -m "not ashub"

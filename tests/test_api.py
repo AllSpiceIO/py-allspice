@@ -154,18 +154,21 @@ def test_add_content_to_repo(instance):
     assert [content.name for content in repo.get_git_content()] == ["README.md", "test.pcbdoc"]
 
 
+@pytest.mark.ashub()
 def test_get_json_before_generated(instance):
     repo = Repository.request(instance, test_org, test_repo)
     with pytest.raises(NotYetGeneratedException):
         repo.get_generated_json("test.pcbdoc")
 
 
+@pytest.mark.ashub()
 def test_get_svg_before_generated(instance):
     repo = Repository.request(instance, test_org, test_repo)
     with pytest.raises(NotYetGeneratedException):
         repo.get_generated_svg("test.pcbdoc")
 
 
+@pytest.mark.ashub()
 def test_get_generated_json(instance):
     repo = Repository.request(instance, test_org, test_repo)
     branch = repo.get_branches()[0]
@@ -181,6 +184,7 @@ def test_get_generated_json(instance):
     assert json["type"] == "Pcb"
 
 
+@pytest.mark.ashub()
 def test_get_generated_svg(instance):
     repo = Repository.request(instance, test_org, test_repo)
     branch = repo.get_branches()[0]

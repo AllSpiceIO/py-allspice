@@ -54,6 +54,7 @@ def _setup_for_bom_generation(instance):
             pass
 
 
+@pytest.mark.ashub()
 def test_bom_generation(instance):
     repo = instance.get_repository(instance.get_user().username, test_repo)
     attributes_mapping = AttributesMapping(

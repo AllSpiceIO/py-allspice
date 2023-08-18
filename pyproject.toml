@@ -12,3 +12,8 @@ line-length = 100
 select = ["E", "F", "RUF"]
 # This should match autopep8 excludes.
 exclude = []
+
+[tool.pytest.ini_options]
+markers = [
+  "ashub: marks tests which will fail on vanilla gitea and require ashub.",
+]
