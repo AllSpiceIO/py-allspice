@@ -75,6 +75,8 @@ jobs:
       - name: Lint with ruff
         run: |
           ruff --target-version=py310 .
+      - name: Debug
+        uses: mxschmitt/action-tmate@v3
       - name: Set up allspice_hub
         run: |
           # The only way to create a user is to either use the CLI or the web
