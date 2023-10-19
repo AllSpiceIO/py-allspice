@@ -50,7 +50,13 @@ def test_list_repos(instance):
 
 
 def test_list_issue(instance):
-    org = Organization.request(instance, test_org)
+    orgs = instance.get_orgs()
+    if test_org in [o.name for o in orgs]:
+        org = Organization.request(instance, test_org)
+    else:
+        user = instance.create_user(test_user, test_user + "@example.org",
+                                    "abcdefg1.23AB", send_notify=False)
+        org = instance.create_org(user, test_org, "some Description for longtests")
     repo = instance.create_repo(
         org, test_repo, "Testing a huge number of Issues and how they are listed")
     for x in range(0, 100):
@@ -61,7 +67,14 @@ def test_list_issue(instance):
 
 
 def test_list_team_members(instance):
-    org = Organization.request(instance, test_org)
+    orgs = instance.get_orgs()
+    if test_org in [o.name for o in orgs]:
+        org = Organization.request(instance, test_org)
+    else:
+        user = instance.create_user(test_user, test_user + "@example.org",
+                                    "abcdefg1.23AB", send_notify=False)
+        org = instance.create_org(user, test_org, "some Description for longtests")
+
     team = org.create_team(test_team, "Team for longtests")
     users = []
     for i in range(100):
