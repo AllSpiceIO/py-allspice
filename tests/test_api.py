@@ -11,20 +11,28 @@ from allspice import NotFoundException
 from allspice.apiobject import Util
 from allspice.exceptions import NotYetGeneratedException
 
-
 # put a ".token" file into your directory containg only the token for AllSpice Hub
+
+
+@pytest.fixture(scope="session")
+def port(pytestconfig):
+    '''Load --port command-line arg if set'''
+    return pytestconfig.getoption("port")
+
+
 @pytest.fixture
-def instance(scope="module"):
+def instance(port, scope="module"):
     try:
-        g = AllSpice("http://localhost:3000", open(".token", "r").read().strip(), ratelimiting=None)
+        g = AllSpice(f"http://localhost:{port}", open(".token",
+                     "r").read().strip(), ratelimiting=None)
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
         assert (
             False
-        ), "AllSpice Hub could not load. \
-                - Instance running at http://localhost:3000 \
+        ), f"AllSpice Hub could not load. \
+                - Instance running at http://localhost:{port} \
                 - Token at .token   \
                     ?"
 
