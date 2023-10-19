@@ -10,11 +10,17 @@ from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_al
 test_repo = "repo_" + uuid.uuid4().hex[:8]
 
 
+@pytest.fixture(scope="session")
+def port(pytestconfig):
+    '''Load --port command-line arg if set'''
+    return pytestconfig.getoption("port")
+
+
 @pytest.fixture
-def instance():
+def instance(port):
     try:
         g = AllSpice(
-            "http://localhost:3000",
+            f"http://localhost:{port}",
             open(".token", "r").read().strip(),
             ratelimiting=None,
         )
@@ -25,11 +31,10 @@ def instance():
 
         return g
     except Exception:
-        breakpoint()
         assert (
             False
-        ), "AllSpice Hub could not load. Is there: \
-                - an Instance running at http://localhost:3000 \
+        ), f"AllSpice Hub could not load. Is there: \
+                - an Instance running at http://localhost:{port} \
                 - a Token at .token \
                     ?"
 

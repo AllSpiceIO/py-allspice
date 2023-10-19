@@ -4,12 +4,19 @@ import time
 from allspice import AllSpice
 
 
+@pytest.fixture(scope="session")
+def port(pytestconfig):
+    '''Load --port command-line arg if set'''
+    return pytestconfig.getoption("port")
+
 # put a ".token" file into your directory containg only the token for AllSpice Hub
+
+
 @pytest.fixture
-def instance(scope="module"):
+def instance(port, scope="module"):
     try:
         g = AllSpice(
-            allspice_hub_url="http://localhost:3000",
+            allspice_hub_url=f"http://localhost:{port}",
             token_text=open(".token", "r").read().strip(),
             ratelimiting=(10, 1),
         )
@@ -19,8 +26,8 @@ def instance(scope="module"):
     except Exception:
         assert (
             False
-        ), "AllSpice Hub could not load. \
-                - Instance running at http://localhost:3000 \
+        ), f"AllSpice Hub could not load. \
+                - Instance running at http://localhost:{port} \
                 - Token at .token   \
                     ?"
 
