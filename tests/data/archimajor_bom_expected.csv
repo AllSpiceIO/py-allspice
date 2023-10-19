@@ -8,7 +8,7 @@ description,manufacturer,part_number,designators,quantity
 TVS DIODE 3.3VWM SOD923,On Semi,ESD9X3.3ST5G,"['D35', 'D34', 'D32', 'D59', 'D13', 'D58', 'D3', 'D33', 'D42', 'D71', 'D65', 'D67', 'D44', 'D68', 'D66', 'D64', 'D72', 'D69', 'D1', 'D73']",20
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",Samsung,RC1005F104CS,"['R35', 'R22', 'R190', 'R75', 'R192', 'R73', 'R63', 'R78', 'R31', 'R38', 'R37', 'R158', 'R58', 'R51']",14
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,Diodes Incorporated,BAT54WX-TP,"['D57', 'D54', 'D50', 'D55', 'D52', 'D56', 'D53', 'D51', 'D40', 'D63', 'D74', 'D60', 'D62', 'D75', 'D61', 'D77', 'D70', 'D30', 'D5', 'D41', 'D76', 'D31', 'D20H', 'D20G', 'D20F', 'D20E', 'D20D', 'D20C', 'D20B', 'D20A', 'D19H', 'D19G', 'D19F', 'D19E', 'D19D', 'D19C', 'D19B', 'D19A', 'D12H', 'D12G', 'D12F', 'D12E', 'D12D', 'D12C', 'D12B', 'D12A', 'D36', 'D38', 'D37', 'D28', 'D29', 'D39']",52
-"10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",Yageo,RC0402FR-0710KP,"['R183', 'R101', 'R171', 'R14', 'R182', 'R15', 'R96', 'R12', 'R95', 'R67', 'R68', 'R85', 'R100', 'R70', 'R69', 'R65', 'R64', 'R66', 'R97', 'R30', 'R8', 'R54', 'R39', 'R29', 'R6', 'R9', 'R7', 'R119', 'R155', 'R11', 'R56', 'R151', 'R150']",33
+"10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",Yageo,RC0402FR-0710KP,"['R183', 'R101', 'R171', 'R14', 'R182', 'R15', 'R96', 'R12', 'R95', 'R67', 'R68', 'R85', 'R100', 'R70', 'R69', 'R65', 'R64', 'R66', 'R97', 'R30', 'R8', 'R54', 'R39', 'R29', 'R6', 'R9', 'R7', 'R119', 'R155', 'R11', 'R56']",31
 ,Yageo,RC0402FR-071K8L,"['R185', 'R173', 'R184', 'R172']",4
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",Texas Instruments,SN74AHCT125RGYR,[],0
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",Yageo,RC0402FR-07100RL,"['R98', 'R99', 'R181', 'R180', 'R142', 'R139', 'R138', 'R153', 'R140', 'R120', 'R136', 'R159', 'R109', 'R135', 'R143', 'R145', 'R144', 'R137', 'R141', 'R133', 'R160', 'R114', 'R161', 'R134', 'R21', 'R53', 'R20', 'R25', 'R149']",29
@@ -73,10 +73,11 @@ Linear Voltage Regulator IC Positive Fixed 1 Output 3.3V 500mA 6-TMLF® (1.6x1.6
 ,TE,4DB-P108-10,['J3'],1
 Linear Voltage Regulator IC Positive Fixed 1 Output 5V 100mA SOT-89-3,ST,L78L05ABUTR,['U20'],1
 "1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",Panasonic,ERJ2GEJ105X,"['R28', 'R156', 'R61']",3
-Fuse Block 30A 500V 1 Circuit Blade PCB,Keystone,3557-2,"['F2', 'F1']",2
+Fuse Block 30A 500V 1 Circuit Blade PCB,Keystone,3557-2,['F2'],1
 "10.2 kOhms ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",Yageo,RC0402FR-0710K2L,['R1'],1
 "Board-To-Board Connector, 2.54 mm, 8 Contacts, Header, 2213S Series, Through Hole, 2 Rows",Multicomp,2213S-08G,['P1'],1
 "0.0 Ohm Jumper 0.1W, 1/10W Chip Resistor 0603 (1608 Metric) Moisture Resistant Thick Film",Bourns,CR0603-J/-000ELF,['R103'],1
+Fuse Block 30A 500V 1 Circuit Blade PCB,Keystone,3557-20,['F1'],1
 ,TEXAS INSTRUMENTS,AP331AWG-7,"['U21', 'U6']",2
 ,Visha Dale,CRCW040224K0FKEDC,"['R26', 'R154']",2
 ,AVX,04025A220JAT2A,['C151'],1
@@ -95,7 +96,8 @@ Fuse Block 30A 500V 1 Circuit Blade PCB,Keystone,3557-2,"['F2', 'F1']",2
 ,Maxim,MAX31856MUD,"['U13A', 'U13B', 'U13C', 'U13D', 'U13E']",5
 "2 Positions Header Connector 0.100 (2.54mm) Through Hole, Right Angle Gold",Phoenix Contact,1864286,"['J21E', 'J21D', 'J21C', 'J21B', 'J21A']",5
 ,,NOTAPART-Solder Bridge,"['JP1', 'JP2']",2
-"3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric)",Samsung,CL10C030BB8NNNC,"['C41', 'C42']",2
+"6.8k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",Vishay Dale,CRCW04026K80FKED,"['R150', 'R49', 'R151']",3
+"3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric)",AVX Corporation,06031A3R0BAT2A,"['C41', 'C42']",2
 Optoisolator Transistor Output 3750Vrms 1 Channel 4-SO,TOSHIBA,"TLP293(TPL,E",['U18'],1
 "USB Digital Isolator 2500Vrms 2 Channel 12Mbps 25kV/µs CMTI 16-SOIC (0.295, 7.50mm Width)",Analog Devices,ADUM3160BRWZ-RL,['U9'],1
 TVS DIODE 5.5VWM SOT886,NXP,"PRTR5V0U2F,115",['D27'],1
@@ -103,5 +105,4 @@ TVS DIODE 5.5VWM SOT886,NXP,"PRTR5V0U2F,115",['D27'],1
 Bipolar (BJT) Transistor NPN 40V 200mA 300MHz 150mW Surface Mount SOT-523,Diodes Incorporated,MMBT3904T-7-F,['Q8'],1
 "USB - B USB 2.0 Receptacle Connector 4 Position Through Hole, Right Angle",Amphenol FCI,61729-0010BLF,['J8'],1
 "10pF ±5% 50V Ceramic Capacitor C0G, NP0 0402 (1005 Metric)",Samsung,CL05C100JB5NNNC,['C49'],1
-"6.8k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",Vishay Dale,CRCW04026K80FKED,['R49'],1
 "12MHz ±30ppm Crystal 13pF 60 Ohm -20°C ~ 70°C Surface Mount 4-SMD, No Lead (DFN, LCC)",CTS,405C35B12M00000,['X1'],1

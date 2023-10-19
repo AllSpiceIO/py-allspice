@@ -27,8 +27,6 @@ def instance(port):
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
 
-        _setup_for_bom_generation(g)
-
         return g
     except Exception:
         assert (
@@ -43,7 +41,7 @@ def _setup_for_bom_generation(instance):
     instance.requests_post(
         "/repos/migrate",
         data={
-            "clone_addr": "https://hub.allspice.io/AllSpiceUser/ArchimajorFork.git",
+            "clone_addr": "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
             "mirror": False,
             "repo_name": test_repo,
             "service": "git",
@@ -61,6 +59,7 @@ def _setup_for_bom_generation(instance):
 
 
 def test_bom_generation(instance):
+    _setup_for_bom_generation(instance)
     repo = instance.get_repository(instance.get_user().username, test_repo)
     attributes_mapping = AttributesMapping(
         description=["PART DESCRIPTION"],
@@ -75,9 +74,9 @@ def test_bom_generation(instance):
         "Archimajor.PcbDoc",
         attributes_mapping,
         # We hard-code a ref so that this test is reproducible.
-        ref="820f424555d11132123876bef04f7fb5579d40d2",
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
-    assert len(bom) == 106
+    assert len(bom) == 107
 
     bom_as_dicts = []
     # We have to do this manually because of how csv.DictWriter works.
