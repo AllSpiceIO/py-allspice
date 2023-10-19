@@ -672,7 +672,7 @@ def test_delete_repo_userowned(instance):
         Repository.request(instance, test_user, test_repo)
 
 
-def test_secundary_email(instance):
+def test_secondary_email(instance):
     SECONDARYMAIL = "secondarytest@test.org"  # set up with real email
     sec_user = instance.get_user_by_email(SECONDARYMAIL)
     assert SECONDARYMAIL in sec_user.emails
