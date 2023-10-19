@@ -1,7 +1,7 @@
 import pytest
 import uuid
 
-from allspice import AllSpice, Organization, Issue
+from allspice import AllSpice, Issue
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
 
@@ -36,10 +36,15 @@ test_team = "team_" + uuid.uuid4().hex[:8]  # team names seem to have a rather l
 test_repo = "repo_" + uuid.uuid4().hex[:8]
 
 
-def test_list_repos(instance):
-    user = instance.create_user(test_user, test_user + "@example.org",
+def _create_test_org(instance, test_name):
+    test_user_unique = "-".join([test_user, test_name])
+    user = instance.create_user(test_user_unique, test_user_unique + "@example.org",
                                 "abcdefg1.23AB", send_notify=False)
-    org = instance.create_org(user, test_org, "some Description for longtests")
+    return instance.create_org(user, "-".join([test_org, test_name]), "some Description for longtests")
+
+
+def test_list_repos(request, instance):
+    org = _create_test_org(instance, request.node.name)
     repos = org.get_repositories()
     assert len(repos) == 0
     # test a number of repository listings larger than the pagination number (default 50)
@@ -49,14 +54,8 @@ def test_list_repos(instance):
     assert len(repos) >= 53
 
 
-def test_list_issue(instance):
-    orgs = instance.get_orgs()
-    if test_org in [o.name for o in orgs]:
-        org = Organization.request(instance, test_org)
-    else:
-        user = instance.create_user(test_user, test_user + "@example.org",
-                                    "abcdefg1.23AB", send_notify=False)
-        org = instance.create_org(user, test_org, "some Description for longtests")
+def test_list_issue(request, instance):
+    org = _create_test_org(instance, request.node.name)
     repo = instance.create_repo(
         org, test_repo, "Testing a huge number of Issues and how they are listed")
     for x in range(0, 100):
@@ -66,14 +65,8 @@ def test_list_issue(instance):
     assert len(issues) > 98
 
 
-def test_list_team_members(instance):
-    orgs = instance.get_orgs()
-    if test_org in [o.name for o in orgs]:
-        org = Organization.request(instance, test_org)
-    else:
-        user = instance.create_user(test_user, test_user + "@example.org",
-                                    "abcdefg1.23AB", send_notify=False)
-        org = instance.create_org(user, test_org, "some Description for longtests")
+def test_list_team_members(request, instance):
+    org = _create_test_org(instance, request.node.name)
 
     team = org.create_team(test_team, "Team for longtests")
     users = []
