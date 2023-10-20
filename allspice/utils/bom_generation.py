@@ -248,31 +248,35 @@ def _extract_all_schdoc_components(
     """
 
     files_in_repo = repository.get_git_content(ref=ref)
+
+    schdoc_files_in_repo = [file for file in files_in_repo if file.name in schdoc_files_in_proj]
+
+    # Create a retry value for each file so that we can traverse them
+    # in parallel for improved performance
+    retry_counter = [60]*len(schdoc_files_in_repo)
+
     all_components = []
-    for repo_file in files_in_repo:
-        if repo_file.name in schdoc_files_in_proj:
-            # If the file is not yet generated, we'll retry a few times.
-            retry_count = 0
-            while True:
-                retry_count += 1
+    # If the file is not yet generated, we'll retry a few times.
+    while sum(retry_counter):
+        for idx in range(len(retry_counter)):
+            if retry_counter[idx] <= 0:
+                continue
 
-                try:
-                    schdoc_file_json = repository.get_generated_json(repo_file, ref=ref)
-                    all_components.extend(
-                        _extract_components_from_schdoc(
-                            schdoc_file_json,
-                            attributes_mapping,
-                        )
+            retry_counter[idx] -= 1
+
+            try:
+                schdoc_file_json = repository.get_generated_json(schdoc_files_in_repo[idx], ref=ref)
+                all_components.extend(
+                    _extract_components_from_schdoc(
+                        schdoc_file_json,
+                        attributes_mapping,
                     )
-
-                    break
-                except NotYetGeneratedException:
-                    if retry_count > 20:
-                        break
-
-                    # Wait a bit before retrying.
-                    time.sleep(0.5)
-                    continue
+                )
+                retry_counter[idx] = 0
+                continue
+            except NotYetGeneratedException:
+                # Wait a bit before retrying.
+                time.sleep(0.25)
 
     return all_components
 

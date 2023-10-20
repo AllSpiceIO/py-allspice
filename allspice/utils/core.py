@@ -23,10 +23,10 @@ def get_all_pcb_components(
             pcb_json = repository.get_generated_json(pcb_file, ref=ref)
             break
         except NotYetGeneratedException:
-            if retry_count > 20:
+            if retry_count > 60:
                 break
             # Wait a bit before retrying.
-            time.sleep(0.5)
+            time.sleep(0.25)
             continue
 
     return pcb_json["component_instances"]
