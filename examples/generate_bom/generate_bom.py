@@ -11,11 +11,18 @@ import sys
 from contextlib import ExitStack
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
+from allspice.utils.bom_generation import AttributesMapping, BomEntry, generate_bom_for_altium
 
 
 with open("attributes_mapping.json", "r") as f:
     attributes_mapper = AttributesMapping.from_dict(json.loads(f.read()))
+
+
+def sort_function(x: BomEntry) -> str:
+    ''' sort BOM list by this criteria'''
+    if len(x.designators):
+        return sorted(x.designators)[0]
+    return "_" + x.part_number
 
 
 if __name__ == "__main__":
@@ -84,12 +91,13 @@ if __name__ == "__main__":
     bom_rows = [
         [
             bom_row.description,
-            ", ".join(bom_row.designators),
+            ", ".join(sorted(bom_row.designators)),
             bom_row.quantity,
             bom_row.manufacturer,
             bom_row.part_number,
         ]
-        for bom_row in bom_rows
+        # Sort by designator
+        for bom_row in sorted(bom_rows, key=sort_function)
     ]
 
     with ExitStack() as stack:
