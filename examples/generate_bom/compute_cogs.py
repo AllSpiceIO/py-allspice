@@ -187,9 +187,9 @@ if __name__ == "__main__":
     with ExitStack() as stack:
         if args.output_file:
             file = stack.enter_context(open(args.output_file, "w"))
-            writer = csv.writer(file)
+            writer = csv.writer(file, lineterminator="\n")
         else:
-            writer = csv.writer(sys.stdout)
+            writer = csv.writer(sys.stdout, lineterminator="\n")
 
         writer.writerow(headers)
         writer.writerows(rows)

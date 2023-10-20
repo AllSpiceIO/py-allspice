@@ -96,7 +96,7 @@ def test_bom_generation(request, instance):
         for bom_row in sorted(bom, key=_sort_function)
     ]
 
-    writer = csv.writer(output, lineterminator="/n")
+    writer = csv.writer(output, lineterminator="\n")
     writer.writerows(bom)
 
     if accept_outputs:

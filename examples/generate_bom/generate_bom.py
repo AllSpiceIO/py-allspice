@@ -103,9 +103,9 @@ if __name__ == "__main__":
     with ExitStack() as stack:
         if args.output_file is not None:
             f = stack.enter_context(open(args.output_file, "w"))
-            writer = csv.writer(f)
+            writer = csv.writer(f, lineterminator="\n")
         else:
-            writer = csv.writer(sys.stdout)
+            writer = csv.writer(sys.stdout, lineterminator="\n")
 
         header = [
             "Description",
