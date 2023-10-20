@@ -72,9 +72,16 @@ if __name__ == "__main__":
         else:
             writer = sys.stdout
 
+        nets = list(netlist_rows.keys())
+
+        # It's helpful to sort here to generate repeatable netlist files
+        nets.sort()
+
         # You can change formatting here
-        for k, v in netlist_rows.items():
-            writer.write(k + "\n")
-            writer.write(" " + " ".join(v) + "\n")
+        for net in nets:
+            writer.write(net + "\n")
+            pins_on_net = netlist_rows[net]
+            pins_on_net.sort()
+            writer.write(" " + " ".join(pins_on_net) + "\n")
 
     print("Generated PCB netlist.", file=sys.stderr)

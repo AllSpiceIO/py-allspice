@@ -87,6 +87,7 @@ def _extract_all_pcbdoc_components(
         pins = []
         i = 0
         for pin in component["pads"].values():
+            i += 1
             try:
                 pins.append(ComponentPin(
                     index=i,
