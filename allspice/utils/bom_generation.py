@@ -260,11 +260,11 @@ def _extract_all_schdoc_components(
 
                     break
                 except NotYetGeneratedException:
-                    if retry_count > 5:
+                    if retry_count > 20:
                         break
 
                     # Wait a bit before retrying.
-                    time.sleep(1)
+                    time.sleep(0.5)
                     continue
 
     return all_components
@@ -279,7 +279,19 @@ def _extract_all_pcbdoc_components(
     Extract all the components from a PcbDoc file in the repo.
     """
 
-    pcb_json = repository.get_generated_json(pcbdoc_file, ref=ref)
+    retry_count = 0
+    while True:
+        retry_count += 1
+        try:
+            pcb_json = repository.get_generated_json(pcbdoc_file, ref=ref)
+            break
+        except NotYetGeneratedException:
+            if retry_count > 20:
+                break
+            # Wait a bit before retrying.
+            time.sleep(0.5)
+            continue
+
     components = []
 
     component_instances = pcb_json["component_instances"]
