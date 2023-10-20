@@ -1,14 +1,17 @@
 import csv
-import dataclasses
+import io
+import os
 import uuid
 
 import pytest
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
+from allspice.utils.bom_generation import AttributesMapping, BomEntry, generate_bom_for_altium
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
+
+accept_outputs = bool(os.getenv('ACCEPT'))
 
 
 @pytest.fixture(scope="session")
@@ -51,6 +54,13 @@ def _setup_for_generation(instance, test_name):
     )
 
 
+def _sort_function(x: BomEntry) -> str:
+    ''' sort BOM list by this criteria'''
+    if len(x.designators):
+        return sorted(x.designators)[0]
+    return "_" + x.part_number
+
+
 def test_bom_generation(request, instance):
     _setup_for_generation(instance, request.node.name)
     repo = instance.get_repository(instance.get_user().username,
@@ -72,18 +82,29 @@ def test_bom_generation(request, instance):
     )
     assert len(bom) == 107
 
-    bom_as_dicts = []
-    # We have to do this manually because of how csv.DictWriter works.
-    for item in bom:
-        entry_as_dict = {}
-        for (key, value) in dataclasses.asdict(item).items():
-            entry_as_dict[key] = str(value) if value is not None else ""
-        bom_as_dicts.append(entry_as_dict)
+    output = io.StringIO()
+
+    bom = [
+        [
+            bom_row.description,
+            ", ".join(sorted(bom_row.designators)),
+            bom_row.quantity,
+            bom_row.manufacturer,
+            bom_row.part_number,
+        ]
+        # Sort by designator
+        for bom_row in sorted(bom, key=_sort_function)
+    ]
+
+    writer = csv.writer(output, lineterminator="/n")
+    writer.writerows(bom)
+
+    if accept_outputs:
+        with open("tests/data/archimajor_bom_expected.csv", "w") as f:
+            f.write(output.getvalue())
 
     with open("tests/data/archimajor_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom_as_dicts):
-            assert row == expected_row
+        assert output.getvalue() == f.read()
 
 
 def test_netlist_generation(request, instance):
