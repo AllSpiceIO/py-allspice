@@ -1562,7 +1562,6 @@ class Team(ApiObject):
         """ Get all users assigned to the team. """
         results = self.allspice_client.requests_get_paginated(
             Team.GET_MEMBERS % self.id,
-            first_page=1,
         )
         return [User.parse_response(self.allspice_client, result) for result in results]
 
