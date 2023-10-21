@@ -96,3 +96,26 @@ jobs:
       - name: Test with pytest
         run: |
           python -m pytest
+
+      - name: Slack Notification       
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "py-allspice CI: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'success' && 'good' || job.status == 'cancelled' && 'warning' || 'danger' }}",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "value": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_CI }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
