@@ -17,7 +17,7 @@ class PcbComponent:
 
 @dataclass
 class ComponentPin:
-    index: int
+    designator: str
     net: str
 
 
@@ -85,12 +85,10 @@ def _extract_all_pcbdoc_components(
 
     for component in pcb_json["component_instances"].values():
         pins = []
-        i = 0
         for pin in component["pads"].values():
-            i += 1
             try:
                 pins.append(ComponentPin(
-                    index=i,
+                    designator=pin["designator"],
                     net=pin["net_name"]
                 ))
             except KeyError:
@@ -115,5 +113,5 @@ def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry]
         for pin in component.pins:
             if pin.net:
                 netlist_entries_by_net.setdefault(pin.net, []).append(
-                    component.designator + "." + str(pin.index))
+                    component.designator + "." + str(pin.designator))
     return netlist_entries_by_net
