@@ -74,7 +74,7 @@ jobs:
           autopep8 --diff --recursive --exit-code .
       - name: Lint with ruff
         run: |
-          ruff --format=github --target-version=py39 .
+          ruff --target-version=py310 .
       - name: Set up allspice_hub
         run: |
           # The only way to create a user is to either use the CLI or the web
@@ -85,7 +85,7 @@ jobs:
             --data-raw 'user_name=test&email=secondarytest%40test.org&password=password&retype=password'
           curl 'http://localhost:3000/api/v1/users/test/tokens' \
             -H "Content-Type: application/json" \
-            -d '{"name":"test", "scopes": ["all", "sudo"]}' \
+            -d '{"name":"test", "scopes": ["all"]}' \
             -u test:password > token.json
           python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
           # This token is only used with the job's container, so it is safe to

@@ -14,6 +14,11 @@ import pytest
 from allspice import AllSpice
 
 
+def pytest_addoption(parser):
+    '''add option to specify localhost port for tests'''
+    parser.addoption("--port", action="store", default="3000")
+
+
 @pytest.fixture
 def instance(scope="module"):
     try:
