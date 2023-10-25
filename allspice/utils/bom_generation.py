@@ -291,8 +291,8 @@ def _extract_all_pcbdoc_components(
     component_instances = get_all_pcb_components(repository, ref, pcbdoc_file)
 
     for component in component_instances.values():
-        try: 
-            schematic_link=component["schematic_link"]
+        try:
+            schematic_link = component["schematic_link"]
         except KeyError:
             exit(f"Error: Component {component['designator']} in PCB with no schematic link.")
         components.append(
