@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from logging import Logger
 from typing import Union
 
 from allspice.utils.core import get_all_pcb_components
@@ -54,12 +55,13 @@ def generate_netlist(
     )
     allspice_client.logger.info(f"Fetching {pcb_file=}")
 
-    pcb_components = _extract_all_pcb_components(repository, ref, pcb_file)
+    pcb_components = _extract_all_pcb_components(allspice_client.logger, repository, ref, pcb_file)
 
     return _group_netlist_entries(pcb_components)
 
 
 def _extract_all_pcb_components(
+    logger: Logger,
     repository: Repository,
     ref: Ref,
     pcb_file: str,
@@ -75,12 +77,23 @@ def _extract_all_pcb_components(
         pins = []
         for pin in component["pads"].values():
             try:
-                pins.append(ComponentPin(
-                    designator=pin["designator"],
-                    net=pin["net_name"]
-                ))
+                designator = pin["designator"]
             except KeyError:
+                logger.warn(
+                    f"No pad designator: pad in component {component['designator']} has no defined designator.")
                 continue
+
+            try:
+                net = pin["net_name"]
+            except KeyError:
+                logger.warn(
+                    f"Unconnected pad: {designator} in component {component['designator']}.")
+                continue
+
+            pins.append(ComponentPin(
+                designator=designator,
+                net=net
+            ))
         components.append(
             PcbComponent(
                 designator=component["designator"],
