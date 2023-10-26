@@ -257,7 +257,7 @@ def _extract_all_schdoc_components(
 
     all_components = []
     # If the file is not yet generated, we'll retry a few times.
-    while sum(retry_counter):
+    while any(retry_counter):
         for idx in range(len(retry_counter)):
             if retry_counter[idx] <= 0:
                 continue
@@ -273,8 +273,9 @@ def _extract_all_schdoc_components(
                     )
                 )
                 retry_counter[idx] = 0
-                continue
             except NotYetGeneratedException:
+                pass
+            if any(retry_counter):
                 # Wait a bit before retrying.
                 time.sleep(0.25)
 
