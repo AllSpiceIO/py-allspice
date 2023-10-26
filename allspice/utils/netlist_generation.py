@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import time
 from typing import Union
+
+from allspice.utils.core import get_all_pcb_components
 
 from ..allspice import AllSpice
 from ..apiobject import Content, Ref, Repository
-from ..exceptions import NotYetGeneratedException
 
 
 @dataclass
@@ -30,18 +30,18 @@ class NetlistEntry:
 Netlist = list[str]
 
 
-def generate_netlist_for_altium(
+def generate_netlist(
     allspice_client: AllSpice,
     repository: Repository,
-    pcbdoc_file: Union[Content, str],
+    pcb_file: Union[Content, str],
     ref: Ref = "main",
 ) -> Netlist:
     """
-    Generate a netlist for an Altium project.
+    Generate a netlist for an PCB project.
 
     :param allspice_client: The AllSpice client to use.
     :param repository: The repository to generate the netlist for.
-    :param pcbdoc_file: The Altium PCB document file. This can be a Content
+    :param pcbfile: The PCB document file. This can be a Content
         object returned by the AllSpice API, or a string containing the path to
         the file in the repo.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
@@ -52,38 +52,26 @@ def generate_netlist_for_altium(
     allspice_client.logger.info(
         f"Generating netlist for {repository.name=} on {ref=}"
     )
-    allspice_client.logger.info(f"Fetching {pcbdoc_file=}")
+    allspice_client.logger.info(f"Fetching {pcb_file=}")
 
-    pcbdoc_components = _extract_all_pcbdoc_components(repository, ref, pcbdoc_file)
+    pcb_components = _extract_all_pcb_components(repository, ref, pcb_file)
 
-    return _group_netlist_entries(pcbdoc_components)
+    return _group_netlist_entries(pcb_components)
 
 
-def _extract_all_pcbdoc_components(
+def _extract_all_pcb_components(
     repository: Repository,
     ref: Ref,
-    pcbdoc_file: str,
+    pcb_file: str,
 ) -> list[PcbComponent]:
     """
-    Extract all the components from a PcbDoc file in the repo.
+    Extract all the components from a Pcb file in the repo.
     """
 
     components = []
+    component_instances = get_all_pcb_components(repository, ref, pcb_file)
 
-    retry_count = 0
-    while True:
-        retry_count += 1
-        try:
-            pcb_json = repository.get_generated_json(pcbdoc_file, ref=ref)
-            break
-        except NotYetGeneratedException:
-            if retry_count > 20:
-                break
-            # Wait a bit before retrying.
-            time.sleep(0.5)
-            continue
-
-    for component in pcb_json["component_instances"].values():
+    for component in component_instances.values():
         pins = []
         for pin in component["pads"].values():
             try:

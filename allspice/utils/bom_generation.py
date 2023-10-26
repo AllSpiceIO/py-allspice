@@ -6,6 +6,8 @@ import re
 import time
 from typing import Optional, Union
 
+from allspice.utils.core import get_all_pcb_components
+
 from ..allspice import AllSpice
 from ..apiobject import Content, Ref, Repository
 from ..exceptions import NotYetGeneratedException
@@ -81,6 +83,11 @@ class AttributesMapping:
             part_number=dictionary["part_number"],
             designator=dictionary["designator"],
         )
+
+# TODO: We should make this generic for all PCBs and change all `pcbdoc` references to `pcb`
+# TODO: We should default to generating a BOM using only the project file + schematics.
+#   Using PCB to generate the BOM should be an option flag, but we shouldn't be combining
+#   PCB and schematic BOMs.
 
 
 def generate_bom_for_altium(
@@ -279,22 +286,9 @@ def _extract_all_pcbdoc_components(
     Extract all the components from a PcbDoc file in the repo.
     """
 
-    retry_count = 0
-    while True:
-        retry_count += 1
-        try:
-            pcb_json = repository.get_generated_json(pcbdoc_file, ref=ref)
-            break
-        except NotYetGeneratedException:
-            if retry_count > 20:
-                break
-            # Wait a bit before retrying.
-            time.sleep(0.5)
-            continue
-
     components = []
 
-    component_instances = pcb_json["component_instances"]
+    component_instances = get_all_pcb_components(repository, ref, pcbdoc_file)
 
     for component in component_instances.values():
         components.append(

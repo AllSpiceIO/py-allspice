@@ -9,7 +9,7 @@ import sys
 from contextlib import ExitStack
 
 from allspice import AllSpice
-from allspice.utils.netlist_generation import generate_netlist_for_altium
+from allspice.utils.netlist_generation import generate_netlist
 
 
 if __name__ == "__main__":
@@ -24,8 +24,8 @@ if __name__ == "__main__":
         help="The path to the PCB file in the source repo.",
     )
     parser.add_argument(
-        "--source_branch",
-        help="The branch containing the PrjPcb file. Defaults to main.",
+        "--source_ref",
+        help="The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.",
         default="main",
     )
     parser.add_argument(
@@ -59,11 +59,11 @@ if __name__ == "__main__":
 
     print("Generating PCB Netlist...", file=sys.stderr)
 
-    netlist_rows = generate_netlist_for_altium(
+    netlist_rows = generate_netlist(
         allspice,
         repository,
         pcb_file,
-        args.source_branch,
+        args.source_ref,
     )
 
     with ExitStack() as stack:

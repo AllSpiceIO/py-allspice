@@ -33,8 +33,8 @@ if __name__ == "__main__":
         help="The path to the PCB file in the source repo.",
     )
     parser.add_argument(
-        "--source_branch",
-        help="The branch containing the PrjPcb file. Defaults to main.",
+        "--source_ref",
+        help="The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.",
         default="main",
     )
     parser.add_argument(
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         prjpcb_file,
         pcb_file,
         attributes_mapper,
-        args.source_branch,
+        args.source_ref,
     )
     bom_rows = [
         [

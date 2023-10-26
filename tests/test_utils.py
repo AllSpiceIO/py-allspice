@@ -6,7 +6,7 @@ import pytest
 
 from allspice import AllSpice
 from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
-from allspice.utils.netlist_generation import generate_netlist_for_altium
+from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
 
@@ -90,7 +90,7 @@ def test_netlist_generation(request, instance):
     _setup_for_generation(instance, request.node.name)
     repo = instance.get_repository(instance.get_user().username,
                                    "-".join([test_repo, request.node.name]))
-    netlist = generate_netlist_for_altium(
+    netlist = generate_netlist(
         instance,
         repo,
         "Archimajor.PcbDoc",
