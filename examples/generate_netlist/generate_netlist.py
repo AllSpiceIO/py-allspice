@@ -1,33 +1,24 @@
 #! /usr/bin/env python3
 
-# Generate a BOM from a PrjPcb file.
+# Generate a Netlist from a PcbDoc file.
 # For more information, read the README file in this directory.
 
 import argparse
-import csv
-import json
 import os
 import sys
 from contextlib import ExitStack
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
-
-
-with open("attributes_mapping.json", "r") as f:
-    attributes_mapper = AttributesMapping.from_dict(json.loads(f.read()))
+from allspice.utils.netlist_generation import generate_netlist
 
 
 if __name__ == "__main__":
     # Parse command line arguments. If you're writing a special purpose script,
     # you can hardcode these values instead of using command line arguments.
     parser = argparse.ArgumentParser(
-        prog="generate_bom", description="Generate a BOM from a PrjPcb file."
+        prog="generate_pcb_netlist", description="Generate a netlist from a PCB file."
     )
     parser.add_argument("repository", help="The repo containing the project")
-    parser.add_argument(
-        "prjpcb_file", help="The path to the PrjPcb file in the source repo."
-    )
     parser.add_argument(
         "pcb_file",
         help="The path to the PCB file in the source repo.",
@@ -43,11 +34,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output_file",
-        help="The path to the output file. If absent, the CSV will be output to the command line.",
-    )
-    parser.add_argument(
-        "--attributes_to_extract",
-        help="A comma-seperated list of attributes to extract.",
+        help="The path to the output file. If absent, the output will direct to the command line.",
     )
 
     args = parser.parse_args()
@@ -68,46 +55,33 @@ if __name__ == "__main__":
 
     repo_owner, repo_name = args.repository.split("/")
     repository = allspice.get_repository(repo_owner, repo_name)
-    prjpcb_file = args.prjpcb_file
     pcb_file = args.pcb_file
 
-    print("Generating BOM...", file=sys.stderr)
+    print("Generating PCB Netlist...", file=sys.stderr)
 
-    bom_rows = generate_bom_for_altium(
+    netlist_rows = generate_netlist(
         allspice,
         repository,
-        prjpcb_file,
         pcb_file,
-        attributes_mapper,
         args.source_ref,
     )
-    bom_rows = [
-        [
-            bom_row.description,
-            ", ".join(bom_row.designators),
-            bom_row.quantity,
-            bom_row.manufacturer,
-            bom_row.part_number,
-        ]
-        for bom_row in bom_rows
-    ]
 
     with ExitStack() as stack:
         if args.output_file is not None:
-            f = stack.enter_context(open(args.output_file, "w"))
-            writer = csv.writer(f)
+            writer = stack.enter_context(open(args.output_file, "w"))
         else:
-            writer = csv.writer(sys.stdout)
+            writer = sys.stdout
 
-        header = [
-            "Description",
-            "Designator",
-            "Quantity",
-            "Manufacturer",
-            "Part Number",
-        ]
+        nets = list(netlist_rows.keys())
 
-        writer.writerow(header)
-        writer.writerows(bom_rows)
+        # It's helpful to sort here to generate repeatable netlist files
+        nets.sort()
 
-    print("Generated bom.", file=sys.stderr)
+        # You can change formatting here
+        for net in nets:
+            writer.write(net + "\n")
+            pins_on_net = netlist_rows[net]
+            pins_on_net.sort()
+            writer.write(" " + " ".join(pins_on_net) + "\n")
+
+    print("Generated PCB netlist.", file=sys.stderr)

@@ -20,7 +20,7 @@ python3 generate_bom.py -h
 As of writing, this generates the following help text:
 
 ```
-usage: generate_bom [-h] [--source_branch SOURCE_BRANCH]
+usage: generate_bom [-h] [--source_ref SOURCE_REF]
                     [--allspice_hub_url ALLSPICE_HUB_URL]
                     [--output_file OUTPUT_FILE]
                     repository prjpcb_file pcb_file
@@ -34,8 +34,8 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --source_branch SOURCE_BRANCH
-                        The branch containing the PrjPcb file. Defaults to main.
+  --source_ref SOURCE_ref
+                        The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.
   --allspice_hub_url ALLSPICE_HUB_URL
                         The URL of your AllSpice Hub instance. Defaults to
                         https://hub.allspice.io.
