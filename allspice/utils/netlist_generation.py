@@ -86,7 +86,7 @@ def _extract_all_pcb_components(
             try:
                 net = pin["net_name"]
             except KeyError:
-                logger.warn(
+                logger.warning(
                     f"Unconnected pad: {designator} in component {component['designator']}.")
                 continue
 
