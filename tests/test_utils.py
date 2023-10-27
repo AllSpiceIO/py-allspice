@@ -54,7 +54,7 @@ def _setup_for_generation(instance, test_name):
     )
 
 
-def _sort_function(x: BomEntry) -> str:
+def _bom_entry_sort_key(x: BomEntry) -> str:
     ''' sort BOM list by this criteria'''
     if len(x.designators):
         return sorted(x.designators)[0]
@@ -93,7 +93,7 @@ def test_bom_generation(request, instance):
             bom_row.part_number,
         ]
         # Sort by designator
-        for bom_row in sorted(bom, key=_sort_function)
+        for bom_row in sorted(bom, key=_bom_entry_sort_key)
     ]
 
     writer = csv.writer(output, lineterminator="\n")

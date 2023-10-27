@@ -18,7 +18,7 @@ with open("attributes_mapping.json", "r") as f:
     attributes_mapper = AttributesMapping.from_dict(json.loads(f.read()))
 
 
-def sort_function(x: BomEntry) -> str:
+def bom_entry_sort_key(x: BomEntry) -> str:
     ''' sort BOM list by this criteria'''
     if len(x.designators):
         return sorted(x.designators)[0]
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             bom_row.part_number,
         ]
         # Sort by designator
-        for bom_row in sorted(bom_rows, key=sort_function)
+        for bom_row in sorted(bom_rows, key=bom_entry_sort_key)
     ]
 
     with ExitStack() as stack:
