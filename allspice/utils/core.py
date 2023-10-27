@@ -17,16 +17,13 @@ def get_all_pcb_components(
     """
 
     retry_count = 0
-    while True:
+    while retry_count < 60:
         retry_count += 1
         try:
             pcb_json = repository.get_generated_json(pcb_file, ref=ref)
-            break
+            return pcb_json["component_instances"]
         except NotYetGeneratedException:
-            if retry_count > 60:
-                break
             # Wait a bit before retrying.
             time.sleep(0.25)
             continue
-
-    return pcb_json["component_instances"]
+    raise Exception(f"Fetching file {pcb_file} in {repository} ref={ref} exceeded max retries.")

@@ -257,10 +257,13 @@ def _extract_all_schdoc_components(
 
     all_components = []
     # If the file is not yet generated, we'll retry a few times.
-    while any(retry_counter):
+    while any(i > 0 for i in retry_counter):
         for idx in range(len(retry_counter)):
-            if retry_counter[idx] <= 0:
+            if retry_counter[idx] < 0:
                 continue
+            elif retry_counter[idx] == 0:
+                raise Exception(
+                    f"Fetching file {schdoc_files_in_repo[idx].path} in {repository} ref={ref} exceeded max retries.")
 
             retry_counter[idx] -= 1
 
@@ -272,7 +275,7 @@ def _extract_all_schdoc_components(
                         attributes_mapping,
                     )
                 )
-                retry_counter[idx] = 0
+                retry_counter[idx] = -1
             except NotYetGeneratedException:
                 pass
             if any(retry_counter):
