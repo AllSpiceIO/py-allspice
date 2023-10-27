@@ -943,6 +943,14 @@ class Repository(ApiObject):
         data.update({"sha": file_sha, "content": content})
         return self.allspice_client.requests_put(url, data)
 
+    def delete_file(self, file_path: str, file_sha: str, data: Optional[dict] = None):
+        """https://hub.allspice.io/api/swagger#/repository/repoDeleteFile"""
+        if not data:
+            data = {}
+        url = f"/repos/{self.owner.username}/{self.name}/contents/{file_path}"
+        data.update({"sha": file_sha})
+        return self.allspice_client.requests_delete(url, data)
+
     def get_archive(
             self,
             ref: Ref = "main",
