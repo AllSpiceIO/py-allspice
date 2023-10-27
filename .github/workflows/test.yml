@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "0 5 * * *"
 
 jobs:
   test:
@@ -12,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.10", "3.11", "3.12"]
     if: github.repository == 'AllSpiceIO/py-allspice'
 
     services:
@@ -94,3 +96,31 @@ jobs:
       - name: Test with pytest
         run: |
           python -m pytest
+
+# We might want to consider moving this to a new workflow if we add addition test jobs
+  notifications:
+    name: Notifications
+    runs-on: ubuntu-22.04
+    needs: [test]
+    if: always()
+    steps:
+      - name: Slack Notification
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ needs.test.result == 'success' && 'good' || needs.test.result == 'failure' && 'danger' || 'warning' }}",
+                  "fields": [
+                    {
+                      "title": "py-allspice CI: ${{ needs.test.result }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+                      "value": "GitHub Action build result: ${{ needs.test.result }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_CI }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
