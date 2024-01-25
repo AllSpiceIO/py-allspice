@@ -1,3 +1,4 @@
+import base64
 import csv
 import dataclasses
 import uuid
@@ -5,10 +6,11 @@ import uuid
 import pytest
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
+from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium, _get_file_content
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
+test_branch = "branch_" + uuid.uuid4().hex[:8]
 
 
 @pytest.fixture(scope="session")
@@ -69,6 +71,69 @@ def test_bom_generation(request, instance):
         attributes_mapping,
         # We hard-code a ref so that this test is reproducible.
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+    assert len(bom) == 107
+
+    bom_as_dicts = []
+    # We have to do this manually because of how csv.DictWriter works.
+    for item in bom:
+        entry_as_dict = {}
+        for (key, value) in dataclasses.asdict(item).items():
+            entry_as_dict[key] = str(value) if value is not None else ""
+        bom_as_dicts.append(entry_as_dict)
+
+    with open("tests/data/archimajor_bom_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom_as_dicts):
+            assert row == expected_row
+
+
+def test_bom_generation_with_odd_line_endings(request, instance):
+    _setup_for_generation(instance, request.node.name)
+    repo = instance.get_repository(instance.get_user().username,
+                                   "-".join([test_repo, request.node.name]))
+    # We hard-code a ref so that this test is reproducible.
+    ref = "95719adde8107958bf40467ee092c45b6ddaba00"
+    attributes_mapping = AttributesMapping(
+        description=["PART DESCRIPTION"],
+        designator=["Designator"],
+        manufacturer=["Manufacturer", "MANUFACTURER"],
+        part_number=["PART", "MANUFACTURER #"],
+    )
+
+    new_branch_name = "-".join([test_branch, request.node.name])
+    repo.add_branch(ref, new_branch_name)
+    ref = new_branch_name
+
+    files_in_repo = repo.get_git_content(ref=ref)
+    prjpcb_file = next((x for x in files_in_repo if x.path == "Archimajor.PrjPcb"), None)
+    assert prjpcb_file is not None
+
+    original_prjpcb_sha = prjpcb_file.sha
+    encoded_content = repo.get_file_content(prjpcb_file, ref=ref)
+    prjpcb_content = base64.b64decode(encoded_content).decode("utf-8")
+    new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
+    new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
+    repo.change_file(
+        "Archimajor.PrjPcb",
+        original_prjpcb_sha,
+        new_content_econded,
+        {"branch": ref}
+    )
+
+    # Sanity check that the file was changed.
+    prjpcb_content_now = _get_file_content(repo, "Archimajor.PrjPcb", ref)
+    assert prjpcb_content_now != prjpcb_content
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        "Archimajor.PcbDoc",
+        attributes_mapping,
+        # Note that ref here is the branch, not a commit sha as in the previous
+        # test.
+        ref=ref,
     )
     assert len(bom) == 107
 

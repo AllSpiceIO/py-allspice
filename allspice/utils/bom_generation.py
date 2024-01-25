@@ -183,7 +183,9 @@ def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> list[str]:
     Get a list of SchDoc files from a PrjPcb file.
     """
 
-    pattern = re.compile(r"DocumentPath=(.*?SchDoc)\r\n")
+    # Sometimes the SchDoc file can use \n\r instead of CRLF line endings. 
+    # Unfortunately, it looks like $ even with re.M doesn't(?) match \n\r.
+    pattern = re.compile(r"DocumentPath=(.*?SchDoc)(\r\n|\n\r|\n)")
     return [match.group(1) for match in pattern.finditer(prjpcb_file_content)]
 
 
