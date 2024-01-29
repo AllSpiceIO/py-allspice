@@ -1,6 +1,6 @@
 # ruff: noqa: F401
 
-from .allspice import (
+from allspice import (
     AllSpice,
     User,
     Organization,
