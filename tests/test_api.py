@@ -348,6 +348,17 @@ def test_create_branch(instance):
     assert len(branches) == number_of_branches + 1
 
 
+def test_create_branch_from_str_ref(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    branches = repo.get_branches()
+    number_of_branches = len(branches)
+    new_branch_name = "branch-" + uuid.uuid4().hex[:8]
+    repo.add_branch("master", new_branch_name)
+    branches = repo.get_branches()
+    assert len(branches) == number_of_branches + 1
+
+
 def test_create_team(instance):
     org = Organization.request(instance, test_org)
     team = instance.create_team(org, test_team, "descr")

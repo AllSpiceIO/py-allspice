@@ -513,10 +513,16 @@ class Repository(ApiObject):
         )
         return Branch.parse_response(self.allspice_client, result)
 
-    def add_branch(self, create_from: Branch, newname: str) -> "Branch":
+    def add_branch(self, create_from: Ref, newname: str) -> "Branch":
         """Add a branch to the repository"""
         # Note: will only work with gitea 1.13 or higher!
-        data = {"new_branch_name": newname, "old_branch_name": create_from.name}
+
+        ref_name = Util.data_params_for_ref(create_from)
+        if "ref" not in ref_name:
+            raise ValueError("create_from must be a Branch, Commit or string")
+        ref_name = ref_name["ref"]
+
+        data = {"new_branch_name": newname, "old_ref_name": ref_name}
         result = self.allspice_client.requests_post(
             Repository.REPO_BRANCHES % (self.owner.username, self.name), data=data
         )

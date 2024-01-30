@@ -12,6 +12,8 @@ from ..allspice import AllSpice
 from ..apiobject import Content, Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
+PRJPCB_SCHDOC_REGEX = re.compile(r"DocumentPath=(.*?SchDoc)(\r\n|\n\r|\n)")
+
 
 @dataclass
 class SchematicComponent:
@@ -183,8 +185,9 @@ def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> list[str]:
     Get a list of SchDoc files from a PrjPcb file.
     """
 
-    pattern = re.compile(r"DocumentPath=(.*?SchDoc)\r\n")
-    return [match.group(1) for match in pattern.finditer(prjpcb_file_content)]
+    # Sometimes the SchDoc file can use \n\r instead of CRLF line endings.
+    # Unfortunately, it looks like $ even with re.M doesn't(?) match \n\r.
+    return [match.group(1) for match in PRJPCB_SCHDOC_REGEX.finditer(prjpcb_file_content)]
 
 
 def _schdoc_component_from_attributes(
