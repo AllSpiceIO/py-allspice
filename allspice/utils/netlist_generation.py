@@ -50,9 +50,7 @@ def generate_netlist(
     :return: A list of netlist entries.
     """
 
-    allspice_client.logger.info(
-        f"Generating netlist for {repository.name=} on {ref=}"
-    )
+    allspice_client.logger.info(f"Generating netlist for {repository.name=} on {ref=}")
     allspice_client.logger.info(f"Fetching {pcb_file=}")
 
     pcb_components = _extract_all_pcb_components(allspice_client.logger, repository, ref, pcb_file)
@@ -80,25 +78,20 @@ def _extract_all_pcb_components(
                 designator = pin["designator"]
             except KeyError:
                 logger.warn(
-                    f"No pad designator: pad in component {component['designator']} has no defined designator.")
+                    f"No pad designator: pad in component {component['designator']} has no defined designator."
+                )
                 continue
 
             try:
                 net = pin["net_name"]
             except KeyError:
                 logger.warning(
-                    f"Unconnected pad: {designator} in component {component['designator']}.")
+                    f"Unconnected pad: {designator} in component {component['designator']}."
+                )
                 continue
 
-            pins.append(ComponentPin(
-                designator=designator,
-                net=net
-            ))
-        components.append(
-            PcbComponent(
-                designator=component["designator"],
-                pins=pins)
-        )
+            pins.append(ComponentPin(designator=designator, net=net))
+        components.append(PcbComponent(designator=component["designator"], pins=pins))
 
     return components
 
@@ -114,5 +107,6 @@ def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry]
         for pin in component.pins:
             if pin.net:
                 netlist_entries_by_net.setdefault(pin.net, []).append(
-                    component.designator + "." + str(pin.designator))
+                    component.designator + "." + str(pin.designator)
+                )
     return netlist_entries_by_net

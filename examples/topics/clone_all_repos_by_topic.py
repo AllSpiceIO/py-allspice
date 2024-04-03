@@ -9,7 +9,7 @@ import subprocess
 
 from allspice import AllSpice, Repository
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("topic", help="Topic to clone repos from")
     parser.add_argument("--allspice_url", help="URL of AllSpice server")

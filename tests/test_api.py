@@ -5,8 +5,18 @@ import time
 import pytest
 import uuid
 
-from allspice import AllSpice, User, Organization, Team, Repository, Issue, Milestone, \
-    DesignReview, Branch, Comment
+from allspice import (
+    AllSpice,
+    User,
+    Organization,
+    Team,
+    Repository,
+    Issue,
+    Milestone,
+    DesignReview,
+    Branch,
+    Comment,
+)
 from allspice import NotFoundException
 from allspice.apiobject import Util
 from allspice.exceptions import NotYetGeneratedException
@@ -16,22 +26,21 @@ from allspice.exceptions import NotYetGeneratedException
 
 @pytest.fixture(scope="session")
 def port(pytestconfig):
-    '''Load --port command-line arg if set'''
+    """Load --port command-line arg if set"""
     return pytestconfig.getoption("port")
 
 
 @pytest.fixture
 def instance(port, scope="module"):
     try:
-        g = AllSpice(f"http://localhost:{port}", open(".token",
-                     "r").read().strip(), ratelimiting=None)
+        g = AllSpice(
+            f"http://localhost:{port}", open(".token", "r").read().strip(), ratelimiting=None
+        )
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
-        assert (
-            False
-        ), f"AllSpice Hub could not load. \
+        assert False, f"AllSpice Hub could not load. \
                 - Instance running at http://localhost:{port} \
                 - Token at .token   \
                     ?"
@@ -90,7 +99,7 @@ def test_change_user(instance):
     new_fullname = "Other Test Full Name"
     user.full_name = new_fullname
     user.commit(user.username, 0)
-    del (user)
+    del user
     user = instance.get_user_by_name(test_user)
     assert user.full_name == new_fullname
     assert user.location == location
@@ -288,11 +297,10 @@ def test_list_files_and_content(instance):
 
 def test_create_file(instance):
     TESTFILE_CONENTE = "TestStringFileContent"
-    TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, 'utf-8'))
+    TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, "utf-8"))
     org = Organization.request(instance, test_org)
     repo = org.get_repository(test_repo)
-    repo.create_file("testfile.md",
-                     content=TESTFILE_CONENTE_B64.decode("ascii"))
+    repo.create_file("testfile.md", content=TESTFILE_CONENTE_B64.decode("ascii"))
     # test if putting was successful
     content = repo.get_git_content()
     readmes = [c for c in content if c.name == "testfile.md"]
@@ -304,15 +312,14 @@ def test_create_file(instance):
 
 def test_change_file(instance):
     TESTFILE_CONENTE = "TestStringFileContent with changed content now"
-    TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, 'utf-8'))
+    TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, "utf-8"))
     org = Organization.request(instance, test_org)
     repo = org.get_repository(test_repo)
     # figure out the sha of the file to change
     content = repo.get_git_content()
     readmes = [c for c in content if c.name == "testfile.md"]
     # change
-    repo.change_file("testfile.md", readmes[0].sha,
-                     content=TESTFILE_CONENTE_B64.decode("ascii"))
+    repo.change_file("testfile.md", readmes[0].sha, content=TESTFILE_CONENTE_B64.decode("ascii"))
     # test if putting was successful
     content = repo.get_git_content()
     readmes = [c for c in content if c.name == "testfile.md"]
@@ -395,10 +402,7 @@ def test_create_team_without_units_map(instance):
 def test_create_team_with_units_map(instance):
     org = Organization.request(instance, test_org)
     team = instance.create_team(
-        org,
-        test_team + "2",
-        "descr",
-        units_map={"repo.code": "write", "repo.wiki": "admin"}
+        org, test_team + "2", "descr", units_map={"repo.code": "write", "repo.wiki": "admin"}
     )
     assert set(team.units) == set(["repo.code", "repo.wiki"])
     assert team.units_map == {"repo.code": "write", "repo.wiki": "admin"}
@@ -504,8 +508,16 @@ def test_change_issue(instance):
     assert issue3.milestone is not None
     assert issue3.milestone.description == "this is only a teststone2"
     issues = repo.get_issues()
-    assert len([issue for issue in issues
-                if issue.milestone is not None and issue.milestone.title == ms_title]) > 0
+    assert (
+        len(
+            [
+                issue
+                for issue in issues
+                if issue.milestone is not None and issue.milestone.title == ms_title
+            ]
+        )
+        > 0
+    )
 
 
 def test_create_issue_comment(instance):
@@ -565,8 +577,7 @@ def test_create_issue_attachment_with_name(instance):
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
     comment = issue.create_comment("this is a comment that will have an attachment")
-    attachment = comment.create_attachment(open("requirements.txt", "rb"),
-                                           "something else.txt")
+    attachment = comment.create_attachment(open("requirements.txt", "rb"), "something else.txt")
     assert attachment.name == "something else.txt"
     assert attachment.download_count == 0
 
@@ -715,9 +726,11 @@ def test_delete_repo_orgowned(instance):
 def test_change_repo_ownership_org(instance):
     old_org = Organization.request(instance, test_org)
     user = User.request(instance, test_user)
-    new_org = instance.create_org(user, test_org+"_repomove", "Org for testing moving repositories")
+    new_org = instance.create_org(
+        user, test_org + "_repomove", "Org for testing moving repositories"
+    )
     new_team = instance.create_team(new_org, test_team + "_repomove", "descr")
-    repo_name = test_repo+"_repomove"
+    repo_name = test_repo + "_repomove"
     repo = instance.create_repo(old_org, repo_name, "descr")
     repo.transfer_ownership(new_org, set([new_team]))
     assert repo_name not in [repo.name for repo in old_org.get_repositories()]
@@ -727,7 +740,7 @@ def test_change_repo_ownership_org(instance):
 def test_change_repo_ownership_user(instance):
     old_org = Organization.request(instance, test_org)
     user = User.request(instance, test_user)
-    repo_name = test_repo+"_repomove"
+    repo_name = test_repo + "_repomove"
     repo = instance.create_repo(old_org, repo_name, "descr")
     repo.transfer_ownership(user)
     assert repo_name not in [repo.name for repo in old_org.get_repositories()]

@@ -15,7 +15,7 @@ from allspice import AllSpice
 
 
 def pytest_addoption(parser):
-    '''add option to specify localhost port for tests'''
+    """add option to specify localhost port for tests"""
     parser.addoption("--port", action="store", default="3000")
 
 
@@ -34,9 +34,7 @@ def instance(scope="module"):
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
-        assert (
-            False
-        ), "AllSpice Hub could not load. \
+        assert False, "AllSpice Hub could not load. \
                 - Instance running at http://localhost:3000 \
                 - Token at .token   \
                     ?"

@@ -86,6 +86,7 @@ class AttributesMapping:
             designator=dictionary["designator"],
         )
 
+
 # TODO: We should make this generic for all PCBs and change all `pcbdoc` references to `pcb`
 # TODO: We should default to generating a BOM using only the project file + schematics.
 #   Using PCB to generate the BOM should be an option flag, but we shouldn't be combining
@@ -172,9 +173,7 @@ def _get_file_content(repo, file_path, ref) -> str:
     files_in_repo = repo.get_git_content(ref=ref)
     file = next((x for x in files_in_repo if x.path == file_path), None)
     if not file:
-        raise ValueError(
-            f"File {file_path} not found in repo {repo.name} at ref {ref.name}"
-        )
+        raise ValueError(f"File {file_path} not found in repo {repo.name} at ref {ref.name}")
 
     content = repo.get_file_content(file, ref=ref)
     return base64.b64decode(content).decode("utf-8")
@@ -332,9 +331,7 @@ def _combine_components_to_ungrouped_bom(
             schdoc_designator = pcbdoc_component.schematic_link
             pcb_designator = pcbdoc_component.designator
 
-            pcb_designators_for_schdoc_designators[schdoc_designator].append(
-                pcb_designator
-            )
+            pcb_designators_for_schdoc_designators[schdoc_designator].append(pcb_designator)
         else:
             orphan_pcb_components.append(pcbdoc_component)
 
@@ -384,8 +381,6 @@ def _group_bom_entries(bom_entries: list[BomEntry]) -> list[BomEntry]:
                 bom_entries_by_part_number[bom_entry.part_number].designators.extend(
                     bom_entry.designators
                 )
-                bom_entries_by_part_number[
-                    bom_entry.part_number
-                ].quantity += bom_entry.quantity
+                bom_entries_by_part_number[bom_entry.part_number].quantity += bom_entry.quantity
 
     return list(bom_entries_by_part_number.values())

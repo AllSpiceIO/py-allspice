@@ -86,9 +86,7 @@ def fetch_price_for_part(part_number: str) -> dict[int, float]:
         )
         return {}
 
-    prices = {
-        int(price["quantity"]): float(price["price"]) for price in reference_prices
-    }
+    prices = {int(price["quantity"]): float(price["price"]) for price in reference_prices}
 
     return prices
 
@@ -121,9 +119,7 @@ if __name__ == "__main__":
         bom_csv = csv.DictReader(bom_file)
 
         parts = [
-            part
-            for part in bom_csv
-            if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
+            part for part in bom_csv if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
         ]
 
     print(f"Computing COGS for {len(parts)} parts", file=sys.stderr)
@@ -167,11 +163,7 @@ if __name__ == "__main__":
             try:
                 prices = prices_for_parts[part_number]
                 largest_breakpoint_less_than_qty = max(
-                    [
-                        breakpoint
-                        for breakpoint in prices.keys()
-                        if breakpoint <= quantity
-                    ]
+                    [breakpoint for breakpoint in prices.keys() if breakpoint <= quantity]
                 )
                 price_at_breakpoint = prices[largest_breakpoint_less_than_qty]
                 current_row.append(price_at_breakpoint)

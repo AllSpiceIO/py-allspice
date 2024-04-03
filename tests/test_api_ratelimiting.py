@@ -6,8 +6,9 @@ from allspice import AllSpice
 
 @pytest.fixture(scope="session")
 def port(pytestconfig):
-    '''Load --port command-line arg if set'''
+    """Load --port command-line arg if set"""
     return pytestconfig.getoption("port")
+
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
 
@@ -24,9 +25,7 @@ def instance(port, scope="module"):
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
-        assert (
-            False
-        ), f"AllSpice Hub could not load. \
+        assert False, f"AllSpice Hub could not load. \
                 - Instance running at http://localhost:{port} \
                 - Token at .token   \
                     ?"

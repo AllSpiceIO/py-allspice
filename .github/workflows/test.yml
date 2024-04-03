@@ -73,7 +73,7 @@ jobs:
           pip install -r requirements-test.txt
       - name: Check formatting
         run: |
-          autopep8 --diff --recursive --exit-code .
+          ruff format --diff .
       - name: Lint with ruff
         run: |
           ruff --target-version=py310 .
