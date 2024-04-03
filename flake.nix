@@ -10,14 +10,14 @@
         pkgs = import nixpkgs { system = "${system}"; config.allowUnfree = true; };
       in
       {
-        devShell = pkgs.mkShell { 
-          buildInputs = [ 
+        devShell = pkgs.mkShell {
+          buildInputs = [
             pkgs.figlet
 
             pkgs.ruff
 
-            (pkgs.python3.withPackages (pypkgs: with pypkgs; [requests frozendict pytest autopep8]))
-          ]; 
+            (pkgs.python3.withPackages (pypkgs: with pypkgs; [requests frozendict pytest ruff]))
+          ];
 
           shellHook = ''
             figlet "py-allspice"

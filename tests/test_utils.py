@@ -6,7 +6,11 @@ import uuid
 import pytest
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium, _get_file_content
+from allspice.utils.bom_generation import (
+    AttributesMapping,
+    generate_bom_for_altium,
+    _get_file_content,
+)
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
@@ -15,7 +19,7 @@ test_branch = "branch_" + uuid.uuid4().hex[:8]
 
 @pytest.fixture(scope="session")
 def port(pytestconfig):
-    '''Load --port command-line arg if set'''
+    """Load --port command-line arg if set"""
     return pytestconfig.getoption("port")
 
 
@@ -32,9 +36,7 @@ def instance(port):
 
         return g
     except Exception:
-        assert (
-            False
-        ), f"AllSpice Hub could not load. Is there: \
+        assert False, f"AllSpice Hub could not load. Is there: \
                 - an Instance running at http://localhost:{port} \
                 - a Token at .token \
                     ?"
@@ -55,8 +57,9 @@ def _setup_for_generation(instance, test_name):
 
 def test_bom_generation(request, instance):
     _setup_for_generation(instance, request.node.name)
-    repo = instance.get_repository(instance.get_user().username,
-                                   "-".join([test_repo, request.node.name]))
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
     attributes_mapping = AttributesMapping(
         description=["PART DESCRIPTION"],
         designator=["Designator"],
@@ -78,7 +81,7 @@ def test_bom_generation(request, instance):
     # We have to do this manually because of how csv.DictWriter works.
     for item in bom:
         entry_as_dict = {}
-        for (key, value) in dataclasses.asdict(item).items():
+        for key, value in dataclasses.asdict(item).items():
             entry_as_dict[key] = str(value) if value is not None else ""
         bom_as_dicts.append(entry_as_dict)
 
@@ -90,8 +93,9 @@ def test_bom_generation(request, instance):
 
 def test_bom_generation_with_odd_line_endings(request, instance):
     _setup_for_generation(instance, request.node.name)
-    repo = instance.get_repository(instance.get_user().username,
-                                   "-".join([test_repo, request.node.name]))
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
     # We hard-code a ref so that this test is reproducible.
     ref = "95719adde8107958bf40467ee092c45b6ddaba00"
     attributes_mapping = AttributesMapping(
@@ -114,12 +118,7 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     prjpcb_content = base64.b64decode(encoded_content).decode("utf-8")
     new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
     new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
-    repo.change_file(
-        "Archimajor.PrjPcb",
-        original_prjpcb_sha,
-        new_content_econded,
-        {"branch": ref}
-    )
+    repo.change_file("Archimajor.PrjPcb", original_prjpcb_sha, new_content_econded, {"branch": ref})
 
     # Sanity check that the file was changed.
     prjpcb_content_now = _get_file_content(repo, "Archimajor.PrjPcb", ref)
@@ -141,7 +140,7 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     # We have to do this manually because of how csv.DictWriter works.
     for item in bom:
         entry_as_dict = {}
-        for (key, value) in dataclasses.asdict(item).items():
+        for key, value in dataclasses.asdict(item).items():
             entry_as_dict[key] = str(value) if value is not None else ""
         bom_as_dicts.append(entry_as_dict)
 
@@ -153,8 +152,9 @@ def test_bom_generation_with_odd_line_endings(request, instance):
 
 def test_netlist_generation(request, instance):
     _setup_for_generation(instance, request.node.name)
-    repo = instance.get_repository(instance.get_user().username,
-                                   "-".join([test_repo, request.node.name]))
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
     netlist = generate_netlist(
         instance,
         repo,

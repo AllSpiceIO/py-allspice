@@ -7,7 +7,12 @@ import requests
 import urllib3
 
 from .apiobject import User, Organization, Repository, Team
-from .exceptions import NotFoundException, ConflictException, AlreadyExistsException, NotYetGeneratedException
+from .exceptions import (
+    NotFoundException,
+    ConflictException,
+    AlreadyExistsException,
+    NotYetGeneratedException,
+)
 from .ratelimiter import RateLimitedSession
 
 
@@ -73,7 +78,8 @@ class AllSpice:
             self.headers["Authorization"] = "token " + token_text
         if auth:
             self.logger.warning(
-                "Using basic auth is not recommended. Prefer using a token instead.")
+                "Using basic auth is not recommended. Prefer using a token instead."
+            )
             self.requests.auth = auth
 
         # Manage SSL certification verification
@@ -94,7 +100,8 @@ class AllSpice:
                 raise NotFoundException(message)
             if request.status_code in [403]:
                 raise Exception(
-                    f"Unauthorized: {request.url} - Check your permissions and try again! ({message})")
+                    f"Unauthorized: {request.url} - Check your permissions and try again! ({message})"
+                )
             if request.status_code in [409]:
                 raise ConflictException(message)
             if request.status_code in [503]:
@@ -104,7 +111,7 @@ class AllSpice:
 
     @staticmethod
     def parse_result(result) -> Dict:
-        """ Parses the result-JSON to a dict. """
+        """Parses the result-JSON to a dict."""
         if result.text and len(result.text) > 3:
             return json.loads(result.text)
         return {}
@@ -160,27 +167,29 @@ class AllSpice:
     def requests_put(self, endpoint: str, data: Optional[dict] = None):
         if not data:
             data = {}
-        request = self.requests.put(self.__get_url(
-            endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.put(
+            self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
+        )
         if request.status_code not in [200, 204]:
             message = f"Received status code: {request.status_code} ({request.url}) {request.text}"
             self.logger.error(message)
             raise Exception(message)
 
     def requests_delete(self, endpoint: str, data: Optional[dict] = None):
-        request = self.requests.delete(self.__get_url(
-            endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.delete(
+            self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
+        )
         if request.status_code not in [200, 204]:
             message = f"Received status code: {request.status_code} ({request.url})"
             self.logger.error(message)
             raise Exception(message)
 
     def requests_post(
-            self,
-            endpoint: str,
-            data: Optional[dict] = None,
-            params: Optional[dict] = None,
-            files: Optional[dict] = None,
+        self,
+        endpoint: str,
+        data: Optional[dict] = None,
+        params: Optional[dict] = None,
+        files: Optional[dict] = None,
     ):
         """
         Make a POST call to the endpoint.
@@ -207,19 +216,21 @@ class AllSpice:
         request = self.requests.post(self.__get_url(endpoint), **args)
 
         if request.status_code not in [200, 201, 202]:
-            if ("already exists" in request.text or "e-mail already in use" in request.text):
+            if "already exists" in request.text or "e-mail already in use" in request.text:
                 self.logger.warning(request.text)
                 raise AlreadyExistsException()
             self.logger.error(f"Received status code: {request.status_code} ({request.url})")
             self.logger.error(f"With info: {data} ({self.headers})")
             self.logger.error(f"Answer: {request.text}")
             raise Exception(
-                f"Received status code: {request.status_code} ({request.url}), {request.text}")
+                f"Received status code: {request.status_code} ({request.url}), {request.text}"
+            )
         return self.parse_result(request)
 
     def requests_patch(self, endpoint: str, data: dict):
-        request = self.requests.patch(self.__get_url(
-            endpoint), headers=self.headers, data=json.dumps(data))
+        request = self.requests.patch(
+            self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
+        )
         if request.status_code not in [200, 201]:
             error_message = f"Received status code: {request.status_code} ({request.url}) {data}"
             self.logger.error(error_message)
@@ -267,17 +278,17 @@ class AllSpice:
         return Repository.parse_response(self, result)
 
     def create_user(
-            self,
-            user_name: str,
-            email: str,
-            password: str,
-            full_name: Optional[str] = None,
-            login_name: Optional[str] = None,
-            change_pw=True,
-            send_notify=True,
-            source_id=0,
+        self,
+        user_name: str,
+        email: str,
+        password: str,
+        full_name: Optional[str] = None,
+        login_name: Optional[str] = None,
+        change_pw=True,
+        send_notify=True,
+        source_id=0,
     ):
-        """ Create User.
+        """Create User.
         Throws:
             AlreadyExistsException, if the User exists already
             Exception, if something else went wrong.
@@ -314,19 +325,19 @@ class AllSpice:
         return user
 
     def create_repo(
-            self,
-            repoOwner: Union[User, Organization],
-            repoName: str,
-            description: str = "",
-            private: bool = False,
-            autoInit=True,
-            gitignores: Optional[str] = None,
-            license: Optional[str] = None,
-            readme: str = "Default",
-            issue_labels: Optional[str] = None,
-            default_branch="master",
+        self,
+        repoOwner: Union[User, Organization],
+        repoName: str,
+        description: str = "",
+        private: bool = False,
+        autoInit=True,
+        gitignores: Optional[str] = None,
+        license: Optional[str] = None,
+        readme: str = "Default",
+        issue_labels: Optional[str] = None,
+        default_branch="master",
     ):
-        """ Create a Repository as the administrator
+        """Create a Repository as the administrator
 
         Throws:
             AlreadyExistsException: If the Repository exists already.
@@ -361,13 +372,13 @@ class AllSpice:
         return Repository.parse_response(self, result)
 
     def create_org(
-            self,
-            owner: User,
-            orgName: str,
-            description: str,
-            location="",
-            website="",
-            full_name="",
+        self,
+        owner: User,
+        orgName: str,
+        description: str,
+        location="",
+        website="",
+        full_name="",
     ):
         assert isinstance(owner, User)
         result = self.requests_post(
@@ -381,39 +392,33 @@ class AllSpice:
             },
         )
         if "id" in result:
-            self.logger.info(
-                "Successfully created Organization %s" % result["username"]
-            )
+            self.logger.info("Successfully created Organization %s" % result["username"])
         else:
-            self.logger.error(
-                "Organization not created... (gitea: %s)" % result["message"]
-            )
+            self.logger.error("Organization not created... (gitea: %s)" % result["message"])
             self.logger.error(result["message"])
-            raise Exception(
-                "Organization not created... (gitea: %s)" % result["message"]
-            )
+            raise Exception("Organization not created... (gitea: %s)" % result["message"])
         return Organization.parse_response(self, result)
 
     def create_team(
-            self,
-            org: Organization,
-            name: str,
-            description: str = "",
-            permission: str = "read",
-            can_create_org_repo: bool = False,
-            includes_all_repositories: bool = False,
-            units=(
-                "repo.code",
-                "repo.issues",
-                "repo.ext_issues",
-                "repo.wiki",
-                "repo.pulls",
-                "repo.releases",
-                "repo.ext_wiki",
-            ),
-            units_map={},
+        self,
+        org: Organization,
+        name: str,
+        description: str = "",
+        permission: str = "read",
+        can_create_org_repo: bool = False,
+        includes_all_repositories: bool = False,
+        units=(
+            "repo.code",
+            "repo.issues",
+            "repo.ext_issues",
+            "repo.wiki",
+            "repo.pulls",
+            "repo.releases",
+            "repo.ext_wiki",
+        ),
+        units_map={},
     ):
-        """ Creates a Team.
+        """Creates a Team.
 
         Args:
             org (Organization): Organization the Team will be part of.

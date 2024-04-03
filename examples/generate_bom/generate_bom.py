@@ -25,9 +25,7 @@ if __name__ == "__main__":
         prog="generate_bom", description="Generate a BOM from a PrjPcb file."
     )
     parser.add_argument("repository", help="The repo containing the project")
-    parser.add_argument(
-        "prjpcb_file", help="The path to the PrjPcb file in the source repo."
-    )
+    parser.add_argument("prjpcb_file", help="The path to the PrjPcb file in the source repo.")
     parser.add_argument(
         "pcb_file",
         help="The path to the PCB file in the source repo.",
@@ -62,9 +60,7 @@ if __name__ == "__main__":
     if args.allspice_hub_url is None:
         allspice = AllSpice(token_text=auth_token)
     else:
-        allspice = AllSpice(
-            token_text=auth_token, allspice_hub_url=args.allspice_hub_url
-        )
+        allspice = AllSpice(token_text=auth_token, allspice_hub_url=args.allspice_hub_url)
 
     repo_owner, repo_name = args.repository.split("/")
     repository = allspice.get_repository(repo_owner, repo_name)
