@@ -2,7 +2,18 @@ from __future__ import annotations
 
 import logging
 from functools import cached_property
-from typing import ClassVar, List, Tuple, Dict, Sequence, Optional, Union, Set, IO, Literal
+from typing import (
+    ClassVar,
+    List,
+    Tuple,
+    Dict,
+    Sequence,
+    Optional,
+    Union,
+    Set,
+    IO,
+    Literal,
+)
 from datetime import datetime, timezone
 from enum import Enum
 
@@ -381,6 +392,9 @@ class Repository(ApiObject):
     REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
     REPO_GET_TOPICS = "/repos/{owner}/{repo}/topics"
     REPO_ADD_TOPIC = "/repos/{owner}/{repo}/topics/{topic}"
+    REPO_GET_RELEASES = "/repos/{owner}/{repo}/releases"
+    REPO_GET_LATEST_RELEASE = "/repos/{owner}/{repo}/releases/latest"
+    REPO_GET_RELEASE_BY_TAG = "/repos/{owner}/{repo}/releases/tags/{tag}"
 
     class ArchiveFormat(Enum):
         """
@@ -403,9 +417,11 @@ class Repository(ApiObject):
 
     _fields_to_parsers: ClassVar[dict] = {
         # dont know how to tell apart user and org as owner except form email being empty.
-        "owner": lambda allspice_client, r: Organization.parse_response(allspice_client, r)
-        if r["email"] == ""
-        else User.parse_response(allspice_client, r),
+        "owner": lambda allspice_client, r: (
+            Organization.parse_response(allspice_client, r)
+            if r["email"] == ""
+            else User.parse_response(allspice_client, r)
+        ),
         "updated_at": lambda allspice_client, t: Util.convert_time(t),
     }
 
@@ -678,7 +694,8 @@ class Repository(ApiObject):
         issues = []
         data = {"state": state}
         results = self.allspice_client.requests_get_paginated(
-            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name), params=data
+            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name),
+            params=data,
         )
         for result in results:
             issue = Issue.parse_response(self.allspice_client, result)
@@ -714,7 +731,8 @@ class Repository(ApiObject):
             "title": title,
         }
         result = self.allspice_client.requests_post(
-            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name), data=data
+            Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name),
+            data=data,
         )
         return Issue.parse_response(self.allspice_client, result)
 
@@ -766,13 +784,18 @@ class Repository(ApiObject):
             data["milestone"] = milestone.id
 
         result = self.allspice_client.requests_post(
-            self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username, repo=self.name), data=data
+            self.REPO_DESIGN_REVIEWS.format(owner=self.owner.username, repo=self.name),
+            data=data,
         )
 
         return DesignReview.parse_response(self.allspice_client, result)
 
     def create_milestone(
-        self, title: str, description: str, due_date: Optional[str] = None, state: str = "open"
+        self,
+        title: str,
+        description: str,
+        due_date: Optional[str] = None,
+        state: str = "open",
     ) -> "Milestone":
         url = Repository.REPO_MILESTONES.format(owner=self.owner.username, repo=self.name)
         data = {"title": title, "description": description, "state": state}
@@ -831,7 +854,9 @@ class Repository(ApiObject):
         self.allspice_client.requests_delete(url)
 
     def transfer_ownership(
-        self, new_owner: Union["User", "Organization"], new_teams: Set["Team"] = frozenset()
+        self,
+        new_owner: Union["User", "Organization"],
+        new_teams: Set["Team"] = frozenset(),
     ):
         url = Repository.REPO_TRANSFER.format(owner=self.owner.username, repo=self.name)
         data = {"new_owner": new_owner.username}
@@ -842,7 +867,9 @@ class Repository(ApiObject):
         # TODO: make sure this instance is either updated or discarded
 
     def get_git_content(
-        self: Optional[str] = None, ref: Optional["Ref"] = None, commit: "Optional[Commit]" = None
+        self: Optional[str] = None,
+        ref: Optional["Ref"] = None,
+        commit: "Optional[Commit]" = None,
     ) -> List["Content"]:
         """
         Get a list of all files in the repository.
@@ -999,6 +1026,82 @@ class Repository(ApiObject):
 
         url = self.REPO_ADD_TOPIC.format(owner=self.owner.username, repo=self.name, topic=topic)
         self.allspice_client.requests_put(url)
+
+    def create_release(
+        self,
+        tag_name: str,
+        name: Optional[str],
+        body: Optional[str],
+        draft: bool = False,
+    ):
+        """
+        Create a release for this repository. The release will be created for
+        the tag with the given name. If there is no tag with this name, create
+        the tag first.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoCreateRelease
+        """
+
+        url = self.REPO_GET_RELEASES.format(owner=self.owner.username, repo=self.name)
+        data = {
+            "tag_name": tag_name,
+            "draft": draft,
+        }
+        if name is not None:
+            data["name"] = name
+        if body is not None:
+            data["body"] = body
+        response = self.allspice_client.requests_post(url, data)
+        return Release.parse_response(self.allspice_client, response, self)
+
+    def get_releases(
+        self, draft: Optional[bool] = None, pre_release: Optional[bool] = None
+    ) -> List[Release]:
+        """
+        Get the list of releases for this repository.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoListReleases
+        """
+
+        data = {}
+
+        if draft is not None:
+            data["draft"] = draft
+        if pre_release is not None:
+            data["pre-release"] = pre_release
+
+        url = self.REPO_GET_RELEASES.format(owner=self.owner.username, repo=self.name)
+        responses = self.allspice_client.requests_get_paginated(url, params=data)
+
+        return [
+            Release.parse_response(self.allspice_client, response, self) for response in responses
+        ]
+
+    def get_latest_release(self) -> Release:
+        """
+        Get the latest release for this repository.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetLatestRelease
+        """
+
+        url = self.REPO_GET_LATEST_RELEASE.format(owner=self.owner.username, repo=self.name)
+        response = self.allspice_client.requests_get(url)
+        release = Release.parse_response(self.allspice_client, response, self)
+        return release
+
+    def get_release_by_tag(self, tag: str) -> Release:
+        """
+        Get a release by its tag.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetReleaseByTag
+        """
+
+        url = self.REPO_GET_RELEASE_BY_TAG.format(
+            owner=self.owner.username, repo=self.name, tag=tag
+        )
+        response = self.allspice_client.requests_get(url)
+        release = Release.parse_response(self.allspice_client, response, self)
+        return release
 
     def delete(self):
         self.allspice_client.requests_delete(
@@ -1203,7 +1306,9 @@ class Commit(ReadonlyApiObject):
 
     _fields_to_parsers: ClassVar[dict] = {
         # NOTE: api may return None for commiters that are no allspice users
-        "author": lambda allspice_client, u: User.parse_response(allspice_client, u) if u else None
+        "author": lambda allspice_client, u: (
+            User.parse_response(allspice_client, u) if u else None
+        )
     }
 
     def __eq__(self, other):
@@ -1251,7 +1356,7 @@ class Issue(ApiObject):
         "assignees": lambda allspice_client, us: [
             User.parse_response(allspice_client, u) for u in us
         ],
-        "state": lambda allspice_client, s: Issue.CLOSED if s == "closed" else Issue.OPENED,
+        "state": lambda allspice_client, s: (Issue.CLOSED if s == "closed" else Issue.OPENED),
         # Repository in this request is just a "RepositoryMeta" record, thus request whole object
         "repository": lambda allspice_client, r: Repository.request(
             allspice_client, r["owner"], r["name"]
@@ -1393,8 +1498,8 @@ class DesignReview(ApiObject):
         "assignees": lambda allspice_client, us: [
             User.parse_response(allspice_client, u) for u in us
         ],
-        "base": lambda allspice_client, b: b["ref"],
-        "head": lambda allspice_client, h: h["ref"],
+        "base": lambda _, b: b["ref"],
+        "head": lambda _, h: h["ref"],
         "merged_by": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client, m),
         "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
@@ -1441,7 +1546,9 @@ class DesignReview(ApiObject):
 
         self.allspice_client.requests_put(
             self.MERGE_DESIGN_REVIEW.format(
-                owner=self.repository.owner.username, repo=self.repository.name, index=self.number
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
             ),
             data={"Do": merge_type.value},
         )
@@ -1457,7 +1564,9 @@ class DesignReview(ApiObject):
 
         results = self.allspice_client.requests_get(
             self.GET_COMMENTS.format(
-                owner=self.repository.owner.username, repo=self.repository.name, index=self.number
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
             )
         )
         return [Comment.parse_response(self.allspice_client, result) for result in results]
@@ -1475,7 +1584,9 @@ class DesignReview(ApiObject):
 
         result = self.allspice_client.requests_post(
             self.GET_COMMENTS.format(
-                owner=self.repository.owner.username, repo=self.repository.name, index=self.number
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
             ),
             data={"body": body},
         )
@@ -1553,6 +1664,162 @@ class Team(ApiObject):
     def remove_team_member(self, user_name: str):
         url = f"/teams/{self.id}/members/{user_name}"
         self.allspice_client.requests_delete(url)
+
+
+class Release(ApiObject):
+    """
+    A release on a repo.
+    """
+
+    API_OBJECT = "/repos/{owner}/{repo}/releases/{id}"
+    RELEASE_CREATE_ASSET = "/repos/{owner}/{repo}/releases/{id}/assets"
+    # Note that we don't strictly need the get_assets route, as the release
+    # object already contains the assets.
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    def __eq__(self, other):
+        if not isinstance(other, Release):
+            return False
+        return self.repo == other.repo and self.id == other.id
+
+    def __hash__(self):
+        return hash(self.repo) ^ hash(self.id)
+
+    _fields_to_parsers: ClassVar[dict] = {
+        "author": lambda allspice_client, author: User.parse_response(allspice_client, author),
+    }
+    _patchable_fields: ClassVar[set[str]] = {
+        "body",
+        "draft",
+        "name",
+        "prerelease",
+        "tag_name",
+        "target_commitish",
+    }
+
+    @classmethod
+    def parse_response(cls, allspice_client, result, repo) -> Release:
+        release = super().parse_response(allspice_client, result)
+        Release._add_read_property("repo", repo, release)
+        setattr(
+            release,
+            "_assets",
+            [
+                ReleaseAsset.parse_response(allspice_client, asset, release)
+                for asset in result["assets"]
+            ],
+        )
+        return release
+
+    @classmethod
+    def request(
+        cls,
+        allspice_client,
+        owner: str,
+        repo: str,
+        id: Optional[int] = None,
+    ) -> Release:
+        args = {"owner": owner, "repo": repo, "id": id}
+        release_response = cls._get_gitea_api_object(allspice_client, args)
+        repo = Repository.request(allspice_client, owner, repo)
+        release = cls.parse_response(allspice_client, release_response, repo)
+        return release
+
+    def commit(self):
+        args = {"owner": self.repo.owner.name, "repo": self.repo.name, "id": self.id}
+        self._commit(args)
+
+    def create_asset(self, file: IO, name: Optional[str] = None) -> ReleaseAsset:
+        """
+        Create an asset for this release.
+
+        https://hub.allspice.io/api/swagger#/repository/repoCreateReleaseAsset
+
+        :param file: The file to upload. This should be a file-like object.
+        :param name: The name of the file.
+        :return: The created asset.
+        """
+
+        args = {"files": {"attachment": file}}
+        if name is not None:
+            args["params"] = {"name": name}
+
+        result = self.allspice_client.requests_post(
+            self.RELEASE_CREATE_ASSET.format(
+                owner=self.repo.owner.username,
+                repo=self.repo.name,
+                id=self.id,
+            ),
+            **args,
+        )
+        return ReleaseAsset.parse_response(self.allspice_client, result, self)
+
+    def delete(self):
+        args = {"owner": self.repo.owner.name, "repo": self.repo.name, "id": self.id}
+        self.allspice_client.requests_delete(self.API_OBJECT.format(**args))
+        self.deleted = True
+
+
+class ReleaseAsset(ApiObject):
+    API_OBJECT = "/repos/{owner}/{repo}/releases/{release_id}/assets/{id}"
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    def __eq__(self, other):
+        if not isinstance(other, ReleaseAsset):
+            return False
+        return self.release == other.release and self.id == other.id
+
+    def __hash__(self):
+        return hash(self.release) ^ hash(self.id)
+
+    _fields_to_parsers: ClassVar[dict] = {}
+    _patchable_fields: ClassVar[set[str]] = {
+        "name",
+    }
+
+    @classmethod
+    def parse_response(cls, allspice_client, result, release) -> ReleaseAsset:
+        asset = super().parse_response(allspice_client, result)
+        ReleaseAsset._add_read_property("release", release, asset)
+        return asset
+
+    @classmethod
+    def request(
+        cls,
+        allspice_client,
+        owner: str,
+        repo: str,
+        release_id: int,
+        id: int,
+    ) -> ReleaseAsset:
+        args = {"owner": owner, "repo": repo, "release_id": release_id, "id": id}
+        asset_response = cls._get_gitea_api_object(allspice_client, args)
+        release = Release.request(allspice_client, owner, repo, release_id)
+        asset = cls.parse_response(allspice_client, asset_response, release)
+        return asset
+
+    def commit(self):
+        args = {
+            "owner": self.release.repo.owner,
+            "repo": self.release.repo.name,
+            "release_id": self.release.id,
+            "id": self.id,
+        }
+        self._commit(args)
+
+    def delete(self):
+        args = {
+            "owner": self.release.repo.owner.name,
+            "repo": self.release.repo.name,
+            "release_id": self.release.id,
+            "id": self.id,
+        }
+        self.allspice_client.requests_delete(self.API_OBJECT.format(**args))
+        self.deleted = True
 
 
 class Content(ReadonlyApiObject):

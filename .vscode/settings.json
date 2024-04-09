@@ -2,5 +2,10 @@
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true
-    }
+    },
+    "cSpell.words": [
+        "apiobject",
+        "baseapiobject",
+        "reponame"
+    ]
 }

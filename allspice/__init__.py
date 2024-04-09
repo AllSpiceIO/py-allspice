@@ -13,6 +13,7 @@ from .apiobject import (
     Comment,
     Content,
     DesignReview,
+    Release,
 )
 from .exceptions import NotFoundException, AlreadyExistsException
 
@@ -31,4 +32,5 @@ __all__ = [
     "Comment",
     "Content",
     "DesignReview",
+    "Release",
 ]
