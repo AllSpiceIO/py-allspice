@@ -16,7 +16,7 @@
 
             pkgs.ruff
 
-            (pkgs.python3.withPackages (pypkgs: with pypkgs; [requests frozendict pytest ruff]))
+            (pkgs.python3.withPackages (pypkgs: with pypkgs; [requests frozendict pytest]))
           ];
 
           shellHook = ''

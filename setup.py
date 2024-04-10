@@ -5,7 +5,7 @@ with open("README.md") as readme_file:
 
 setup_args = dict(
     name="py-allspice",
-    version="{{VERSION_PLACEHOLDER}}",
+    version="2.4.1-dev",
     description="A python wrapper for the AllSpice Hub API",
     long_description_content_type="text/markdown",
     long_description=README,

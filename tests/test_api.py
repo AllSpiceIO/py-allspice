@@ -34,7 +34,9 @@ def port(pytestconfig):
 def instance(port, scope="module"):
     try:
         g = AllSpice(
-            f"http://localhost:{port}", open(".token", "r").read().strip(), ratelimiting=None
+            f"http://localhost:{port}",
+            open(".token", "r").read().strip(),
+            ratelimiting=None,
         )
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
@@ -168,7 +170,10 @@ def test_add_content_to_repo(instance):
     file_content = base64.b64encode(file_content).decode("utf-8")
     repo.create_file("test.pcbdoc", file_content)
     assert len(repo.get_commits()) == 2
-    assert [content.name for content in repo.get_git_content()] == ["README.md", "test.pcbdoc"]
+    assert [content.name for content in repo.get_git_content()] == [
+        "README.md",
+        "test.pcbdoc",
+    ]
 
 
 def test_get_json_before_generated(instance):
@@ -348,22 +353,21 @@ def test_create_branch(instance):
     repo = org.get_repository(test_repo)
     branches = repo.get_branches()
     master = [b for b in branches if b.name == "master"]
-    number_of_branches = len(branches)
     assert len(master) > 0
-    repo.add_branch(master[0], "test_branch")
-    branches = repo.get_branches()
-    assert len(branches) == number_of_branches + 1
+    branch = repo.add_branch(master[0], "test_branch")
+    assert branch.name == "test_branch"
+    branch = repo.get_branch("test_branch")
+    assert branch.name == "test_branch"
 
 
 def test_create_branch_from_str_ref(instance):
     org = Organization.request(instance, test_org)
     repo = org.get_repository(test_repo)
-    branches = repo.get_branches()
-    number_of_branches = len(branches)
     new_branch_name = "branch-" + uuid.uuid4().hex[:8]
-    repo.add_branch("master", new_branch_name)
-    branches = repo.get_branches()
-    assert len(branches) == number_of_branches + 1
+    branch = repo.add_branch("master", new_branch_name)
+    assert branch.name == new_branch_name
+    branch = repo.get_branch(new_branch_name)
+    assert branch.name == new_branch_name
 
 
 def test_create_team(instance):
@@ -402,7 +406,10 @@ def test_create_team_without_units_map(instance):
 def test_create_team_with_units_map(instance):
     org = Organization.request(instance, test_org)
     team = instance.create_team(
-        org, test_team + "2", "descr", units_map={"repo.code": "write", "repo.wiki": "admin"}
+        org,
+        test_team + "2",
+        "descr",
+        units_map={"repo.code": "write", "repo.wiki": "admin"},
     )
     assert set(team.units) == set(["repo.code", "repo.wiki"])
     assert team.units_map == {"repo.code": "write", "repo.wiki": "admin"}
@@ -684,6 +691,96 @@ def test_get_design_review_comments(instance):
     comments = dr.get_comments()
     assert len(comments) > 0
     assert comments[0].body == "This is a test comment"
+
+
+def test_repo_create_release(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.create_release("v0.1.0", "v0.1.0 release", "release with new tag")
+    assert release.tag_name == "v0.1.0"
+    assert release.name == "v0.1.0 release"
+    assert release.body == "release with new tag"
+
+
+def test_get_repo_releases(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    releases = repo.get_releases()
+    assert len(releases) > 0
+    assert releases[0].name == "v0.1.0 release"
+
+
+def test_get_repo_latest_release(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    assert release is not None
+    assert release.name == "v0.1.0 release"
+
+
+def test_get_release_by_tag(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_release_by_tag("v0.1.0")
+    assert release is not None
+    assert release.name == "v0.1.0 release"
+
+
+def test_edit_release(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    # Note that the tag hasn't changed
+    release.name = "v0.1.1 release"
+    release.body = "release with changed name"
+    release.commit()
+    del release
+    release = repo.get_latest_release()
+    assert release.name == "v0.1.1 release"
+    assert release.body == "release with changed name"
+
+
+def test_create_release_asset(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    asset = release.create_asset(open("requirements.txt", "rb"))
+    assert asset.name == "requirements.txt"
+    assert asset.download_count == 0
+
+
+def test_create_release_asset_with_name(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    asset = release.create_asset(open("requirements.txt", "rb"), "something else.txt")
+    assert asset.name == "something else.txt"
+    assert asset.download_count == 0
+
+
+def test_get_release_assets(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    assert len(release.assets) > 0
+    assert release.assets[0].name == "requirements.txt"
+
+
+def test_delete_release_asset(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    asset = release.assets[0]
+    asset.delete()
+    assert len(release.assets) == (len(repo.get_latest_release().assets) + 1)
+
+
+def test_delete_release(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    release.delete()
+    assert len(repo.get_releases()) == 0
 
 
 def test_get_repo_archive(instance):
