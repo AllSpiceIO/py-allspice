@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from functools import cached_property
+import re
 from typing import (
     ClassVar,
     List,
@@ -395,6 +396,7 @@ class Repository(ApiObject):
     REPO_GET_RELEASES = "/repos/{owner}/{repo}/releases"
     REPO_GET_LATEST_RELEASE = "/repos/{owner}/{repo}/releases/latest"
     REPO_GET_RELEASE_BY_TAG = "/repos/{owner}/{repo}/releases/tags/{tag}"
+    REPO_GET_COMMIT_STATUS = "/repos/{owner}/{repo}/statuses/{sha}"
 
     class ArchiveFormat(Enum):
         """
@@ -403,6 +405,17 @@ class Repository(ApiObject):
 
         TAR = "tar.gz"
         ZIP = "zip"
+
+    class CommitStatusSort(Enum):
+        """
+        Sort order for Repository.get_commit_status
+        """
+
+        OLDEST = "oldest"
+        RECENT_UPDATE = "recentupdate"
+        LEAST_UPDATE = "leastupdate"
+        LEAST_INDEX = "leastindex"
+        HIGHEST_INDEX = "highestindex"
 
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
@@ -1103,6 +1116,70 @@ class Repository(ApiObject):
         release = Release.parse_response(self.allspice_client, response, self)
         return release
 
+    def get_commit_statuses(
+        self,
+        commit: Union[str, Commit],
+        sort: Optional[CommitStatusSort] = None,
+        state: Optional[CommitStatusState] = None,
+    ) -> List[CommitStatus]:
+        """
+        Get a list of statuses for a commit.
+
+        This is roughly equivalent to the Commit.get_statuses method, but this
+        method allows you to sort and filter commits and is more convenient if
+        you have a commit SHA and don't need to get the commit itself.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoListStatuses
+        """
+
+        if isinstance(commit, Commit):
+            commit = commit.sha
+
+        params = {}
+        if sort is not None:
+            params["sort"] = sort.value
+        if state is not None:
+            params["state"] = state.value
+
+        url = self.REPO_GET_COMMIT_STATUS.format(
+            owner=self.owner.username, repo=self.name, sha=commit
+        )
+        response = self.allspice_client.requests_get_paginated(url, params=params)
+        return [CommitStatus.parse_response(self.allspice_client, status) for status in response]
+
+    def create_commit_status(
+        self,
+        commit: Union[str, Commit],
+        context: Optional[str] = None,
+        description: Optional[str] = None,
+        state: Optional[CommitStatusState] = None,
+        target_url: Optional[str] = None,
+    ) -> CommitStatus:
+        """
+        Create a status on a commit.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoCreateStatus
+        """
+
+        if isinstance(commit, Commit):
+            commit = commit.sha
+
+        data = {}
+        if context is not None:
+            data["context"] = context
+        if description is not None:
+            data["description"] = description
+        if state is not None:
+            data["state"] = state.value
+        if target_url is not None:
+            data["target_url"] = target_url
+
+        url = self.REPO_GET_COMMIT_STATUS.format(
+            owner=self.owner.username, repo=self.name, sha=commit
+        )
+        response = self.allspice_client.requests_post(url, data=data)
+        return CommitStatus.parse_response(self.allspice_client, response)
+
     def delete(self):
         self.allspice_client.requests_delete(
             Repository.REPO_DELETE % (self.owner.username, self.name)
@@ -1301,6 +1378,13 @@ class Comment(ApiObject):
 
 
 class Commit(ReadonlyApiObject):
+    API_OBJECT = """/repos/{owner}/{repo}/commits/{sha}"""
+    COMMIT_GET_STATUS = """/repos/{owner}/{repo}/commits/{sha}/status"""
+    COMMIT_GET_STATUSES = """/repos/{owner}/{repo}/commits/{sha}/statuses"""
+
+    # Regex to extract owner and repo names from the url property
+    URL_REGEXP = re.compile(r"/repos/([^/]+)/([^/]+)/git/commits")
+
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
 
@@ -1326,6 +1410,112 @@ class Commit(ReadonlyApiObject):
         cls._initialize(allspice_client, api_object, result)
         # inner_commit for legacy reasons
         Commit._add_read_property("inner_commit", commit_cache, api_object)
+        return api_object
+
+    def get_status(self) -> CommitCombinedStatus:
+        """
+        Get a combined status consisting of all statues on this commit.
+
+        Note that the returned object is a CommitCombinedStatus object, which
+        also contains a list of all statuses on the commit.
+
+        https://hub.allspice.io/api/swagger#/repository/repoGetCommitStatus
+        """
+
+        result = self.allspice_client.requests_get(
+            self.COMMIT_GET_STATUS.format(**self._fields_for_path)
+        )
+        return CommitCombinedStatus.parse_response(self.allspice_client, result)
+
+    def get_statuses(self) -> List[CommitStatus]:
+        """
+        Get a list of all statuses on this commit.
+
+        https://hub.allspice.io/api/swagger#/repository/repoListCommitStatuses
+        """
+
+        results = self.allspice_client.requests_get(
+            self.COMMIT_GET_STATUSES.format(**self._fields_for_path)
+        )
+        return [CommitStatus.parse_response(self.allspice_client, result) for result in results]
+
+    @cached_property
+    def _fields_for_path(self) -> dict[str, str]:
+        matches = self.URL_REGEXP.search(self.url)
+        return {
+            "owner": matches.group(1),
+            "repo": matches.group(2),
+            "sha": self.sha,
+        }
+
+
+class CommitStatusState(Enum):
+    PENDING = "pending"
+    SUCCESS = "success"
+    ERROR = "error"
+    FAILURE = "failure"
+    WARNING = "warning"
+
+    @classmethod
+    def try_init(cls, value: str) -> Union[CommitStatusState, str]:
+        """
+        Try converting a string to the enum, and if that fails, return the
+        string itself.
+        """
+
+        try:
+            return cls(value)
+        except ValueError:
+            value
+
+
+class CommitStatus(ReadonlyApiObject):
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    _fields_to_parsers: ClassVar[dict] = {
+        # Gitea/ASH doesn't actually validate that the status is a "valid"
+        # status, so we can expect empty or unknown strings in the status field.
+        "status": lambda _, s: CommitStatusState.try_init(s),
+        "creator": lambda allspice_client, u: (
+            User.parse_response(allspice_client, u) if u else None
+        ),
+    }
+
+    def __eq__(self, other):
+        if not isinstance(other, CommitStatus):
+            return False
+        return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
+
+class CommitCombinedStatus(ReadonlyApiObject):
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    _fields_to_parsers: ClassVar[dict] = {
+        # See CommitStatus
+        "state": lambda _, s: CommitStatusState.try_init(s),
+        "statuses": lambda allspice_client, statuses: [
+            CommitStatus.parse_response(allspice_client, status) for status in statuses
+        ],
+        "repository": lambda allspice_client, r: Repository.parse_response(allspice_client, r),
+    }
+
+    def __eq__(self, other):
+        if not isinstance(other, CommitCombinedStatus):
+            return False
+        return self.sha == other.sha
+
+    def __hash__(self):
+        return hash(self.sha)
+
+    @classmethod
+    def parse_response(cls, allspice_client, result) -> "CommitCombinedStatus":
+        api_object = cls(allspice_client)
+        cls._initialize(allspice_client, api_object, result)
         return api_object
 
 
