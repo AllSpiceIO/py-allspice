@@ -113,7 +113,7 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     assert prjpcb_file is not None
 
     original_prjpcb_sha = prjpcb_file.sha
-    prjpcb_content = repo.get_raw_file(prjpcb_file, ref=ref).decode("utf-8")
+    prjpcb_content = repo.get_raw_file(prjpcb_file.path, ref=ref).decode("utf-8")
     new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
     new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
     repo.change_file("Archimajor.PrjPcb", original_prjpcb_sha, new_content_econded, {"branch": ref})

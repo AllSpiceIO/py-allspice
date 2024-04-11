@@ -908,7 +908,7 @@ class Repository(ApiObject):
 
     def get_raw_file(
         self,
-        content: Union[str, Content],
+        file_path: str,
         ref: Optional[Ref] = None,
     ) -> bytes:
         """
@@ -921,15 +921,12 @@ class Repository(ApiObject):
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetRawFile
 
-        :param content: The path to the file to get. This can be a string or a
-            Content object.
+        :param file_path: The path to the file to get.
         :param ref: The branch or commit to get the file from.  If not provided,
             the default branch is used.
         """
 
-        if isinstance(content, Content):
-            content = content.path
-        url = f"/repos/{self.owner.username}/{self.name}/raw/{content}"
+        url = f"/repos/{self.owner.username}/{self.name}/raw/{file_path}"
         params = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, params=params)
 
