@@ -300,6 +300,14 @@ def test_list_files_and_content(instance):
     assert "descr" in str(base64.b64decode(readme_content))
 
 
+def test_get_raw_file(instance):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    readme_content = repo.get_raw_file("README.md")
+    assert len(readme_content) > 0
+    assert "descr" in str(readme_content)
+
+
 def test_create_file(instance):
     TESTFILE_CONENTE = "TestStringFileContent"
     TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, "utf-8"))

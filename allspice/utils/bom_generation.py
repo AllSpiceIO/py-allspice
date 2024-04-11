@@ -1,5 +1,4 @@
 from __future__ import annotations
-import base64
 
 from dataclasses import dataclass
 import re
@@ -125,7 +124,7 @@ def generate_bom_for_altium(
     )
     allspice_client.logger.info(f"Fetching {prjpcb_file=} and {pcbdoc_file=}")
 
-    prjpcb_file = _get_file_content(repository, prjpcb_file, ref)
+    prjpcb_file = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8")
     schdoc_files_in_proj = {x for x in _extract_schdoc_list_from_prjpcb(prjpcb_file)}
 
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
@@ -163,20 +162,6 @@ def _find_first_matching_key(
             return attributes[alternative]["text"]
 
     return None
-
-
-def _get_file_content(repo, file_path, ref) -> str:
-    """
-    Get the content of a file in a repo on a branch.
-    """
-
-    files_in_repo = repo.get_git_content(ref=ref)
-    file = next((x for x in files_in_repo if x.path == file_path), None)
-    if not file:
-        raise ValueError(f"File {file_path} not found in repo {repo.name} at ref {ref.name}")
-
-    content = repo.get_file_content(file, ref=ref)
-    return base64.b64decode(content).decode("utf-8")
 
 
 def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> list[str]:

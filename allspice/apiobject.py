@@ -906,6 +906,30 @@ class Repository(ApiObject):
                 for f in self.allspice_client.requests_get(url, data)
             ]
 
+    def get_raw_file(
+        self,
+        file_path: str,
+        ref: Optional[Ref] = None,
+    ) -> bytes:
+        """
+        Get the raw, binary data of a single file.
+
+        Note: if the file you are requesting is a text file, you might want to
+        use .decode() on the result to get a string. For example:
+
+            content = repo.get_raw_file("file.txt").decode("utf-8")
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetRawFile
+
+        :param file_path: The path to the file to get.
+        :param ref: The branch or commit to get the file from.  If not provided,
+            the default branch is used.
+        """
+
+        url = f"/repos/{self.owner.username}/{self.name}/raw/{file_path}"
+        params = Util.data_params_for_ref(ref)
+        return self.allspice_client.requests_get_raw(url, params=params)
+
     def get_generated_json(self, content: Union[Content, str], ref: Optional[Ref] = None) -> dict:
         """
         Get the json blob for a cad file if it exists, otherwise enqueue
