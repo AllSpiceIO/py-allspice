@@ -9,7 +9,6 @@ from allspice import AllSpice
 from allspice.utils.bom_generation import (
     AttributesMapping,
     generate_bom_for_altium,
-    _get_file_content,
 )
 from allspice.utils.netlist_generation import generate_netlist
 
@@ -114,14 +113,13 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     assert prjpcb_file is not None
 
     original_prjpcb_sha = prjpcb_file.sha
-    encoded_content = repo.get_file_content(prjpcb_file, ref=ref)
-    prjpcb_content = base64.b64decode(encoded_content).decode("utf-8")
+    prjpcb_content = repo.get_raw_file(prjpcb_file, ref=ref).decode("utf-8")
     new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
     new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
     repo.change_file("Archimajor.PrjPcb", original_prjpcb_sha, new_content_econded, {"branch": ref})
 
     # Sanity check that the file was changed.
-    prjpcb_content_now = _get_file_content(repo, "Archimajor.PrjPcb", ref)
+    prjpcb_content_now = repo.get_raw_file("Archimajor.PrjPcb", ref=ref).decode("utf-8")
     assert prjpcb_content_now != prjpcb_content
 
     bom = generate_bom_for_altium(

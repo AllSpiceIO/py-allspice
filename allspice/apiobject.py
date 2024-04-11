@@ -914,6 +914,11 @@ class Repository(ApiObject):
         """
         Get the raw, binary data of a single file.
 
+        Note: if the file you are requesting is a text file, you might want to
+        use .decode() on the result to get a string. For example:
+
+            content = repo.get_raw_file("file.txt").decode("utf-8")
+
         See https://hub.allspice.io/api/swagger#/repository/repoGetRawFile
 
         :param content: The path to the file to get. This can be a string or a
@@ -924,7 +929,7 @@ class Repository(ApiObject):
 
         if isinstance(content, Content):
             content = content.path
-        url = f"/repos/{self.owner.name}/{self.name}/raw/{content}"
+        url = f"/repos/{self.owner.username}/{self.name}/raw/{content}"
         params = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, params=params)
 
