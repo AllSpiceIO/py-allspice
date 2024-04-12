@@ -1054,8 +1054,8 @@ class Repository(ApiObject):
     def create_release(
         self,
         tag_name: str,
-        name: Optional[str],
-        body: Optional[str],
+        name: Optional[str] = None,
+        body: Optional[str] = None,
         draft: bool = False,
     ):
         """

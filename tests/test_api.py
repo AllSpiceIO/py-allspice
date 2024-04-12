@@ -704,6 +704,9 @@ def test_get_design_review_comments(instance):
 def test_repo_create_release(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
+    # Just a tag should be enough.
+    release = repo.create_release("v0.0.1")
+    assert release.tag_name == "v0.0.1"
     release = repo.create_release("v0.1.0", "v0.1.0 release", "release with new tag")
     assert release.tag_name == "v0.1.0"
     assert release.name == "v0.1.0 release"
