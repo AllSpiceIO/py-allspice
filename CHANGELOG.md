@@ -35,7 +35,8 @@ need to change your scripts to update to this version.
 
   ```py
   release = repo.get_latest_release()
-  release.create_asset(gerber_file)
+  asset = release.create_asset(gerber_file)
+  asset.download() # Download the file from the server!
   ```
 
   See the `allspice.Release` class for more details.
