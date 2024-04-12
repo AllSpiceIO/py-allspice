@@ -1,5 +1,84 @@
 # Changelog
 
+## v2.5.0
+
+This is a minor version bump. Only new functionality was added, and you may not
+need to change your scripts to update to this version.
+
+### New Features and Bugfixes
+
+- Broaden newline regex in Alitum BOM generation by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/62
+
+  This fixes a reported issue with some Altium PrjPcb files.
+
+- Add APIs to work with releases and their assets by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/73
+
+  Now you can fetch a repository's releases using:
+
+  ```py
+  releases = repo.get_releases()
+
+  # or
+
+  release = repo.get_latest_release()
+
+  # or
+
+  release = repo.get_release_by_tag("v1.1")
+
+  # and even
+
+  release = repo.create_release("v1.2")
+  ```
+
+  And add attachments to the releases:
+
+  ```py
+  release = repo.get_latest_release()
+  release.create_asset(gerber_file)
+  ```
+
+  See the `allspice.Release` class for more details.
+
+- Add API method to get the raw binary content of a single file by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/77
+
+  Example:
+
+  ```py
+  file_content = repo.get_raw_file("README.md").decode("utf-8")
+  ```
+
+  This is better than using `repo.get_file_contents` in almost all cases.
+
+### Internals
+
+- CI: Add cron by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/52
+- added flake.nix by @McRaeAlex in https://github.com/AllSpiceIO/py-allspice/pull/57
+- doc: Update README to fix broken example link by @jtran in https://github.com/AllSpiceIO/py-allspice/pull/59
+- Remove autopep8 completely by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/67
+
+### New Contributors
+
+- @McRaeAlex made their first contribution in https://github.com/AllSpiceIO/py-allspice/pull/57
+- @jtran made their first contribution in https://github.com/AllSpiceIO/py-allspice/pull/59
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v2.4.0...v2.5.0
+
+## v2.4.0
+
+### What's Changed
+
+- CI Fixes for Gitea 1.20 by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/48
+- Add generate netlist routine by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/50
+- Add error message for component link error by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/54
+- Add delete_file routine by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/56
+
+### New Contributors
+
+- @kdumontnu made their first contribution in https://github.com/AllSpiceIO/py-allspice/pull/48
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v2.3.1...v2.4.0
+
 ## v2.3.1
 
 This is a patch release. You should be able to update to this version without
