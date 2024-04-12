@@ -1835,6 +1835,21 @@ class ReleaseAsset(ApiObject):
         }
         self._commit(args)
 
+    def download(self) -> bytes:
+        """
+        Download the raw, binary data of this asset.
+
+        Note: if the file you are requesting is a text file, you might want to
+        use .decode() on the result to get a string. For example:
+
+            asset.download().decode("utf-8")
+        """
+
+        return self.allspice_client.requests.get(
+            self.browser_download_url,
+            headers=self.allspice_client.headers,
+        ).content
+
     def delete(self):
         args = {
             "owner": self.release.repo.owner.name,

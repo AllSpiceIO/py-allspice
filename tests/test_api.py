@@ -777,6 +777,15 @@ def test_get_release_assets(instance):
     assert release.assets[0].name == "requirements.txt"
 
 
+def test_download_release_asset(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    asset = release.assets[0]
+    data = asset.download()
+    assert data == open("requirements.txt", "rb").read()
+
+
 def test_delete_release_asset(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
@@ -790,8 +799,9 @@ def test_delete_release(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     release = repo.get_latest_release()
+    old_releases = repo.get_releases()
     release.delete()
-    assert len(repo.get_releases()) == 0
+    assert len(repo.get_releases()) == len(old_releases) - 1
 
 
 def test_get_repo_archive(instance):
