@@ -704,6 +704,9 @@ def test_get_design_review_comments(instance):
 def test_repo_create_release(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
+    # Just a tag should be enough.
+    release = repo.create_release("v0.0.1")
+    assert release.tag_name == "v0.0.1"
     release = repo.create_release("v0.1.0", "v0.1.0 release", "release with new tag")
     assert release.tag_name == "v0.1.0"
     assert release.name == "v0.1.0 release"
@@ -774,6 +777,15 @@ def test_get_release_assets(instance):
     assert release.assets[0].name == "requirements.txt"
 
 
+def test_download_release_asset(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    release = repo.get_latest_release()
+    asset = release.assets[0]
+    data = asset.download()
+    assert data == open("requirements.txt", "rb").read()
+
+
 def test_delete_release_asset(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
@@ -787,8 +799,9 @@ def test_delete_release(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     release = repo.get_latest_release()
+    old_releases = repo.get_releases()
     release.delete()
-    assert len(repo.get_releases()) == 0
+    assert len(repo.get_releases()) == len(old_releases) - 1
 
 
 def test_get_repo_archive(instance):

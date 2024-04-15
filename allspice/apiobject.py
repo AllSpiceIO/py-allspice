@@ -1054,8 +1054,8 @@ class Repository(ApiObject):
     def create_release(
         self,
         tag_name: str,
-        name: Optional[str],
-        body: Optional[str],
+        name: Optional[str] = None,
+        body: Optional[str] = None,
         draft: bool = False,
     ):
         """
@@ -1834,6 +1834,46 @@ class ReleaseAsset(ApiObject):
             "id": self.id,
         }
         self._commit(args)
+
+    def download(self) -> bytes:
+        """
+        Download the raw, binary data of this asset.
+
+        Note 1: if the file you are requesting is a text file, you might want to
+        use .decode() on the result to get a string. For example:
+
+            asset.download().decode("utf-8")
+
+        Note 2: this method will store the entire file in memory. If you are
+        downloading a large file, you might want to use download_to_file instead.
+        """
+
+        return self.allspice_client.requests.get(
+            self.browser_download_url,
+            headers=self.allspice_client.headers,
+        ).content
+
+    def download_to_file(self, io: IO):
+        """
+        Download the raw, binary data of this asset to a file-like object.
+
+        Example:
+
+            with open("my_file.zip", "wb") as f:
+                asset.download_to_file(f)
+
+        :param io: The file-like object to write the data to.
+        """
+
+        response = self.allspice_client.requests.get(
+            self.browser_download_url,
+            headers=self.allspice_client.headers,
+            stream=True,
+        )
+        # 4kb chunks
+        for chunk in response.iter_content(chunk_size=4096):
+            if chunk:
+                io.write(chunk)
 
     def delete(self):
         args = {
