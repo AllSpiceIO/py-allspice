@@ -51,6 +51,12 @@ need to change your scripts to update to this version.
 
   This is better than using `repo.get_file_contents` in almost all cases.
 
+- Add APIs to work with commit statuses by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/74
+
+  Commit statuses are the status of checks run via actions on commits. You can
+  use the new `Commit.get_status` and `Repository.create_commit_status` methods
+  to work with them.
+
 ### Internals
 
 - CI: Add cron by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/52
