@@ -18,7 +18,7 @@ from allspice import (
     Comment,
 )
 from allspice import NotFoundException
-from allspice.apiobject import Util
+from allspice.apiobject import CommitStatusState, Util
 from allspice.exceptions import NotYetGeneratedException
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
@@ -802,6 +802,48 @@ def test_delete_release(instance):
     old_releases = repo.get_releases()
     release.delete()
     assert len(repo.get_releases()) == len(old_releases) - 1
+
+
+def test_create_commit_status(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    commit = repo.get_commits()[0]
+    status = repo.create_commit_status(
+        commit,
+        state=CommitStatusState.ERROR,
+        context="This is a test status",
+    )
+    assert status.status == CommitStatusState.ERROR
+    assert status.context == "This is a test status"
+    assert status.description == ""
+
+
+def test_get_commit_statuses(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    commit = repo.get_commits()[0]
+    statuses = commit.get_statuses()
+    assert len(statuses) > 0
+    assert statuses[0].context == "This is a test status"
+
+
+def test_get_commit_combined_status(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    commit = repo.get_commits()[0]
+    status = commit.get_status()
+    assert status is not None
+    assert status.state == CommitStatusState.ERROR
+
+
+def test_get_commit_status_from(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    commit = repo.get_commits()[0]
+    statuses = repo.get_commit_statuses(commit, state=CommitStatusState.SUCCESS)
+    assert len(statuses) == 0
+    statuses = repo.get_commit_statuses(commit, state=CommitStatusState.ERROR)
+    assert len(statuses) == 1
 
 
 def test_get_repo_archive(instance):

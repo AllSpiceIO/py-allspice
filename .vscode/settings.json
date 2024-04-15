@@ -6,6 +6,10 @@
     "cSpell.words": [
         "apiobject",
         "baseapiobject",
+        "highestindex",
+        "leastindex",
+        "leastupdate",
+        "recentupdate",
         "reponame"
     ]
 }
