@@ -76,7 +76,7 @@ jobs:
           ruff format --diff .
       - name: Lint with ruff
         run: |
-          ruff --target-version=py310 .
+          ruff check --target-version=py310 .
       - name: Set up allspice_hub
         run: |
           # The only way to create a user is to either use the CLI or the web
@@ -97,7 +97,7 @@ jobs:
         run: |
           python -m pytest
 
-# We might want to consider moving this to a new workflow if we add addition test jobs
+  # We might want to consider moving this to a new workflow if we add addition test jobs
   notifications:
     name: Notifications
     runs-on: ubuntu-22.04

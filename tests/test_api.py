@@ -833,7 +833,7 @@ def test_get_commit_combined_status(instance):
     commit = repo.get_commits()[0]
     status = commit.get_status()
     assert status is not None
-    assert status.state == CommitStatusState.ERROR
+    assert status.state == CommitStatusState.FAILURE
 
 
 def test_get_commit_status_from(instance):
