@@ -69,7 +69,6 @@ def test_bom_generation(request, instance):
         instance,
         repo,
         "Archimajor.PrjPcb",
-        "Archimajor.PcbDoc",
         attributes_mapping,
         # We hard-code a ref so that this test is reproducible.
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
@@ -126,7 +125,6 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         instance,
         repo,
         "Archimajor.PrjPcb",
-        "Archimajor.PcbDoc",
         attributes_mapping,
         # Note that ref here is the branch, not a commit sha as in the previous
         # test.

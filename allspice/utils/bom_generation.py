@@ -1,31 +1,25 @@
 from __future__ import annotations
 
+import configparser
 from dataclasses import dataclass
 import re
+import sys
 import time
 from typing import Optional, Union
 
-from allspice.utils.core import get_all_pcb_components
-
 from ..allspice import AllSpice
-from ..apiobject import Content, Ref, Repository
+from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
-PRJPCB_SCHDOC_REGEX = re.compile(r"DocumentPath=(.*?SchDoc)(\r\n|\n\r|\n)")
+REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
 
 
 @dataclass
 class SchematicComponent:
-    description: str
-    manufacturer: str
-    part_number: str
-    designator: str
-
-
-@dataclass
-class PcbComponent:
-    designator: str
-    schematic_link: str
+    description: Optional[str]
+    manufacturer: Optional[str]
+    part_number: Optional[str]
+    designator: Optional[str]
 
 
 @dataclass
@@ -86,17 +80,10 @@ class AttributesMapping:
         )
 
 
-# TODO: We should make this generic for all PCBs and change all `pcbdoc` references to `pcb`
-# TODO: We should default to generating a BOM using only the project file + schematics.
-#   Using PCB to generate the BOM should be an option flag, but we shouldn't be combining
-#   PCB and schematic BOMs.
-
-
 def generate_bom_for_altium(
     allspice_client: AllSpice,
     repository: Repository,
-    prjpcb_file: Union[Content, str],
-    pcbdoc_file: Union[Content, str],
+    prjpcb_file: str,
     attributes_mapping: AttributesMapping,
     ref: Ref = "main",
 ) -> Bom:
@@ -108,9 +95,6 @@ def generate_bom_for_altium(
     :param prjpcb_file: The Altium project file. This can be a Content object
         returned by the AllSpice API, or a string containing the path to the
         file in the repo.
-    :param pcbdoc_file: The Altium PCB document file. This can be a Content
-        object returned by the AllSpice API, or a string containing the path to
-        the file in the repo.
     :param attributes_mapping: A mapping of Altium attributes to BOM entry
         attributes. See the documentation for AttributesMapping for more
         information.
@@ -120,29 +104,45 @@ def generate_bom_for_altium(
     """
 
     allspice_client.logger.info(
-        f"Generating BOM for {repository.name=} on {ref=} using {attributes_mapping=}"
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {attributes_mapping=}"
     )
-    allspice_client.logger.info(f"Fetching {prjpcb_file=} and {pcbdoc_file=}")
+    allspice_client.logger.info(f"Fetching {prjpcb_file=}")
 
-    prjpcb_file = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8")
-    schdoc_files_in_proj = {x for x in _extract_schdoc_list_from_prjpcb(prjpcb_file)}
-
+    # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
+    # file content with utf-8-sig to remove it.
+    prjpcb_file = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
+    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_file)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
 
-    schdoc_components = _extract_all_schdoc_components(
-        repository,
-        ref,
-        schdoc_files_in_proj,
-        attributes_mapping,
-    )
-    pcbdoc_components = _extract_all_pcbdoc_components(repository, ref, pcbdoc_file)
+    schdoc_jsons = {
+        schdoc_file: _fetch_generated_json(repository, schdoc_file, ref)
+        for schdoc_file in schdoc_files_in_proj
+    }
+    schdoc_entries = {
+        schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
+        for schdoc_file, schdoc_json in schdoc_jsons.items()
+    }
+    schdoc_refs = {
+        schdoc_file: [entry for entry in entries if entry.get("type") == "SheetRef"]
+        for schdoc_file, entries in schdoc_entries.items()
+    }
+    independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_refs)
 
-    ungrouped_bom_entries = _combine_components_to_ungrouped_bom(
-        schdoc_components,
-        pcbdoc_components,
-    )
+    components = []
 
-    return _group_bom_entries(ungrouped_bom_entries)
+    for independent_sheet in independent_sheets:
+        components.extend(
+            _extract_components(
+                independent_sheet,
+                schdoc_entries,
+                hierarchy,
+                attributes_mapping,
+            )
+        )
+
+    bom = _group_components(components)
+
+    return bom
 
 
 def _find_first_matching_key(
@@ -164,14 +164,98 @@ def _find_first_matching_key(
     return None
 
 
-def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> list[str]:
+def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> set[str]:
     """
     Get a list of SchDoc files from a PrjPcb file.
     """
 
-    # Sometimes the SchDoc file can use \n\r instead of CRLF line endings.
-    # Unfortunately, it looks like $ even with re.M doesn't(?) match \n\r.
-    return [match.group(1) for match in PRJPCB_SCHDOC_REGEX.finditer(prjpcb_file_content)]
+    prjcpb_data = configparser.ConfigParser()
+    prjcpb_data.read_string(prjpcb_file_content)
+
+    return {
+        section["DocumentPath"]
+        for (_, section) in prjcpb_data.items()
+        if "DocumentPath" in section and section["DocumentPath"].endswith(".SchDoc")
+    }
+
+
+def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
+    attempts = 0
+    while attempts < 5:
+        try:
+            return repo.get_generated_json(file_path, ref=ref)
+        except NotYetGeneratedException:
+            print(
+                f"JSON for {file_path} is not yet generated. Retrying in 0.5s.",
+                file=sys.stderr,
+            )
+            time.sleep(0.5)
+
+    print(
+        f"Failed to fetch JSON for {file_path} after 5 attempts; quitting.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
+def _build_schdoc_hierarchy(
+    sheets_to_refs: dict[str, list[dict]],
+) -> tuple[set[str], dict[str, list[tuple[str, int]]]]:
+    """
+    Build a hierarchy of sheets from a mapping of sheet names to the references
+    of their children.
+
+    The output of this function is a tuple of two values:
+
+    1. A set of "independent" sheets, which can be taken to be roots of the
+    hierarchy.
+
+    2. A mapping of each sheet that has children to a list of tuples, where each
+    tuple is a child sheet and the number of repetitions of that child sheet in
+    the parent sheet. If a sheet has no children and is not a child of any other
+    sheet, it will be mapped to an empty list.
+    """
+
+    hierarchy = {}
+
+    # We start by assuming all sheets are independent.
+    independent_sheets = set(sheets_to_refs.keys())
+    # This is what we'll use to compare with the sheet names in repetitions.
+    sheet_names_downcased = {sheet.lower(): sheet for sheet in independent_sheets}
+
+    for parent_sheet, refs in sheets_to_refs.items():
+        if not refs or len(refs) == 0:
+            continue
+
+        repetitions = _extract_repetitions(refs)
+        for child_sheet, count in repetitions.items():
+            child_name = sheet_names_downcased[child_sheet.lower()]
+            if parent_sheet in hierarchy:
+                hierarchy[parent_sheet].append((child_name, count))
+            else:
+                hierarchy[parent_sheet] = [(child_name, count)]
+            independent_sheets.discard(child_name)
+
+    return (independent_sheets, hierarchy)
+
+
+def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
+    repetitions = {}
+    for sheet_ref in sheet_refs:
+        sheet_name = sheet_ref["sheet_name"]["name"]
+        sheet_file_name = sheet_ref["filename"]
+        if match := REPETITIONS_REGEX.search(sheet_name):
+            count = int(match.group(2)) - int(match.group(1)) + 1
+            if sheet_file_name in repetitions:
+                repetitions[sheet_file_name] += count
+            else:
+                repetitions[sheet_file_name] = count
+        else:
+            if sheet_file_name in repetitions:
+                repetitions[sheet_file_name] += 1
+            else:
+                repetitions[sheet_file_name] = 1
+    return repetitions
 
 
 def _schdoc_component_from_attributes(
@@ -195,177 +279,106 @@ def _schdoc_component_from_attributes(
     )
 
 
-def _extract_components_from_schdoc(
-    schdoc_file_content: dict,
-    attributes_mapper: AttributesMapping,
+def _letters_for_repetition(rep: int) -> str:
+    """
+    Generate the letter suffix for a repetition number. If the repetition is
+    more than 26, the suffix will be a combination of letters.
+    """
+
+    first = ord("A")
+    suffix = ""
+
+    while rep > 0:
+        u = (rep - 1) % 26
+        letter = chr(u + first)
+        suffix = letter + suffix
+        rep = (rep - u) // 26
+
+    return suffix
+
+
+def _append_designator_letters(
+    component: SchematicComponent,
+    repetitions: int,
 ) -> list[SchematicComponent]:
     """
-    Extract all the components from a schdoc file. To see what attributes are
-    available, print the schdoc_file_content variable.
-
-    :param schdoc_file_content: The content of the SchDoc file. This should be a
-    dictionary.
+    Append a letter to the designator of each component in a list of components
+    based on the number of repetitions of each component in the parent sheet.
     """
 
-    components_list = []
+    if repetitions == 1:
+        return [component]
 
-    for value in schdoc_file_content.values():
-        if isinstance(value, dict):
-            if value.get("type") == "Component":
-                attributes = value["attributes"]
-                components_list.append(
-                    _schdoc_component_from_attributes(
-                        attributes,
-                        attributes_mapper,
-                    )
-                )
-
-    return components_list
+    return [
+        SchematicComponent(
+            description=component.description,
+            manufacturer=component.manufacturer,
+            part_number=component.part_number,
+            designator=f"{component.designator}{_letters_for_repetition(i)}",
+        )
+        for i in range(1, repetitions + 1)
+    ]
 
 
-def _extract_all_schdoc_components(
-    repository: Repository,
-    ref: Ref,
-    schdoc_files_in_proj: set[str],
+def _extract_components(
+    sheet_name: str,
+    sheets_to_entries: dict[str, list[dict]],
+    hierarchy: dict[str, list[tuple[str, int]]],
     attributes_mapping: AttributesMapping,
 ) -> list[SchematicComponent]:
-    """
-    Fetch all the components from all the SchDoc files in the repo that are in
-    the project.
-    """
-
-    files_in_repo = repository.get_git_content(ref=ref)
-    all_components = []
-    for repo_file in files_in_repo:
-        if repo_file.name in schdoc_files_in_proj:
-            # If the file is not yet generated, we'll retry a few times.
-            retry_count = 0
-            while True:
-                retry_count += 1
-
-                try:
-                    schdoc_file_json = repository.get_generated_json(repo_file, ref=ref)
-                    all_components.extend(
-                        _extract_components_from_schdoc(
-                            schdoc_file_json,
-                            attributes_mapping,
-                        )
-                    )
-
-                    break
-                except NotYetGeneratedException:
-                    if retry_count > 20:
-                        break
-
-                    # Wait a bit before retrying.
-                    time.sleep(0.5)
-                    continue
-
-    return all_components
-
-
-def _extract_all_pcbdoc_components(
-    repository: Repository,
-    ref: Ref,
-    pcbdoc_file: str,
-) -> list[PcbComponent]:
-    """
-    Extract all the components from a PcbDoc file in the repo.
-    """
-
     components = []
+    if sheet_name not in sheets_to_entries:
+        return components
 
-    component_instances = get_all_pcb_components(repository, ref, pcbdoc_file)
+    for entry in sheets_to_entries[sheet_name]:
+        if entry["type"] != "Component":
+            continue
 
-    for component in component_instances.values():
-        try:
-            schematic_link = component["schematic_link"]
-        except KeyError:
-            exit(f"Error: Component {component['designator']} in PCB with no schematic link.")
-        components.append(
-            PcbComponent(
-                designator=component["designator"],
-                schematic_link=schematic_link,
-            )
+        component = _schdoc_component_from_attributes(
+            entry["attributes"],
+            attributes_mapping,
         )
+        components.append(component)
+
+    if sheet_name not in hierarchy:
+        return components
+
+    for child_sheet, count in hierarchy[sheet_name]:
+        child_components = _extract_components(
+            child_sheet,
+            sheets_to_entries,
+            hierarchy,
+            attributes_mapping,
+        )
+        if count > 1:
+            for component in child_components:
+                components.extend(_append_designator_letters(component, count))
+        else:
+            components.extend(child_components)
 
     return components
 
 
-def _combine_components_to_ungrouped_bom(
-    schdoc_components: list[SchematicComponent],
-    pcbdoc_components: list[PcbComponent],
-) -> list[BomEntry]:
-    """
-    Link the designators in the PcbDoc to a designator in the SchDocs, and
-    generate a list of BOM entries. These BOM entries are not yet grouped by
-    part number, and therefore have multiple rows for each part number.
-    """
+def _group_components(components: list[SchematicComponent]) -> Bom:
+    grouped_components = {}
 
-    schdoc_components_by_designator = {
-        component.designator: component for component in schdoc_components
-    }
-
-    pcb_designators_for_schdoc_designators = {
-        component.designator: [] for component in schdoc_components
-    }
-    orphan_pcb_components = []
-
-    for pcbdoc_component in pcbdoc_components:
-        if pcbdoc_component.schematic_link in schdoc_components_by_designator:
-            schdoc_designator = pcbdoc_component.schematic_link
-            pcb_designator = pcbdoc_component.designator
-
-            pcb_designators_for_schdoc_designators[schdoc_designator].append(pcb_designator)
+    for component in components:
+        key = component.part_number
+        if key in grouped_components:
+            grouped_components[key].append(component)
         else:
-            orphan_pcb_components.append(pcbdoc_component)
+            grouped_components[key] = [component]
 
-    bom = []
-    for (
-        schdoc_designator,
-        pcb_designators,
-    ) in pcb_designators_for_schdoc_designators.items():
-        schdoc_component = schdoc_components_by_designator[schdoc_designator]
+    rows = []
 
-        bom.append(
-            BomEntry(
-                description=schdoc_component.description,
-                manufacturer=schdoc_component.manufacturer,
-                part_number=schdoc_component.part_number,
-                designators=pcb_designators,
-                quantity=len(pcb_designators),
-            )
+    for part_number, components in grouped_components.items():
+        row = BomEntry(
+            description=str(components[0].description),
+            manufacturer=str(components[0].manufacturer),
+            designators=[str(component.designator) for component in components],
+            part_number=part_number,
+            quantity=len(components),
         )
-    for orphan_pcb_component in orphan_pcb_components:
-        bom.append(
-            BomEntry(
-                description="",
-                manufacturer="",
-                part_number="",
-                designators=[orphan_pcb_component.designator],
-                quantity=1,
-            )
-        )
+        rows.append(row)
 
-    return bom
-
-
-def _group_bom_entries(bom_entries: list[BomEntry]) -> list[BomEntry]:
-    """
-    Group BOM Entries by the part number, combining the designators and
-    quantities.
-    """
-
-    bom_entries_by_part_number = {}
-
-    for bom_entry in bom_entries:
-        if bom_entry.part_number != "":
-            if bom_entry.part_number not in bom_entries_by_part_number:
-                bom_entries_by_part_number[bom_entry.part_number] = bom_entry
-            else:
-                bom_entries_by_part_number[bom_entry.part_number].designators.extend(
-                    bom_entry.designators
-                )
-                bom_entries_by_part_number[bom_entry.part_number].quantity += bom_entry.quantity
-
-    return list(bom_entries_by_part_number.values())
+    return rows
