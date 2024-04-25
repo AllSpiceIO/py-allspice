@@ -248,8 +248,8 @@ def _component_attributes(component: dict) -> dict[str, str]:
     # The properties `part_id` and `description` are present in the top level of
     # the component.
     try:
-        attributes["part_id"] = component["part_id"]
-        attributes["description"] = component["description"]
+        attributes["__part_id"] = component["part_id"]
+        attributes["__description"] = component["description"]
     except KeyError:
         pass
 
