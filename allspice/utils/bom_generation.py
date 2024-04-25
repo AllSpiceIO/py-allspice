@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import configparser
-from dataclasses import dataclass
 import pathlib
 import re
 import sys
@@ -13,81 +12,18 @@ from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
-
-
-@dataclass
-class SchematicComponent:
-    description: Optional[str]
-    manufacturer: Optional[str]
-    part_number: Optional[str]
-    designator: Optional[str]
-
-
-@dataclass
-class BomEntry:
-    description: str
-    manufacturer: str
-    part_number: str
-    designators: list[str]
-    quantity: int
-
-
-Bom = list[BomEntry]
-
-
-@dataclass
-class AttributesMapping:
-    """
-    Define how we map from attributes in the Altium SchDoc file to the fields of
-    the BOM.
-
-    For each field, we define a list of attribute names that we will check in
-    the Altium SchDoc file. The *first* one found defined will be used.
-
-    :param description: A list of attribute names in the Altium SchDoc file
-        that contain the description of the part.
-    :param manufacturer: A list of attribute names in the Altium SchDoc file
-        that contain the manufacturer of the part.
-    :param part_number: A list of attribute names in the Altium SchDoc file
-        that contain the part number of the part.
-    :param designator: A list of attribute names in the Altium SchDoc file
-        that contain the designator of the part.
-    """
-
-    description: list[str]
-    manufacturer: list[str]
-    part_number: list[str]
-    designator: list[str]
-
-    @staticmethod
-    def from_dict(dictionary: dict[str, list[str]]) -> AttributesMapping:
-        """
-        Create an AttributesMapping from a dictionary.
-
-        Example Input::
-
-            {
-                "description": ["Description"],
-                "manufacturer": ["Manufacturer", "MANUFACTURER"],
-                "part_number": ["Part Number"],
-                "designator": ["Designator"],
-            }
-        """
-        return AttributesMapping(
-            description=dictionary["description"],
-            manufacturer=dictionary["manufacturer"],
-            part_number=dictionary["part_number"],
-            designator=dictionary["designator"],
-        )
+QUANTITY_COLUMN_NAME = "Quantity"
 
 
 def generate_bom_for_altium(
     allspice_client: AllSpice,
     repository: Repository,
     prjpcb_file: str,
-    attributes_mapping: AttributesMapping,
+    attributes_mapping: dict[str, list[str]],
+    designator_column: str,
+    group_by: Optional[list[str]] = None,
     ref: Ref = "main",
-) -> Bom:
+) -> list[dict[str, str]]:
     """
     Generate a BOM for an Altium project.
 
@@ -96,9 +32,13 @@ def generate_bom_for_altium(
     :param prjpcb_file: The Altium project file. This can be a Content object
         returned by the AllSpice API, or a string containing the path to the
         file in the repo.
-    :param attributes_mapping: A mapping of Altium attributes to BOM entry
-        attributes. See the documentation for AttributesMapping for more
-        information.
+    :param attributes_mapping: A mapping of the columns in the BOM to the
+        attributes in the Altium project. The attributes are tried in order,
+        and the first one found is used as the value for that column.
+    :param designator_column: The name of the column in the BOM that will
+        contain the designators of the components.
+    :param group_by: A list of attributes to group the BOM by. If this is
+        provided, the BOM will be grouped by the values of these attributes.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
     :return: A list of BOM entries.
@@ -107,11 +47,23 @@ def generate_bom_for_altium(
     allspice_client.logger.info(
         f"Generating BOM for {repository.get_full_name()=} on {ref=} using {attributes_mapping=}"
     )
+    if designator_column not in attributes_mapping:
+        raise ValueError(
+            f"Designator column {designator_column} not found in attributes mapping"
+        )
+    if group_by is not None:
+        for group_column in group_by:
+            if group_column not in attributes_mapping:
+                raise ValueError(
+                    f"Group by column {group_column} not found in attributes mapping"
+                )
     allspice_client.logger.info(f"Fetching {prjpcb_file=}")
 
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
     # file content with utf-8-sig to remove it.
-    prjpcb_file_contents = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
+    prjpcb_file_contents = repository.get_raw_file(prjpcb_file, ref=ref).decode(
+        "utf-8-sig"
+    )
     schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_file_contents)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
 
@@ -124,7 +76,9 @@ def generate_bom_for_altium(
         for schdoc_file in schdoc_files_in_proj
     }
     schdoc_entries = {
-        schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
+        schdoc_file: [
+            value for value in schdoc_json.values() if isinstance(value, dict)
+        ]
         for schdoc_file, schdoc_json in schdoc_jsons.items()
     }
     schdoc_refs = {
@@ -142,10 +96,11 @@ def generate_bom_for_altium(
                 schdoc_entries,
                 hierarchy,
                 attributes_mapping,
+                designator_column,
             )
         )
 
-    bom = _group_components(components)
+    bom = _group_components(components, group_by)
 
     return bom
 
@@ -293,23 +248,20 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
 
 def _schdoc_component_from_attributes(
     attributes: dict,
-    mapper: AttributesMapping,
-) -> SchematicComponent:
+    mapper: dict[str, list[str]],
+) -> dict[str, str | None]:
     """
     Make a SchDoc Component object out of the JSON for it in the SchDoc file.
 
     :param attributes: The attributes for the component in the SchDoc
-    :param mapper: An AttributesMapping object, see the documentation for
-        AttributesMapping for more information.
-    :returns: A SchodocComponent object representing that component.
+    :param mapper: A dictionary mapping columns to the attributes.
+    :returns: A dictionary of columsn to their values.
     """
 
-    return SchematicComponent(
-        description=_find_first_matching_key(mapper.description, attributes),
-        designator=_find_first_matching_key(mapper.designator, attributes) or "",
-        manufacturer=_find_first_matching_key(mapper.manufacturer, attributes),
-        part_number=_find_first_matching_key(mapper.part_number, attributes),
-    )
+    return {
+        column: _find_first_matching_key(keys_to_try, attributes)
+        for column, keys_to_try in mapper.items()
+    }
 
 
 def _letters_for_repetition(rep: int) -> str:
@@ -331,9 +283,10 @@ def _letters_for_repetition(rep: int) -> str:
 
 
 def _append_designator_letters(
-    component: SchematicComponent,
+    component: dict[str, str | None],
     repetitions: int,
-) -> list[SchematicComponent]:
+    designator_column: str,
+) -> list[dict[str, str | None]]:
     """
     Append a letter to the designator of each component in a list of components
     based on the number of repetitions of each component in the parent sheet.
@@ -342,13 +295,12 @@ def _append_designator_letters(
     if repetitions == 1:
         return [component]
 
+    designator = component[designator_column]
+    if designator is None:
+        return [component] * repetitions
+
     return [
-        SchematicComponent(
-            description=component.description,
-            manufacturer=component.manufacturer,
-            part_number=component.part_number,
-            designator=f"{component.designator}{_letters_for_repetition(i)}",
-        )
+        {**component, designator_column: f"{designator}{_letters_for_repetition(i)}"}
         for i in range(1, repetitions + 1)
     ]
 
@@ -357,8 +309,9 @@ def _extract_components(
     sheet_name: str,
     sheets_to_entries: dict[str, list[dict]],
     hierarchy: dict[str, list[tuple[str, int]]],
-    attributes_mapping: AttributesMapping,
-) -> list[SchematicComponent]:
+    attributes_mapping: dict[str, list[str]],
+    designator_column: str,
+) -> list[dict[str, str | None]]:
     components = []
     if sheet_name not in sheets_to_entries:
         return components
@@ -382,21 +335,45 @@ def _extract_components(
             sheets_to_entries,
             hierarchy,
             attributes_mapping,
+            designator_column,
         )
         if count > 1:
             for component in child_components:
-                components.extend(_append_designator_letters(component, count))
+                components.extend(
+                    _append_designator_letters(
+                        component,
+                        count,
+                        designator_column,
+                    )
+                )
         else:
             components.extend(child_components)
 
     return components
 
 
-def _group_components(components: list[SchematicComponent]) -> Bom:
-    grouped_components = {}
+def _group_components(
+    components: list[dict[str, str | None]],
+    group_by: list[str] | None = None,
+) -> list[dict[str, str]]:
+    """
+    Group components based on a list of columns. The order of the columns in the
+    list will determine the order of the grouping.
 
+    :returns: A list of rows which can be used as the BOM.
+    """
+    components = [
+        {key: str(value or "") for key, value in component.items()}
+        for component in components
+    ]
+    if group_by is None:
+        for component in components:
+            component[QUANTITY_COLUMN_NAME] = "1"
+        return components
+
+    grouped_components = {}
     for component in components:
-        key = component.part_number
+        key = tuple(component[column] for column in group_by)
         if key in grouped_components:
             grouped_components[key].append(component)
         else:
@@ -404,14 +381,14 @@ def _group_components(components: list[SchematicComponent]) -> Bom:
 
     rows = []
 
-    for part_number, components in grouped_components.items():
-        row = BomEntry(
-            description=str(components[0].description),
-            manufacturer=str(components[0].manufacturer),
-            designators=[str(component.designator) for component in components],
-            part_number=part_number,
-            quantity=len(components),
-        )
+    for components in grouped_components.values():
+        row = {}
+        for column in group_by:
+            row[column] = components[0][column]
+        non_group_by = set(components[0].keys()) - set(group_by)
+        for column in non_group_by:
+            row[column] = ", ".join(str(component[column]) for component in components)
+        row["Quantity"] = str(len(components))
         rows.append(row)
 
     return rows
