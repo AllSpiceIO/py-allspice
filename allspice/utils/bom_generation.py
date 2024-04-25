@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import configparser
 from dataclasses import dataclass
+import pathlib
 import re
 import sys
 import time
@@ -110,12 +111,16 @@ def generate_bom_for_altium(
 
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
     # file content with utf-8-sig to remove it.
-    prjpcb_file = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
-    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_file)
+    prjpcb_file_contents = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
+    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_file_contents)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
 
     schdoc_jsons = {
-        schdoc_file: _fetch_generated_json(repository, schdoc_file, ref)
+        schdoc_file: _fetch_generated_json(
+            repository,
+            _resolve_relative_path(schdoc_file, prjpcb_file),
+            ref,
+        )
         for schdoc_file in schdoc_files_in_proj
     }
     schdoc_entries = {
@@ -177,6 +182,21 @@ def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> set[str]:
         for (_, section) in prjcpb_data.items()
         if "DocumentPath" in section and section["DocumentPath"].endswith(".SchDoc")
     }
+
+
+def _resolve_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
+    """
+    Convert a relative path to the SchDoc file to an absolute path from the git
+    root based on the path to the PrjPcb file.
+    """
+
+    # The paths in the PrjPcb file are Windows paths, and ASH will store the
+    # paths as Posix paths. We need to resolve the SchDoc path relative to the
+    # PrjPcb path (which is a Posix Path, since it is from ASH), and then
+    # convert the result into a posix path as a string for use in ASH.
+    schdoc = pathlib.PureWindowsPath(schdoc_path)
+    prjpcb = pathlib.PurePosixPath(prjpcb_path)
+    return (prjpcb.parent / schdoc).as_posix()
 
 
 def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
