@@ -70,7 +70,6 @@ def test_bom_generation_flat(request, instance):
         repo,
         "Archimajor.PrjPcb",
         attributes_mapping,
-        designator_column="designator",
         # We hard-code a ref so that this test is reproducible.
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
@@ -129,7 +128,6 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         repo,
         "Archimajor.PrjPcb",
         attributes_mapping,
-        designator_column="designator",
         # Note that ref here is the branch, not a commit sha as in the previous
         # test.
         ref=ref,
@@ -163,7 +161,6 @@ def test_bom_generation_grouped(request, instance):
         repo,
         "Archimajor.PrjPcb",
         attributes_mapping,
-        designator_column="designator",
         group_by=["part_number", "manufacturer", "description"],
         # We hard-code a ref so that this test is reproducible.
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
