@@ -118,7 +118,7 @@ def generate_bom_for_altium(
     schdoc_jsons = {
         schdoc_file: _fetch_generated_json(
             repository,
-            _resolve_relative_path(schdoc_file, prjpcb_file),
+            _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file),
             ref,
         )
         for schdoc_file in schdoc_files_in_proj
@@ -184,7 +184,7 @@ def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> set[str]:
     }
 
 
-def _resolve_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
+def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
     """
     Convert a relative path to the SchDoc file to an absolute path from the git
     root based on the path to the PrjPcb file.
@@ -249,7 +249,8 @@ def _build_schdoc_hierarchy(
 
         repetitions = _extract_repetitions(refs)
         for child_sheet, count in repetitions.items():
-            child_name = sheet_names_downcased[child_sheet.lower()]
+            child_path = _resolve_child_relative_path(child_sheet, parent_sheet)
+            child_name = sheet_names_downcased[child_path.lower()]
             if parent_sheet in hierarchy:
                 hierarchy[parent_sheet].append((child_name, count))
             else:
@@ -257,6 +258,18 @@ def _build_schdoc_hierarchy(
             independent_sheets.discard(child_name)
 
     return (independent_sheets, hierarchy)
+
+
+def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
+    """
+    Converts a relative path in a sheet ref to a relative path from the prjpcb
+    file.
+    """
+
+    child = pathlib.PureWindowsPath(child_path)
+    parent = pathlib.PureWindowsPath(parent_path)
+
+    return str(parent.parent / child)
 
 
 def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
