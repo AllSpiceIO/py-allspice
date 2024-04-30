@@ -41,12 +41,12 @@ def instance(port):
                     ?"
 
 
-def _setup_for_generation(instance, test_name):
+def _setup_for_generation(instance, test_name, clone_addr):
     # TODO: we should commit a smaller set of files in this repo so we don't depend on external data
     instance.requests_post(
         "/repos/migrate",
         data={
-            "clone_addr": "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+            "clone_addr": clone_addr,
             "mirror": False,
             "repo_name": "-".join([test_repo, test_name]),
             "service": "git",
@@ -55,7 +55,11 @@ def _setup_for_generation(instance, test_name):
 
 
 def test_bom_generation(request, instance):
-    _setup_for_generation(instance, request.node.name)
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name])
     )
@@ -90,7 +94,11 @@ def test_bom_generation(request, instance):
 
 
 def test_bom_generation_with_odd_line_endings(request, instance):
-    _setup_for_generation(instance, request.node.name)
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name])
     )
@@ -146,8 +154,51 @@ def test_bom_generation_with_odd_line_endings(request, instance):
             assert row == expected_row
 
 
+def test_bom_generation_with_folder_hierarchy(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = AttributesMapping(
+        description=["PART DESCRIPTION"],
+        designator=["Designator"],
+        manufacturer=["Manufacturer", "MANUFACTURER"],
+        part_number=["PART", "MANUFACTURER #"],
+    )
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
+    )
+    assert len(bom) == 106
+
+    bom_as_dicts = []
+    # We have to do this manually because of how csv.DictWriter works.
+    for item in bom:
+        entry_as_dict = {}
+        for key, value in dataclasses.asdict(item).items():
+            entry_as_dict[key] = str(value) if value is not None else ""
+        bom_as_dicts.append(entry_as_dict)
+
+    with open("tests/data/archimajor_bom_hierarchical_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom_as_dicts):
+            assert row == expected_row
+
+
 def test_netlist_generation(request, instance):
-    _setup_for_generation(instance, request.node.name)
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name])
     )
