@@ -194,7 +194,7 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
         repo,
         "Archimajor.PrjPcb",
         attributes_mapping,
-        group_by=["part_number", "manufacturer", "description"],
+        group_by=["part_number"],
         # We hard-code a ref so that this test is reproducible.
         ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
     )
