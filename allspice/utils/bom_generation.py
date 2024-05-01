@@ -82,11 +82,12 @@ def generate_bom_for_altium(
                 independent_sheet,
                 schdoc_entries,
                 hierarchy,
-                attributes_mapping,
             )
         )
 
-    bom = _group_components(components, group_by)
+    mapped_components = _map_attributes(components, attributes_mapping)
+
+    bom = _group_components(mapped_components, group_by)
 
     return bom
 
@@ -303,7 +304,6 @@ def _extract_components(
     sheet_name: str,
     sheets_to_entries: dict[str, list[dict]],
     hierarchy: dict[str, list[tuple[str, int]]],
-    attributes_mapping: dict[str, list[str]],
 ) -> list[dict[str, str | None]]:
     components = []
     if sheet_name not in sheets_to_entries:
@@ -320,25 +320,33 @@ def _extract_components(
         return components
 
     for child_sheet, count in hierarchy[sheet_name]:
-        child_components = _extract_components(
-            child_sheet,
-            sheets_to_entries,
-            hierarchy,
-            attributes_mapping,
-        )
+        child_components = _extract_components(child_sheet, sheets_to_entries, hierarchy)
         if count > 1:
             for component in child_components:
                 components.extend(_append_designator_letters(component, count))
         else:
             components.extend(child_components)
 
-    return [
-        {
-            key: _find_first_matching_key(value, component)
-            for key, value in attributes_mapping.items()
-        }
-        for component in components
-    ]
+    return components
+
+
+def _map_attributes(
+    components: list[dict[str, str | None]], attributes_mapping: dict[str, list[str]]
+) -> list[dict[str, str]]:
+    """
+    Map the attributes of the components to the columns of the BOM using the
+    attributes mapping.
+    """
+
+    mapped_components = []
+
+    for component in components:
+        mapped_component = {}
+        for column, attributes in attributes_mapping.items():
+            mapped_component[column] = str(_find_first_matching_key(attributes, component) or "")
+        mapped_components.append(mapped_component)
+
+    return mapped_components
 
 
 def _group_components(
