@@ -24,12 +24,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="generate_bom", description="Generate a BOM from a PrjPcb file."
     )
-    parser.add_argument("repository", help="The repo containing the project")
-    parser.add_argument("prjpcb_file", help="The path to the PrjPcb file in the source repo.")
     parser.add_argument(
-        "pcb_file",
-        help="The path to the PCB file in the source repo.",
+        "repository", help="The repo containing the project in the form 'owner/repo'"
     )
+    parser.add_argument("prjpcb_file", help="The path to the PrjPcb file in the source repo.")
     parser.add_argument(
         "--source_ref",
         help="The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.",
@@ -65,7 +63,6 @@ if __name__ == "__main__":
     repo_owner, repo_name = args.repository.split("/")
     repository = allspice.get_repository(repo_owner, repo_name)
     prjpcb_file = args.prjpcb_file
-    pcb_file = args.pcb_file
 
     print("Generating BOM...", file=sys.stderr)
 
@@ -73,7 +70,6 @@ if __name__ == "__main__":
         allspice,
         repository,
         prjpcb_file,
-        pcb_file,
         attributes_mapper,
         args.source_ref,
     )
