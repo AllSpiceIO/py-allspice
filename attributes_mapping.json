@@ -1,0 +1,12 @@
+{
+  "description": "Comment",
+  "designator": "Designator",
+  "manufacturer": [
+    "Manufacturer",
+    "MANUFACTURER"
+  ],
+  "part_number": [
+    "Part Number",
+    "MANUFACTURER #"
+  ]
+}

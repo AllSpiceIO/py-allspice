@@ -1,6 +1,9 @@
+# cspell:ignore jsons
+
 from __future__ import annotations
 
 import configparser
+from enum import Enum
 import pathlib
 import re
 import sys
@@ -13,6 +16,14 @@ from ..exceptions import NotYetGeneratedException
 
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
 QUANTITY_COLUMN_NAME = "Quantity"
+DESIGNATOR_COLUMN_NAME = "Designator"
+
+
+class VariationKind(Enum):
+    FITTED_MOD_PARAMS = 0
+    NOT_FITTED = 1
+    ALT_COMP = 2
+
 
 ColumnsMapping = dict[str, list[str] | str]
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
@@ -29,6 +40,7 @@ def generate_bom_for_altium(
     prjpcb_file: str,
     columns: ColumnsMapping,
     group_by: Optional[list[str]] = None,
+    variant: Optional[str] = None,
     ref: Ref = "main",
 ) -> Bom:
     """
@@ -46,6 +58,10 @@ def generate_bom_for_altium(
         the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
+    :param variant: The variant of the project to generate the BOM for. If this
+        is provided, the BOM will be generated for the specified variant. If
+        this is not provided, or is None, the BOM will be generated for the
+        default variant.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -62,7 +78,19 @@ def generate_bom_for_altium(
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
     # file content with utf-8-sig to remove it.
     prjpcb_file_contents = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
-    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_file_contents)
+
+    prjpcb_ini = configparser.ConfigParser()
+    prjpcb_ini.read_string(prjpcb_file_contents)
+
+    if variant is not None:
+        try:
+            variant_details = _extract_variations(variant, prjpcb_ini)
+        except ValueError:
+            allspice_client.logger.error(f"Error: could not find {variant=} in PrjPcb file.")
+            allspice_client.logger.error("Please check the name of the variant.")
+            sys.exit(1)
+
+    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
 
     schdoc_jsons = {
@@ -94,8 +122,10 @@ def generate_bom_for_altium(
             )
         )
 
-    mapped_components = _map_attributes(components, columns)
+    if variant is not None:
+        components = _apply_variations(components, variant_details)
 
+    mapped_components = _map_attributes(components, columns)
     bom = _group_entries(mapped_components, group_by)
 
     return bom
@@ -120,17 +150,14 @@ def _get_first_matching_key_value(
     return None
 
 
-def _extract_schdoc_list_from_prjpcb(prjpcb_file_content) -> set[str]:
+def _extract_schdoc_list_from_prjpcb(prjpcb_ini: configparser.ConfigParser) -> set[str]:
     """
     Get a list of SchDoc files from a PrjPcb file.
     """
 
-    prjcpb_data = configparser.ConfigParser()
-    prjcpb_data.read_string(prjpcb_file_content)
-
     return {
         section["DocumentPath"]
-        for (_, section) in prjcpb_data.items()
+        for (_, section) in prjpcb_ini.items()
         if "DocumentPath" in section and section["DocumentPath"].endswith(".SchDoc")
     }
 
@@ -301,14 +328,14 @@ def _append_designator_letters(
     if repetitions == 1:
         return [component_attributes]
 
-    designator = component_attributes["Designator"]
+    designator = component_attributes[DESIGNATOR_COLUMN_NAME]
     if designator is None:
         return [component_attributes] * repetitions
 
     return [
         {
             **component_attributes,
-            "Designator": f"{designator}{_letters_for_repetition(i)}",
+            DESIGNATOR_COLUMN_NAME: f"{designator}{_letters_for_repetition(i)}",
         }
         for i in range(1, repetitions + 1)
     ]
@@ -354,17 +381,13 @@ def _map_attributes(
     returns a dict that can be used as a BOM entry.
     """
 
-    mapped_components = []
-
-    for component in components:
-        mapped_component = {}
-        for column, attributes in columns.items():
-            mapped_component[column] = str(
-                _get_first_matching_key_value(attributes, component) or ""
-            )
-        mapped_components.append(mapped_component)
-
-    return mapped_components
+    return [
+        {
+            key: str(_get_first_matching_key_value(value, component) or "")
+            for key, value in columns.items()
+        }
+        for component in components
+    ]
 
 
 def _group_entries(
@@ -414,3 +437,91 @@ def _group_entries(
         rows.append(row)
 
     return rows
+
+
+def _extract_variations(
+    variant: str,
+    prjpcb_ini: configparser.ConfigParser,
+) -> configparser.SectionProxy:
+    """
+    Extract the details of a variant from a PrjPcb file.
+    """
+
+    prjpcb_data = configparser.ConfigParser()
+    prjpcb_data.read_string(prjpcb_ini)
+
+    for section in prjpcb_data.sections():
+        if section.startswith("ProjectVariant"):
+            if prjpcb_data[section]["Description"] == variant:
+                return prjpcb_data[section]
+
+    raise ValueError(f"Variant {variant} not found in PrjPcb file")
+
+
+def _apply_variations(
+    components: list[dict[str, str | None]],
+    variant_details: configparser.SectionProxy,
+) -> list[dict[str, str | None]]:
+    """
+    Apply the variations of a specific variant to the components. This should be
+    done before the components are mapped to columns or grouped.
+
+    :param components: The components to apply the variations to.
+    :param variant_details: The section of the config file dealing with a
+        specific variant.
+
+    :returns: The components with the variations applied.
+    """
+
+    variation_count = variant_details.getint("VariationCount")
+    param_variation_count = variant_details.getint("ParamVariationCount")
+
+    designators_to_remove = []
+    designators_to_patch = {}
+
+    for i in range(1, variation_count + 1):
+        variation_details = variant_details[f"Variation{i}"]
+        variation_details = dict(details.split("=", 1) for details in variation_details.split("|"))
+        try:
+            designator = variation_details["Designator"]
+            kind = VariationKind(int(variation_details["Kind"]))
+            # The only kind we care about right now is not_fitted, because for
+            # both of the param kinds we'll patch the component later.
+            if kind == VariationKind.NOT_FITTED:
+                designators_to_remove.append(designator)
+        except KeyError:
+            print("Error: Designator or Kind not found in variation details.", file=sys.stderr)
+            continue
+        except ValueError:
+            print("Error: Kind must be an integer.", file=sys.stderr)
+            continue
+
+    for i in range(1, param_variation_count + 1):
+        variation_details = variant_details[f"ParamVariation{i}"]
+        designator = variant_details[f"ParamDesignator{i}"]
+
+        variation_details = dict(details.split("=", 1) for details in variation_details.split("|"))
+        try:
+            parameter_patch = (variant_details["ParameterName"], variant_details["VariantValue"])
+            if designator in designators_to_patch:
+                designators_to_patch[designator].append(parameter_patch)
+            else:
+                designators_to_patch[designator] = [parameter_patch]
+        except KeyError:
+            print(
+                f"Error: ParameterName or VariantValue not found in ParamVariation{i} details.",
+                file=sys.stderr,
+            )
+            continue
+
+    final_components = []
+
+    for component in components:
+        if component[DESIGNATOR_COLUMN_NAME] in designators_to_remove:
+            continue
+
+        if component[DESIGNATOR_COLUMN_NAME] in designators_to_patch:
+            for parameter, value in designators_to_patch[component[DESIGNATOR_COLUMN_NAME]]:
+                component[parameter] = value
+
+    return final_components
