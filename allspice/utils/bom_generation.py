@@ -447,14 +447,10 @@ def _extract_variations(
     Extract the details of a variant from a PrjPcb file.
     """
 
-    prjpcb_data = configparser.ConfigParser()
-    prjpcb_data.read_string(prjpcb_ini)
-
-    for section in prjpcb_data.sections():
+    for section in prjpcb_ini.sections():
         if section.startswith("ProjectVariant"):
-            if prjpcb_data[section]["Description"] == variant:
-                return prjpcb_data[section]
-
+            if prjpcb_ini[section]["Description"] == variant:
+                return prjpcb_ini[section]
     raise ValueError(f"Variant {variant} not found in PrjPcb file")
 
 
@@ -502,7 +498,10 @@ def _apply_variations(
 
         variation_details = dict(details.split("=", 1) for details in variation_details.split("|"))
         try:
-            parameter_patch = (variant_details["ParameterName"], variant_details["VariantValue"])
+            parameter_patch = (
+                variation_details["ParameterName"],
+                variation_details["VariantValue"],
+            )
             if designator in designators_to_patch:
                 designators_to_patch[designator].append(parameter_patch)
             else:
@@ -521,7 +520,11 @@ def _apply_variations(
             continue
 
         if component[DESIGNATOR_COLUMN_NAME] in designators_to_patch:
+            new_component = component.copy()
             for parameter, value in designators_to_patch[component[DESIGNATOR_COLUMN_NAME]]:
-                component[parameter] = value
+                new_component[parameter] = value
+            final_components.append(new_component)
+        else:
+            final_components.append(component)
 
     return final_components
