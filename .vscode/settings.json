@@ -4,12 +4,15 @@
         "editor.formatOnSave": true
     },
     "cSpell.words": [
+        "Altium",
         "apiobject",
         "baseapiobject",
         "highestindex",
         "leastindex",
         "leastupdate",
+        "prjpcb",
         "recentupdate",
-        "reponame"
+        "reponame",
+        "schdoc"
     ]
 }
