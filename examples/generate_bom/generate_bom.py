@@ -25,8 +25,19 @@ if __name__ == "__main__":
     )
     parser.add_argument("prjpcb_file", help="The path to the PrjPcb file in the source repo.")
     parser.add_argument(
+        "--columns",
+        help=(
+            "A path to a JSON file mapping columns to the attributes they are from. See the README "
+            "for more details. Defaults to 'columns.json'."
+        ),
+        default="columns.json",
+    )
+    parser.add_argument(
         "--source_ref",
-        help="The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.",
+        help=(
+            "The git reference the BOM should be generated for (eg. branch name, tag name, commit "
+            "SHA). Defaults to the main branch."
+        ),
         default="main",
     )
     parser.add_argument(
@@ -39,17 +50,17 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--group_by",
-        help="Attributes to group the BOM by. If not present, the BOM will be flat.",
+        help=(
+            "A comma-separated list of columns to group the BOM by. If not present, the BOM will "
+            "be flat."
+        ),
     )
 
     args = parser.parse_args()
 
-    try:
-        with open("attributes_mapping.json", "r") as f:
-            attributes_mapper = json.loads(f.read())
-    except FileNotFoundError:
-        print("Please create an attributes_mapping.json file in the same directory as this script.")
-        exit(1)
+    columns_file = args.columns
+    with open(columns_file, "r") as f:
+        columns = json.loads(f.read())
 
     # Use Environment Variables to store your auth token. This keeps your token
     # secure when sharing code.
@@ -74,7 +85,7 @@ if __name__ == "__main__":
         allspice,
         repository,
         prjpcb_file,
-        attributes_mapper,
+        columns,
         group_by=group_by,
         ref=args.source_ref,
     )

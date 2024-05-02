@@ -19,7 +19,7 @@ def generate_bom_for_altium(
     allspice_client: AllSpice,
     repository: Repository,
     prjpcb_file: str,
-    attributes_mapping: dict[str, list[str]],
+    columns: dict[str, list[str]],
     group_by: Optional[list[str]] = None,
     ref: Ref = "main",
 ) -> list[dict[str, str]]:
@@ -31,23 +31,24 @@ def generate_bom_for_altium(
     :param prjpcb_file: The Altium project file. This can be a Content object
         returned by the AllSpice API, or a string containing the path to the
         file in the repo.
-    :param attributes_mapping: A mapping of the columns in the BOM to the
-        attributes in the Altium project. The attributes are tried in order,
-        and the first one found is used as the value for that column.
-    :param group_by: A list of attributes to group the BOM by. If this is
-        provided, the BOM will be grouped by the values of these attributes.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        Altium project. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
-    :return: A list of BOM entries.
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
     """
 
     allspice_client.logger.info(
-        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {attributes_mapping=}"
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
     )
     if group_by is not None:
         for group_column in group_by:
-            if group_column not in attributes_mapping:
-                raise ValueError(f"Group by column {group_column} not found in attributes mapping")
+            if group_column not in columns:
+                raise ValueError(f"Group by column {group_column} not found in selected columns")
     allspice_client.logger.info(f"Fetching {prjpcb_file=}")
 
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
@@ -85,7 +86,7 @@ def generate_bom_for_altium(
             )
         )
 
-    mapped_components = _map_attributes(components, attributes_mapping)
+    mapped_components = _map_attributes(components, columns)
 
     bom = _group_components(mapped_components, group_by)
 
@@ -249,8 +250,8 @@ def _component_attributes(component: dict) -> dict[str, str]:
     # The properties `part_id` and `description` are present in the top level of
     # the component.
     try:
-        attributes["__part_id"] = component["part_id"]
-        attributes["__description"] = component["description"]
+        attributes["_part_id"] = component["part_id"]
+        attributes["_description"] = component["description"]
     except KeyError:
         pass
 
@@ -331,18 +332,19 @@ def _extract_components(
 
 
 def _map_attributes(
-    components: list[dict[str, str | None]], attributes_mapping: dict[str, list[str]]
+    components: list[dict[str, str | None]],
+    columns: dict[str, list[str]],
 ) -> list[dict[str, str]]:
     """
     Map the attributes of the components to the columns of the BOM using the
-    attributes mapping.
+    columns mapping.
     """
 
     mapped_components = []
 
     for component in components:
         mapped_component = {}
-        for column, attributes in attributes_mapping.items():
+        for column, attributes in columns.items():
             mapped_component[column] = str(_find_first_matching_key(attributes, component) or "")
         mapped_components.append(mapped_component)
 
