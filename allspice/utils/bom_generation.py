@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import configparser
-from dataclasses import dataclass
 import pathlib
 import re
 import sys
@@ -13,79 +12,23 @@ from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
+QUANTITY_COLUMN_NAME = "Quantity"
 
-
-@dataclass
-class SchematicComponent:
-    description: Optional[str]
-    manufacturer: Optional[str]
-    part_number: Optional[str]
-    designator: Optional[str]
-
-
-@dataclass
-class BomEntry:
-    description: str
-    manufacturer: str
-    part_number: str
-    designators: list[str]
-    quantity: int
-
-
+ColumnsMapping = dict[str, list[str] | str]
+# Maps a sheet name to a list of tuples, where each tuple is a child sheet and
+# the number of repetitions of that child sheet in the parent sheet.
+SchdocHierarchy = dict[str, list[tuple[str, int]]]
+ComponentAttributes = dict[str, str | None]
+BomEntry = dict[str, str]
 Bom = list[BomEntry]
-
-
-@dataclass
-class AttributesMapping:
-    """
-    Define how we map from attributes in the Altium SchDoc file to the fields of
-    the BOM.
-
-    For each field, we define a list of attribute names that we will check in
-    the Altium SchDoc file. The *first* one found defined will be used.
-
-    :param description: A list of attribute names in the Altium SchDoc file
-        that contain the description of the part.
-    :param manufacturer: A list of attribute names in the Altium SchDoc file
-        that contain the manufacturer of the part.
-    :param part_number: A list of attribute names in the Altium SchDoc file
-        that contain the part number of the part.
-    :param designator: A list of attribute names in the Altium SchDoc file
-        that contain the designator of the part.
-    """
-
-    description: list[str]
-    manufacturer: list[str]
-    part_number: list[str]
-    designator: list[str]
-
-    @staticmethod
-    def from_dict(dictionary: dict[str, list[str]]) -> AttributesMapping:
-        """
-        Create an AttributesMapping from a dictionary.
-
-        Example Input::
-
-            {
-                "description": ["Description"],
-                "manufacturer": ["Manufacturer", "MANUFACTURER"],
-                "part_number": ["Part Number"],
-                "designator": ["Designator"],
-            }
-        """
-        return AttributesMapping(
-            description=dictionary["description"],
-            manufacturer=dictionary["manufacturer"],
-            part_number=dictionary["part_number"],
-            designator=dictionary["designator"],
-        )
 
 
 def generate_bom_for_altium(
     allspice_client: AllSpice,
     repository: Repository,
     prjpcb_file: str,
-    attributes_mapping: AttributesMapping,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
     ref: Ref = "main",
 ) -> Bom:
     """
@@ -96,17 +39,24 @@ def generate_bom_for_altium(
     :param prjpcb_file: The Altium project file. This can be a Content object
         returned by the AllSpice API, or a string containing the path to the
         file in the repo.
-    :param attributes_mapping: A mapping of Altium attributes to BOM entry
-        attributes. See the documentation for AttributesMapping for more
-        information.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        Altium project. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
-    :return: A list of BOM entries.
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
     """
 
     allspice_client.logger.info(
-        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {attributes_mapping=}"
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
     )
+    if group_by is not None:
+        for group_column in group_by:
+            if group_column not in columns:
+                raise ValueError(f"Group by column {group_column} not found in selected columns")
     allspice_client.logger.info(f"Fetching {prjpcb_file=}")
 
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
@@ -141,18 +91,19 @@ def generate_bom_for_altium(
                 independent_sheet,
                 schdoc_entries,
                 hierarchy,
-                attributes_mapping,
             )
         )
 
-    bom = _group_components(components)
+    mapped_components = _map_attributes(components, columns)
+
+    bom = _group_entries(mapped_components, group_by)
 
     return bom
 
 
-def _find_first_matching_key(
+def _get_first_matching_key_value(
     alternatives: Union[list[str], str],
-    attributes: dict,
+    attributes: dict[str, str | None],
 ) -> Optional[str]:
     """
     Search for a series of alternative keys in a dictionary, and return the
@@ -164,7 +115,7 @@ def _find_first_matching_key(
 
     for alternative in alternatives:
         if alternative in attributes:
-            return attributes[alternative]["text"]
+            return attributes[alternative]
 
     return None
 
@@ -220,7 +171,7 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
 
 def _build_schdoc_hierarchy(
     sheets_to_refs: dict[str, list[dict]],
-) -> tuple[set[str], dict[str, list[tuple[str, int]]]]:
+) -> tuple[set[str], SchdocHierarchy]:
     """
     Build a hierarchy of sheets from a mapping of sheet names to the references
     of their children.
@@ -273,6 +224,11 @@ def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
 
 
 def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
+    """
+    Takes a list of sheet references and returns a dictionary of each child
+    sheet to the number of repetitions of that sheet in the parent sheet.
+    """
+
     repetitions = {}
     for sheet_ref in sheet_refs:
         sheet_name = sheet_ref["sheet_name"]["name"]
@@ -291,25 +247,28 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
     return repetitions
 
 
-def _schdoc_component_from_attributes(
-    attributes: dict,
-    mapper: AttributesMapping,
-) -> SchematicComponent:
+def _component_attributes(component: dict) -> ComponentAttributes:
     """
-    Make a SchDoc Component object out of the JSON for it in the SchDoc file.
+    Extract the attributes of a component into a dict.
 
-    :param attributes: The attributes for the component in the SchDoc
-    :param mapper: An AttributesMapping object, see the documentation for
-        AttributesMapping for more information.
-    :returns: A SchodocComponent object representing that component.
+    This also adds two properties of the component that are not attributes into
+    the dict.
     """
 
-    return SchematicComponent(
-        description=_find_first_matching_key(mapper.description, attributes),
-        designator=_find_first_matching_key(mapper.designator, attributes) or "",
-        manufacturer=_find_first_matching_key(mapper.manufacturer, attributes),
-        part_number=_find_first_matching_key(mapper.part_number, attributes),
-    )
+    attributes = {}
+
+    for key, value in component["attributes"].items():
+        attributes[key] = value["text"]
+
+    # The properties `part_id` and `description` are present in the top level of
+    # the component.
+    try:
+        attributes["_part_id"] = component["part_id"]
+        attributes["_description"] = component["description"]
+    except KeyError:
+        pass
+
+    return attributes
 
 
 def _letters_for_repetition(rep: int) -> str:
@@ -331,24 +290,26 @@ def _letters_for_repetition(rep: int) -> str:
 
 
 def _append_designator_letters(
-    component: SchematicComponent,
+    component_attributes: ComponentAttributes,
     repetitions: int,
-) -> list[SchematicComponent]:
+) -> list[ComponentAttributes]:
     """
     Append a letter to the designator of each component in a list of components
     based on the number of repetitions of each component in the parent sheet.
     """
 
     if repetitions == 1:
-        return [component]
+        return [component_attributes]
+
+    designator = component_attributes["Designator"]
+    if designator is None:
+        return [component_attributes] * repetitions
 
     return [
-        SchematicComponent(
-            description=component.description,
-            manufacturer=component.manufacturer,
-            part_number=component.part_number,
-            designator=f"{component.designator}{_letters_for_repetition(i)}",
-        )
+        {
+            **component_attributes,
+            "Designator": f"{designator}{_letters_for_repetition(i)}",
+        }
         for i in range(1, repetitions + 1)
     ]
 
@@ -356,9 +317,8 @@ def _append_designator_letters(
 def _extract_components(
     sheet_name: str,
     sheets_to_entries: dict[str, list[dict]],
-    hierarchy: dict[str, list[tuple[str, int]]],
-    attributes_mapping: AttributesMapping,
-) -> list[SchematicComponent]:
+    hierarchy: SchdocHierarchy,
+) -> list[ComponentAttributes]:
     components = []
     if sheet_name not in sheets_to_entries:
         return components
@@ -367,22 +327,14 @@ def _extract_components(
         if entry["type"] != "Component":
             continue
 
-        component = _schdoc_component_from_attributes(
-            entry["attributes"],
-            attributes_mapping,
-        )
+        component = _component_attributes(entry)
         components.append(component)
 
     if sheet_name not in hierarchy:
         return components
 
     for child_sheet, count in hierarchy[sheet_name]:
-        child_components = _extract_components(
-            child_sheet,
-            sheets_to_entries,
-            hierarchy,
-            attributes_mapping,
-        )
+        child_components = _extract_components(child_sheet, sheets_to_entries, hierarchy)
         if count > 1:
             for component in child_components:
                 components.extend(_append_designator_letters(component, count))
@@ -392,11 +344,50 @@ def _extract_components(
     return components
 
 
-def _group_components(components: list[SchematicComponent]) -> Bom:
-    grouped_components = {}
+def _map_attributes(
+    components: list[ComponentAttributes],
+    columns: dict[str, list[str]],
+) -> list[BomEntry]:
+    """
+    Map the attributes of the components to the columns of the BOM using the
+    columns mapping. This takes a component as we get it from the JSON and
+    returns a dict that can be used as a BOM entry.
+    """
+
+    mapped_components = []
 
     for component in components:
-        key = component.part_number
+        mapped_component = {}
+        for column, attributes in columns.items():
+            mapped_component[column] = str(
+                _get_first_matching_key_value(attributes, component) or ""
+            )
+        mapped_components.append(mapped_component)
+
+    return mapped_components
+
+
+def _group_entries(
+    components: list[BomEntry],
+    group_by: list[str] | None = None,
+) -> list[BomEntry]:
+    """
+    Group components based on a list of columns. The order of the columns in the
+    list will determine the order of the grouping.
+
+    :returns: A list of rows which can be used as the BOM.
+    """
+
+    # If grouping is off, we just add a quantity of 1 to each component and
+    # return early.
+    if group_by is None:
+        for component in components:
+            component[QUANTITY_COLUMN_NAME] = "1"
+        return components
+
+    grouped_components = {}
+    for component in components:
+        key = tuple(component[column] for column in group_by)
         if key in grouped_components:
             grouped_components[key].append(component)
         else:
@@ -404,14 +395,22 @@ def _group_components(components: list[SchematicComponent]) -> Bom:
 
     rows = []
 
-    for part_number, components in grouped_components.items():
-        row = BomEntry(
-            description=str(components[0].description),
-            manufacturer=str(components[0].manufacturer),
-            designators=[str(component.designator) for component in components],
-            part_number=part_number,
-            quantity=len(components),
-        )
+    for components in grouped_components.values():
+        row = {}
+        for column in group_by:
+            row[column] = components[0][column]
+        non_group_by = set(components[0].keys()) - set(group_by)
+        for column in non_group_by:
+            # For each of the values in the non-group-by columns, we take the
+            # unique values from all the components and join them with a comma.
+            # This is better than taking the non-unique values and joining them
+            # with a comma, because it means a user wouldn't have to group by
+            # more columns than they want to.
+            row[column] = ", ".join(
+                # dict.fromkeys retains the insertion order; set doesn't.
+                dict.fromkeys(str(component[column]) for component in components).keys()
+            )
+        row["Quantity"] = str(len(components))
         rows.append(row)
 
     return rows

@@ -8,8 +8,9 @@ case.
 ## BOM Generation
 
 The `generate_bom.py` script wraps the BOM generation utilities in py-allspice
-with a command line interface. It takes a PrjPcb file and a PcbDoc file and
-generates a BOM CSV file.
+with a command line interface. It takes a repository, the path to the PrjPcb
+file in that repository and JSON file for the columns to generate a BOM CSV
+file.
 
 To use the script, start by running:
 
@@ -20,28 +21,32 @@ python3 generate_bom.py -h
 As of writing, this generates the following help text:
 
 ```
-usage: generate_bom [-h] [--source_ref SOURCE_REF]
-                    [--allspice_hub_url ALLSPICE_HUB_URL]
-                    [--output_file OUTPUT_FILE]
-                    repository prjpcb_file pcb_file
+usage: generate_bom [-h] [--columns COLUMNS] [--source_ref SOURCE_REF]
+                    [--allspice_hub_url ALLSPICE_HUB_URL] [--output_file OUTPUT_FILE]
+                    [--group_by GROUP_BY]
+                    repository prjpcb_file
 
 Generate a BOM from a PrjPcb file.
 
 positional arguments:
-  repository            The repo containing the project
+  repository            The repo containing the project in the form 'owner/repo'
   prjpcb_file           The path to the PrjPcb file in the source repo.
-  pcb_file              The path to the PCB file in the source repo.
 
 options:
   -h, --help            show this help message and exit
-  --source_ref SOURCE_ref
-                        The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.
+  --columns COLUMNS     A path to a JSON file mapping columns to the attributes they are from.
+                        See the README for more details. Defaults to 'columns.json'.
+  --source_ref SOURCE_REF
+                        The git reference the BOM should be generated for (eg. branch name, tag
+                        name, commit SHA). Defaults to the main branch.
   --allspice_hub_url ALLSPICE_HUB_URL
                         The URL of your AllSpice Hub instance. Defaults to
                         https://hub.allspice.io.
   --output_file OUTPUT_FILE
-                        The path to the output file. If absent, the CSV will be
-                        output to the command line.
+                        The path to the output file. If absent, the CSV will be output to the
+                        command line.
+  --group_by GROUP_BY   A comma-separated list of columns to group the BOM by. If not present,
+                        the BOM will be flat.
 ```
 
 Some examples of how you could run this are:
@@ -51,14 +56,14 @@ export ALLSPICE_AUTH_TOKEN= # some token
 
 python3 generate_bom.py "test/test" "test.PrjPcb" # Note that the options are not required!
 
-python3 generate_bom.py "test/test" "test.PrjPcb" "test.PcbDoc" --allspice_hub_url "https://my.selfhosted.example.org" --output_file bom.csv
+python3 generate_bom.py "test/test" "test.PrjPcb" --allspice_hub_url "https://my.selfhosted.example.org" --output_file bom.csv
 ```
 
 ### Customizing the Attributes Extracted by the BOM Script
 
-This script relies on the presence of an `attributes_mapping.json` file in the
-working directory. This file maps the Component Attributes in the SchDoc files
-to the columns of the BOM. The example version of `attributes_mapping.json` is:
+This script relies on a `columns.json` file. This file maps the Component
+Attributes in the SchDoc files to the columns of the BOM. An example for
+`columns.json` is:
 
 ```json
 {
@@ -77,14 +82,21 @@ If there is only one attribute, you can omit the list and just use a string. The
 script checks these attributes in order, and uses the _first_ one it finds. So
 if both `PART` and `MANUFACTURER #` are defined, it will use `PART`.
 
-If you need to customize the attributes further or have more complex logic,
-customize the `map_json_to_component` function in the script. Note that the
-AllSpice generated JSON may change at any time, so everything except the
-component attributes may change!
+Note that py-allspice also adds two attributes: `_part_id` and `_description`.
+These correspond to the Library Reference and description fields of the
+component. The underscore is added ahead of the name to prevent these additional
+attributes from overriding any of your own. You can use these like:
 
-You can also import this python file in another file to use the methods defined
-in it. If you want the BOM in a different format, or have other requirements,
-you can read and adapt this code, or use it as a reference for your own code.
+```json
+{
+  "Description": ["PART DESCRIPTION", "_description"],
+  "Part Number": ["PART", "_part_id"]
+}
+```
+
+By default, the script picks up a `columns.json` file from the working
+directory. If you want to keep it in a different place, or rename it, you can
+pass the `--columns` argument to the script to specify where it is.
 
 ## Cost of Goods Sold
 

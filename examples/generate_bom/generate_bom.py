@@ -11,11 +11,7 @@ import sys
 from contextlib import ExitStack
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import AttributesMapping, generate_bom_for_altium
-
-
-with open("attributes_mapping.json", "r") as f:
-    attributes_mapper = AttributesMapping.from_dict(json.loads(f.read()))
+from allspice.utils.bom_generation import generate_bom_for_altium
 
 
 if __name__ == "__main__":
@@ -29,8 +25,19 @@ if __name__ == "__main__":
     )
     parser.add_argument("prjpcb_file", help="The path to the PrjPcb file in the source repo.")
     parser.add_argument(
+        "--columns",
+        help=(
+            "A path to a JSON file mapping columns to the attributes they are from. See the README "
+            "for more details. Defaults to 'columns.json'."
+        ),
+        default="columns.json",
+    )
+    parser.add_argument(
         "--source_ref",
-        help="The git reference the netlist should be generated for (eg. branch name, tag name, commit SHA). Defaults to main.",
+        help=(
+            "The git reference the BOM should be generated for (eg. branch name, tag name, commit "
+            "SHA). Defaults to the main branch."
+        ),
         default="main",
     )
     parser.add_argument(
@@ -42,11 +49,18 @@ if __name__ == "__main__":
         help="The path to the output file. If absent, the CSV will be output to the command line.",
     )
     parser.add_argument(
-        "--attributes_to_extract",
-        help="A comma-seperated list of attributes to extract.",
+        "--group_by",
+        help=(
+            "A comma-separated list of columns to group the BOM by. If not present, the BOM will "
+            "be flat."
+        ),
     )
 
     args = parser.parse_args()
+
+    columns_file = args.columns
+    with open(columns_file, "r") as f:
+        columns = json.loads(f.read())
 
     # Use Environment Variables to store your auth token. This keeps your token
     # secure when sharing code.
@@ -63,6 +77,7 @@ if __name__ == "__main__":
     repo_owner, repo_name = args.repository.split("/")
     repository = allspice.get_repository(repo_owner, repo_name)
     prjpcb_file = args.prjpcb_file
+    group_by = args.group_by.split(",") if args.group_by is not None else None
 
     print("Generating BOM...", file=sys.stderr)
 
@@ -70,36 +85,20 @@ if __name__ == "__main__":
         allspice,
         repository,
         prjpcb_file,
-        attributes_mapper,
-        args.source_ref,
+        columns,
+        group_by=group_by,
+        ref=args.source_ref,
     )
-    bom_rows = [
-        [
-            bom_row.description,
-            ", ".join(bom_row.designators),
-            bom_row.quantity,
-            bom_row.manufacturer,
-            bom_row.part_number,
-        ]
-        for bom_row in bom_rows
-    ]
 
     with ExitStack() as stack:
+        keys = bom_rows[0].keys()
         if args.output_file is not None:
             f = stack.enter_context(open(args.output_file, "w"))
-            writer = csv.writer(f)
+            writer = csv.DictWriter(f, fieldnames=keys)
         else:
-            writer = csv.writer(sys.stdout)
+            writer = csv.DictWriter(sys.stdout, fieldnames=keys)
 
-        header = [
-            "Description",
-            "Designator",
-            "Quantity",
-            "Manufacturer",
-            "Part Number",
-        ]
-
-        writer.writerow(header)
+        writer.writeheader()
         writer.writerows(bom_rows)
 
     print("Generated bom.", file=sys.stderr)

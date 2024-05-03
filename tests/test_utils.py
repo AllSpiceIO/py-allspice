@@ -1,15 +1,11 @@
 import base64
 import csv
-import dataclasses
 import uuid
 
 import pytest
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import (
-    AttributesMapping,
-    generate_bom_for_altium,
-)
+from allspice.utils.bom_generation import generate_bom_for_altium
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
@@ -54,7 +50,7 @@ def _setup_for_generation(instance, test_name, clone_addr):
     )
 
 
-def test_bom_generation(request, instance):
+def test_bom_generation_flat(request, instance):
     _setup_for_generation(
         instance,
         request.node.name,
@@ -63,12 +59,12 @@ def test_bom_generation(request, instance):
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name])
     )
-    attributes_mapping = AttributesMapping(
-        description=["PART DESCRIPTION"],
-        designator=["Designator"],
-        manufacturer=["Manufacturer", "MANUFACTURER"],
-        part_number=["PART", "MANUFACTURER #"],
-    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
     bom = generate_bom_for_altium(
         instance,
         repo,
@@ -77,19 +73,12 @@ def test_bom_generation(request, instance):
         # We hard-code a ref so that this test is reproducible.
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
-    assert len(bom) == 107
 
-    bom_as_dicts = []
-    # We have to do this manually because of how csv.DictWriter works.
-    for item in bom:
-        entry_as_dict = {}
-        for key, value in dataclasses.asdict(item).items():
-            entry_as_dict[key] = str(value) if value is not None else ""
-        bom_as_dicts.append(entry_as_dict)
+    assert len(bom) == 1061
 
-    with open("tests/data/archimajor_bom_expected.csv", "r") as f:
+    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom_as_dicts):
+        for row, expected_row in zip(reader, bom):
             assert row == expected_row
 
 
@@ -104,12 +93,12 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     )
     # We hard-code a ref so that this test is reproducible.
     ref = "95719adde8107958bf40467ee092c45b6ddaba00"
-    attributes_mapping = AttributesMapping(
-        description=["PART DESCRIPTION"],
-        designator=["Designator"],
-        manufacturer=["Manufacturer", "MANUFACTURER"],
-        part_number=["PART", "MANUFACTURER #"],
-    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
 
     new_branch_name = "-".join([test_branch, request.node.name])
     repo.add_branch(ref, new_branch_name)
@@ -123,7 +112,12 @@ def test_bom_generation_with_odd_line_endings(request, instance):
     prjpcb_content = repo.get_raw_file(prjpcb_file.path, ref=ref).decode("utf-8")
     new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
     new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
-    repo.change_file("Archimajor.PrjPcb", original_prjpcb_sha, new_content_econded, {"branch": ref})
+    repo.change_file(
+        "Archimajor.PrjPcb",
+        original_prjpcb_sha,
+        new_content_econded,
+        {"branch": ref},
+    )
 
     # Sanity check that the file was changed.
     prjpcb_content_now = repo.get_raw_file("Archimajor.PrjPcb", ref=ref).decode("utf-8")
@@ -138,19 +132,45 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         # test.
         ref=ref,
     )
-    assert len(bom) == 107
+    assert len(bom) == 1061
 
-    bom_as_dicts = []
-    # We have to do this manually because of how csv.DictWriter works.
-    for item in bom:
-        entry_as_dict = {}
-        for key, value in dataclasses.asdict(item).items():
-            entry_as_dict[key] = str(value) if value is not None else ""
-        bom_as_dicts.append(entry_as_dict)
-
-    with open("tests/data/archimajor_bom_expected.csv", "r") as f:
+    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom_as_dicts):
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_bom_generation_grouped(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        group_by=["part_number", "manufacturer", "description"],
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+
+    assert len(bom) == 112
+
+    with open("tests/data/archimajor_bom_grouped_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
             assert row == expected_row
 
 
@@ -163,33 +183,26 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name])
     )
-    attributes_mapping = AttributesMapping(
-        description=["PART DESCRIPTION"],
-        designator=["Designator"],
-        manufacturer=["Manufacturer", "MANUFACTURER"],
-        part_number=["PART", "MANUFACTURER #"],
-    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
     bom = generate_bom_for_altium(
         instance,
         repo,
         "Archimajor.PrjPcb",
         attributes_mapping,
+        group_by=["part_number"],
         # We hard-code a ref so that this test is reproducible.
         ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
     )
     assert len(bom) == 106
 
-    bom_as_dicts = []
-    # We have to do this manually because of how csv.DictWriter works.
-    for item in bom:
-        entry_as_dict = {}
-        for key, value in dataclasses.asdict(item).items():
-            entry_as_dict[key] = str(value) if value is not None else ""
-        bom_as_dicts.append(entry_as_dict)
-
     with open("tests/data/archimajor_bom_hierarchical_expected.csv", "r") as f:
         reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom_as_dicts):
+        for row, expected_row in zip(reader, bom):
             assert row == expected_row
 
 
