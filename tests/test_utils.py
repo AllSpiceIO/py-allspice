@@ -264,7 +264,9 @@ def test_bom_generation_with_fitted_variant(request, instance):
         variant="Fitted",
     )
 
-    assert len(bom) == 933
+    # Exactly 42 rows should be removed, as that is the number of non-param
+    # variations.
+    assert len(bom) == 987 - 42
 
     with open("tests/data/archimajor_bom_fitted_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)

@@ -292,6 +292,7 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     try:
         attributes["_part_id"] = component["part_id"]
         attributes["_description"] = component["description"]
+        attributes["_unique_id"] = component["unique_id"]
     except KeyError:
         pass
 
@@ -469,59 +470,91 @@ def _apply_variations(
     :returns: The components with the variations applied.
     """
 
-    variation_count = variant_details.getint("VariationCount")
-    param_variation_count = variant_details.getint("ParamVariationCount")
+    # Each item in the list is a pairing of (unique_id, designator), as both are
+    # required to identify a component.
+    components_to_remove: list[tuple[str, str]] = []
+    # When patching components, the ParamVariation doesn't have the unique ID,
+    # only a designator. However, ParamVariations follow the Variation entry, so
+    # if we note down the last unique id we saw for a designator when going
+    # through the variations, we can use that unique id when handling a param
+    # variation. This dict holds that information.
+    patch_component_unique_id: dict[str, str] = {}
+    # The keys are the same as above, and the values are a key-value of the
+    # parameter to patch and the value to patch it to.
+    components_to_patch: dict[tuple[str, str], tuple[str, str]] = {}
 
-    designators_to_remove = []
-    designators_to_patch = {}
+    for key, value in variant_details.items():
+        # Note that this is in lowercase, as configparser stores all keys in
+        # lowercase.
+        if re.match(r"variation[\d+]", key):
+            variation_details = dict(details.split("=", 1) for details in value.split("|"))
+            try:
+                designator = variation_details["Designator"]
+                # The unique ID field is a "path" separated by backslashes, and
+                # the the unique id we want is the last entry in that path.
+                unique_id = variation_details["UniqueId"].split("\\")[-1]
+                kind = VariationKind(int(variation_details["Kind"]))
+                if kind == VariationKind.NOT_FITTED:
+                    components_to_remove.append((unique_id, designator))
+                else:
+                    patch_component_unique_id[designator] = unique_id
+            except KeyError:
+                print(
+                    f"Error: Designator, UniqueId, or Kind not found in {key} details.",
+                    file=sys.stderr,
+                )
+                continue
+            except ValueError:
+                print(
+                    f"Error: Kind {variation_details['Kind']} must be an integer.",
+                    file=sys.stderr,
+                )
+                continue
+        elif re.match(r"paramvariation[\d]+", key):
+            variation_id = key.split("paramvariation")[-1]
+            designator = variant_details[f"ParamDesignator{variation_id}"]
+            variation_details = dict(details.split("=", 1) for details in value.split("|"))
+            try:
+                unique_id = patch_component_unique_id[designator]
+            except KeyError:
+                # This can happen sometimes - Altium allows param variations
+                # even when the component is not fitted, so we just log and
+                # ignore.
+                print(
+                    f"Warning: ParamVariation{variation_id} found for component {designator} "
+                    "either before the corresponding Variation or for a component that is not "
+                    "fitted.\nIgnoring this ParamVariation.",
+                    file=sys.stderr,
+                )
+                continue
 
-    for i in range(1, variation_count + 1):
-        variation_details = variant_details[f"Variation{i}"]
-        variation_details = dict(details.split("=", 1) for details in variation_details.split("|"))
-        try:
-            designator = variation_details["Designator"]
-            kind = VariationKind(int(variation_details["Kind"]))
-            # The only kind we care about right now is not_fitted, because for
-            # both of the param kinds we'll patch the component later.
-            if kind == VariationKind.NOT_FITTED:
-                designators_to_remove.append(designator)
-        except KeyError:
-            print("Error: Designator or Kind not found in variation details.", file=sys.stderr)
-            continue
-        except ValueError:
-            print("Error: Kind must be an integer.", file=sys.stderr)
-            continue
-
-    for i in range(1, param_variation_count + 1):
-        variation_details = variant_details[f"ParamVariation{i}"]
-        designator = variant_details[f"ParamDesignator{i}"]
-
-        variation_details = dict(details.split("=", 1) for details in variation_details.split("|"))
-        try:
-            parameter_patch = (
-                variation_details["ParameterName"],
-                variation_details["VariantValue"],
-            )
-            if designator in designators_to_patch:
-                designators_to_patch[designator].append(parameter_patch)
-            else:
-                designators_to_patch[designator] = [parameter_patch]
-        except KeyError:
-            print(
-                f"Error: ParameterName or VariantValue not found in ParamVariation{i} details.",
-                file=sys.stderr,
-            )
-            continue
+            try:
+                parameter_patch = (
+                    variation_details["ParameterName"],
+                    variation_details["VariantValue"],
+                )
+                if (unique_id, designator) in components_to_patch:
+                    components_to_patch[(unique_id, designator)].append(parameter_patch)
+                else:
+                    components_to_patch[(unique_id, designator)] = [parameter_patch]
+            except KeyError:
+                print(
+                    "Error: ParameterName or VariantValue not found in "
+                    f"ParamVariation{variation_id} details.",
+                    file=sys.stderr,
+                )
+                continue
 
     final_components = []
 
     for component in components:
-        if component[DESIGNATOR_COLUMN_NAME] in designators_to_remove:
+        identifying_pair = (component["_unique_id"], component[DESIGNATOR_COLUMN_NAME])
+        if identifying_pair in components_to_remove:
             continue
 
-        if component[DESIGNATOR_COLUMN_NAME] in designators_to_patch:
+        if identifying_pair in components_to_patch:
             new_component = component.copy()
-            for parameter, value in designators_to_patch[component[DESIGNATOR_COLUMN_NAME]]:
+            for parameter, value in components_to_patch[identifying_pair]:
                 new_component[parameter] = value
             final_components.append(new_component)
         else:
