@@ -131,7 +131,7 @@ if __name__ == "__main__":
         part_number = part[PART_NUMBER_COLUMN]
         prices = fetch_price_for_part(part_number)
         if prices and len(prices) > 0:
-            prices_for_parts[part_number] = fetch_price_for_part(part_number)
+            prices_for_parts[part_number] = prices
 
     print(f"Found prices for {len(prices_for_parts)} parts", file=sys.stderr)
 
