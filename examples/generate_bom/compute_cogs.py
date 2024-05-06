@@ -55,7 +55,7 @@ def fetch_price_for_part(part_number: str) -> dict[int, float]:
             "Please set the COFACTR_API_KEY and COFACTR_CLIENT_ID environment variables"
         )
 
-    seach_response = requests.get(
+    search_response = requests.get(
         "https://graph.cofactr.com/products/",
         headers={
             "X-API-KEY": api_key,
@@ -69,14 +69,14 @@ def fetch_price_for_part(part_number: str) -> dict[int, float]:
         },
     )
 
-    if seach_response.status_code != 200:
+    if search_response.status_code != 200:
         print(
-            f"Warning: Received status code {seach_response.status_code} for {part_number}",
+            f"Warning: Received status code {search_response.status_code} for {part_number}",
             file=sys.stderr,
         )
         return {}
 
-    search_results = seach_response.json()
+    search_results = search_response.json()
     try:
         reference_prices = search_results.get("data", [])[0].get("reference_prices")
     except IndexError:
