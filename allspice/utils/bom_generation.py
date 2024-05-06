@@ -258,7 +258,7 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
 
     repetitions = {}
     for sheet_ref in sheet_refs:
-        sheet_name = sheet_ref["sheet_name"]["name"]
+        sheet_name = sheet_ref["sheet_name"]["name"] if sheet_ref["sheet_name"] is not None else ""
         sheet_file_name = sheet_ref["filename"]
         if match := REPETITIONS_REGEX.search(sheet_name):
             count = int(match.group(2)) - int(match.group(1)) + 1
