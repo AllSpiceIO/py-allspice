@@ -115,7 +115,11 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output-file",
-        help="The path to the output file. Defaults to stdout, i.e. printing to the console.",
+        help="The relative path to the output file. Defaults to stdout, i.e. printing to the console.",
+    )
+    parser.add_argument(
+        "--workspace",
+        help="The workspace directory to put the output file in.",
     )
 
     args = parser.parse_args()
@@ -188,7 +192,9 @@ if __name__ == "__main__":
 
     with ExitStack() as stack:
         if args.output_file:
-            file = stack.enter_context(open(args.output_file, "w"))
+            # TODO: Validate that the output_file path is relative.
+            out_path = os.path.join(args.workspace, args.output_file)
+            file = stack.enter_context(open(out_path, "w"))
             writer = csv.writer(file)
         else:
             writer = csv.writer(sys.stdout)
