@@ -119,7 +119,7 @@ if __name__ == "__main__":
         bom_csv = csv.DictReader(bom_file)
 
         parts = [
-            part for part in bom_csv if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
+            part for part in bom_csv if part.get(PART_NUMBER_COLUMN)
         ]
 
     print(f"Computing COGS for {len(parts)} parts", file=sys.stderr)
