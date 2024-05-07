@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import configparser
 from enum import Enum
+from logging import Logger
 import pathlib
 import re
-import sys
 import time
 from typing import Optional, Union
 
@@ -86,9 +86,10 @@ def generate_bom_for_altium(
         try:
             variant_details = _extract_variations(variant, prjpcb_ini)
         except ValueError:
-            allspice_client.logger.error(f"Error: could not find {variant=} in PrjPcb file.")
-            allspice_client.logger.error("Please check the name of the variant.")
-            sys.exit(1)
+            raise ValueError(
+                f"Variant {variant} not found in PrjPcb file. "
+                "Please check the name of the variant."
+            )
 
     schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
@@ -98,6 +99,7 @@ def generate_bom_for_altium(
             repository,
             _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file),
             ref,
+            allspice_client.logger,
         )
         for schdoc_file in schdoc_files_in_proj
     }
@@ -123,7 +125,7 @@ def generate_bom_for_altium(
         )
 
     if variant is not None:
-        components = _apply_variations(components, variant_details)
+        components = _apply_variations(components, variant_details, allspice_client.logger)
 
     mapped_components = _map_attributes(components, columns)
     bom = _group_entries(mapped_components, group_by)
@@ -177,23 +179,16 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
     return (prjpcb.parent / schdoc).as_posix()
 
 
-def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
+def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref, logger: Logger) -> dict:
     attempts = 0
     while attempts < 5:
         try:
             return repo.get_generated_json(file_path, ref=ref)
         except NotYetGeneratedException:
-            print(
-                f"JSON for {file_path} is not yet generated. Retrying in 0.5s.",
-                file=sys.stderr,
-            )
+            logger.info(f"JSON for {file_path} is not yet generated. Retrying in 0.5s.")
             time.sleep(0.5)
 
-    print(
-        f"Failed to fetch JSON for {file_path} after 5 attempts; quitting.",
-        file=sys.stderr,
-    )
-    sys.exit(1)
+    raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
 
 
 def _build_schdoc_hierarchy(
@@ -258,8 +253,21 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
 
     repetitions = {}
     for sheet_ref in sheet_refs:
-        sheet_name = sheet_ref["sheet_name"]["name"] if sheet_ref["sheet_name"] is not None else ""
-        sheet_file_name = sheet_ref["filename"]
+        try:
+            sheet_name = (
+                sheet_ref["sheet_name"]["name"] if sheet_ref["sheet_name"] is not None else ""
+            )
+        except Exception as e:
+            raise ValueError(f"Could not find sheet name in {sheet_ref=}\nCaused by: {e}")
+        try:
+            sheet_file_name = sheet_ref["filename"]
+        except Exception as e:
+            raise ValueError(f"Could not find sheet filename in {sheet_ref=}\nCaused by: {e}")
+        if sheet_file_name is None:
+            raise ValueError(
+                "Sheet filename is null in for a sheet. Please check sheet "
+                "references in this project for an empty file path."
+            )
         if match := REPETITIONS_REGEX.search(sheet_name):
             count = int(match.group(2)) - int(match.group(1)) + 1
             if sheet_file_name in repetitions:
@@ -329,7 +337,11 @@ def _append_designator_letters(
     if repetitions == 1:
         return [component_attributes]
 
-    designator = component_attributes[DESIGNATOR_COLUMN_NAME]
+    try:
+        designator = component_attributes[DESIGNATOR_COLUMN_NAME]
+    except KeyError:
+        raise ValueError(f"Designator not found in {component_attributes=}")
+
     if designator is None:
         return [component_attributes] * repetitions
 
@@ -422,6 +434,8 @@ def _group_entries(
     for components in grouped_components.values():
         row = {}
         for column in group_by:
+            # The RHS here shouldn't fail as we've validated the group by
+            # columns are all in the column selection.
             row[column] = components[0][column]
         non_group_by = set(components[0].keys()) - set(group_by)
         for column in non_group_by:
@@ -448,16 +462,24 @@ def _extract_variations(
     Extract the details of a variant from a PrjPcb file.
     """
 
+    available_variants = set()
+
     for section in prjpcb_ini.sections():
         if section.startswith("ProjectVariant"):
-            if prjpcb_ini[section]["Description"] == variant:
+            if prjpcb_ini[section].get("Description") == variant:
                 return prjpcb_ini[section]
-    raise ValueError(f"Variant {variant} not found in PrjPcb file")
+            else:
+                available_variants.add(prjpcb_ini[section].get("Description"))
+    raise ValueError(
+        f"Variant {variant} not found in PrjPcb file.\n"
+        f"Available variants: {', '.join(available_variants)}"
+    )
 
 
 def _apply_variations(
     components: list[dict[str, str | None]],
     variant_details: configparser.SectionProxy,
+    logger: Logger,
 ) -> list[dict[str, str | None]]:
     """
     Apply the variations of a specific variant to the components. This should be
@@ -499,15 +521,15 @@ def _apply_variations(
                 else:
                     patch_component_unique_id[designator] = unique_id
             except KeyError:
-                print(
-                    f"Error: Designator, UniqueId, or Kind not found in {key} details.",
-                    file=sys.stderr,
+                logger.warn(
+                    "Designator, UniqueId, or Kind not found in details of variation "
+                    f"{variation_details}"
                 )
                 continue
             except ValueError:
-                print(
-                    f"Error: Kind {variation_details['Kind']} must be an integer.",
-                    file=sys.stderr,
+                logger.warn(
+                    f"Kind {variation_details['Kind']} of variation {variation_details} must be "
+                    "either 0, 1 or 2."
                 )
                 continue
         elif re.match(r"paramvariation[\d]+", key):
@@ -520,11 +542,10 @@ def _apply_variations(
                 # This can happen sometimes - Altium allows param variations
                 # even when the component is not fitted, so we just log and
                 # ignore.
-                print(
-                    f"Warning: ParamVariation{variation_id} found for component {designator} "
-                    "either before the corresponding Variation or for a component that is not "
-                    "fitted.\nIgnoring this ParamVariation.",
-                    file=sys.stderr,
+                logger.warn(
+                    f"ParamVariation{variation_id} found for component {designator} either before "
+                    "the corresponding Variation or for a component that is not fitted.\n"
+                    "Ignoring this ParamVariation."
                 )
                 continue
 
@@ -538,10 +559,9 @@ def _apply_variations(
                 else:
                     components_to_patch[(unique_id, designator)] = [parameter_patch]
             except KeyError:
-                print(
-                    "Error: ParameterName or VariantValue not found in "
-                    f"ParamVariation{variation_id} details.",
-                    file=sys.stderr,
+                logger.warn(
+                    f"ParameterName or VariantValue not found in ParamVariation{variation_id} "
+                    "details."
                 )
                 continue
 
