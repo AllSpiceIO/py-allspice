@@ -61,9 +61,8 @@ python3 generate_bom.py "test/test" "test.PrjPcb" --allspice_hub_url "https://my
 
 ### Customizing the Attributes Extracted by the BOM Script
 
-This script relies on a `columns.json` file. This file maps the Component
-Attributes in the SchDoc files to the columns of the BOM. An example for
-`columns.json` is:
+This script relies on columns JSON. This maps the Component Attributes in the
+SchDoc files to the columns of the BOM. An example for columns JSON is:
 
 ```json
 {
@@ -93,10 +92,6 @@ attributes from overriding any of your own. You can use these like:
   "Part Number": ["PART", "_part_id"]
 }
 ```
-
-By default, the script picks up a `columns.json` file from the working
-directory. If you want to keep it in a different place, or rename it, you can
-pass the `--columns` argument to the script to specify where it is.
 
 ## Cost of Goods Sold
 
