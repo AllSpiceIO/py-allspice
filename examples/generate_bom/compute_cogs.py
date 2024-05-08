@@ -12,9 +12,6 @@ import os
 import sys
 import requests
 
-QUANTITY_COLUMN = "Quantity"
-PART_NUMBER_COLUMN = "Part Number"
-
 
 def fetch_price_for_part(part_number: str) -> dict[int, float]:
     """
@@ -102,9 +99,19 @@ if __name__ == "__main__":
         "--quantities",
         help=(
             "A comma-separated list of quantities of PCBs to compute the COGS "
-            + "for. E.g. 1,10,100,1000. Defaults to the example."
+            + "for. Defaults to '%(default)s'."
         ),
         default="1,10,100,1000",
+    )
+    parser.add_argument(
+        "--bom-part-number-column",
+        help="The name of the part number column in the BOM file. Defaults to '%(default)s'.",
+        default="Part Number",
+    )
+    parser.add_argument(
+        "--bom-quantity-column",
+        help="The name of the quantity column in the BOM file. Defaults to '%(default)s'.",
+        default="Quantity",
     )
     parser.add_argument(
         "--output-file",
@@ -115,11 +122,14 @@ if __name__ == "__main__":
 
     quantities = [int(quantity) for quantity in args.quantities.split(",")]
 
+    part_number_column = args.bom_part_number_column
+    quantity_column = args.bom_quantity_column
+
     with open(args.bom_file, "r") as bom_file:
         bom_csv = csv.DictReader(bom_file)
 
         parts = [
-            part for part in bom_csv if part[PART_NUMBER_COLUMN] and part[PART_NUMBER_COLUMN] != ""
+            part for part in bom_csv if part[part_number_column] and part[part_number_column] != ""
         ]
 
     print(f"Computing COGS for {len(parts)} parts", file=sys.stderr)
@@ -128,7 +138,7 @@ if __name__ == "__main__":
     prices_for_parts = {}
 
     for part in parts:
-        part_number = part[PART_NUMBER_COLUMN]
+        part_number = part[part_number_column]
         prices = fetch_price_for_part(part_number)
         if prices and len(prices) > 0:
             prices_for_parts[part_number] = prices
@@ -154,8 +164,8 @@ if __name__ == "__main__":
     totals = {quantity: 0 for quantity in quantities}
 
     for part in parts:
-        part_number = part[PART_NUMBER_COLUMN]
-        part_quantity = int(part[QUANTITY_COLUMN])
+        part_number = part[part_number_column]
+        part_quantity = int(part[quantity_column])
 
         current_row = [part_number, part_quantity]
 
