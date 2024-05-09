@@ -1,19 +1,19 @@
 {
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true
-  },
-  "cSpell.words": [
-    "Altium",
-    "apiobject",
-    "baseapiobject",
-    "highestindex",
-    "leastindex",
-    "leastupdate",
-    "paramvariation",
-    "prjpcb",
-    "recentupdate",
-    "reponame",
-    "schdoc"
-  ]
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true
+    },
+    "cSpell.words": [
+        "Altium",
+        "apiobject",
+        "baseapiobject",
+        "highestindex",
+        "leastindex",
+        "leastupdate",
+        "paramvariation",
+        "prjpcb",
+        "recentupdate",
+        "reponame",
+        "schdoc"
+    ]
 }

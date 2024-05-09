@@ -54,6 +54,18 @@ def generate_bom_for_altium(
     :param columns: A mapping of the columns in the BOM to the attributes in the
         Altium project. The attributes are tried in order, and the first one
         found is used as the value for that column.
+
+        For example, if there  should be a "Part Number" column in the BOM, and
+        the value for that column can be in the "Part" or "MFN Part#" attributes
+        in the Altium project, the following mapping can be used:
+
+            {
+                "Part Number": ["Part", "MFN Part#"]
+            }
+
+        In this case, the "Part" attribute will be checked first, and if it is
+        not present, the "MFN Part#" attribute will be checked. If neither are
+        present, the "Part Number" column in the BOM will be empty.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
@@ -253,20 +265,15 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
 
     repetitions = {}
     for sheet_ref in sheet_refs:
-        try:
-            sheet_name = (
-                sheet_ref["sheet_name"]["name"] if sheet_ref["sheet_name"] is not None else ""
-            )
-        except Exception as e:
-            raise ValueError(f"Could not find sheet name in {sheet_ref=}\nCaused by: {e}")
+        sheet_name = (sheet_ref.get("sheet_name", {}) or {}).get("name", "") or ""
         try:
             sheet_file_name = sheet_ref["filename"]
-        except Exception as e:
-            raise ValueError(f"Could not find sheet filename in {sheet_ref=}\nCaused by: {e}")
+        except Exception:
+            raise ValueError(f"Could not find sheet filename in {sheet_ref=}")
         if sheet_file_name is None:
             raise ValueError(
-                "Sheet filename is null in for a sheet. Please check sheet "
-                "references in this project for an empty file path."
+                "Sheet filename is null in for a sheet. Please check sheet references in this "
+                "project for an empty file path."
             )
         if match := REPETITIONS_REGEX.search(sheet_name):
             count = int(match.group(2)) - int(match.group(1)) + 1
@@ -299,7 +306,13 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     # the component.
     try:
         attributes["_part_id"] = component["part_id"]
+    except KeyError:
+        pass
+    try:
         attributes["_description"] = component["description"]
+    except KeyError:
+        pass
+    try:
         attributes["_unique_id"] = component["unique_id"]
     except KeyError:
         pass
@@ -515,23 +528,26 @@ def _apply_variations(
                 # The unique ID field is a "path" separated by backslashes, and
                 # the the unique id we want is the last entry in that path.
                 unique_id = variation_details["UniqueId"].split("\\")[-1]
-                kind = VariationKind(int(variation_details["Kind"]))
-                if kind == VariationKind.NOT_FITTED:
-                    components_to_remove.append((unique_id, designator))
-                else:
-                    patch_component_unique_id[designator] = unique_id
+                kind = variation_details["Kind"]
             except KeyError:
                 logger.warn(
                     "Designator, UniqueId, or Kind not found in details of variation "
-                    f"{variation_details}"
+                    f"{variation_details}; skipping this variation."
                 )
                 continue
+            try:
+                kind = VariationKind(int(variation_details["Kind"]))
             except ValueError:
                 logger.warn(
                     f"Kind {variation_details['Kind']} of variation {variation_details} must be "
-                    "either 0, 1 or 2."
+                    "either 0, 1 or 2; skipping this variation."
                 )
                 continue
+
+            if kind == VariationKind.NOT_FITTED:
+                components_to_remove.append((unique_id, designator))
+            else:
+                patch_component_unique_id[designator] = unique_id
         elif re.match(r"paramvariation[\d]+", key):
             variation_id = key.split("paramvariation")[-1]
             designator = variant_details[f"ParamDesignator{variation_id}"]
@@ -554,16 +570,17 @@ def _apply_variations(
                     variation_details["ParameterName"],
                     variation_details["VariantValue"],
                 )
-                if (unique_id, designator) in components_to_patch:
-                    components_to_patch[(unique_id, designator)].append(parameter_patch)
-                else:
-                    components_to_patch[(unique_id, designator)] = [parameter_patch]
             except KeyError:
                 logger.warn(
                     f"ParameterName or VariantValue not found in ParamVariation{variation_id} "
                     "details."
                 )
                 continue
+
+            if (unique_id, designator) in components_to_patch:
+                components_to_patch[(unique_id, designator)].append(parameter_patch)
+            else:
+                components_to_patch[(unique_id, designator)] = [parameter_patch]
 
     final_components = []
 
