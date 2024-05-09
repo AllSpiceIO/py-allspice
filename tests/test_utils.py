@@ -206,6 +206,107 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
             assert row == expected_row
 
 
+def test_bom_generation_with_default_variant(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+    )
+
+    # Since we haven't specified a variant, this should have the same result
+    # as generating a flat BOM. This version of archimajor has a few parts
+    # removed even before the variations, so the number of parts is different.
+    assert len(bom) == 987
+
+    with open("tests/data/archimajor_bom_default_flat_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_bom_generation_with_fitted_variant(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        variant="Fitted",
+    )
+
+    # Exactly 42 rows should be removed, as that is the number of non-param
+    # variations.
+    assert len(bom) == 987 - 42
+
+    with open("tests/data/archimajor_bom_fitted_flat_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_bom_generation_with_grouped_variant(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        group_by=["part_number"],
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        variant="Fitted",
+    )
+
+    assert len(bom) == 89
+
+    with open("tests/data/archimajor_bom_fitted_grouped_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
 def test_netlist_generation(request, instance):
     _setup_for_generation(
         instance,
