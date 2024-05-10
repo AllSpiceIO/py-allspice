@@ -22,9 +22,8 @@ As of writing, this generates the following help text:
 
 ```
 usage: generate_bom [-h] [--columns COLUMNS] [--source_ref SOURCE_REF]
-                    [--allspice_hub_url ALLSPICE_HUB_URL] [--output_file OUTPUT_FILE]
-                    [--group_by GROUP_BY]
-                    repository prjpcb_file
+[--allspice_hub_url ALLSPICE_HUB_URL] [--output_file OUTPUT_FILE] [--group_by
+GROUP_BY] [--variant VARIANT] repository prjpcb_file
 
 Generate a BOM from a PrjPcb file.
 
@@ -47,6 +46,8 @@ options:
                         command line.
   --group_by GROUP_BY   A comma-separated list of columns to group the BOM by. If not present,
                         the BOM will be flat.
+  --variant VARIANT     The variant of the project to generate the BOM for. If not present,
+                        the BOM will be generated for the default variant.
 ```
 
 Some examples of how you could run this are:
@@ -97,6 +98,17 @@ attributes from overriding any of your own. You can use these like:
 By default, the script picks up a `columns.json` file from the working
 directory. If you want to keep it in a different place, or rename it, you can
 pass the `--columns` argument to the script to specify where it is.
+
+## Variants
+
+To generate the BOM for a variant of the project, pass the `--variant` argument
+to the script. For example:
+
+```sh
+python3 generate_bom.py "test/test" "test.PrjPcb" --variant "LITE"
+```
+
+When no variant is given, the BOM is generated without considering any variants.
 
 ## Cost of Goods Sold
 

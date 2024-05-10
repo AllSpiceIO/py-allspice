@@ -1,5 +1,56 @@
 # Changelog
 
+## v3.0.0
+
+There are breaking changes in this release, and you may have to update your
+scripts to use this version.
+
+### Breaking Changes
+
+The main (and only) breaking change in this release is an overhaul of the BOM
+generation utility function
+`allspice.utils.bom_generation.generate_bom_for_altium`. The changes are:
+
+1. `generate_bom_for_altium` no longer takes a PcbDoc file as an argument. The
+   BOM generation logic has been reworked to only use a PrjPcb file as the sole
+   entrypoint and generate the entire BOM from the schematics.
+
+   See https://github.com/AllSpiceIO/py-allspice/pull/83
+
+2. You can now customize the columns of the BOM and how rows are grouped using
+   the `columns` and `group_by` arguments. This replaces the former
+   `attributes_mapping` argument.
+
+   For example, if you want to have columns "Comment", "Part ID" and
+   "Manufacturer" in your BOM and group them by the "Part ID", you would pass:
+
+   ```py
+   generate_bom_for_altium(
+      # ...
+      columns={
+        "Comment": ["Comment", "Description", "_description"],
+        "Part ID": "_part_id",
+        "Manufacturer": ["Manufacturer", "MFN"],
+      },
+      group_by=["Part ID"],
+   )
+   ```
+
+   This also shows the `_description` and `_part_id` attributes which are
+   populated from the component itself.
+
+   See https://github.com/AllSpiceIO/py-allspice/pull/84
+
+3. BOM generation now supports variants, and you can select which variant to
+   generate a BOM for using the `variant` argument.
+
+   See https://github.com/AllSpiceIO/py-allspice/pull/86
+
+### Other changes
+
+The example scripts for BOM generation and COGS generation have also been
+updated to work with these new changes.
+
 ## v2.5.0
 
 This is a minor version bump. Only new functionality was added, and you may not
