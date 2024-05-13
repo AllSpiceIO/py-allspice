@@ -1,0 +1,43 @@
+from ..allspice import AllSpice
+from ..apiobject import Repository
+
+
+def list_components_for_orcad(
+    allspice_client: AllSpice,
+    repository: Repository,
+    dsn_path: str,
+    ref: str = "main",
+) -> list[dict[str, str]]:
+    """
+    Get a list of all components in an OrCAD DSN schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the OrCAD schematic.
+    :param dsn_path: The path to the OrCAD DSN file from the repo root. For
+        example, if the schematic is in the folder "Schematics" and the file
+        is named "example.dsn", the path would be "Schematics/example.dsn".
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    :return: A list of all components in the OrCAD schematic. Each component is
+        a dictionary with the keys being the attributes of the component and the
+        values being the values of the attributes. A `_name` attribute is added
+        to each component to store the name of the component.
+    """
+
+    allspice_client.logger.debug(
+        f"Listing components in {dsn_path=} from {repository.get_full_name()} on {ref=}"
+    )
+
+    # Get the generated JSON for the schematic.
+    dsn_json = repository.get_generated_json(dsn_path, ref=ref)
+    pages = dsn_json["pages"]
+    components = []
+
+    for page in pages:
+        for component in page["components"].values():
+            component["_name"] = component["name"]
+            for attribute in component["attributes"].values():
+                component[attribute["name"]] = attribute["value"]
+            components.append(component)
+
+    return components
