@@ -8,7 +8,7 @@ from logging import Logger
 import pathlib
 import re
 import time
-from typing import Literal, Optional, Union
+from typing import Optional, Union
 
 from .list_components import list_components_for_orcad
 
@@ -39,7 +39,6 @@ Bom = list[BomEntry]
 def generate_bom(
     allspice_client: AllSpice,
     repository: Repository,
-    project_tool: Literal["altium", "orcad"],
     source_file: str,
     columns: ColumnsMapping,
     group_by: Optional[list[str]] = None,
@@ -51,8 +50,6 @@ def generate_bom(
 
     :param allspice_client: The AllSpice client to use.
     :param repository: The repository to generate the BOM for.
-    :param project_tool: The ECAD tool used to work on the project. This can be
-        either "altium" or "orcad".
     :param source_file: The path to the source file from the root of the
         repository. The source file must be a PrjPcb file for Altium projects
         and a DSN file for OrCAD projects. For example, if the source file is
@@ -87,11 +84,18 @@ def generate_bom(
         a column name and the value is the value for that column.
     """
 
+    if source_file.lower().endswith(".prjpcb"):
+        project_tool = "altium"
+    elif source_file.lower().endswith(".dsn"):
+        project_tool = "orcad"
+    else:
+        raise ValueError(
+            "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
+            "projects."
+        )
+
     match project_tool:
         case "altium":
-            if not source_file.lower().endswith(".prjpcb"):
-                raise ValueError("The source file for Altium projects must be a PrjPcb file.")
-
             return generate_bom_for_altium(
                 allspice_client,
                 repository,
@@ -102,8 +106,6 @@ def generate_bom(
                 ref,
             )
         case "orcad":
-            if not source_file.lower().endswith(".dsn"):
-                raise ValueError("The source file for OrCAD projects must be a DSN file.")
             if variant:
                 raise ValueError("Variant is not supported for OrCAD projects.")
 
@@ -326,6 +328,8 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
     return (prjpcb.parent / schdoc).as_posix()
 
 
+# TODO: Remove this after altium component listing has been refactored to
+#   list_components.py.
 def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref, logger: Logger) -> dict:
     attempts = 0
     while attempts < 5:

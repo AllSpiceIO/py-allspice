@@ -19,11 +19,6 @@ if __name__ == "__main__":
         prog="generate_bom", description="Generate a BOM from a project repository."
     )
     parser.add_argument(
-        "project_tool",
-        help="The tool used to work on this project.",
-        choices=["altium", "orcad"],
-    )
-    parser.add_argument(
         "repository", help="The repo containing the project in the form 'owner/repo'"
     )
     parser.add_argument(
@@ -100,7 +95,6 @@ if __name__ == "__main__":
     bom_rows = generate_bom(
         allspice,
         repository,
-        args.project_tool,
         args.source_file,
         columns,
         group_by=group_by,
