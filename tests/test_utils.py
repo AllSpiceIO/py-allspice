@@ -5,7 +5,11 @@ import uuid
 import pytest
 
 from allspice import AllSpice
-from allspice.utils.bom_generation import generate_bom_for_altium
+from allspice.utils.bom_generation import (
+    generate_bom,
+    generate_bom_for_altium,
+    generate_bom_for_orcad,
+)
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
@@ -302,6 +306,100 @@ def test_bom_generation_with_grouped_variant(request, instance):
     assert len(bom) == 89
 
     with open("tests/data/archimajor_bom_fitted_grouped_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_bom_generation_orcad(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Description": "Description",
+        "Reference designator": ["Part Reference"],
+        "Manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "Part Number": ["Manufacturer PN", "PN"],
+    }
+
+    bom = generate_bom_for_orcad(
+        instance,
+        repo,
+        "Design/BEAGLEPLAYV10_221227.DSN",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
+    )
+
+    assert len(bom) == 847
+
+    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_generate_bom(request, instance):
+    # Test the one-stop API which should automatically figure out the project
+    # type and call the appropriate function.
+    _setup_for_generation(
+        instance,
+        request.node.name + "altium",
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    _setup_for_generation(
+        instance,
+        request.node.name + "orcad",
+        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+    )
+
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name + "altium"])
+    )
+    altium_attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        altium_attributes_mapping,
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+    assert len(bom) == 1061
+    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name + "orcad"])
+    )
+    orcad_attributes_mapping = {
+        "Name": ["_name"],
+        "Description": "Description",
+        "Reference designator": ["Part Reference"],
+        "Manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "Part Number": ["Manufacturer PN", "PN"],
+    }
+    bom = generate_bom(
+        instance,
+        repo,
+        "Design/BEAGLEPLAYV10_221227.DSN",
+        orcad_attributes_mapping,
+        ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
+    )
+    assert len(bom) == 847
+    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
         reader = csv.DictReader(f)
         for row, expected_row in zip(reader, bom):
             assert row == expected_row
