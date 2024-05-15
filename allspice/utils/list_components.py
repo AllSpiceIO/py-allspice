@@ -46,61 +46,7 @@ def list_components_for_orcad(
                 component[attribute["name"]] = attribute["value"]
             components.append(component)
 
-    components = _combine_multi_symbol_components(components)
-
     return components
-
-
-def _combine_multi_symbol_components(components: list[dict[str, str]]) -> list[dict[str, str]]:
-    """
-    Combine all symbols of a multi-symbol component into a single component.
-
-    :param components: A list of components from an OrCAD schematic.
-    :return: A list of components with multi-symbol components combined. If a
-        component is not a multi-symbol component, it is not modified.
-    """
-
-    combined_components = []
-    components_by_footprint = {}
-
-    for component in components:
-        footprint = component.get(PCB_FOOTPRINT_ATTR_NAME)
-        if footprint is None:
-            combined_components.append(component)
-
-        if footprint not in components_by_footprint:
-            components_by_footprint[footprint] = [component]
-        else:
-            components_by_footprint[footprint].append(component)
-
-    for footprint, components in components_by_footprint.items():
-        if len(components) == 1:
-            combined_components.append(components[0])
-            continue
-
-        multi_symbol_components = {}
-        for component in components:
-            part_reference = component.get(PART_REFERENCE_ATTR_NAME)
-            if not part_reference:
-                continue
-
-            # If the designator ends with a letter, that indicates a
-            # multi-symbol component, and we need to remove the letter to get
-            # the part reference.
-            if part_reference[-1].isalpha():
-                part_reference = part_reference[:-1]
-
-            if part_reference not in multi_symbol_components:
-                multi_symbol_components[part_reference] = [component]
-            else:
-                multi_symbol_components[part_reference].append(component)
-
-        for part_reference, components in multi_symbol_components.items():
-            combined_component = components[0].copy()
-            combined_component[PART_REFERENCE_ATTR_NAME] = part_reference
-            combined_components.append(combined_component)
-
-    return combined_components
 
 
 def _fetch_generated_json(repo: Repository, file_path: str, ref: str) -> dict:
