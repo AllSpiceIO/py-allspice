@@ -1,5 +1,6 @@
 import base64
 import csv
+import json
 import uuid
 
 import pytest
@@ -10,6 +11,7 @@ from allspice.utils.bom_generation import (
     generate_bom_for_altium,
     generate_bom_for_orcad,
 )
+from allspice.utils.list_components import list_components_for_orcad
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
@@ -337,7 +339,7 @@ def test_bom_generation_orcad(request, instance):
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
 
-    assert len(bom) == 847
+    assert len(bom) == 870
 
     with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
         reader = csv.DictReader(f)
@@ -398,11 +400,35 @@ def test_generate_bom(request, instance):
         orcad_attributes_mapping,
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
-    assert len(bom) == 847
+    assert len(bom) == 870
     with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
         reader = csv.DictReader(f)
         for row, expected_row in zip(reader, bom):
             assert row == expected_row
+
+
+def test_orcad_components_list(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+
+    components = list_components_for_orcad(
+        instance,
+        repo,
+        "Design/BEAGLEPLAYV10_221227.DSN",
+        # We hard-code a ref so that this test is reproducible.
+        ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
+    )
+
+    assert len(components) == 870
+
+    with open("tests/data/beagleplay_components_expected.json", "r") as f:
+        assert json.loads(f.read()) == components
 
 
 def test_netlist_generation(request, instance):
