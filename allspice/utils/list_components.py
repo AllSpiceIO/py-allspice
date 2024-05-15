@@ -41,10 +41,11 @@ def list_components_for_orcad(
 
     for page in pages:
         for component in page["components"].values():
-            component["_name"] = component["name"]
+            component_attributes = {}
+            component_attributes["_name"] = component["name"]
             for attribute in component["attributes"].values():
-                component[attribute["name"]] = attribute["value"]
-            components.append(component)
+                component_attributes[attribute["name"]] = attribute["value"]
+            components.append(component_attributes)
 
     return components
 
