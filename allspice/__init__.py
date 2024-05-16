@@ -1,3 +1,9 @@
+"""
+.. include:: ../README.md
+   :start-line: 1
+   :end-before: Installation
+"""
+
 from .allspice import (
     AllSpice,
 )
