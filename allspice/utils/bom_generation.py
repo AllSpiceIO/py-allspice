@@ -10,6 +10,8 @@ import re
 import time
 from typing import Optional, Union
 
+from .list_components import list_components_for_orcad
+
 from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
@@ -34,6 +36,89 @@ BomEntry = dict[str, str]
 Bom = list[BomEntry]
 
 
+def generate_bom(
+    allspice_client: AllSpice,
+    repository: Repository,
+    source_file: str,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
+    variant: Optional[str] = None,
+    ref: Ref = "main",
+) -> Bom:
+    """
+    Generate a BOM for a project.
+
+    :param allspice_client: The AllSpice client to use.
+    :param repository: The repository to generate the BOM for.
+    :param source_file: The path to the source file from the root of the
+        repository. The source file must be a PrjPcb file for Altium projects
+        and a DSN file for OrCAD projects. For example, if the source file is
+        in the root of the repository and is named "Archimajor.PrjPcb", the
+        path would be "Archimajor.PrjPcb"; if the source file is in a folder
+        called "Schematics" and is named "Beagleplay.dsn", the path would be
+        "Schematics/Beagleplay.dsn".
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        project. The attributes are tried in order, and the first one found is
+        used as the value for that column.
+
+        For example, if there should be a "Part Number" column in the BOM, and
+        the value for that column can be in the "Part" or "MFN Part#" attributes
+        in the project, the following mapping can be used:
+
+                {
+                    "Part Number": ["Part", "MFN Part#"]
+                }
+
+        In this case, the "Part" attribute will be checked first, and if it is
+        not present, the "MFN Part#" attribute will be checked. If neither are
+        present, the "Part Number" column in the BOM will be empty.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
+    :param variant: The variant of the project to generate the BOM for. If this
+        is provided, the BOM will be generated for the specified variant. If
+        this is not provided, or is None, the BOM will be generated for the
+        default variant. Variants are not supported for OrCAD projects.
+    :param ref: The ref, i.e. branch, commit or git ref from which to take the
+        project files. Defaults to "main".
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
+    """
+
+    if source_file.lower().endswith(".prjpcb"):
+        project_tool = "altium"
+    elif source_file.lower().endswith(".dsn"):
+        project_tool = "orcad"
+    else:
+        raise ValueError(
+            "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
+            "projects."
+        )
+
+    match project_tool:
+        case "altium":
+            return generate_bom_for_altium(
+                allspice_client,
+                repository,
+                source_file,
+                columns,
+                group_by,
+                variant,
+                ref,
+            )
+        case "orcad":
+            if variant:
+                raise ValueError("Variant is not supported for OrCAD projects.")
+
+            return generate_bom_for_orcad(
+                allspice_client,
+                repository,
+                source_file,
+                columns,
+                group_by,
+                ref,
+            )
+
+
 def generate_bom_for_altium(
     allspice_client: AllSpice,
     repository: Repository,
@@ -48,9 +133,8 @@ def generate_bom_for_altium(
 
     :param allspice_client: The AllSpice client to use.
     :param repository: The repository to generate the BOM for.
-    :param prjpcb_file: The Altium project file. This can be a Content object
-        returned by the AllSpice API, or a string containing the path to the
-        file in the repo.
+    :param prjpcb_file: The path to the PrjPcb project file from the root of the
+        repository.
     :param columns: A mapping of the columns in the BOM to the attributes in the
         Altium project. The attributes are tried in order, and the first one
         found is used as the value for that column.
@@ -145,6 +229,59 @@ def generate_bom_for_altium(
     return bom
 
 
+def generate_bom_for_orcad(
+    allspice_client: AllSpice,
+    repository: Repository,
+    dsn_path: str,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
+    ref: Ref = "main",
+) -> Bom:
+    """
+    Generate a BOM for an OrCAD schematic.
+
+    :param allspice_client: The AllSpice client to use.
+    :param repository: The repository to generate the BOM for.
+    :param dsn_path: The OrCAD DSN file. This can be a Content object returned
+        by the AllSpice API, or a string containing the path to the file in the
+        repo.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        OrCAD schematic. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+
+        For example, if there  should be a "Part Number" column in the BOM, and
+        the value for that column can be in the "Part" or "MFN Part#" attributes
+        in the OrCAD schematic, the following mapping can be used:
+
+            {
+                "Part Number": ["Part", "MFN Part#"]
+            }
+
+        In this case, the "Part" attribute will be checked first, and if it is
+        not present, the "MFN Part#" attribute will be checked. If neither are
+        present, the "Part Number" column in the BOM will be empty.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
+    :param ref: The ref, i.e. branch, commit or git ref from which to take the
+        project files. Defaults to "main".
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
+    """
+
+    allspice_client.logger.debug(
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
+    )
+    if group_by is not None:
+        for group_column in group_by:
+            if group_column not in columns:
+                raise ValueError(f"Group by column {group_column} not found in selected columns")
+    components = list_components_for_orcad(allspice_client, repository, dsn_path, ref)
+    mapped_components = _map_attributes(components, columns)
+    bom = _group_entries(mapped_components, group_by)
+
+    return bom
+
+
 def _get_first_matching_key_value(
     alternatives: Union[list[str], str],
     attributes: dict[str, str | None],
@@ -191,6 +328,8 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
     return (prjpcb.parent / schdoc).as_posix()
 
 
+# TODO: Remove this after altium component listing has been refactored to
+#   list_components.py.
 def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref, logger: Logger) -> dict:
     attempts = 0
     while attempts < 5:
