@@ -313,6 +313,39 @@ def test_bom_generation_with_grouped_variant(request, instance):
             assert row == expected_row
 
 
+def test_bom_generation_altium_with_non_bom_removed(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        remove_non_bom_components=True,
+    )
+
+    assert len(bom) == 925
+
+    with open("tests/data/archimajor_bom_non_bom_removed_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
 def test_bom_generation_orcad(request, instance):
     _setup_for_generation(
         instance,

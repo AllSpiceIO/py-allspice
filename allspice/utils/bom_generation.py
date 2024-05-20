@@ -44,6 +44,7 @@ def generate_bom(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
+    remove_non_bom_components: bool = False,
 ) -> Bom:
     """
     Generate a BOM for a project.
@@ -80,6 +81,9 @@ def generate_bom(
         default variant. Variants are not supported for OrCAD projects.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
+    :param remove_non_bom_components: If True, components of types that should
+        not be included in the BOM will be removed. Defaults to False. Only
+        applicable for Altium projects.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -104,6 +108,7 @@ def generate_bom(
                 group_by,
                 variant,
                 ref,
+                remove_non_bom_components,
             )
         case "orcad":
             if variant:
@@ -127,6 +132,7 @@ def generate_bom_for_altium(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
+    remove_non_bom_components: bool = False,
 ) -> Bom:
     """
     Generate a BOM for an Altium project.
@@ -158,6 +164,8 @@ def generate_bom_for_altium(
         is provided, the BOM will be generated for the specified variant. If
         this is not provided, or is None, the BOM will be generated for the
         default variant.
+    :param remove_non_bom_components: If True, components of types that should
+        not be included in the BOM will be removed. Defaults to False.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -222,6 +230,9 @@ def generate_bom_for_altium(
 
     if variant is not None:
         components = _apply_variations(components, variant_details, allspice_client.logger)
+
+    if remove_non_bom_components:
+        components = _remove_non_bom_components(components)
 
     mapped_components = _map_attributes(components, columns)
     bom = _group_entries(mapped_components, group_by)
@@ -453,6 +464,10 @@ def _component_attributes(component: dict) -> ComponentAttributes:
         pass
     try:
         attributes["_unique_id"] = component["unique_id"]
+    except KeyError:
+        pass
+    try:
+        attributes["_kind"] = component["kind"]
     except KeyError:
         pass
 
@@ -737,3 +752,15 @@ def _apply_variations(
             final_components.append(component)
 
     return final_components
+
+
+def _remove_non_bom_components(components):
+    """
+    Filter out components of types that should not be included in the BOM.
+    """
+
+    return [
+        component
+        for component in components
+        if component.get("_kind") not in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
+    ]
