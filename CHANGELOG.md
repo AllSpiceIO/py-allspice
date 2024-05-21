@@ -1,5 +1,48 @@
 # Changelog
 
+## v3.1.0
+
+### What's Changed
+
+- Add utils for OrCAD components and BOM by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/107
+
+  A new util module has been added: `list_components`. Use this to get a list of
+  components with all attributes as a list of dictionaries:
+
+  ```py
+  from allspice.utils import list_components
+
+  components = list_components_for_orcad(...)
+  ```
+
+  This is useful if you want to perform further processing of your own on the
+  list of components, e.g. validate whether a component is allowed.
+
+  Along with this, BOM generation now supports OrCAD schematics! To use it, try
+  `allspice.utils.bom_generation.generate_bom_orcad`.
+
+  Py-allspice now also ships with a "universal" bom generation function:
+  `allspice.utils.bom_generation.generate_bom`, which will automatically decide
+  whether to use the altium or orcad bom generation.
+
+- Add **version** attr to top level module by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/110
+
+  Now, you can check which version of py-allspice you are using in a script:
+
+  ```py
+  import allspice
+
+  print(allspice.__version__) # => 3.1.0
+  ```
+
+- Remove BOM and COGS generation examples by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/116
+
+  These example scripts have been removed, and users are encouraged to refer to
+  the https://github.com/AllSpiceIO/generate-bom-altium and
+  https://github.com/AllSpiceIO/cofactr-cogs.
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.0.0...v3.1.0
+
 ## v3.0.0
 
 There are breaking changes in this release, and you may have to update your
