@@ -23,7 +23,7 @@ jobs:
       - run: |
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-      - run: pdoc --html --output-dir docs/ ./allspice/*
+      - run: pdoc --output-dir docs/ ./allspice/*
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
