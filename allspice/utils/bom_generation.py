@@ -44,7 +44,7 @@ def generate_bom(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
-    remove_non_bom_components: bool = False,
+    remove_non_bom_components: bool = True,
 ) -> Bom:
     """
     Generate a BOM for a project.
@@ -82,7 +82,7 @@ def generate_bom(
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
     :param remove_non_bom_components: If True, components of types that should
-        not be included in the BOM will be removed. Defaults to False. Only
+        not be included in the BOM will be removed. Defaults to True. Only
         applicable for Altium projects.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
@@ -132,7 +132,7 @@ def generate_bom_for_altium(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
-    remove_non_bom_components: bool = False,
+    remove_non_bom_components: bool = True,
 ) -> Bom:
     """
     Generate a BOM for an Altium project.
@@ -165,7 +165,7 @@ def generate_bom_for_altium(
         this is not provided, or is None, the BOM will be generated for the
         default variant.
     :param remove_non_bom_components: If True, components of types that should
-        not be included in the BOM will be removed. Defaults to False.
+        not be included in the BOM will be removed. Defaults to True.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
