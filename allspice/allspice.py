@@ -1,16 +1,16 @@
-import logging
 import json
-from typing import List, Dict, Union, Optional
+import logging
+from typing import Dict, List, Optional, Union
 
-from frozendict import frozendict
 import requests
 import urllib3
+from frozendict import frozendict
 
-from .apiobject import User, Organization, Repository, Team
+from .apiobject import Organization, Repository, Team, User
 from .exceptions import (
-    NotFoundException,
-    ConflictException,
     AlreadyExistsException,
+    ConflictException,
+    NotFoundException,
     NotYetGeneratedException,
 )
 from .ratelimiter import RateLimitedSession

@@ -8,20 +8,20 @@ from .allspice import (
     AllSpice,
 )
 from .apiobject import (
-    User,
-    Organization,
-    Team,
-    Repository,
     Branch,
-    Issue,
-    Milestone,
-    Commit,
     Comment,
+    Commit,
     Content,
     DesignReview,
+    Issue,
+    Milestone,
+    Organization,
     Release,
+    Repository,
+    Team,
+    User,
 )
-from .exceptions import NotFoundException, AlreadyExistsException
+from .exceptions import AlreadyExistsException, NotFoundException
 
 __version__ = "3.1.0"
 

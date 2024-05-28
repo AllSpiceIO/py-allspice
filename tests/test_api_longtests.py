@@ -1,5 +1,6 @@
-import pytest
 import uuid
+
+import pytest
 
 from allspice import AllSpice, Issue
 

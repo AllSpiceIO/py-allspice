@@ -4,5 +4,5 @@ lint.ignore = [
   "F405", # Unknown identifier usage due to import *.
 ]
 line-length = 100
-lint.select = ["E", "F", "RUF"]
+lint.select = ["E", "F", "I", "RUF"]
 exclude = []

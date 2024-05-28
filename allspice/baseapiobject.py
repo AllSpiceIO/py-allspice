@@ -1,6 +1,6 @@
 from typing import ClassVar, Optional
 
-from .exceptions import ObjectIsInvalid, MissingEqualityImplementation, RawRequestEndpointMissing
+from .exceptions import MissingEqualityImplementation, ObjectIsInvalid, RawRequestEndpointMissing
 
 
 class ReadonlyApiObject:

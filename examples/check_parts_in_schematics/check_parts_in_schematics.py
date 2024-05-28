@@ -3,10 +3,10 @@
 # a certain part. If it does, it prints the branch name.
 # For more information, read the README file in this directory.
 
-from argparse import ArgumentParser
 import os
+from argparse import ArgumentParser
 
-from allspice import AllSpice, Repository, Branch
+from allspice import AllSpice, Branch, Repository
 from allspice.exceptions import NotYetGeneratedException
 
 

@@ -2,13 +2,13 @@
 
 from allspice import (
     AllSpice,
-    User,
-    Organization,
-    Team,
-    Repository,
-    Branch,
-    NotFoundException,
     AlreadyExistsException,
+    Branch,
     Issue,
     Milestone,
+    NotFoundException,
+    Organization,
+    Repository,
+    Team,
+    User,
 )

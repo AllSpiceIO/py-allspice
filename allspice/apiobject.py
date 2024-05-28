@@ -1,25 +1,25 @@
 from __future__ import annotations
 
 import logging
-from functools import cached_property
 import re
-from typing import (
-    ClassVar,
-    List,
-    Tuple,
-    Dict,
-    Sequence,
-    Optional,
-    Union,
-    Set,
-    IO,
-    Literal,
-)
 from datetime import datetime, timezone
 from enum import Enum
+from functools import cached_property
+from typing import (
+    IO,
+    ClassVar,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+)
 
-from .baseapiobject import ReadonlyApiObject, ApiObject
-from .exceptions import NotFoundException, ConflictException
+from .baseapiobject import ApiObject, ReadonlyApiObject
+from .exceptions import ConflictException, NotFoundException
 
 
 class Organization(ApiObject):
