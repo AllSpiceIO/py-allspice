@@ -80,7 +80,7 @@ def test_bom_generation_flat(request, instance):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
 
-    assert len(bom) == 1061
+    assert len(bom) == 925
 
     with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)
@@ -138,7 +138,8 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         # test.
         ref=ref,
     )
-    assert len(bom) == 1061
+
+    assert len(bom) == 925
 
     with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)
@@ -172,7 +173,7 @@ def test_bom_generation_grouped(request, instance):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
 
-    assert len(bom) == 112
+    assert len(bom) == 108
 
     with open("tests/data/archimajor_bom_grouped_expected.csv", "r") as f:
         reader = csv.DictReader(f)
@@ -204,7 +205,8 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
         # We hard-code a ref so that this test is reproducible.
         ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
     )
-    assert len(bom) == 106
+
+    assert len(bom) == 102
 
     with open("tests/data/archimajor_bom_hierarchical_expected.csv", "r") as f:
         reader = csv.DictReader(f)
@@ -233,6 +235,10 @@ def test_bom_generation_with_default_variant(request, instance):
         "Archimajor.PrjPcb",
         attributes_mapping,
         ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        # For the variants tests, we don't want to remove non-BOM components
+        # because some of them are enabled by the variants, and we want to
+        # test that they are included when required.
+        remove_non_bom_components=False,
     )
 
     # Since we haven't specified a variant, this should have the same result
@@ -268,6 +274,7 @@ def test_bom_generation_with_fitted_variant(request, instance):
         attributes_mapping,
         ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
         variant="Fitted",
+        remove_non_bom_components=False,
     )
 
     # Exactly 42 rows should be removed, as that is the number of non-param
@@ -303,11 +310,45 @@ def test_bom_generation_with_grouped_variant(request, instance):
         group_by=["part_number"],
         ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
         variant="Fitted",
+        remove_non_bom_components=False,
     )
 
     assert len(bom) == 89
 
     with open("tests/data/archimajor_bom_fitted_grouped_expected.csv", "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def test_bom_generation_altium_with_non_bom_components(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        remove_non_bom_components=False,
+    )
+
+    assert len(bom) == 1061
+
+    with open("tests/data/archimajor_bom_non_bom_expected.csv", "r") as f:
         reader = csv.DictReader(f)
         for row, expected_row in zip(reader, bom):
             assert row == expected_row
@@ -377,7 +418,7 @@ def test_generate_bom(request, instance):
         altium_attributes_mapping,
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
-    assert len(bom) == 1061
+    assert len(bom) == 925
     with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
         reader = csv.DictReader(f)
         for row, expected_row in zip(reader, bom):

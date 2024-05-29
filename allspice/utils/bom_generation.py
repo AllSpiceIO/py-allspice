@@ -44,6 +44,7 @@ def generate_bom(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
+    remove_non_bom_components: bool = True,
 ) -> Bom:
     """
     Generate a BOM for a project.
@@ -72,6 +73,12 @@ def generate_bom(
         In this case, the "Part" attribute will be checked first, and if it is
         not present, the "MFN Part#" attribute will be checked. If neither are
         present, the "Part Number" column in the BOM will be empty.
+
+        Note that special attributes are added by this function depending on the
+        project tool. For Altium projects, these are "_part_id", "_description",
+        "_unique_id" and "_kind", which are the Library Reference, Description,
+        Unique ID and Component Type respectively. For OrCAD projects, "_name"
+        is added, which is the name of the component.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
@@ -80,6 +87,9 @@ def generate_bom(
         default variant. Variants are not supported for OrCAD projects.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
+    :param remove_non_bom_components: If True, components of types that should
+        not be included in the BOM will be removed. Defaults to True. Only
+        applicable for Altium projects.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -104,6 +114,7 @@ def generate_bom(
                 group_by,
                 variant,
                 ref,
+                remove_non_bom_components,
             )
         case "orcad":
             if variant:
@@ -127,6 +138,7 @@ def generate_bom_for_altium(
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
     ref: Ref = "main",
+    remove_non_bom_components: bool = True,
 ) -> Bom:
     """
     Generate a BOM for an Altium project.
@@ -150,6 +162,12 @@ def generate_bom_for_altium(
         In this case, the "Part" attribute will be checked first, and if it is
         not present, the "MFN Part#" attribute will be checked. If neither are
         present, the "Part Number" column in the BOM will be empty.
+
+        Along with the attributes, four special attributes are added by this
+        function: "_part_id", "_description", "_unique_id" and "_kind". These
+        are the Library Reference, Description, Unique ID and Component Type
+        respectively. You can use these like any other attribute in the columns
+        mapping.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
@@ -158,6 +176,8 @@ def generate_bom_for_altium(
         is provided, the BOM will be generated for the specified variant. If
         this is not provided, or is None, the BOM will be generated for the
         default variant.
+    :param remove_non_bom_components: If True, components of types that should
+        not be included in the BOM will be removed. Defaults to True.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -222,6 +242,9 @@ def generate_bom_for_altium(
 
     if variant is not None:
         components = _apply_variations(components, variant_details, allspice_client.logger)
+
+    if remove_non_bom_components:
+        components = _remove_non_bom_components(components)
 
     mapped_components = _map_attributes(components, columns)
     bom = _group_entries(mapped_components, group_by)
@@ -432,8 +455,7 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     """
     Extract the attributes of a component into a dict.
 
-    This also adds two properties of the component that are not attributes into
-    the dict.
+    This also adds the Altium special attributes to the dict.
     """
 
     attributes = {}
@@ -453,6 +475,10 @@ def _component_attributes(component: dict) -> ComponentAttributes:
         pass
     try:
         attributes["_unique_id"] = component["unique_id"]
+    except KeyError:
+        pass
+    try:
+        attributes["_kind"] = component["kind"]
     except KeyError:
         pass
 
@@ -737,3 +763,15 @@ def _apply_variations(
             final_components.append(component)
 
     return final_components
+
+
+def _remove_non_bom_components(components: list[dict[str, str]]) -> list[dict[str, str]]:
+    """
+    Filter out components of types that should not be included in the BOM.
+    """
+
+    return [
+        component
+        for component in components
+        if component.get("_kind") not in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
+    ]

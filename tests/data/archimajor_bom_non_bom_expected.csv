@@ -1,6 +1,8 @@
 description,designator,manufacturer,part_number,Quantity
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R24,Yageo,RC0402FR-0710RL,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C21,Murata,GRM155R71C104KA88D,1
+,TP37,,NOTAPART-Testpoint,1
+,TP35,,NOTAPART-Testpoint,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R21,Yageo,RC0402FR-07100RL,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R30,Yageo,RC0402FR-0710KP,1
 TVS DIODE 30VWM SOD323,D14,Rohm,RSB39VTE-17,1
@@ -10,6 +12,7 @@ MOSFET N-CH 40V 100A 8VSON,Q1,TI,CSD18503Q5A,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R8,Yageo,RC0402FR-0710KP,1
 Diode Schottky 100V 3A Surface Mount DO-214AC (HSMA),D15,MCC,SK310A,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U4,Diodes Incorporated,ZXGD3009E6TA,1
+,TP58,,NOTAPART-Testpoint,1
 Diode Schottky 100V 3A Surface Mount DO-214AC (HSMA),D8,MCC,SK310A,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D18,Dialight,5988110107F,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R53,Yageo,RC0402FR-07100RL,1
@@ -19,12 +22,15 @@ Diode Schottky 100V 3A Surface Mount DO-214AC (HSMA),D6,MCC,SK310A,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R20,Yageo,RC0402FR-07100RL,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R54,Yageo,RC0402FR-0710KP,1
 MOSFET N-CH 40V 100A 8VSON,Q3,TI,CSD18503Q5A,1
+,TP59,,NOTAPART-Testpoint,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U7,Diodes Incorporated,ZXGD3009E6TA,1
 MOSFET N-CH 40V 100A 8VSON,Q2,TI,CSD18503Q5A,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D16,Dialight,5988110107F,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10E,Texas Instruments,SN74AHCT125RGYR,1
 TVS DIODE 30VWM SOD323,D10,Rohm,RSB39VTE-17,1
+,TP66,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C22,Murata,GRM155R71C104KA88D,1
+,TP64,,NOTAPART-Testpoint,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U5,Diodes Incorporated,ZXGD3009E6TA,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D17,Dialight,5988110107F,1
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R52,Yageo,RC0402FR-0710RL,1
@@ -38,18 +44,24 @@ Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D17,Dialight,5988110
 MOSFET N-CH 40V 100A 8VSON,Q4,TI,CSD18503Q5A,1
 TVS DIODE 30VWM SOD323,D11,Rohm,RSB39VTE-17,1
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R55,Yageo,RC0402FR-0710RL,1
+,TP65,,NOTAPART-Testpoint,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R6,Yageo,RC0402FR-0710KP,1
 TVS DIODE 30VWM SOD323,D4,Rohm,RSB39VTE-17,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C19,Murata,GRM155R71C104KA88D,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U3,Diodes Incorporated,ZXGD3009E6TA,1
+,TP62,,NOTAPART-Testpoint,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10D,Texas Instruments,SN74AHCT125RGYR,1
 ,C11,,DNI-C0603TBD,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C31,Murata,GRM155R71C104KA88D,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10A,Texas Instruments,SN74AHCT125RGYR,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C20,Murata,GRM155R71C104KA88D,1
+,TP40,,NOTAPART-Testpoint,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D9,Dialight,5988110107F,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R9,Yageo,RC0402FR-0710KP,1
+,TP38,,NOTAPART-Testpoint,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R7,Yageo,RC0402FR-0710KP,1
+,TP39,,NOTAPART-Testpoint,1
+,TP63,,NOTAPART-Testpoint,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C30A,Murata,GRM155R71H103JA88D,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C30B,Murata,GRM155R71H103JA88D,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C30C,Murata,GRM155R71H103JA88D,1
@@ -70,6 +82,11 @@ Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D9,Dialight,59881101
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C12C,Murata,GRM155R71H103JA88D,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C12D,Murata,GRM155R71H103JA88D,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C12E,Murata,GRM155R71H103JA88D,1
+,TP23A,,NOTAPART-Testpoint,1
+,TP23B,,NOTAPART-Testpoint,1
+,TP23C,,NOTAPART-Testpoint,1
+,TP23D,,NOTAPART-Testpoint,1
+,TP23E,,NOTAPART-Testpoint,1
 ,U13A,Maxim,MAX31856MUD,1
 ,U13B,Maxim,MAX31856MUD,1
 ,U13C,Maxim,MAX31856MUD,1
@@ -85,11 +102,21 @@ Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D9,Dialight,59881101
 0.10µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C23C,Kemet,C0603C104K5RACTU,1
 0.10µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C23D,Kemet,C0603C104K5RACTU,1
 0.10µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C23E,Kemet,C0603C104K5RACTU,1
+,TP24A,,NOTAPART-Testpoint,1
+,TP24B,,NOTAPART-Testpoint,1
+,TP24C,,NOTAPART-Testpoint,1
+,TP24D,,NOTAPART-Testpoint,1
+,TP24E,,NOTAPART-Testpoint,1
 ,C60A,Samsung,CL03A104KQ3NNNC,1
 ,C60B,Samsung,CL03A104KQ3NNNC,1
 ,C60C,Samsung,CL03A104KQ3NNNC,1
 ,C60D,Samsung,CL03A104KQ3NNNC,1
 ,C60E,Samsung,CL03A104KQ3NNNC,1
+,TP11A,,NOTAPART-Testpoint,1
+,TP11B,,NOTAPART-Testpoint,1
+,TP11C,,NOTAPART-Testpoint,1
+,TP11D,,NOTAPART-Testpoint,1
+,TP11E,,NOTAPART-Testpoint,1
 ,R188,Yageo,RC0402FR-071KL,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D57,Diodes Incorporated,BAT54WX-TP,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R183,Yageo,RC0402FR-0710KP,1
@@ -98,8 +125,11 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D57,Diodes Incorporated,BAT5
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2D,Texas Instruments,SN74AHCT125RGYR,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R98,Yageo,RC0402FR-07100RL,1
 ,C213,Murata,GRM155R71C104KA88D,1
+,TP2,,,1
+,TP8,,,1
 ,Q12A,,,1
 ,R187,Yageo,RC0402FR-071KL,1
+,TP1,,,1
 ,C156,Murata,GRM155R71C104KA88D,1
 ,R173,Yageo,RC0402FR-071K8L,1
 ,Q13B,On Semi,NCV8402ADDR2G,1
@@ -116,6 +146,7 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D54,Diodes Incorporated,BAT5
 ,C153,,DNI-C0603TBD,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2C,Texas Instruments,SN74AHCT125RGYR,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D50,Diodes Incorporated,BAT54WX-TP,1
+,TP18,,,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R99,Yageo,RC0402FR-07100RL,1
 ,C154,,DNI-C0603TBD,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D55,Diodes Incorporated,BAT54WX-TP,1
@@ -136,6 +167,7 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D56,Diodes Incorporated,BAT5
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D53,Diodes Incorporated,BAT54WX-TP,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2B,Texas Instruments,SN74AHCT125RGYR,1
 ,LED1,Dialight,5988110107F,1
+,TP17,,,1
 ,R172,Yageo,RC0402FR-071K8L,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J31,Molex,0705430002,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R180,Yageo,RC0402FR-07100RL,1
@@ -293,6 +325,14 @@ VARISTOR 6.8V 10A 0201,RV5H,TDK,AVRM0603C6R8NT101N,1
 ,R169F,Stackpole,CSRN2512FK50L0,1
 ,R169G,Stackpole,CSRN2512FK50L0,1
 ,R169H,Stackpole,CSRN2512FK50L0,1
+,TP12A,,NOTAPART-Testpoint,1
+,TP12B,,NOTAPART-Testpoint,1
+,TP12C,,NOTAPART-Testpoint,1
+,TP12D,,NOTAPART-Testpoint,1
+,TP12E,,NOTAPART-Testpoint,1
+,TP12F,,NOTAPART-Testpoint,1
+,TP12G,,NOTAPART-Testpoint,1
+,TP12H,,NOTAPART-Testpoint,1
 4.7µF ±10% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C61A,Kemet,C1206C475K5PACTU,1
 4.7µF ±10% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C61B,Kemet,C1206C475K5PACTU,1
 4.7µF ±10% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C61C,Kemet,C1206C475K5PACTU,1
@@ -357,6 +397,14 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D20E,Diodes Incorporated,BAT
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D20F,Diodes Incorporated,BAT54WX-TP,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D20G,Diodes Incorporated,BAT54WX-TP,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D20H,Diodes Incorporated,BAT54WX-TP,1
+,TP41A,,NOTAPART-Testpoint,1
+,TP41B,,NOTAPART-Testpoint,1
+,TP41C,,NOTAPART-Testpoint,1
+,TP41D,,NOTAPART-Testpoint,1
+,TP41E,,NOTAPART-Testpoint,1
+,TP41F,,NOTAPART-Testpoint,1
+,TP41G,,NOTAPART-Testpoint,1
+,TP41H,,NOTAPART-Testpoint,1
 ,R107A,Yageo,RC0402JR-072R2L,1
 ,R107B,Yageo,RC0402JR-072R2L,1
 ,R107C,Yageo,RC0402JR-072R2L,1
@@ -565,6 +613,14 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D12H,Diodes Incorporated,BAT
 ,P2F,,,1
 ,P2G,,,1
 ,P2H,,,1
+,TP34A,,NOTAPART-Testpoint,1
+,TP34B,,NOTAPART-Testpoint,1
+,TP34C,,NOTAPART-Testpoint,1
+,TP34D,,NOTAPART-Testpoint,1
+,TP34E,,NOTAPART-Testpoint,1
+,TP34F,,NOTAPART-Testpoint,1
+,TP34G,,NOTAPART-Testpoint,1
+,TP34H,,NOTAPART-Testpoint,1
 ,R162A,Stackpole,CSRN2512FK50L0,1
 ,R162B,Stackpole,CSRN2512FK50L0,1
 ,R162C,Stackpole,CSRN2512FK50L0,1
@@ -589,10 +645,21 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D12H,Diodes Incorporated,BAT
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R165F,Yageo,RC0402FR-0710RL,1
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R165G,Yageo,RC0402FR-0710RL,1
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R165H,Yageo,RC0402FR-0710RL,1
+,TP3A,,NOTAPART-Testpoint,1
+,TP3B,,NOTAPART-Testpoint,1
+,TP3C,,NOTAPART-Testpoint,1
+,TP3D,,NOTAPART-Testpoint,1
+,TP3E,,NOTAPART-Testpoint,1
+,TP3F,,NOTAPART-Testpoint,1
+,TP3G,,NOTAPART-Testpoint,1
+,TP3H,,NOTAPART-Testpoint,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C77,Murata,GRM155R71H103JA88D,1
 "24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R43,Yageo,RC0402FR-0724RL,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C76,Murata,GRM155R71C104KA88D,1
+,JP1,,NOTAPART-Solder Bridge,1
 "6.8k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R150,Vishay Dale,CRCW04026K80FKED,1
+,TP60,,NOTAPART-Testpoint,1
+,TP31,,NOTAPART-Testpoint,1
 "24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R42,Yageo,RC0402FR-0724RL,1
 "1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R61,Panasonic,ERJ2GEJ105X,1
 "3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric)",C41,AVX Corporation,06031A3R0BAT2A,1
@@ -601,9 +668,11 @@ ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 1
 ,C27,,DNI-C0603TBD,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R149,Yageo,RC0402FR-07100RL,1
 "24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R48,Yageo,RC0402FR-0724RL,1
+,TP30,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C33,Murata,GRM155R71C104KA88D,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C43,Murata,GRM155R71H103JA88D,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R51,Samsung,RC1005F104CS,1
+,TP61,,NOTAPART-Testpoint,1
 TVS DIODE 30VWM SOD323,D26,Rohm,RSB39VTE-17,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C28,Murata,GRM155R71C104KA88D,1
 "USB Digital Isolator 2500Vrms 2 Channel 12Mbps 25kV/µs CMTI 16-SOIC (0.295, 7.50mm Width)",U9,Analog Devices,ADUM3160BRWZ-RL,1
@@ -611,14 +680,19 @@ TVS DIODE 30VWM SOD323,D26,Rohm,RSB39VTE-17,1
 TVS DIODE 5.5VWM SOT886,D27,NXP,"PRTR5V0U2F,115",1
 2 Line Common Mode Choke Surface Mount 90 Ohm @ 100MHz 330mA DCR 350 mOhm,L5,Murata,DLW21HN900SQ2L,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C29,Murata,GRM155R71C104KA88D,1
+,TP6,,NOTAPART-Testpoint,1
 Bipolar (BJT) Transistor NPN 40V 200mA 300MHz 150mW Surface Mount SOT-523,Q8,Diodes Incorporated,MMBT3904T-7-F,1
 "24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R45,Yageo,RC0402FR-0724RL,1
+,TP5,,NOTAPART-Testpoint,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R152,Yageo,RC0402FR-071KL,1
 "USB - B USB 2.0 Receptacle Connector 4 Position Through Hole, Right Angle",J8,Amphenol FCI,61729-0010BLF,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C169,Murata,GRM155R71C104KA88D,1
+,JP2,,NOTAPART-Solder Bridge,1
 1µF ±10% 6.3V Ceramic Capacitor X5R 0402 (1005 Metric),C32,Murata,GRM155R60J105KE19D,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C39,Murata,GRM155R71C104KA88D,1
+,TP32,,NOTAPART-Testpoint,1
 "3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric)",C42,AVX Corporation,06031A3R0BAT2A,1
+,TP55,,NOTAPART-Testpoint,1
 "10pF ±5% 50V Ceramic Capacitor C0G, NP0 0402 (1005 Metric)",C49,Samsung,CL05C100JB5NNNC,1
 "6.8k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R49,Vishay Dale,CRCW04026K80FKED,1
 ,C50,,DNI-C0603TBD,1
@@ -631,6 +705,7 @@ FERRITE BEAD 120 OHM 0603 1LN,FB29,Samsung,CIS10P121AC,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R197,Yageo,RC0402FR-071KL,1
 ,C207,Samsung,CL03A104KQ3NNNC,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C158,Murata,GRM155R71H103JA88D,1
+,TP19,,NOTAPART-Testpoint,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J9,Molex,0705430002,1
 ,C204,Samsung,CL03A104KQ3NNNC,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C157,Murata,GRM155R71H103JA88D,1
@@ -640,22 +715,29 @@ TVS DIODE 3.3VWM SOD923,D34,On Semi,ESD9X3.3ST5G,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J5,Molex,0705430002,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J32,Molex,0705430002,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R74,Yageo,RC0402FR-071KL,1
+,TP130,,NOTAPART-Testpoint,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J33,Molex,0705430002,1
+,TP80,,NOTAPART-Testpoint,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R35,Samsung,RC1005F104CS,1
 TVS DIODE 3.3VWM SOD923,D32,On Semi,ESD9X3.3ST5G,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R76,Yageo,RC0402FR-071KL,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J6,Molex,0705430002,1
+,TP81,,NOTAPART-Testpoint,1
 ,C206,Samsung,CL03A104KQ3NNNC,1
+,TP25,,NOTAPART-Testpoint,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R19,Yageo,RC0402FR-071KL,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R23,Yageo,RC0402FR-071KL,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R22,Samsung,RC1005F104CS,1
+,TP131,,NOTAPART-Testpoint,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R190,Samsung,RC1005F104CS,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R75,Samsung,RC1005F104CS,1
 TVS DIODE 3.3VWM SOD923,D59,On Semi,ESD9X3.3ST5G,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J7,Molex,0705430002,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R192,Samsung,RC1005F104CS,1
+,TP82,,NOTAPART-Testpoint,1
 ,C215,Samsung,CL03A104KQ3NNNC,1
 ,C205,Samsung,CL03A104KQ3NNNC,1
+,TP67,,NOTAPART-Testpoint,1
 TVS DIODE 3.3VWM SOD923,D13,On Semi,ESD9X3.3ST5G,1
 TVS DIODE 3.3VWM SOD923,D58,On Semi,ESD9X3.3ST5G,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C160,Murata,GRM155R71H103JA88D,1
@@ -691,17 +773,23 @@ TVS DIODE 3.3VWM SOD923,D33,On Semi,ESD9X3.3ST5G,1
 Green 566nm LED Indication - Discrete 2V 0805 (2012 Metric),D23,Dialight,5988170107F,1
 47µF ±10% 10V Ceramic Capacitor X5R 1210 (3225 Metric),C4,Murata,GRM32ER61A476KE20L,1
 Linear Voltage Regulator IC Positive Fixed 1 Output 3.3V 500mA 6-TMLF® (1.6x1.6),U8,Microchip,MIC5353-3.3YMT-TR,1
+,TP33,,NOTAPART-Testpoint,1
 1µF ±10% 6.3V Ceramic Capacitor X5R 0402 (1005 Metric),C34,Murata,GRM155R60J105KE19D,1
+,H6,,NOTAPART-Hole,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R119,Yageo,RC0402FR-0710KP,1
 0.1µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C1,Kemet,C0603C104K5RACTU,1
 ,D2,MCC,SK54B-LTP,1
+,TP79,,NOTAPART-Testpoint,1
+,H5,,NOTAPART-Hole,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R155,Yageo,RC0402FR-0710KP,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C201,Murata,GRM155R71C104KA88D,1
 ,J3,TE,4DB-P108-10,1
+,H1,,NOTAPART-Hole,1
 Linear Voltage Regulator IC Positive Fixed 1 Output 5V 100mA SOT-89-3,U20,ST,L78L05ABUTR,1
 "1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R28,Panasonic,ERJ2GEJ105X,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C26,Murata,GRM155R71C104KA88D,1
 Fuse Block 30A 500V 1 Circuit Blade PCB,F2,Keystone,3557-2,1
+,H3,,NOTAPART-Hole,1
 ,FD5,,NOTAPART-Fiducial,1
 "10.2 kOhms ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R1,Yageo,RC0402FR-0710K2L,1
 10000pF ±5% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C71,Murata,GRM155R71H103JA88D,1
@@ -710,34 +798,49 @@ Fuse Block 30A 500V 1 Circuit Blade PCB,F2,Keystone,3557-2,1
 "Board-To-Board Connector, 2.54 mm, 8 Contacts, Header, 2213S Series, Through Hole, 2 Rows",P1,Multicomp,2213S-08G,1
 ,D43,Bourns Inc,SMAJ24A,1
 ,FD7,,NOTAPART-Fiducial,1
+,H2,,NOTAPART-Hole,1
 "0.0 Ohm Jumper 0.1W, 1/10W Chip Resistor 0603 (1608 Metric) Moisture Resistant Thick Film",R103,Bourns,CR0603-J/-000ELF,1
 ,D78,Bourns Inc,SMAJ24A,1
 Fuse Block 30A 500V 1 Circuit Blade PCB,F1,Keystone,3557-20,1
+,H9,,NOTAPART-Hole,1
+,H4,,NOTAPART-Hole,1
 ,C199,Kemet,C0603C104K5RACTU,1
 ,U21,TEXAS INSTRUMENTS,AP331AWG-7,1
+,H7,,NOTAPART-Hole,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R33,Yageo,RC0402FR-071KL,1
 ,D22,Bourns Inc,SMAJ24A,1
+,TP43,,NOTAPART-Testpoint,1
 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C93,Murata,490-10756-2-ND,1
 TBD,C3,TBD,TBD,1
 "1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R156,Panasonic,ERJ2GEJ105X,1
 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C38,Murata,490-10756-2-ND,1
+,TP48,,NOTAPART-Testpoint,1
 ,R26,Visha Dale,CRCW040224K0FKEDC,1
+,TP47,,NOTAPART-Testpoint,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R11,Yageo,RC0402FR-0710KP,1
 ,C202,Kemet,C0603C104K5RACTU,1
+,TP44,,NOTAPART-Testpoint,1
 ,C203,Kemet,C0603C104K5RACTU,1
+,TP36,,NOTAPART-Testpoint,1
+,TP69,,,1
 0.10µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C15,Kemet,C0603C104K5RACTU,1
 ,C151,AVX,04025A220JAT2A,1
+,LOGO1,,NOTAPART-OSHW LOGO,1
 1000pF ±10% 50V Ceramic Capacitor X7R 0402 (1005 Metric),C17,Murata,GRM155R71H102KA01D,1
 4.7µF ±10% 50V Ceramic Capacitor X7R 1210 (3225 Metric),C7,Murata,GRM32ER71H475KA88L,1
 0.10µF ±10% 50V Ceramic Capacitor X7R 0603 (1608 Metric),C95,Kemet,C0603C104K5RACTU,1
 "130 kOhms ±5% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R157,Yageo,RC0402JR-07130KL,1
+,H8,,NOTAPART-Hole,1
 "Buck Switching Regulator IC Positive Adjustable 0.8V 1 Output 5A 8-PowerSOIC (0.154, 3.90mm Width)",U1,TI,TPS54531DDAR,1
 ,C198,,DNI-C0402TBD,1
 "2200pF ±5% 25V Ceramic Capacitor C0G, NP0 0402 (1005 Metric)",C150,Kemet,C0402C222J3GACTU,1
 ,D21,Bourns Inc,SMAJ24A,1
 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric),C16,Murata,490-10756-2-ND,1
 ,FD6,,NOTAPART-Fiducial,1
+,TP4,,,1
 ,R2,Stackpole,RMCF0402FT1K40,1
+,TP46,,NOTAPART-Testpoint,1
+,TP7,,,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C200,Murata,GRM155R71C104KA88D,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R56,Yageo,RC0402FR-0710KP,1
 1µF ±10% 6.3V Ceramic Capacitor X5R 0402 (1005 Metric),C24,Murata,GRM155R60J105KE19D,1
@@ -750,6 +853,7 @@ TBD,C3,TBD,TBD,1
 "1.96 kOhms ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R5,Yageo,RC0402FR-071K96L,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R58,Samsung,RC1005F104CS,1
 ,U6,TEXAS INSTRUMENTS,AP331AWG-7,1
+,TP51,,NOTAPART-Testpoint,1
 "130 kOhms ±5% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R57,Yageo,RC0402JR-07130KL,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R102,Yageo,RC0402FR-071KL,1
 "10 mOhms ±1% 0.5W, 1/2W Chip Resistor 0805 (2012 Metric) Automotive AEC-Q200, Current Sense Metal Foil",R148,Susumu,KRL1220E-M-R010-F-T5,1
@@ -771,15 +875,20 @@ VARISTOR 6.8V 10A 0201,RV4,TDK,AVRM0603C6R8NT101N,1
 ,C78,Samsung,CL03A104KQ3NNNC,1
 ,C91,Samsung,CL03A104KQ3NNNC,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R31,Samsung,RC1005F104CS,1
+,TP77,,NOTAPART-Testpoint,1
 Clock Fanout Buffer (Distribution) IC 1:4  8-XFDFN,U14,Nexperia,74AVC9112GTX,1
+,TP52,,NOTAPART-Testpoint,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R153,Yageo,RC0402FR-07100RL,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R140,Yageo,RC0402FR-07100RL,1
+,TP128,,NOTAPART-Testpoint,1
 "24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R82,Yageo,RC0402FR-0724RL,1
 TVS DIODE 3.3VWM SOD923,D42,On Semi,ESD9X3.3ST5G,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D74,Diodes Incorporated,BAT54WX-TP,1
+,TP76,,NOTAPART-Testpoint,1
 CAP CER 10UF 6.3V 10% JB 0603,C53,TDK,C1608JB0J106K080AB,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C44,Murata,GRM155R71C104KA88D,1
 TBD,C90,TBD,TBD,1
+,TP13,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C68,Murata,GRM155R71C104KA88D,1
 FERRITE BEAD 120 OHM 0603 1LN,FB28,Samsung,CIS10P121AC,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R95,Yageo,RC0402FR-0710KP,1
@@ -789,6 +898,7 @@ FERRITE BEAD 120 OHM 0603 1LN,FB28,Samsung,CIS10P121AC,1
 ,R4,Vishay Dale,CRCW040247R0FKEDC,1
 ,R93,Vishay Dale,CRCW040247R0FKEDC,1
 TVS DIODE 5V 9V SOD923,D45,Toshiba,"DF2S6.8FS,L3M",1
+,TP129,,NOTAPART-Testpoint,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R34,Yageo,RC0402FR-071KL,1
 Tactile Switch SPST-NO Top Actuated Surface Mount,S2,C&K,KMR741NG ULC LFS,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R159,Yageo,RC0402FR-07100RL,1
@@ -796,15 +906,18 @@ Tactile Switch SPST-NO Top Actuated Surface Mount,S2,C&K,KMR741NG ULC LFS,1
 TBD,C79,TBD,TBD,1
 TBD,C104,TBD,TBD,1
 TBD,C64,TBD,TBD,1
+,TP21,,NOTAPART-Testpoint,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R135,Yageo,RC0402FR-07100RL,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D60,Diodes Incorporated,BAT54WX-TP,1
 TBD,C83,TBD,TBD,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D62,Diodes Incorporated,BAT54WX-TP,1
+,TP16,,NOTAPART-Testpoint,1
 TVS DIODE 3.3VWM SOD923,D71,On Semi,ESD9X3.3ST5G,1
 ,R94,Vishay Dale,CRCW040247R0FKEDC,1
 CAP CER 10UF 6.3V 10% JB 0603,C70,TDK,C1608JB0J106K080AB,1
 ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11A,Atmel,ATSAM3X8EA-AU,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R67,Yageo,RC0402FR-0710KP,1
+,TP74,,NOTAPART-Testpoint,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R36,Yageo,RC0402FR-071KL,1
 ,C100,Samsung,CL03A104KQ3NNNC,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R40,Yageo,RC0402FR-071KL,1
@@ -816,13 +929,16 @@ TVS DIODE 3.3VWM SOD923,D65,On Semi,ESD9X3.3ST5G,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C81,Murata,GRM155R71C104KA88D,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D75,Diodes Incorporated,BAT54WX-TP,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R145,Yageo,RC0402FR-07100RL,1
+,TP53,,NOTAPART-Testpoint,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R38,Samsung,RC1005F104CS,1
+,TP54,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C167,Murata,GRM155R71C104KA88D,1
 ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11C,Atmel,ATSAM3X8EA-AU,1
 "10 Positions Header, Unshrouded Connector 0.050 (1.27mm) Surface Mount Gold",J4,Amphenol FCI,20021121-00010C4LF,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C80,Murata,GRM155R71C104KA88D,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R144,Yageo,RC0402FR-07100RL,1
 TVS DIODE 3.3VWM SOD923,D67,On Semi,ESD9X3.3ST5G,1
+,TP14,,NOTAPART-Testpoint,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D61,Diodes Incorporated,BAT54WX-TP,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R85,Yageo,RC0402FR-0710KP,1
 TBD,C89,TBD,TBD,1
@@ -854,19 +970,23 @@ Yellow 593nm LED Indication - Discrete 2V 0805 (2012 Metric),D25,Dialight,598814
 ,R89,Vishay Dale,CRCW040247R0FKEDC,1
 "Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U17,TI,SN74LVC125ARGYR,1
 TVS DIODE 3.3VWM SOD923,D66,On Semi,ESD9X3.3ST5G,1
+,TP50,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C56,Murata,GRM155R71C104KA88D,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D41,Diodes Incorporated,BAT54WX-TP,1
 TVS DIODE 3.3VWM SOD923,D64,On Semi,ESD9X3.3ST5G,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C73,Murata,GRM155R71C104KA88D,1
+,TP49,,NOTAPART-Testpoint,1
 FERRITE BEAD 120 OHM 0603 1LN,FB30,Samsung,CIS10P121AC,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C54,Murata,GRM155R71C104KA88D,1
 CAP CER 10UF 6.3V 10% JB 0603,C37,TDK,C1608JB0J106K080AB,1
 TBD,C102,TBD,TBD,1
 TBD,C75,TBD,TBD,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C82,Murata,GRM155R71C104KA88D,1
+,TP56,,NOTAPART-Testpoint,1
 TVS DIODE 3.3VWM SOD923,D72,On Semi,ESD9X3.3ST5G,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C165,Murata,GRM155R71C104KA88D,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R69,Yageo,RC0402FR-0710KP,1
+,TP20,,NOTAPART-Testpoint,1
 TBD,C74,TBD,TBD,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R71,Yageo,RC0402FR-071KL,1
 TBD,C87,TBD,TBD,1
@@ -876,7 +996,9 @@ TBD,C87,TBD,TBD,1
 VARISTOR 6.8V 10A 0201,RV2,TDK,AVRM0603C6R8NT101N,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R66,Yageo,RC0402FR-0710KP,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C63,Murata,GRM155R71C104KA88D,1
+,TP26,,NOTAPART-Testpoint,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D76,Diodes Incorporated,BAT54WX-TP,1
+,TP27,,NOTAPART-Testpoint,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R160,Yageo,RC0402FR-07100RL,1
 ,R3,Vishay Dale,CRCW040247R0FKEDC,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R114,Yageo,RC0402FR-07100RL,1
@@ -884,15 +1006,20 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D76,Diodes Incorporated,BAT5
 TVS DIODE 3.3VWM SOD923,D69,On Semi,ESD9X3.3ST5G,1
 TBD,C88,TBD,TBD,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D31,Diodes Incorporated,BAT54WX-TP,1
+,TP15,,NOTAPART-Testpoint,1
 TBD,C85,TBD,TBD,1
 IC FLASH 16M SPI 104MHZ 8SOIC,U12,Adesto,AT25SF161-SSHD-T,1
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R37,Samsung,RC1005F104CS,1
+,TP22,,NOTAPART-Testpoint,1
 TVS DIODE 3.3VWM SOD923,D1,On Semi,ESD9X3.3ST5G,1
+,TP29,,NOTAPART-Testpoint,1
+,TP78,,NOTAPART-Testpoint,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R97,Yageo,RC0402FR-0710KP,1
 CAP CER 10UF 6.3V 10% JB 0603,C72,TDK,C1608JB0J106K080AB,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C69,Murata,GRM155R71C104KA88D,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R161,Yageo,RC0402FR-07100RL,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R134,Yageo,RC0402FR-07100RL,1
+,TP75,,NOTAPART-Testpoint,1
 ,C105,Samsung,CL03A104KQ3NNNC,1
 TVS DIODE 3.3VWM SOD923,D73,On Semi,ESD9X3.3ST5G,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C52,Murata,GRM155R71C104KA88D,1
@@ -903,13 +1030,17 @@ CAP CER 10UF 6.3V 10% JB 0603,C57,TDK,C1608JB0J106K080AB,1
 ,C67,Samsung,CL03A104KQ3NNNC,1
 FERRITE BEAD 120 OHM 0603 1LN,FB26,Samsung,CIS10P121AC,1
 ,R32,Vishay Dale,CRCW040247R0FKEDC,1
+,TP511,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C162,Murata,GRM155R71C104KA88D,1
+,TP107,,NOTAPART-Testpoint,1
 "4.7k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R90,YAGEO,RC0402FR-074K7L,1
 "2 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J15,Molex,0705430001,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D36,Diodes Incorporated,BAT54WX-TP,1
 "2 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J14,Molex,0705430001,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D38,Diodes Incorporated,BAT54WX-TP,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D37,Diodes Incorporated,BAT54WX-TP,1
+,TP510,,NOTAPART-Testpoint,1
+,TP106,,NOTAPART-Testpoint,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R87,Yageo,RC0402FR-072K37L,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D28,Diodes Incorporated,BAT54WX-TP,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C103,Murata,GRM155R71C104KA88D,1
@@ -918,9 +1049,14 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D28,Diodes Incorporated,BAT5
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D29,Diodes Incorporated,BAT54WX-TP,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R81,Yageo,RC0402FR-072K37L,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R44,Yageo,RC0402FR-072K37L,1
+,TP101,,NOTAPART-Testpoint,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R91,Yageo,RC0402FR-072K37L,1
+,TP9,,NOTAPART-Testpoint,1
 "4.7k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R62,YAGEO,RC0402FR-074K7L,1
 "4.7k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R80,YAGEO,RC0402FR-074K7L,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C161,Murata,GRM155R71C104KA88D,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D39,Diodes Incorporated,BAT54WX-TP,1
+,TP108,,NOTAPART-Testpoint,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R50,Yageo,RC0402FR-072K37L,1
+,TP10,,NOTAPART-Testpoint,1
+,TP502,,NOTAPART-Testpoint,1
