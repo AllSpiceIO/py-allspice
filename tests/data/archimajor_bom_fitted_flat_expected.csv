@@ -26,7 +26,6 @@ MOSFET N-CH 40V 100A 8VSON,Q3,TI,CSD18503Q5A,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U7,Diodes Incorporated,ZXGD3009E6TA,1
 MOSFET N-CH 40V 100A 8VSON,Q2,TI,CSD18503Q5A,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D16,Dialight,5988110107F,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10E,Texas Instruments,SN74AHCT125RGYR,1
 TVS DIODE 30VWM SOD323,D10,Rohm,RSB39VTE-17,1
 ,TP66,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C22,Murata,GRM155R71C104KA88D,1
@@ -36,9 +35,7 @@ Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D17,Dialight,5988110
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R52,Yageo,RC0402FR-0710RL,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R39,Yageo,RC0402FR-0710KP,1
 "10 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R27,Yageo,RC0402FR-0710RL,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10B,Texas Instruments,SN74AHCT125RGYR,1
 ,C8,,DNI-C0603TBD,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10C,Texas Instruments,SN74AHCT125RGYR,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R25,Yageo,RC0402FR-07100RL,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R29,Yageo,RC0402FR-0710KP,1
 MOSFET N-CH 40V 100A 8VSON,Q4,TI,CSD18503Q5A,1
@@ -50,10 +47,8 @@ TVS DIODE 30VWM SOD323,D4,Rohm,RSB39VTE-17,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C19,Murata,GRM155R71C104KA88D,1
 Low-Side Gate Driver IC Non-Inverting SOT-26,U3,Diodes Incorporated,ZXGD3009E6TA,1
 ,TP62,,NOTAPART-Testpoint,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10D,Texas Instruments,SN74AHCT125RGYR,1
 ,C11,,DNI-C0603TBD,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C31,Murata,GRM155R71C104KA88D,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10A,Texas Instruments,SN74AHCT125RGYR,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C20,Murata,GRM155R71C104KA88D,1
 ,TP40,,NOTAPART-Testpoint,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D9,Dialight,5988110107F,1
@@ -137,31 +132,25 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D57,Diodes Incorporated,BAT5
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R183,Yageo,RC0402FR-0710KP,1
 ,R185,Yageo,RC0402FR-071K8L,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R101,Yageo,RC0402FR-0710KP,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2D,Texas Instruments,SN74AHCT125RGYR,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R98,Yageo,RC0402FR-07100RL,1
 ,C213,Murata,GRM155R71C104KA88D,1
 ,TP2,,,1
 ,TP8,,,1
-,Q12A,,,1
 ,R187,Yageo,RC0402FR-071KL,1
 ,TP1,,,1
 ,C156,Murata,GRM155R71C104KA88D,1
 ,R173,Yageo,RC0402FR-071K8L,1
-,Q13B,On Semi,NCV8402ADDR2G,1
 ,R?,Yageo,RC0402FR-071KL,1
 ,R177,Yageo,RC0402FR-071KL,1
 ,C212,Murata,GRM155R71C104KA88D,1
 ,R175,Yageo,RC0402FR-071KL,1
 ,R176,Yageo,RC0402FR-071KL,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D54,Diodes Incorporated,BAT54WX-TP,1
-,Q12B,On Semi,NCV8402ADDR2G,1
 ,R184,Yageo,RC0402FR-071K8L,1
 ,C209,,DNI-C0603TBD,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2A,Texas Instruments,SN74AHCT125RGYR,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R171,Yageo,RC0402FR-0710KP,1
 ,R?,Yageo,RC0402FR-071KL,1
 ,C153,,DNI-C0603TBD,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2C,Texas Instruments,SN74AHCT125RGYR,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D50,Diodes Incorporated,BAT54WX-TP,1
 ,TP18,,,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R99,Yageo,RC0402FR-07100RL,1
@@ -175,11 +164,8 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D56,Diodes Incorporated,BAT5
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J29,Molex,0705430002,1
 ,R186,Yageo,RC0402FR-071KL,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R182,Yageo,RC0402FR-0710KP,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2E,Texas Instruments,SN74AHCT125RGYR,1
 ,C155,Murata,GRM155R71C104KA88D,1
-,Q13A,,,1
 Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D53,Diodes Incorporated,BAT54WX-TP,1
-"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2B,Texas Instruments,SN74AHCT125RGYR,1
 ,TP17,,,1
 ,R172,Yageo,RC0402FR-071K8L,1
 "3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold",J31,Molex,0705430002,1
@@ -607,7 +593,6 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D12H,Diodes Incorporated,BAT
 ,TP3F,,NOTAPART-Testpoint,1
 ,TP3G,,NOTAPART-Testpoint,1
 ,TP3H,,NOTAPART-Testpoint,1
-ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11B,Atmel,ATSAM3X8EA-AU,1
 ,FD?,,NOTAPART-Fiducial,1
 "1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R198,Yageo,RC0402FR-071KL,1
 ,H?,,NOTAPART-Hole,1
@@ -813,7 +798,6 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D62,Diodes Incorporated,BAT5
 TVS DIODE 3.3VWM SOD923,D71,On Semi,ESD9X3.3ST5G,1
 ,R94,Vishay Dale,CRCW040247R0FKEDC,1
 CAP CER 10UF 6.3V 10% JB 0603,C70,TDK,C1608JB0J106K080AB,1
-ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11A,Atmel,ATSAM3X8EA-AU,1
 "10k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R67,Yageo,RC0402FR-0710KP,1
 Red 635nm LED Indication - Discrete 2.2V 0805 (2012 Metric),D?,Dialight,5988110107F,1
 ,TP74,,NOTAPART-Testpoint,1
@@ -832,7 +816,6 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D75,Diodes Incorporated,BAT5
 "100k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R38,Samsung,RC1005F104CS,1
 ,TP54,,NOTAPART-Testpoint,1
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C167,Murata,GRM155R71C104KA88D,1
-ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11C,Atmel,ATSAM3X8EA-AU,1
 "10 Positions Header, Unshrouded Connector 0.050 (1.27mm) Surface Mount Gold",J4,Amphenol FCI,20021121-00010C4LF,1
 "100 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R144,Yageo,RC0402FR-07100RL,1
 ,TP14,,NOTAPART-Testpoint,1
@@ -944,3 +927,8 @@ Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,D29,Diodes Incorporated,BAT5
 0.10µF ±10% 16V Ceramic Capacitor X7R 0402 (1005 Metric),C161,Murata,GRM155R71C104KA88D,1
 "2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film",R50,Yageo,RC0402FR-072K37L,1
 ,TP502,,NOTAPART-Testpoint,1
+"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U10,Texas Instruments,SN74AHCT125RGYR,1
+"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2,Texas Instruments,SN74AHCT125RGYR,1
+,Q12,,,1
+,Q13,On Semi,NCV8402ADDR2G,1
+ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11,Atmel,ATSAM3X8EA-AU,1

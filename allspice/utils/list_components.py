@@ -15,6 +15,7 @@ from ..exceptions import NotYetGeneratedException
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 PART_REFERENCE_ATTR_NAME = "Part Reference"
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
+MULTI_PART_NAME_REGEX = re.compile(r"(.)+\.([A-Z])")
 DESIGNATOR_COLUMN_NAME = "Designator"
 
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
@@ -38,6 +39,8 @@ def list_components(
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in a schematic.
+
+    Note that the returned components can be in any order.
 
     :param client: An AllSpice client instance.
     :param repository: The repository containing the schematic.
@@ -97,6 +100,8 @@ def list_components_for_altium(
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in an Altium project.
+
+    Note that the returned components can be in any order.
 
     :param client: An AllSpice client instance.
     :param repository: The repository containing the Altium project.
@@ -168,6 +173,8 @@ def list_components_for_altium(
     if variant is not None:
         components = _apply_variations(components, variant_details, allspice_client.logger)
 
+    components = _combine_altium_multi_symbol_parts(components)
+
     return components
 
 
@@ -179,6 +186,8 @@ def list_components_for_orcad(
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in an OrCAD DSN schematic.
+
+    Note that the returned components can be in any order.
 
     :param client: An AllSpice client instance.
     :param repository: The repository containing the OrCAD schematic.
@@ -366,6 +375,10 @@ def _component_attributes(component: dict) -> ComponentAttributes:
         pass
     try:
         attributes["_kind"] = component["kind"]
+    except KeyError:
+        pass
+    try:
+        attributes["_name"] = component["name"]
     except KeyError:
         pass
 
@@ -578,5 +591,42 @@ def _apply_variations(
             final_components.append(new_component)
         else:
             final_components.append(component)
+
+    return final_components
+
+
+def _combine_altium_multi_symbol_parts(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine symbols that are part of the same part into a single component.
+
+    :param components: The components to combine.
+
+    :returns: The combined components.
+    """
+
+    # Multi-symbol parts in Altium can be identified using the name field, which
+    # should have suffix consisting of a . followed by an alphabet, and the
+    # alphabet should be the same as the suffix on the designator.
+    multi_symbol_parts_by_designator = {}
+    final_components = []
+
+    for component in components:
+        designator = component[DESIGNATOR_COLUMN_NAME]
+        name = component["_name"]
+        match = MULTI_PART_NAME_REGEX.match(name)
+        if match and designator.endswith(match.group(2)):
+            # This is a multi-symbol part.
+            part_designator = designator[:-1]
+            multi_symbol_parts_by_designator.setdefault(part_designator, []).append(component)
+        else:
+            final_components.append(component)
+
+    for part_designator, part_components in multi_symbol_parts_by_designator.items():
+        combined_component = part_components[0].copy()
+        combined_component[DESIGNATOR_COLUMN_NAME] = part_designator
+        combined_component["_name"] = part_components[0]["_name"][:-2]
+        final_components.append(combined_component)
 
     return final_components
