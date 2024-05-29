@@ -56,6 +56,37 @@ def _setup_for_generation(instance, test_name, clone_addr):
     )
 
 
+def _assert_csv_matches(
+    bom: list[dict[str, str]],
+    expected_csv_path: str,
+    accept: bool = False,
+):
+    if accept:
+        with open(expected_csv_path, "w") as f:
+            writer = csv.DictWriter(f, fieldnames=bom[0].keys())
+            writer.writeheader()
+            writer.writerows(bom)
+
+    with open(expected_csv_path, "r") as f:
+        reader = csv.DictReader(f)
+        for row, expected_row in zip(reader, bom):
+            assert row == expected_row
+
+
+def _assert_json_matches(
+    components: list[dict[str, str]],
+    expected_json_path: str,
+    accept: bool = False,
+):
+    if accept:
+        with open(expected_json_path, "w") as f:
+            print(json.dumps(components, indent=2), file=f)
+
+    with open(expected_json_path, "r") as f:
+        expected_components = json.load(f)
+        assert components == expected_components
+
+
 def test_bom_generation_flat(request, instance):
     _setup_for_generation(
         instance,
@@ -80,12 +111,9 @@ def test_bom_generation_flat(request, instance):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
 
-    assert len(bom) == 925
+    assert len(bom) == 913
 
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_flat_expected.csv")
 
 
 def test_bom_generation_with_odd_line_endings(request, instance):
@@ -139,12 +167,9 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         ref=ref,
     )
 
-    assert len(bom) == 925
+    assert len(bom) == 913
 
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_flat_expected.csv")
 
 
 def test_bom_generation_grouped(request, instance):
@@ -175,10 +200,7 @@ def test_bom_generation_grouped(request, instance):
 
     assert len(bom) == 108
 
-    with open("tests/data/archimajor_bom_grouped_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_grouped_expected.csv")
 
 
 def test_bom_generation_with_folder_hierarchy(request, instance):
@@ -206,12 +228,11 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
         ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
     )
 
+    # The number of components here is less than before because there are a few
+    # differences in the parts in this version of the repo.
     assert len(bom) == 102
 
-    with open("tests/data/archimajor_bom_hierarchical_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_hierarchical_expected.csv")
 
 
 def test_bom_generation_with_default_variant(request, instance):
@@ -244,12 +265,9 @@ def test_bom_generation_with_default_variant(request, instance):
     # Since we haven't specified a variant, this should have the same result
     # as generating a flat BOM. This version of archimajor has a few parts
     # removed even before the variations, so the number of parts is different.
-    assert len(bom) == 987
+    assert len(bom) == 975
 
-    with open("tests/data/archimajor_bom_default_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_default_flat_expected.csv")
 
 
 def test_bom_generation_with_fitted_variant(request, instance):
@@ -278,13 +296,11 @@ def test_bom_generation_with_fitted_variant(request, instance):
     )
 
     # Exactly 42 rows should be removed, as that is the number of non-param
-    # variations.
-    assert len(bom) == 987 - 42
+    # variations. Note that multi-symbol parts don't have any effect on this, as
+    # the variation doesn't completely remove any of them.
+    assert len(bom) == 975 - 42
 
-    with open("tests/data/archimajor_bom_fitted_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_fitted_flat_expected.csv")
 
 
 def test_bom_generation_with_grouped_variant(request, instance):
@@ -315,10 +331,7 @@ def test_bom_generation_with_grouped_variant(request, instance):
 
     assert len(bom) == 89
 
-    with open("tests/data/archimajor_bom_fitted_grouped_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_fitted_grouped_expected.csv")
 
 
 def test_bom_generation_altium_with_non_bom_components(request, instance):
@@ -346,12 +359,9 @@ def test_bom_generation_altium_with_non_bom_components(request, instance):
         remove_non_bom_components=False,
     )
 
-    assert len(bom) == 1061
+    assert len(bom) == 1049
 
-    with open("tests/data/archimajor_bom_non_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_non_bom_expected.csv")
 
 
 def test_bom_generation_orcad(request, instance):
@@ -382,10 +392,7 @@ def test_bom_generation_orcad(request, instance):
 
     assert len(bom) == 870
 
-    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    _assert_csv_matches(bom, "tests/data/beagleplay_bom_expected.csv")
 
 
 def test_generate_bom(request, instance):
@@ -418,11 +425,8 @@ def test_generate_bom(request, instance):
         altium_attributes_mapping,
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
-    assert len(bom) == 925
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert len(bom) == 913
+    _assert_csv_matches(bom, "tests/data/archimajor_bom_flat_expected.csv")
 
     repo = instance.get_repository(
         instance.get_user().username, "-".join([test_repo, request.node.name + "orcad"])
@@ -442,10 +446,8 @@ def test_generate_bom(request, instance):
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
     assert len(bom) == 870
-    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+
+    _assert_csv_matches(bom, "tests/data/beagleplay_bom_expected.csv")
 
 
 def test_orcad_components_list(request, instance):
@@ -468,8 +470,7 @@ def test_orcad_components_list(request, instance):
 
     assert len(components) == 870
 
-    with open("tests/data/beagleplay_components_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    _assert_json_matches(components, "tests/data/beagleplay_components_expected.json")
 
 
 def test_altium_components_list(request, instance):
@@ -490,10 +491,9 @@ def test_altium_components_list(request, instance):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
 
-    assert len(components) == 1061
+    assert len(components) == 1049
 
-    with open("tests/data/archimajor_components_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    _assert_json_matches(components, "tests/data/archimajor_components_expected.json")
 
 
 def test_altium_components_list_with_folder_hierarchy(request, instance):
@@ -514,10 +514,9 @@ def test_altium_components_list_with_folder_hierarchy(request, instance):
         ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
     )
 
-    assert len(components) == 1049
+    assert len(components) == 1037
 
-    with open("tests/data/archimajor_components_hierarchical_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    _assert_json_matches(components, "tests/data/archimajor_components_hierarchical_expected.json")
 
 
 def test_altium_components_list_with_fitted_variant(request, instance):
@@ -539,10 +538,9 @@ def test_altium_components_list_with_fitted_variant(request, instance):
         variant="Fitted",
     )
 
-    assert len(components) == 945
+    assert len(components) == 933
 
-    with open("tests/data/archimajor_components_fitted_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    _assert_json_matches(components, "tests/data/archimajor_components_fitted_expected.json")
 
 
 def test_netlist_generation(request, instance):
