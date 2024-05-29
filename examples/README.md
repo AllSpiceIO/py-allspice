@@ -16,5 +16,4 @@ doing, and make any changes to suit your circumstances or use case before runnin
 - [Example: Team Management](./team_management)
 - [Example: Working with DRs](./working_with_drs)
 - [Example: Backing up a Repository](./backup_repo)
-- [Example: Generate a BOM from a PrjPcb file](./generate_bom)
 - [Example: Check if a Part is in a Repository](./check_parts_in_schematics)
