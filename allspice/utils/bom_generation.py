@@ -73,6 +73,12 @@ def generate_bom(
         In this case, the "Part" attribute will be checked first, and if it is
         not present, the "MFN Part#" attribute will be checked. If neither are
         present, the "Part Number" column in the BOM will be empty.
+
+        Note that special attributes are added by this function depending on the
+        project tool. For Altium projects, these are "_part_id", "_description",
+        "_unique_id" and "_kind", which are the Library Reference, Description,
+        Unique ID and Component Type respectively. For OrCAD projects, "_name"
+        is added, which is the name of the component.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
@@ -156,6 +162,12 @@ def generate_bom_for_altium(
         In this case, the "Part" attribute will be checked first, and if it is
         not present, the "MFN Part#" attribute will be checked. If neither are
         present, the "Part Number" column in the BOM will be empty.
+
+        Along with the attributes, four special attributes are added by this
+        function: "_part_id", "_description", "_unique_id" and "_kind". These
+        are the Library Reference, Description, Unique ID and Component Type
+        respectively. You can use these like any other attribute in the columns
+        mapping.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
@@ -443,8 +455,7 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     """
     Extract the attributes of a component into a dict.
 
-    This also adds two properties of the component that are not attributes into
-    the dict.
+    This also adds the Altium special attributes to the dict.
     """
 
     attributes = {}
@@ -754,7 +765,7 @@ def _apply_variations(
     return final_components
 
 
-def _remove_non_bom_components(components):
+def _remove_non_bom_components(components: list[dict[str, str]]) -> list[dict[str, str]]:
     """
     Filter out components of types that should not be included in the BOM.
     """
