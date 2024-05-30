@@ -15,7 +15,7 @@ from ..exceptions import NotYetGeneratedException
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 PART_REFERENCE_ATTR_NAME = "Part Reference"
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
-MULTI_PART_NAME_REGEX = re.compile(r"(.)+\.([A-Z])")
+ALTIUM_MULTI_PART_NAME_REGEX = re.compile(r".+?\.([A-Z])")
 DESIGNATOR_COLUMN_NAME = "Designator"
 
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
@@ -615,8 +615,8 @@ def _combine_altium_multi_symbol_parts(
     for component in components:
         designator = component[DESIGNATOR_COLUMN_NAME]
         name = component["_name"]
-        match = MULTI_PART_NAME_REGEX.match(name)
-        if match and designator.endswith(match.group(2)):
+        has_suffix = ALTIUM_MULTI_PART_NAME_REGEX.match(name)
+        if has_suffix and designator.endswith(has_suffix.group(1)):
             # This is a multi-symbol part.
             part_designator = designator[:-1]
             multi_symbol_parts_by_designator.setdefault(part_designator, []).append(component)
