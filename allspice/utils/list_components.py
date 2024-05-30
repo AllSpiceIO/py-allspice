@@ -12,10 +12,11 @@ from ..allspice import AllSpice
 from ..apiobject import Repository
 from ..exceptions import NotYetGeneratedException
 
-PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 PART_REFERENCE_ATTR_NAME = "Part Reference"
+VALUE_ATTR_NAME = "Value"
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
 ALTIUM_MULTI_PART_NAME_REGEX = re.compile(r".+?\.([A-Z])")
+ORCAD_MULTI_PART_REFERENCE_REGEX = re.compile(r"^.+?[A-Z]$")
 DESIGNATOR_COLUMN_NAME = "Designator"
 
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
@@ -218,6 +219,8 @@ def list_components_for_orcad(
             for attribute in component["attributes"].values():
                 component_attributes[attribute["name"]] = attribute["value"]
             components.append(component_attributes)
+
+    components = _combine_orcad_multi_symbol_components(components)
 
     return components
 
@@ -627,6 +630,46 @@ def _combine_altium_multi_symbol_parts(
         combined_component = part_components[0].copy()
         combined_component[DESIGNATOR_COLUMN_NAME] = part_designator
         combined_component["_name"] = part_components[0]["_name"][:-2]
+        final_components.append(combined_component)
+
+    return final_components
+
+
+def _combine_orcad_multi_symbol_components(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine symbols that are part of the same part into a single OrCAD
+    component.
+    """
+
+    # Multi-symbol components in OrCAD can be identified using the suffix
+    # appended to the Part Reference property. To avoid false positives, we also
+    # check that the Value property is the same for all of the symbols.
+    grouped_parts = {}
+    final_components = []
+
+    for component in components:
+        part_reference = component.get(PART_REFERENCE_ATTR_NAME)
+        if part_reference is None:
+            final_components.append(component)
+            continue
+
+        has_suffix = ORCAD_MULTI_PART_REFERENCE_REGEX.match(part_reference)
+        if has_suffix:
+            value = component.get(VALUE_ATTR_NAME)
+            part_designator = part_reference[:-1]
+            grouped_parts.setdefault((value, part_designator), []).append(component)
+        else:
+            final_components.append(component)
+
+    for (_, part_designator), part_components in grouped_parts.items():
+        if len(part_components) == 1:
+            final_components.extend(part_components)
+            continue
+
+        combined_component = part_components[0].copy()
+        combined_component[PART_REFERENCE_ATTR_NAME] = part_designator
         final_components.append(combined_component)
 
     return final_components

@@ -390,7 +390,7 @@ def test_bom_generation_orcad(request, instance):
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
 
-    assert len(bom) == 870
+    assert len(bom) == 847
 
     _assert_csv_matches(bom, "tests/data/beagleplay_bom_expected.csv")
 
@@ -445,7 +445,7 @@ def test_generate_bom(request, instance):
         orcad_attributes_mapping,
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
-    assert len(bom) == 870
+    assert len(bom) == 847
 
     _assert_csv_matches(bom, "tests/data/beagleplay_bom_expected.csv")
 
@@ -468,7 +468,7 @@ def test_orcad_components_list(request, instance):
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
 
-    assert len(components) == 870
+    assert len(components) == 847
 
     _assert_json_matches(components, "tests/data/beagleplay_components_expected.json")
 
