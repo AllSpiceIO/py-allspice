@@ -1,3 +1,4 @@
 pytest
 ruff
+pytest-recording~=0.13
 pdoc~=14.4
