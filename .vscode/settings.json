@@ -6,13 +6,17 @@
     "cSpell.words": [
         "Altium",
         "apiobject",
+        "Archimajor",
         "baseapiobject",
         "highestindex",
         "leastindex",
         "leastupdate",
+        "netlist",
         "orcad",
         "paramvariation",
         "prjpcb",
+        "pytestconfig",
+        "ratelimiting",
         "recentupdate",
         "reponame",
         "schdoc"
