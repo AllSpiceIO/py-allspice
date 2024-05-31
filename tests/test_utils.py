@@ -1,10 +1,9 @@
 import base64
-import csv
-import json
 
 import pytest
 
 from allspice import AllSpice
+from allspice.utils import list_components
 from allspice.utils.bom_generation import (
     generate_bom,
     generate_bom_for_altium,
@@ -21,7 +20,13 @@ def port(pytestconfig):
 
 
 @pytest.fixture
-def instance(port):
+def instance(port, pytestconfig):
+    # The None record mode is the default and is equivalent to "once"
+    if pytestconfig.getoption("record_mode") in ["none", "once", None]:
+        # If we're using cassettes, we don't want BOM generation to sleep
+        # between requests to wait for the generated JSON to be available.
+        list_components.SLEEP_FOR_GENERATED_JSON = 0
+
     try:
         g = AllSpice(
             f"http://localhost:{port}",
@@ -133,11 +138,11 @@ def test_bom_generation_altium_with_odd_line_endings(
     original_prjpcb_sha = prjpcb_file.sha
     prjpcb_content = repo.get_raw_file(prjpcb_file.path, ref=ref).decode("utf-8")
     new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
-    new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
+    new_content_encoded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
     repo.change_file(
         "Archimajor.PrjPcb",
         original_prjpcb_sha,
-        new_content_econded,
+        new_content_encoded,
         {"branch": ref},
     )
 

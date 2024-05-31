@@ -18,6 +18,7 @@ REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
 ALTIUM_MULTI_PART_NAME_REGEX = re.compile(r".+?\.([A-Z])")
 ORCAD_MULTI_PART_REFERENCE_REGEX = re.compile(r"^.+?[A-Z]$")
 DESIGNATOR_COLUMN_NAME = "Designator"
+SLEEP_FOR_GENERATED_JSON = 0.5
 
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
 # the number of repetitions of that child sheet in the parent sheet.
@@ -231,7 +232,7 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: str) -> dict:
         try:
             return repo.get_generated_json(file_path, ref=ref)
         except NotYetGeneratedException:
-            time.sleep(0.5)
+            time.sleep(SLEEP_FOR_GENERATED_JSON)
 
     raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
 
