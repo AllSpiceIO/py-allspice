@@ -11,7 +11,7 @@ from allspice.utils.bom_generation import (
     generate_bom_for_altium,
     generate_bom_for_orcad,
 )
-from allspice.utils.list_components import list_components_for_orcad
+from allspice.utils.list_components import list_components_for_altium, list_components_for_orcad
 from allspice.utils.netlist_generation import generate_netlist
 
 test_repo = "repo_" + uuid.uuid4().hex[:8]
@@ -469,6 +469,79 @@ def test_orcad_components_list(request, instance):
     assert len(components) == 870
 
     with open("tests/data/beagleplay_components_expected.json", "r") as f:
+        assert json.loads(f.read()) == components
+
+
+def test_altium_components_list(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+
+    assert len(components) == 1061
+
+    with open("tests/data/archimajor_components_expected.json", "r") as f:
+        assert json.loads(f.read()) == components
+
+
+def test_altium_components_list_with_folder_hierarchy(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
+    )
+
+    assert len(components) == 1049
+
+    with open("tests/data/archimajor_components_hierarchical_expected.json", "r") as f:
+        assert json.loads(f.read()) == components
+
+
+def test_altium_components_list_with_fitted_variant(request, instance):
+    _setup_for_generation(
+        instance,
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+    )
+    repo = instance.get_repository(
+        instance.get_user().username, "-".join([test_repo, request.node.name])
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        variant="Fitted",
+    )
+
+    assert len(components) == 945
+
+    with open("tests/data/archimajor_components_fitted_expected.json", "r") as f:
         assert json.loads(f.read()) == components
 
 
