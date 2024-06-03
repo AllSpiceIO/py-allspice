@@ -106,7 +106,7 @@ def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry]
     for component in components:
         for pin in component.pins:
             if pin.net:
-                netlist_entries_by_net.setdefault(pin.net, []).append(
+                netlist_entries_by_net.setdefault(pin.net, set()).add(
                     component.designator + "." + str(pin.designator)
                 )
     return netlist_entries_by_net

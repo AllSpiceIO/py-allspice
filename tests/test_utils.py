@@ -570,6 +570,5 @@ def test_netlist_generation(request, instance):
     with open("tests/data/archimajor_netlist_expected.net", "r") as f:
         for net in nets:
             assert (net + "\n") == f.readline()
-            pins_on_net = netlist[net]
-            pins_on_net.sort()
+            pins_on_net = sorted(netlist[net])
             assert (" " + " ".join(pins_on_net) + "\n") == f.readline()
