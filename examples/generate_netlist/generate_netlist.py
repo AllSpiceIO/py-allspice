@@ -11,7 +11,6 @@ from contextlib import ExitStack
 from allspice import AllSpice
 from allspice.utils.netlist_generation import generate_netlist
 
-
 if __name__ == "__main__":
     # Parse command line arguments. If you're writing a special purpose script,
     # you can hardcode these values instead of using command line arguments.

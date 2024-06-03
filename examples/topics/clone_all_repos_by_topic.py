@@ -3,9 +3,9 @@
 # Clone all repos by topic
 # This script requires py-allspice v2.2.0 or later.
 
-from argparse import ArgumentParser
 import os
 import subprocess
+from argparse import ArgumentParser
 
 from allspice import AllSpice, Repository
 

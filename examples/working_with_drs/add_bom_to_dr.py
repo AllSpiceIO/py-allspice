@@ -1,8 +1,8 @@
 # Add BOM to an AllSpice Hub DR.
 
-from argparse import ArgumentParser
-import subprocess
 import os
+import subprocess
+from argparse import ArgumentParser
 
 from allspice import AllSpice, DesignReview
 

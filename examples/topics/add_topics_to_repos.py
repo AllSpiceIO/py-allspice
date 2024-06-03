@@ -3,9 +3,9 @@
 # Add topics to repos.
 # See the README file in this directory for details on how to run this script.
 
-from argparse import ArgumentParser
 import os
 import sys
+from argparse import ArgumentParser
 
 import yaml
 

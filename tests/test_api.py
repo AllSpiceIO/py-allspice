@@ -1,23 +1,23 @@
 import base64
 import datetime
 import time
+import uuid
 
 import pytest
-import uuid
 
 from allspice import (
     AllSpice,
-    User,
-    Organization,
-    Team,
-    Repository,
-    Issue,
-    Milestone,
-    DesignReview,
     Branch,
     Comment,
+    DesignReview,
+    Issue,
+    Milestone,
+    NotFoundException,
+    Organization,
+    Repository,
+    Team,
+    User,
 )
-from allspice import NotFoundException
 from allspice.apiobject import CommitStatusState, Util
 from allspice.exceptions import NotYetGeneratedException
 
