@@ -1,2 +1,2 @@
-requests
-frozendict
+requests~=2.32
+frozendict~=2.4
