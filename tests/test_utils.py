@@ -1,6 +1,7 @@
 import base64
 
 import pytest
+from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
 from allspice.utils import list_components
@@ -11,6 +12,8 @@ from allspice.utils.bom_generation import (
 )
 from allspice.utils.list_components import list_components_for_altium, list_components_for_orcad
 from allspice.utils.netlist_generation import generate_netlist
+
+from .csv_snapshot_extension import CSVSnapshotExtension
 
 
 @pytest.fixture(scope="session")
@@ -81,8 +84,18 @@ def vcr_config():
     return {"filter_headers": ["authorization"]}
 
 
+@pytest.fixture()
+def json_snapshot(snapshot):
+    return snapshot.use_extension(JSONSnapshotExtension)
+
+
+@pytest.fixture()
+def csv_snapshot(snapshot):
+    return snapshot.use_extension(CSVSnapshotExtension)
+
+
 @pytest.mark.vcr
-def test_bom_generation_altium_flat(request, instance, setup_for_generation, snapshot):
+def test_bom_generation_altium_flat(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
@@ -104,7 +117,7 @@ def test_bom_generation_altium_flat(request, instance, setup_for_generation, sna
     )
 
     assert len(bom) == 913
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -112,7 +125,7 @@ def test_bom_generation_altium_with_odd_line_endings(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -161,11 +174,11 @@ def test_bom_generation_altium_with_odd_line_endings(
     )
 
     assert len(bom) == 913
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
-def test_bom_generation_altium_grouped(request, instance, setup_for_generation, snapshot):
+def test_bom_generation_altium_grouped(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
@@ -189,7 +202,7 @@ def test_bom_generation_altium_grouped(request, instance, setup_for_generation, 
 
     assert len(bom) == 108
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -197,7 +210,7 @@ def test_bom_generation_altium_with_folder_hierarchy(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -223,7 +236,7 @@ def test_bom_generation_altium_with_folder_hierarchy(
     # differences in the parts in this version of the repo.
     assert len(bom) == 102
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -231,7 +244,7 @@ def test_bom_generation_altium_with_default_variant(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -260,7 +273,7 @@ def test_bom_generation_altium_with_default_variant(
     # removed even before the variations, so the number of parts is different.
     assert len(bom) == 975
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -268,7 +281,7 @@ def test_bom_generation_altium_with_fitted_variant(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -295,7 +308,7 @@ def test_bom_generation_altium_with_fitted_variant(
     # the variation doesn't completely remove any of them.
     assert len(bom) == 975 - 42
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -303,7 +316,7 @@ def test_bom_generation_altium_with_grouped_variant(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -328,7 +341,7 @@ def test_bom_generation_altium_with_grouped_variant(
 
     assert len(bom) == 89
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
@@ -336,7 +349,7 @@ def test_bom_generation_altium_with_non_bom_components(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    csv_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -360,11 +373,11 @@ def test_bom_generation_altium_with_non_bom_components(
 
     assert len(bom) == 1049
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
-def test_bom_generation_orcad(request, instance, setup_for_generation, snapshot):
+def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
@@ -388,11 +401,11 @@ def test_bom_generation_orcad(request, instance, setup_for_generation, snapshot)
 
     assert len(bom) == 847
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
-def test_generate_bom(request, instance, setup_for_generation, snapshot):
+def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     # Test the one-stop API which should automatically figure out the project
     # type and call the appropriate function.
     repo_altium = setup_for_generation(
@@ -418,7 +431,7 @@ def test_generate_bom(request, instance, setup_for_generation, snapshot):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
     assert len(bom) == 913
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
     orcad_attributes_mapping = {
         "Name": ["_name"],
@@ -436,11 +449,11 @@ def test_generate_bom(request, instance, setup_for_generation, snapshot):
     )
     assert len(bom) == 847
 
-    assert bom == snapshot
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
-def test_orcad_components_list(request, instance, setup_for_generation, snapshot):
+def test_orcad_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
@@ -456,11 +469,11 @@ def test_orcad_components_list(request, instance, setup_for_generation, snapshot
 
     assert len(components) == 847
 
-    assert components == snapshot
+    assert components == json_snapshot
 
 
 @pytest.mark.vcr
-def test_altium_components_list(request, instance, setup_for_generation, snapshot):
+def test_altium_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
@@ -476,7 +489,7 @@ def test_altium_components_list(request, instance, setup_for_generation, snapsho
 
     assert len(components) == 1049
 
-    assert components == snapshot
+    assert components == json_snapshot
 
 
 @pytest.mark.vcr
@@ -484,7 +497,7 @@ def test_altium_components_list_with_folder_hierarchy(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -501,7 +514,7 @@ def test_altium_components_list_with_folder_hierarchy(
 
     assert len(components) == 1037
 
-    assert components == snapshot
+    assert components == json_snapshot
 
 
 @pytest.mark.vcr
@@ -509,7 +522,7 @@ def test_altium_components_list_with_fitted_variant(
     request,
     instance,
     setup_for_generation,
-    snapshot,
+    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
@@ -527,7 +540,7 @@ def test_altium_components_list_with_fitted_variant(
 
     assert len(components) == 933
 
-    assert components == snapshot
+    assert components == json_snapshot
 
 
 @pytest.mark.vcr
