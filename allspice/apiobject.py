@@ -957,7 +957,7 @@ class Repository(ApiObject):
         file_path: str,
         io: IO,
         ref: Optional[Ref] = None,
-    ):
+    ) -> None:
         """
         Download the binary data of a file to a file-like object.
 
