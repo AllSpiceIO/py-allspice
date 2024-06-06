@@ -616,8 +616,9 @@ class Repository(ApiObject):
         issues = []
         for result in results:
             issue = Issue.parse_response(self.allspice_client, result)
-            # This is mostly for compatibility with the older implementation, as the
-            # `repository` property already has this info in the parsed Issue.
+            # See Issue.request
+            setattr(issue, "_repository", self)
+            # This is mostly for compatibility with an older implementation
             Issue._add_read_property("repo", self, issue)
             Issue._add_read_property("owner", self.owner, issue)
             issues.append(issue)
@@ -712,7 +713,9 @@ class Repository(ApiObject):
         )
         for result in results:
             issue = Issue.parse_response(self.allspice_client, result)
-            # adding data not contained in the issue answer
+            # adding data not contained in the issue response
+            # See Issue.request()
+            setattr(issue, "_repository", self)
             Issue._add_read_property("repo", self, issue)
             Issue._add_read_property("owner", self.owner, issue)
             issues.append(issue)
@@ -747,7 +750,11 @@ class Repository(ApiObject):
             Repository.REPO_ISSUES.format(owner=self.owner.username, repo=self.name),
             data=data,
         )
-        return Issue.parse_response(self.allspice_client, result)
+
+        issue = Issue.parse_response(self.allspice_client, result)
+        setattr(issue, "_repository", self)
+        Issue._add_read_property("repo", self, issue)
+        return issue
 
     def create_design_review(
         self,
@@ -1570,11 +1577,7 @@ class Issue(ApiObject):
         "assignees": lambda allspice_client, us: [
             User.parse_response(allspice_client, u) for u in us
         ],
-        "state": lambda allspice_client, s: (Issue.CLOSED if s == "closed" else Issue.OPENED),
-        # Repository in this request is just a "RepositoryMeta" record, thus request whole object
-        "repository": lambda allspice_client, r: Repository.request(
-            allspice_client, r["owner"], r["name"]
-        ),
+        "state": lambda _, s: (Issue.CLOSED if s == "closed" else Issue.OPENED),
     }
 
     _parsers_to_fields: ClassVar[dict] = {
@@ -1602,6 +1605,11 @@ class Issue(ApiObject):
     @classmethod
     def request(cls, allspice_client, owner: str, repo: str, number: str):
         api_object = cls._request(allspice_client, {"owner": owner, "repo": repo, "index": number})
+        # The repository in the response is a RepositoryMeta object, so request
+        # the full repository object and add it to the issue object.
+        repo = Repository.request(allspice_client, owner, repo)
+        setattr(api_object, "_repository", repo)
+        cls._add_read_property("repo", repo, api_object)
         return api_object
 
     @classmethod
@@ -1609,7 +1617,10 @@ class Issue(ApiObject):
         args = {"owner": repo.owner.username, "repo": repo.name}
         data = {"title": title, "body": body}
         result = allspice_client.requests_post(Issue.CREATE_ISSUE.format(**args), data=data)
-        return Issue.parse_response(allspice_client, result)
+        issue = Issue.parse_response(allspice_client, result)
+        setattr(issue, "_repository", repo)
+        cls._add_read_property("repo", repo, issue)
+        return issue
 
     def get_time_sum(self, user: User) -> int:
         results = self.allspice_client.requests_get(
