@@ -102,6 +102,7 @@ jobs:
         # runs ensure that the differences aren't due to either, and we've
         # already verified that the committed code passes both.
         run: |
+          python -m pip install -e .
           python ./scripts/generate_attribute_types.py
           ruff format .
           ruff check --fix .
