@@ -96,6 +96,16 @@ jobs:
       - name: Test with pytest
         run: |
           python -m pytest
+      - name: Check attribute types
+        # This script will re-generate the attribute types and check if they
+        # are different from the committed version. The formatter and linter
+        # runs ensure that the differences aren't due to either, and we've
+        # already verified that the committed code passes both.
+        run: |
+          python ./scripts/generate_attribute_types.py
+          ruff format .
+          ruff check --fix .
+          git diff --exit-code
 
   # We might want to consider moving this to a new workflow if we add addition test jobs
   notifications:
