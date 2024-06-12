@@ -308,6 +308,19 @@ def test_get_raw_file(instance):
     assert "descr" in str(readme_content)
 
 
+def test_repo_download_file(instance, tmp_path):
+    org = Organization.request(instance, test_org)
+    repo = org.get_repository(test_repo)
+    filename = uuid.uuid4().hex[:8] + ".md"
+    filepath = tmp_path / filename
+    with open(filepath, "wb") as f:
+        repo.download_to_file("README.md", f)
+    with open(filepath, "rb") as f:
+        readme_content = f.read().decode("utf-8")
+        assert len(readme_content) > 0
+        assert "descr" in readme_content
+
+
 def test_create_file(instance):
     TESTFILE_CONENTE = "TestStringFileContent"
     TESTFILE_CONENTE_B64 = base64.b64encode(bytes(TESTFILE_CONENTE, "utf-8"))

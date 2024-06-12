@@ -397,6 +397,7 @@ class Repository(ApiObject):
     REPO_GET_LATEST_RELEASE = "/repos/{owner}/{repo}/releases/latest"
     REPO_GET_RELEASE_BY_TAG = "/repos/{owner}/{repo}/releases/tags/{tag}"
     REPO_GET_COMMIT_STATUS = "/repos/{owner}/{repo}/statuses/{sha}"
+    REPO_GET_RAW_FILE = "/repos/{owner}/{repo}/raw/{path}"
 
     class ArchiveFormat(Enum):
         """
@@ -934,10 +935,14 @@ class Repository(ApiObject):
         """
         Get the raw, binary data of a single file.
 
-        Note: if the file you are requesting is a text file, you might want to
+        Note 1: if the file you are requesting is a text file, you might want to
         use .decode() on the result to get a string. For example:
 
             content = repo.get_raw_file("file.txt").decode("utf-8")
+
+        Note 2: this method will store the entire file in memory. If you want
+        to download a large file, you might want to use `download_to_file`
+        instead.
 
         See https://hub.allspice.io/api/swagger#/repository/repoGetRawFile
 
@@ -946,9 +951,51 @@ class Repository(ApiObject):
             the default branch is used.
         """
 
-        url = f"/repos/{self.owner.username}/{self.name}/raw/{file_path}"
+        url = self.REPO_GET_RAW_FILE.format(
+            owner=self.owner.username,
+            repo=self.name,
+            path=file_path,
+        )
         params = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, params=params)
+
+    def download_to_file(
+        self,
+        file_path: str,
+        io: IO,
+        ref: Optional[Ref] = None,
+    ) -> None:
+        """
+        Download the binary data of a file to a file-like object.
+
+        Example:
+
+            with open("schematic.DSN", "wb") as f:
+                Repository.download_to_file("Schematics/my_schematic.DSN", f)
+
+        :param file_path: The path to the file in the repository from the root
+            of the repository.
+        :param io: The file-like object to write the data to.
+        """
+
+        url = self.allspice_client._AllSpice__get_url(
+            self.REPO_GET_RAW_FILE.format(
+                owner=self.owner.username,
+                repo=self.name,
+                path=file_path,
+            )
+        )
+        params = Util.data_params_for_ref(ref)
+        response = self.allspice_client.requests.get(
+            url,
+            params=params,
+            headers=self.allspice_client.headers,
+            stream=True,
+        )
+
+        for chunk in response.iter_content(chunk_size=4096):
+            if chunk:
+                io.write(chunk)
 
     def get_generated_json(self, content: Union[Content, str], ref: Optional[Ref] = None) -> dict:
         """
