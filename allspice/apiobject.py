@@ -7,6 +7,7 @@ from enum import Enum
 from functools import cached_property
 from typing import (
     IO,
+    Any,
     ClassVar,
     Dict,
     List,
@@ -24,6 +25,30 @@ from .exceptions import ConflictException, NotFoundException
 
 class Organization(ApiObject):
     """see https://hub.allspice.io/api/swagger#/organization/orgGetAll"""
+
+    active: Optional[bool]
+    avatar_url: str
+    created: Optional[str]
+    description: str
+    email: str
+    followers_count: Optional[int]
+    following_count: Optional[int]
+    full_name: str
+    id: int
+    is_admin: Optional[bool]
+    language: Optional[str]
+    last_login: Optional[str]
+    location: str
+    login: Optional[str]
+    login_name: Optional[str]
+    name: Optional[str]
+    prohibit_login: Optional[bool]
+    repo_admin_change_team_access: Optional[bool]
+    restricted: Optional[bool]
+    starred_repos_count: Optional[int]
+    username: str
+    visibility: str
+    website: str
 
     API_OBJECT = """/orgs/{name}"""  # <org>
     ORG_REPOS_REQUEST = """/orgs/%s/repos"""  # <org>
@@ -205,6 +230,36 @@ class Organization(ApiObject):
 
 
 class User(ApiObject):
+    active: bool
+    admin: Any
+    allow_create_organization: Any
+    allow_git_hook: Any
+    allow_import_local: Any
+    avatar_url: str
+    created: str
+    description: str
+    email: str
+    emails: List[Any]
+    followers_count: int
+    following_count: int
+    full_name: str
+    id: int
+    is_admin: bool
+    language: str
+    last_login: str
+    location: str
+    login: str
+    login_name: str
+    max_repo_creation: Any
+    must_change_password: Any
+    password: Any
+    prohibit_login: bool
+    restricted: bool
+    starred_repos_count: int
+    username: str
+    visibility: str
+    website: str
+
     API_OBJECT = """/users/{name}"""  # <org>
     USER_MAIL = """/user/emails?sudo=%s"""  # <name>
     USER_PATCH = """/admin/users/%s"""  # <username>
@@ -351,6 +406,16 @@ class User(ApiObject):
 
 
 class Branch(ReadonlyApiObject):
+    commit: Dict[str, Optional[Union[str, Dict[str, str], Dict[str, Optional[Union[bool, str]]]]]]
+    effective_branch_protection_name: str
+    enable_status_check: bool
+    name: str
+    protected: bool
+    required_approvals: int
+    status_check_contexts: List[Any]
+    user_can_merge: bool
+    user_can_push: bool
+
     API_OBJECT = """/repos/{owner}/{repo}/branches/{branch}"""
 
     def __init__(self, allspice_client):
@@ -375,6 +440,67 @@ class Branch(ReadonlyApiObject):
 
 
 class Repository(ApiObject):
+    allow_manual_merge: Any
+    allow_merge_commits: bool
+    allow_rebase: bool
+    allow_rebase_explicit: bool
+    allow_rebase_update: bool
+    allow_squash_merge: bool
+    archived: bool
+    archived_at: str
+    autodetect_manual_merge: Any
+    avatar_url: str
+    clone_url: str
+    created_at: str
+    default_allow_maintainer_edit: bool
+    default_branch: str
+    default_delete_branch_after_merge: bool
+    default_merge_style: str
+    description: str
+    empty: bool
+    enable_prune: Any
+    external_tracker: Any
+    external_wiki: Any
+    fork: bool
+    forks_count: int
+    full_name: str
+    has_actions: bool
+    has_issues: bool
+    has_packages: bool
+    has_projects: bool
+    has_pull_requests: bool
+    has_releases: bool
+    has_wiki: bool
+    html_url: str
+    id: int
+    ignore_whitespace_conflicts: bool
+    internal: bool
+    internal_tracker: Dict[str, bool]
+    language: str
+    languages_url: str
+    link: str
+    mirror: bool
+    mirror_interval: str
+    mirror_updated: str
+    name: str
+    open_issues_count: int
+    open_pr_counter: int
+    original_url: str
+    owner: Union["User", "Organization"]
+    parent: Any
+    permissions: Dict[str, bool]
+    private: bool
+    release_counter: int
+    repo_transfer: Any
+    size: int
+    ssh_url: str
+    stars_count: int
+    template: bool
+    updated_at: datetime
+    url: str
+    watchers_count: int
+    website: str
+
     API_OBJECT = """/repos/{owner}/{name}"""  # <owner>, <reponame>
     REPO_IS_COLLABORATOR = """/repos/%s/%s/collaborators/%s"""  # <owner>, <reponame>, <username>
     REPO_SEARCH = """/repos/search/"""
@@ -558,7 +684,7 @@ class Repository(ApiObject):
 
     def get_issues(
         self,
-        state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+        state: Literal["open", "closed", "all"] = "all",
         search_query: Optional[str] = None,
         labels: Optional[List[str]] = None,
         milestones: Optional[List[Union[Milestone, str]]] = None,
@@ -628,7 +754,7 @@ class Repository(ApiObject):
 
     def get_design_reviews(
         self,
-        state: Union[Literal["open"], Literal["closed"], Literal["all"]] = "all",
+        state: Literal["open", "closed", "all"] = "all",
         milestone: Optional[Union[Milestone, str]] = None,
         labels: Optional[List[str]] = None,
     ) -> List["DesignReview"]:
@@ -1266,6 +1392,30 @@ class Repository(ApiObject):
 
 
 class Milestone(ApiObject):
+    allow_merge_commits: Any
+    allow_rebase: Any
+    allow_rebase_explicit: Any
+    allow_squash_merge: Any
+    archived: Any
+    closed_at: Any
+    closed_issues: int
+    created_at: str
+    default_branch: Any
+    description: str
+    due_on: Any
+    has_issues: Any
+    has_pull_requests: Any
+    has_wiki: Any
+    id: int
+    ignore_whitespace_conflicts: Any
+    name: Any
+    open_issues: int
+    private: Any
+    state: str
+    title: str
+    updated_at: str
+    website: Any
+
     API_OBJECT = """/repos/{owner}/{repo}/milestones/{number}"""  # <owner, repo>
 
     def __init__(self, allspice_client):
@@ -1314,6 +1464,14 @@ class Attachment(ReadonlyApiObject):
     Comment.edit_attachment and delete_attachment for that.
     """
 
+    browser_download_url: str
+    created_at: str
+    download_count: int
+    id: int
+    name: str
+    size: int
+    uuid: str
+
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
 
@@ -1328,6 +1486,18 @@ class Attachment(ReadonlyApiObject):
 
 
 class Comment(ApiObject):
+    assets: List[Union[Any, Dict[str, Union[int, str]]]]
+    body: str
+    created_at: datetime
+    html_url: str
+    id: int
+    issue_url: str
+    original_author: str
+    original_author_id: int
+    pull_request_url: str
+    updated_at: datetime
+    user: User
+
     API_OBJECT = """/repos/{owner}/{repo}/issues/comments/{id}"""
     GET_ATTACHMENTS_PATH = """/repos/{owner}/{repo}/issues/comments/{id}/assets"""
     ATTACHMENT_PATH = """/repos/{owner}/{repo}/issues/comments/{id}/assets/{attachment_id}"""
@@ -1456,6 +1626,18 @@ class Comment(ApiObject):
 
 
 class Commit(ReadonlyApiObject):
+    author: User
+    commit: Dict[str, Union[str, Dict[str, str], Dict[str, Optional[Union[bool, str]]]]]
+    committer: Dict[str, Union[int, str, bool]]
+    created: str
+    files: List[Dict[str, str]]
+    html_url: str
+    inner_commit: Dict[str, Union[str, Dict[str, str], Dict[str, Optional[Union[bool, str]]]]]
+    parents: List[Union[Dict[str, str], Any]]
+    sha: str
+    stats: Dict[str, int]
+    url: str
+
     API_OBJECT = """/repos/{owner}/{repo}/commits/{sha}"""
     COMMIT_GET_STATUS = """/repos/{owner}/{repo}/commits/{sha}/status"""
     COMMIT_GET_STATUSES = """/repos/{owner}/{repo}/commits/{sha}/statuses"""
@@ -1548,6 +1730,16 @@ class CommitStatusState(Enum):
 
 
 class CommitStatus(ReadonlyApiObject):
+    context: str
+    created_at: str
+    creator: User
+    description: str
+    id: int
+    status: CommitStatusState
+    target_url: str
+    updated_at: str
+    url: str
+
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
 
@@ -1570,6 +1762,14 @@ class CommitStatus(ReadonlyApiObject):
 
 
 class CommitCombinedStatus(ReadonlyApiObject):
+    commit_url: str
+    repository: Repository
+    sha: str
+    state: CommitStatusState
+    statuses: List["CommitStatus"]
+    total_count: int
+    url: str
+
     def __init__(self, allspice_client):
         super().__init__(allspice_client)
 
@@ -1598,6 +1798,32 @@ class CommitCombinedStatus(ReadonlyApiObject):
 
 
 class Issue(ApiObject):
+    assets: List[Any]
+    assignee: Any
+    assignees: Any
+    body: str
+    closed_at: Any
+    comments: int
+    created_at: str
+    due_date: Any
+    html_url: str
+    id: int
+    is_locked: bool
+    labels: List[Any]
+    milestone: Optional["Milestone"]
+    number: int
+    original_author: str
+    original_author_id: int
+    pin_order: int
+    pull_request: Any
+    ref: str
+    repository: Dict[str, Union[int, str]]
+    state: str
+    title: str
+    updated_at: str
+    url: str
+    user: User
+
     API_OBJECT = """/repos/{owner}/{repo}/issues/{index}"""  # <owner, repo, index>
     GET_TIME = """/repos/%s/%s/issues/%s/times"""  # <owner, repo, index>
     GET_COMMENTS = """/repos/{owner}/{repo}/issues/{index}/comments"""
@@ -1723,6 +1949,40 @@ class DesignReview(ApiObject):
     the `Repository.get_branch` method to get a `Branch` object for a branch if you know
     it exists.
     """
+
+    allow_maintainer_edit: bool
+    allow_maintainer_edits: Any
+    assignee: User
+    assignees: List["User"]
+    base: str
+    body: str
+    closed_at: Any
+    comments: int
+    created_at: str
+    diff_url: str
+    due_date: Optional[str]
+    head: str
+    html_url: str
+    id: int
+    is_locked: bool
+    labels: List[Any]
+    merge_base: str
+    merge_commit_sha: Any
+    mergeable: bool
+    merged: bool
+    merged_at: Any
+    merged_by: Any
+    milestone: Any
+    number: int
+    patch_url: str
+    pin_order: int
+    repository: Optional["Repository"]
+    requested_reviewers: Any
+    state: str
+    title: str
+    updated_at: str
+    url: str
+    user: User
 
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
     MERGE_DESIGN_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/merge"
@@ -1866,6 +2126,16 @@ class DesignReview(ApiObject):
 
 
 class Team(ApiObject):
+    can_create_org_repo: bool
+    description: str
+    id: int
+    includes_all_repositories: bool
+    name: str
+    organization: Optional["Organization"]
+    permission: str
+    units: List[str]
+    units_map: Dict[str, str]
+
     API_OBJECT = """/teams/{id}"""  # <id>
     ADD_REPO = """/teams/%s/repos/%s/%s"""  # <id, org, repo>
     TEAM_DELETE = """/teams/%s"""  # <id>
@@ -1942,6 +2212,24 @@ class Release(ApiObject):
     """
     A release on a repo.
     """
+
+    assets: List[Union[Any, Dict[str, Union[int, str]], "ReleaseAsset"]]
+    author: User
+    body: str
+    created_at: str
+    draft: bool
+    html_url: str
+    id: int
+    name: str
+    prerelease: bool
+    published_at: str
+    repo: Optional["Repository"]
+    tag_name: str
+    tarball_url: str
+    target_commitish: str
+    upload_url: str
+    url: str
+    zipball_url: str
 
     API_OBJECT = "/repos/{owner}/{repo}/releases/{id}"
     RELEASE_CREATE_ASSET = "/repos/{owner}/{repo}/releases/{id}/assets"
@@ -2035,6 +2323,15 @@ class Release(ApiObject):
 
 
 class ReleaseAsset(ApiObject):
+    browser_download_url: str
+    created_at: str
+    download_count: int
+    id: int
+    name: str
+    release: Optional["Release"]
+    size: int
+    uuid: str
+
     API_OBJECT = "/repos/{owner}/{repo}/releases/{release_id}/assets/{id}"
 
     def __init__(self, allspice_client):
@@ -2135,6 +2432,21 @@ class ReleaseAsset(ApiObject):
 
 
 class Content(ReadonlyApiObject):
+    content: Any
+    download_url: str
+    encoding: Any
+    git_url: str
+    html_url: str
+    last_commit_sha: str
+    name: str
+    path: str
+    sha: str
+    size: int
+    submodule_git_url: Any
+    target: Any
+    type: str
+    url: str
+
     FILE = "file"
 
     def __init__(self, allspice_client):
