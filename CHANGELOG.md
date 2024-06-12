@@ -1,5 +1,57 @@
 # Changelog
 
+## v3.2.0
+
+### What's Changed
+
+- Remove BOM and COGS generation examples by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/116
+
+  The packaged actions at https://hub.allspice.io/Actions/generate-bom and
+  https://hub.allspice.io/Actions/cofactr-cogs are now the source of truth for
+  these scripts.
+
+- Remove non-BOM components from Altium BOM by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/119
+
+  py-allspice now removes Standard (No BOM) components from Altium BOMs.
+
+- Extract components list function for Altium from BOM by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/122
+
+  Now you can:
+
+  ```py
+  from allspice.utils.list_components import list_components_for_altium
+
+  list_components_for_altium(...) # Returns a list of all components in the project
+  ```
+
+  This is useful if you want a list of components for further processing instead
+  of generating a BOM and reading it as a CSV.
+
+- Fix doubled pins in netlist generation by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/129
+
+- Specify versions for all dependencies by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/131
+- Eliminate N+1 API requests in issues by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/135
+- Add API to stream file from repo by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/136
+- Automatically add type hints for API Object attributes by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/141
+
+  All API objects now have type hints for all attributes present in them! You
+  can use the type hints to type check your scripts with mypy or pylance, or
+  for autocomplete in your IDE.
+
+### Internal Changes
+
+- Remove invalid flag from pdoc invocation by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/121
+- Lint that imports are sorted by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/123
+- Update pdoc requirement from ~=14.4 to ~=14.5 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/137
+- Remove top-level `__init__.py` by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/133
+- Add dependabot config by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/132
+- Replace setup.py with pyproject metadata by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/134
+- Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/139
+- Bump actions/setup-python from 4 to 5 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/138
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.1.0...v3.2.0
+
 ## v3.1.0
 
 ### What's Changed
