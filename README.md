@@ -10,6 +10,10 @@ Forked from https://github.com/Langenfeld/py-gitea.
 
 ## Usage
 
+### Docs
+
+See the [documentation site](https://allspiceio.github.io/py-allspice/allspice.html).
+
 ### Examples
 
 Check the [examples directory](https://github.com/AllSpiceIO/py-allspice/tree/main/examples)
