@@ -12,6 +12,9 @@ from ..allspice import AllSpice
 from ..apiobject import Repository
 from ..exceptions import NotYetGeneratedException
 
+SLEEP_FOR_GENERATED_JSON = 0.5
+"""The amount of time to sleep between attempts to fetch generated JSON files."""
+
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 PART_REFERENCE_ATTR_NAME = "Part Reference"
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
@@ -219,7 +222,7 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: str) -> dict:
         try:
             return repo.get_generated_json(file_path, ref=ref)
         except NotYetGeneratedException:
-            time.sleep(0.5)
+            time.sleep(SLEEP_FOR_GENERATED_JSON)
 
     raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
 
