@@ -6,6 +6,8 @@ on:
     tags:
       - "*"
 
+  workflow_dispatch:
+
 # security: restrict permissions for CI jobs.
 permissions:
   contents: read
