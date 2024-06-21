@@ -1,11 +1,10 @@
 import base64
-import csv
-import json
-import uuid
 
 import pytest
+from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
+from allspice.utils import list_components
 from allspice.utils.bom_generation import (
     generate_bom,
     generate_bom_for_altium,
@@ -14,8 +13,7 @@ from allspice.utils.bom_generation import (
 from allspice.utils.list_components import list_components_for_altium, list_components_for_orcad
 from allspice.utils.netlist_generation import generate_netlist
 
-test_repo = "repo_" + uuid.uuid4().hex[:8]
-test_branch = "branch_" + uuid.uuid4().hex[:8]
+from .csv_snapshot_extension import CSVSnapshotExtension
 
 
 @pytest.fixture(scope="session")
@@ -25,7 +23,13 @@ def port(pytestconfig):
 
 
 @pytest.fixture
-def instance(port):
+def instance(port, pytestconfig):
+    # The None record mode is the default and is equivalent to "once"
+    if pytestconfig.getoption("record_mode") in ["none", "once", None]:
+        # If we're using cassettes, we don't want BOM generation to sleep
+        # between requests to wait for the generated JSON to be available.
+        list_components.SLEEP_FOR_GENERATED_JSON = 0
+
     try:
         g = AllSpice(
             f"http://localhost:{port}",
@@ -43,28 +47,60 @@ def instance(port):
                     ?"
 
 
-def _setup_for_generation(instance, test_name, clone_addr):
-    # TODO: we should commit a smaller set of files in this repo so we don't depend on external data
-    instance.requests_post(
-        "/repos/migrate",
-        data={
-            "clone_addr": clone_addr,
-            "mirror": False,
-            "repo_name": "-".join([test_repo, test_name]),
-            "service": "git",
-        },
-    )
+@pytest.fixture
+def setup_for_generation(instance):
+    repos = []
+
+    def setup_for_generation_inner(test_name, clone_addr):
+        # TODO: we should commit a smaller set of files in this repo so we don't
+        #       depend on external data
+        nonlocal repos
+
+        instance.requests_post(
+            "/repos/migrate",
+            data={
+                "clone_addr": clone_addr,
+                "mirror": False,
+                "repo_name": "-".join(["test", test_name]),
+                "service": "git",
+            },
+        )
+
+        repo = instance.get_repository(
+            instance.get_user().username,
+            "-".join(["test", test_name]),
+        )
+        repos.append(repo)
+        return repo
+
+    yield setup_for_generation_inner
+
+    for repo in repos:
+        repo.delete()
 
 
-def test_bom_generation_flat(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.fixture(scope="module")
+def vcr_config():
+    return {"filter_headers": ["authorization"]}
+
+
+@pytest.fixture()
+def json_snapshot(snapshot):
+    return snapshot.use_extension(JSONSnapshotExtension)
+
+
+@pytest.fixture()
+def csv_snapshot(snapshot):
+    return snapshot.use_extension(CSVSnapshotExtension)
+
+
+@pytest.mark.vcr
+def test_bom_generation_flat(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -82,21 +118,18 @@ def test_bom_generation_flat(request, instance):
 
     assert len(bom) == 925
 
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_with_odd_line_endings(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_with_odd_line_endings(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     # We hard-code a ref so that this test is reproducible.
     ref = "95719adde8107958bf40467ee092c45b6ddaba00"
     attributes_mapping = {
@@ -106,7 +139,7 @@ def test_bom_generation_with_odd_line_endings(request, instance):
         "part_number": ["PART", "MANUFACTURER #"],
     }
 
-    new_branch_name = "-".join([test_branch, request.node.name])
+    new_branch_name = "-".join(["odd-line-endings", request.node.name])
     repo.add_branch(ref, new_branch_name)
     ref = new_branch_name
 
@@ -141,21 +174,16 @@ def test_bom_generation_with_odd_line_endings(request, instance):
 
     assert len(bom) == 925
 
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_grouped(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_grouped(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -175,21 +203,21 @@ def test_bom_generation_grouped(request, instance):
 
     assert len(bom) == 108
 
-    with open("tests/data/archimajor_bom_grouped_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_with_folder_hierarchy(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_with_folder_hierarchy(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -207,22 +235,16 @@ def test_bom_generation_with_folder_hierarchy(request, instance):
     )
 
     assert len(bom) == 102
-
-    with open("tests/data/archimajor_bom_hierarchical_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_with_default_variant(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_with_default_variant(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -246,21 +268,16 @@ def test_bom_generation_with_default_variant(request, instance):
     # removed even before the variations, so the number of parts is different.
     assert len(bom) == 987
 
-    with open("tests/data/archimajor_bom_default_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_with_fitted_variant(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_with_fitted_variant(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -281,21 +298,16 @@ def test_bom_generation_with_fitted_variant(request, instance):
     # variations.
     assert len(bom) == 987 - 42
 
-    with open("tests/data/archimajor_bom_fitted_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_with_grouped_variant(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_with_grouped_variant(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -315,21 +327,18 @@ def test_bom_generation_with_grouped_variant(request, instance):
 
     assert len(bom) == 89
 
-    with open("tests/data/archimajor_bom_fitted_grouped_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_altium_with_non_bom_components(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_altium_with_non_bom_components(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -348,21 +357,16 @@ def test_bom_generation_altium_with_non_bom_components(request, instance):
 
     assert len(bom) == 1061
 
-    with open("tests/data/archimajor_bom_non_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_bom_generation_orcad(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     attributes_mapping = {
         "Name": ["_name"],
         "Description": "Description",
@@ -382,29 +386,18 @@ def test_bom_generation_orcad(request, instance):
 
     assert len(bom) == 870
 
-    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_generate_bom(request, instance):
+@pytest.mark.vcr
+def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     # Test the one-stop API which should automatically figure out the project
     # type and call the appropriate function.
-    _setup_for_generation(
-        instance,
+    repo = setup_for_generation(
         request.node.name + "altium",
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    _setup_for_generation(
-        instance,
-        request.node.name + "orcad",
-        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
-    )
 
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name + "altium"])
-    )
     altium_attributes_mapping = {
         "description": ["PART DESCRIPTION"],
         "designator": ["Designator"],
@@ -419,13 +412,10 @@ def test_generate_bom(request, instance):
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
     assert len(bom) == 925
-    with open("tests/data/archimajor_bom_flat_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
-
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name + "orcad"])
+    assert bom == csv_snapshot
+    repo = setup_for_generation(
+        request.node.name + "orcad",
+        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
     )
     orcad_attributes_mapping = {
         "Name": ["_name"],
@@ -442,20 +432,14 @@ def test_generate_bom(request, instance):
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
     assert len(bom) == 870
-    with open("tests/data/beagleplay_bom_expected.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row, expected_row in zip(reader, bom):
-            assert row == expected_row
+    assert bom == csv_snapshot
 
 
-def test_orcad_components_list(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_orcad_components_list(request, instance, setup_for_generation, json_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
-    )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
     )
 
     components = list_components_for_orcad(
@@ -467,19 +451,14 @@ def test_orcad_components_list(request, instance):
     )
 
     assert len(components) == 870
-
-    with open("tests/data/beagleplay_components_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    assert components == json_snapshot
 
 
-def test_altium_components_list(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_altium_components_list(request, instance, setup_for_generation, json_snapshot):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
-    )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
     )
 
     components = list_components_for_altium(
@@ -491,19 +470,19 @@ def test_altium_components_list(request, instance):
     )
 
     assert len(components) == 1061
-
-    with open("tests/data/archimajor_components_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    assert components == json_snapshot
 
 
-def test_altium_components_list_with_folder_hierarchy(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_altium_components_list_with_folder_hierarchy(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
-    )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
     )
 
     components = list_components_for_altium(
@@ -515,19 +494,19 @@ def test_altium_components_list_with_folder_hierarchy(request, instance):
     )
 
     assert len(components) == 1049
-
-    with open("tests/data/archimajor_components_hierarchical_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    assert components == json_snapshot
 
 
-def test_altium_components_list_with_fitted_variant(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_altium_components_list_with_fitted_variant(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
-    )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
     )
 
     components = list_components_for_altium(
@@ -540,20 +519,16 @@ def test_altium_components_list_with_fitted_variant(request, instance):
     )
 
     assert len(components) == 945
-
-    with open("tests/data/archimajor_components_fitted_expected.json", "r") as f:
-        assert json.loads(f.read()) == components
+    assert components == json_snapshot
 
 
-def test_netlist_generation(request, instance):
-    _setup_for_generation(
-        instance,
+@pytest.mark.vcr
+def test_netlist_generation(request, instance, setup_for_generation):
+    repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
     )
-    repo = instance.get_repository(
-        instance.get_user().username, "-".join([test_repo, request.node.name])
-    )
+
     netlist = generate_netlist(
         instance,
         repo,

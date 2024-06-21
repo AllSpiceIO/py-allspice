@@ -1,5 +1,7 @@
+libcst~=1.4.0
+MonkeyType~=23.3
+pdoc~=14.5
+pytest-recording~=0.13
 pytest~=8.2
 ruff~=0.4
-pdoc~=14.5
-MonkeyType~=23.3
-libcst~=1.4.0
+syrupy~=4.6
