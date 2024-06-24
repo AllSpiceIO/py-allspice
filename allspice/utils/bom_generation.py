@@ -181,6 +181,7 @@ def generate_bom_for_altium(
         prjpcb_file,
         variant=variant,
         ref=ref,
+        combine_multi_part=True,
     )
 
     if remove_non_bom_components:

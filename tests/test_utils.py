@@ -116,7 +116,7 @@ def test_bom_generation_flat(request, instance, setup_for_generation, csv_snapsh
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
 
-    assert len(bom) == 925
+    assert len(bom) == 913
 
     assert bom == csv_snapshot
 
@@ -172,7 +172,7 @@ def test_bom_generation_with_odd_line_endings(
         ref=ref,
     )
 
-    assert len(bom) == 925
+    assert len(bom) == 913
 
     assert bom == csv_snapshot
 
@@ -266,7 +266,7 @@ def test_bom_generation_with_default_variant(request, instance, setup_for_genera
     # Since we haven't specified a variant, this should have the same result
     # as generating a flat BOM. This version of archimajor has a few parts
     # removed even before the variations, so the number of parts is different.
-    assert len(bom) == 987
+    assert len(bom) == 975
 
     assert bom == csv_snapshot
 
@@ -296,7 +296,7 @@ def test_bom_generation_with_fitted_variant(request, instance, setup_for_generat
 
     # Exactly 42 rows should be removed, as that is the number of non-param
     # variations.
-    assert len(bom) == 987 - 42
+    assert len(bom) == 975 - 42
 
     assert bom == csv_snapshot
 
@@ -355,7 +355,64 @@ def test_bom_generation_altium_with_non_bom_components(
         remove_non_bom_components=False,
     )
 
-    assert len(bom) == 1061
+    assert len(bom) == 1049
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_repeated_multi_part_component(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorRepeated.git",
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="1bb73a0c862e156557e05876fb268ba086e9d42d",
+        remove_non_bom_components=True,
+    )
+
+    assert len(bom) == 870
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_repeated_multi_part_component_variant(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorRepeatedVariant.git",
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="3f8ddd6b5161aebc61a3ed87b665ba0a64cc6e89",
+        variant="Fitted",
+        remove_non_bom_components=True,
+    )
+
+    assert len(bom) == 869
 
     assert bom == csv_snapshot
 
@@ -411,7 +468,7 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
         altium_attributes_mapping,
         ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
-    assert len(bom) == 925
+    assert len(bom) == 913
     assert bom == csv_snapshot
     repo = setup_for_generation(
         request.node.name + "orcad",

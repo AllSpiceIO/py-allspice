@@ -16,9 +16,14 @@ SLEEP_FOR_GENERATED_JSON = 0.5
 """The amount of time to sleep between attempts to fetch generated JSON files."""
 
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
+
 PART_REFERENCE_ATTR_NAME = "Part Reference"
+"""The name of the part reference attribute in OrCAD projects."""
+
 REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
+
 DESIGNATOR_COLUMN_NAME = "Designator"
+"""The name of the designator attribute in Altium projects."""
 
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
 # the number of repetitions of that child sheet in the parent sheet.
@@ -38,6 +43,7 @@ def list_components(
     source_file: str,
     variant: Optional[str] = None,
     ref: str = "main",
+    combine_multi_part: bool = False,
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in a schematic.
@@ -54,6 +60,8 @@ def list_components(
         applies to Altium projects.
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component. Currently only works for Altium.
     :return: A list of all components in the schematic. Each component is a
         dictionary with the keys being the attributes of the component and the
         values being the values of the attributes. A `_name` attribute is added
@@ -78,6 +86,7 @@ def list_components(
                 source_file,
                 variant=variant,
                 ref=ref,
+                combine_multi_part=combine_multi_part,
             )
         case "orcad":
             if variant:
@@ -97,6 +106,7 @@ def list_components_for_altium(
     prjpcb_file: str,
     variant: Optional[str] = None,
     ref: str = "main",
+    combine_multi_part: bool = False,
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in an Altium project.
@@ -110,6 +120,8 @@ def list_components_for_altium(
         components will be filtered and modified according to the variant.
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component.
     :return: A list of all components in the Altium project. Each component is
         a dictionary with the keys being the attributes of the component and the
         values being the values of the attributes. Additionally, `_part_id`,
@@ -167,6 +179,15 @@ def list_components_for_altium(
                 hierarchy,
             )
         )
+
+    if combine_multi_part:
+        # Multi part components must be combined *after* we've processed
+        # repetitions and before we apply variations. This is because each
+        # repetition of a multi-part component is treated as a separate
+        # component, and they can be present across sheets. We need to combine
+        # them into a single component before applying variations, as Altium
+        # variations will apply to the combined component.
+        components = _combine_multi_part_components_for_altium(components)
 
     if variant is not None:
         components = _apply_variations(components, variant_details, allspice_client.logger)
@@ -353,24 +374,22 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     for key, value in component["attributes"].items():
         attributes[key] = value["text"]
 
-    # The properties `part_id` and `description` are present in the top level of
-    # the component.
-    try:
+    # The designator attribute has a `value` key which contains the unchanged
+    # designator from the schematic file. This is useful when combining multi-
+    # part components.
+    attributes["_logical_designator"] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
+
+    if "part_id" in component:
         attributes["_part_id"] = component["part_id"]
-    except KeyError:
-        pass
-    try:
+    if "description" in component:
         attributes["_description"] = component["description"]
-    except KeyError:
-        pass
-    try:
+    if "unique_id" in component:
         attributes["_unique_id"] = component["unique_id"]
-    except KeyError:
-        pass
-    try:
+    if "kind" in component:
         attributes["_kind"] = component["kind"]
-    except KeyError:
-        pass
+    if "part_count" in component:
+        attributes["_part_count"] = component["part_count"]
+        attributes["_current_part_id"] = component["current_part_id"]
 
     return attributes
 
@@ -407,6 +426,7 @@ def _append_designator_letters(
 
     try:
         designator = component_attributes[DESIGNATOR_COLUMN_NAME]
+        logical_designator = component_attributes["_logical_designator"]
     except KeyError:
         raise ValueError(f"Designator not found in {component_attributes=}")
 
@@ -417,6 +437,10 @@ def _append_designator_letters(
         {
             **component_attributes,
             DESIGNATOR_COLUMN_NAME: f"{designator}{_letters_for_repetition(i)}",
+            # The designator value should also get the page ordinal, because
+            # each time the page is repeated we're dealing with a different
+            # component.
+            "_logical_designator": f"{logical_designator}{_letters_for_repetition(i)}",
         }
         for i in range(1, repetitions + 1)
     ]
@@ -450,6 +474,40 @@ def _extract_components(
             components.extend(child_components)
 
     return components
+
+
+def _combine_multi_part_components_for_altium(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part Altium components into a single component.
+
+    Altium multi-part components can be distinguished by the `_part_count` and
+    `_current_part_id` attributes being present, which respectively store the
+    total number of parts and the current part number. If that is the case, the
+    `_logical_designator` attribute ties together the different parts of the
+    component.
+    """
+
+    combined_components = []
+    multi_part_components_by_designator = {}
+
+    for component in components:
+        if "_part_count" in component and "_current_part_id" in component:
+            designator = component["_logical_designator"]
+            multi_part_components_by_designator.setdefault(designator, []).append(component)
+        else:
+            combined_components.append(component)
+
+    for designator, multi_part_components in multi_part_components_by_designator.items():
+        combined_component = multi_part_components[0].copy()
+        combined_component[DESIGNATOR_COLUMN_NAME] = designator
+        # The combined component shouldn't have the current part id, as it is
+        # not any of the parts.
+        del combined_component["_current_part_id"]
+        combined_components.append(combined_component)
+
+    return combined_components
 
 
 def _extract_variations(
