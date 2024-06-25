@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.3.0
+
+### What's Changed
+
+- Combine Altium multi-part components by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/147
+
+  Earlier, multi-part Altium components would be represented as multiple
+  components in both `list_components` and `generate_bom`. Now,
+  `list_components` adds a keyword argument: `combine_multi_part`. When set to
+  `True`, multi-part components will be combined into one component for each
+  instance. In `generate_bom`, multi-part components are always combined.
+
+### Internal Changes
+
+- doc: Add link to built pdoc documentation by @jtran in https://github.com/AllSpiceIO/py-allspice/pull/144
+- Allow manual deploys to the docs by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/143
+- Speedup utils tests by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/145
+
 ## v3.2.0
 
 ### What's Changed
