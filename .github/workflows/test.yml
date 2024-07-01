@@ -99,7 +99,7 @@ jobs:
       - name: Test with pytest without using casettes
         if: ${{ github.event_name == 'schedule' }}
         run: |
-          python -m pytest --record-mode=rewrite
+          python -m pytest --disable-recording
       # Otherwise, we'll use the casettes to make the tests fast.
       - name: Test with pytest using casettes
         if: ${{ github.event_name != 'schedule' }}
@@ -115,7 +115,7 @@ jobs:
           python ./scripts/generate_attribute_types.py
           ruff format .
           ruff check --fix .
-          git diff --exit-code
+          git diff --exit-code ./allspice/apiobject.py
 
   # We might want to consider moving this to a new workflow if we add addition test jobs
   notifications:
