@@ -100,5 +100,43 @@ Tests can be run with:
 
 `python3 -m pytest test_api.py`
 
-Make sure to have an instance of AllSpice Hub running on `http://localhost:3000`, and an admin-user token at `.token`.
-The admin user must be named `test`, with email `secondarytest@test.org`.
+Make sure to have an instance of AllSpice Hub running on
+`http://localhost:3000`, and an admin-user token at `.token`. The admin user
+must be named `test`, with email `secondarytest@test.org`.
+
+### Cassettes
+
+We use [pytest-recording](https://github.com/kiwicom/pytest-recording) to
+record cassettes which speed up tests which access the network. By default,
+tests which have been updated to work with pytest-recording will use cassettes.
+To disable using cassettes, run:
+
+```sh
+python -m pytest --disable-recording
+```
+
+The scheduled CI test suite will ignore cassettes using the same command. This
+is to ensure that our cassettes aren't out of date in a way that leads to tests
+passing with them but failing with a live Hub environment. If a scheduled test
+run without the cassettes fails, use:
+
+```sh
+python -m pytest --record-mode=rewrite
+```
+
+To update the cassettes. Double check the changes in the cassettes and make sure
+tests are passing again before pushing the changes.
+
+### Snapshots
+
+We use [syrupy](https://github.com/tophat/syrupy) to snapshot test. This makes
+it easier to assert complex outputs. If you have to update snapshots for a test,
+run:
+
+```sh
+python -m pytest -k <specifier for test> --snapshot-update
+```
+
+When updating snapshots, try to run as few tests as possible to ensure you do
+not update snapshots that are unrelated to your changes, and double check
+snapshot changes to ensure they are what you expect.
