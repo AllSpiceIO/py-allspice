@@ -6,6 +6,7 @@ from syrupy.extensions.json import JSONSnapshotExtension
 from allspice import AllSpice
 from allspice.utils import list_components
 from allspice.utils.bom_generation import (
+    ColumnConfig,
     generate_bom,
     generate_bom_for_altium,
     generate_bom_for_orcad,
@@ -389,6 +390,47 @@ def test_bom_generation_altium_repeated_multi_part_component(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_column_config(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+    )
+    columns = {
+        "description": ColumnConfig(
+            attributes="PART DESCRIPTION",
+            grouped_values_allow_duplicates=False,
+        ),
+        "designator": ColumnConfig(
+            attributes="Designator",
+            grouped_values_sort=ColumnConfig.SortOrder.DESC,
+            grouped_values_separator=";",
+        ),
+        "manufacturer": ColumnConfig(
+            attributes=["Manufacturer", "MANUFACTURER"],
+            sort=ColumnConfig.SortOrder.DESC,
+        ),
+        "part_number": ColumnConfig(
+            attributes=["PART", "MANUFACTURER #"],
+            remove_rows_matching="^CRC",
+            sort=ColumnConfig.SortOrder.ASC,
+        ),
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        columns,
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        group_by=["part_number"],
+    )
+
+    assert len(bom) == 100
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_altium_repeated_multi_part_component_variant(
     request, instance, setup_for_generation, csv_snapshot
 ):
@@ -443,6 +485,47 @@ def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snaps
 
     assert len(bom) == 846
 
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_orcad_with_column_config(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+    )
+    columns = {
+        "Manufacturer": ColumnConfig(
+            attributes=["Manufacturer", "MANUFACTURER"],
+            sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Reference designator": "Part Reference",
+        "Name": ColumnConfig(
+            attributes="_name",
+            grouped_values_allow_duplicates=False,
+            sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Description": ColumnConfig(
+            attributes="Description",
+            grouped_values_sort=ColumnConfig.SortOrder.DESC,
+            grouped_values_separator=";",
+        ),
+        "Part Number": ColumnConfig(
+            attributes=["Manufacturer PN", "PN"],
+            remove_rows_matching="^TP",
+        ),
+    }
+    bom = generate_bom_for_orcad(
+        instance,
+        repo,
+        "Design/BEAGLEPLAYV10_221227.DSN",
+        columns,
+        ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
+    )
+
+    assert len(bom) == 799
     assert bom == csv_snapshot
 
 
