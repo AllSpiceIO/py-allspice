@@ -96,6 +96,9 @@ jobs:
       # If the test is running on a schedule, the purpose of the test is to
       # ensure py-allspice isn't out of date with the current version of hub, so
       # we'll ignore the casettes.
+      #
+      # If this test run fails, we should update the cassettes manually and
+      # check the changes to see what needs to be changed.
       - name: Test with pytest without using casettes
         if: ${{ github.event_name == 'schedule' }}
         run: |
