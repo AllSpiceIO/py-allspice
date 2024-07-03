@@ -62,6 +62,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -106,8 +108,21 @@ jobs:
       # Otherwise, we'll use the casettes to make the tests fast.
       - name: Test with pytest using casettes
         if: ${{ github.event_name != 'schedule' }}
+        # We'll also generate code coverage, which we will later turn into a
+        # diff report if this pipeline is running on a pull request.
         run: |
-          python -m pytest --record-mode=none
+          python -m pytest --record-mode=none --cov=allspice --cov-report xml:coverage.xml
+      - name: Generate coverage report
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=2
+          diff-cover coverage.xml --compare-branch=origin/${{ github.base_ref }} --markdown-report coverage.md
+      - name: Upload coverage report
+        # Only upload one of the coverage reports, since they should be the same.
+        if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' }}
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-path: coverage.md
       - name: Check attribute types
         # This script will re-generate the attribute types and check if they
         # are different from the committed version. The formatter and linter
