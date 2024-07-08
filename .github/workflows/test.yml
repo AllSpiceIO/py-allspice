@@ -109,14 +109,15 @@ jobs:
       - name: Test with pytest using casettes
         if: ${{ github.event_name != 'schedule' }}
         # We'll also generate code coverage, which we will later turn into a
-        # diff report if this pipeline is running on a pull request.
+        # coverage report if this pipeline is running on a pull request.
         run: |
-          python -m pytest --record-mode=none --cov=allspice --cov-report xml:coverage.xml
+          python -m coverage run --branch -m pytest --record-mode=none
       - name: Generate coverage report
         if: ${{ github.event_name == 'pull_request' }}
         run: |
+          python -m coverage xml
           git fetch origin ${{ github.base_ref }} --depth=2
-          diff-cover coverage.xml --compare-branch=origin/${{ github.base_ref }} --markdown-report coverage.md
+          python ./scripts/report_coverage.py coverage.xml origin/${{ github.base_ref }} --output coverage.md
       - name: Upload coverage report
         # Only upload one of the coverage reports, since they should be the same.
         if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' }}

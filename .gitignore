@@ -40,5 +40,6 @@ wheels/
 # It should not be included in the repo.
 docs
 
-# coverage.py sqlite file.
+# Coverage-related files
 .coverage
+coverage.xml
