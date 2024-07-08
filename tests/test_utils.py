@@ -400,7 +400,8 @@ def test_bom_generation_altium_with_column_config(
     columns = {
         "description": ColumnConfig(
             attributes="PART DESCRIPTION",
-            grouped_values_allow_duplicates=False,
+            grouped_values_sort=ColumnConfig.SortOrder.DESC,
+            grouped_values_allow_duplicates=True,
         ),
         "designator": ColumnConfig(
             attributes="Designator",
@@ -505,7 +506,7 @@ def test_bom_generation_orcad_with_column_config(
         "Name": ColumnConfig(
             attributes="_name",
             grouped_values_allow_duplicates=False,
-            sort=ColumnConfig.SortOrder.ASC,
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
         ),
         "Description": ColumnConfig(
             attributes="Description",

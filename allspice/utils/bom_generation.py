@@ -393,11 +393,18 @@ def _group_entries(
     for components in grouped_components.values():
         row = {}
 
+        # We go through each column in the order they're defined, as that should
+        # be the order in the BOM.
         for column, column_config in columns_mapping.items():
+            # If we've grouped by this column, the value of the column is the
+            # same for all components in the group, so we can just take the
+            # value from the first component.
             if column in group_by:
                 # The RHS here shouldn't fail as we've validated the group by
                 # columns are all in the column selection.
                 row[column] = components[0][column]
+            # Otherwise, we need to combine the values from all components in
+            # the group into one string.
             else:
                 if column_config.grouped_values_allow_duplicates:
                     column_values = [str(component[column]) for component in components]
@@ -427,7 +434,10 @@ def _remove_non_bom_components(components: list[dict[str, str]]) -> list[dict[st
     ]
 
 
-def _sort_values(values: Iterable[str], sort_order: ColumnConfig.SortOrder) -> list[str]:
+def _sort_values(
+    values: Iterable[str],
+    sort_order: Optional[ColumnConfig.SortOrder],
+) -> Iterable[str]:
     """
     Sort the values in a column based on the sort order.
     """
