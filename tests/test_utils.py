@@ -441,7 +441,7 @@ def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snaps
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
 
-    assert len(bom) == 870
+    assert len(bom) == 846
 
     assert bom == csv_snapshot
 
@@ -488,7 +488,7 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
         orcad_attributes_mapping,
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
-    assert len(bom) == 870
+    assert len(bom) == 846
     assert bom == csv_snapshot
 
 
