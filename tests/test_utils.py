@@ -98,7 +98,7 @@ def csv_snapshot(snapshot):
 def test_bom_generation_flat(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -127,7 +127,7 @@ def test_bom_generation_with_odd_line_endings(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     # We hard-code a ref so that this test is reproducible.
@@ -181,7 +181,7 @@ def test_bom_generation_with_odd_line_endings(
 def test_bom_generation_grouped(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -215,7 +215,7 @@ def test_bom_generation_with_folder_hierarchy(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorInFolders.git",
     )
 
     attributes_mapping = {
@@ -242,7 +242,7 @@ def test_bom_generation_with_folder_hierarchy(
 def test_bom_generation_with_default_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -275,7 +275,7 @@ def test_bom_generation_with_default_variant(request, instance, setup_for_genera
 def test_bom_generation_with_fitted_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -305,7 +305,7 @@ def test_bom_generation_with_fitted_variant(request, instance, setup_for_generat
 def test_bom_generation_with_grouped_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -336,7 +336,7 @@ def test_bom_generation_altium_with_non_bom_components(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -366,7 +366,7 @@ def test_bom_generation_altium_repeated_multi_part_component(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorRepeated.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorRepeated.git",
     )
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
@@ -394,7 +394,7 @@ def test_bom_generation_altium_repeated_multi_part_component_variant(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorRepeatedVariant.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorRepeatedVariant.git",
     )
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
@@ -421,7 +421,7 @@ def test_bom_generation_altium_repeated_multi_part_component_variant(
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
     )
 
     attributes_mapping = {
@@ -452,7 +452,7 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     # type and call the appropriate function.
     repo = setup_for_generation(
         request.node.name + "altium",
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     altium_attributes_mapping = {
@@ -472,7 +472,7 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     assert bom == csv_snapshot
     repo = setup_for_generation(
         request.node.name + "orcad",
-        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
     )
     orcad_attributes_mapping = {
         "Name": ["_name"],
@@ -496,7 +496,7 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
 def test_orcad_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/beagleplay.git",
+        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
     )
 
     components = list_components_for_orcad(
@@ -515,7 +515,7 @@ def test_orcad_components_list(request, instance, setup_for_generation, json_sna
 def test_altium_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     components = list_components_for_altium(
@@ -539,7 +539,7 @@ def test_altium_components_list_with_folder_hierarchy(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorInFolders.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorInFolders.git",
     )
 
     components = list_components_for_altium(
@@ -563,7 +563,7 @@ def test_altium_components_list_with_fitted_variant(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceMirrors/ArchimajorVariants.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
     )
 
     components = list_components_for_altium(
@@ -583,7 +583,7 @@ def test_altium_components_list_with_fitted_variant(
 def test_netlist_generation(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
     netlist = generate_netlist(
