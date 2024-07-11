@@ -714,6 +714,26 @@ def test_get_design_review_comments(instance):
     assert comments[0].body == "This is a test comment"
 
 
+def test_add_design_review_comment_attachment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    comment = dr.get_comments()[0]
+    attachment = comment.create_attachment(open("requirements.txt", "rb"))
+    assert attachment.name == "requirements.txt"
+    assert attachment.download_count == 0
+
+
+def test_get_design_review_attachments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    comment = dr.get_comments()[0]
+    attachments = comment.get_attachments()
+    assert len(attachments) > 0
+    assert attachments[0].name == "requirements.txt"
+
+
 def test_repo_create_release(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
