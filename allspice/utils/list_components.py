@@ -61,7 +61,7 @@ def list_components(
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
     :param combine_multi_part: If True, multi-part components will be combined
-        into a single component. Currently only works for Altium.
+        into a single component.
     :return: A list of all components in the schematic. Each component is a
         dictionary with the keys being the attributes of the component and the
         values being the values of the attributes. A `_name` attribute is added
@@ -97,6 +97,7 @@ def list_components(
                 repository,
                 source_file,
                 ref=ref,
+                combine_multi_part=combine_multi_part,
             )
 
 
@@ -200,6 +201,7 @@ def list_components_for_orcad(
     repository: Repository,
     dsn_path: str,
     ref: str = "main",
+    combine_multi_part: bool = False,
 ) -> list[dict[str, str]]:
     """
     Get a list of all components in an OrCAD DSN schematic.
@@ -211,6 +213,8 @@ def list_components_for_orcad(
         is named "example.dsn", the path would be "Schematics/example.dsn".
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component.
     :return: A list of all components in the OrCAD schematic. Each component is
         a dictionary with the keys being the attributes of the component and the
         values being the values of the attributes. A `_name` attribute is added
@@ -230,9 +234,16 @@ def list_components_for_orcad(
         for component in page["components"].values():
             component_attributes = {}
             component_attributes["_name"] = component["name"]
+            if "reference" in component:
+                component_attributes["_reference"] = component.get("reference")
+            if "logical_reference" in component:
+                component_attributes["_logical_reference"] = component.get("logical_reference")
             for attribute in component["attributes"].values():
                 component_attributes[attribute["name"]] = attribute["value"]
             components.append(component_attributes)
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_orcad(components)
 
     return components
 
@@ -505,6 +516,35 @@ def _combine_multi_part_components_for_altium(
         # The combined component shouldn't have the current part id, as it is
         # not any of the parts.
         del combined_component["_current_part_id"]
+        combined_components.append(combined_component)
+
+    return combined_components
+
+
+def _combine_multi_part_components_for_orcad(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part OrCAD components into a single component.
+
+    Multi-part OrCAD components can be distinguished by the "logical_reference"
+    attribute, which ties together the different parts of the component.
+    """
+
+    combined_components = []
+    multi_part_components_by_designator = {}
+
+    for component in components:
+        if "_logical_reference" in component:
+            designator = component["_logical_reference"]
+            multi_part_components_by_designator.setdefault(designator, []).append(component)
+        else:
+            combined_components.append(component)
+
+    for designator, multi_part_components in multi_part_components_by_designator.items():
+        combined_component = multi_part_components[0].copy()
+        combined_component[PART_REFERENCE_ATTR_NAME] = designator
+        combined_component["_reference"] = designator
         combined_components.append(combined_component)
 
     return combined_components

@@ -62,7 +62,9 @@ def generate_bom(
         project tool. For Altium projects, these are "_part_id", "_description",
         "_unique_id" and "_kind", which are the Library Reference, Description,
         Unique ID and Component Type respectively. For OrCAD projects, "_name"
-        is added, which is the name of the component.
+        is added, which is the name of the component, and "_reference" and
+        "_logical_reference" may be added, which are the name of the component,
+        and the logical reference of a multi-part component respectively.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
@@ -239,7 +241,13 @@ def generate_bom_for_orcad(
         for group_column in group_by:
             if group_column not in columns:
                 raise ValueError(f"Group by column {group_column} not found in selected columns")
-    components = list_components_for_orcad(allspice_client, repository, dsn_path, ref)
+    components = list_components_for_orcad(
+        allspice_client,
+        repository,
+        dsn_path,
+        ref,
+        combine_multi_part=True,
+    )
     mapped_components = _map_attributes(components, columns)
     bom = _group_entries(mapped_components, group_by)
 
