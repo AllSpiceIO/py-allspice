@@ -285,7 +285,7 @@ def main():
             # NoneType to Any to avoid making an assertion that the attribute
             # will always be None. A type rewriter would shrink this further,
             # leading to worse types, so we do this manually.
-            if rewritten_type is None or rewritten_type == type(None):
+            if rewritten_type is None or rewritten_type is type(None):
                 rewritten_type = Any
 
             attribute_stub = monkeytype.stubs.AttributeStub(attr, rewritten_type)
