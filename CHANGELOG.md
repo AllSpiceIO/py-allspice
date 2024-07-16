@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.3.1
+
+### What's Changed
+
+- Fix Design Review Comments not having an associated repo by @shrik450 in #162
+
+  This fixes a bug that made it impossible to make any changes or add
+  attachments to a comment on a design review.
+
+### Internal Changes
+
+- Update ruff requirement from ~=0.4 to ~=0.5 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/156
+- Fix CI typecheck failure due to changed cassettes by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/149
+- Move test repo sources to AllSpiceTests org by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/160
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.3.0...v3.3.1
+
 ## v3.3.0
 
 ### What's Changed

@@ -1529,7 +1529,7 @@ class Comment(ApiObject):
     def parent_url(self) -> str:
         """URL of the parent of this comment (the issue or the pull request)"""
 
-        if self.issue_url is not None:
+        if self.issue_url is not None and self.issue_url != "":
             return self.issue_url
         else:
             return self.pull_request_url
