@@ -26,3 +26,8 @@ lint.ignore = [
 line-length = 100
 lint.select = ["E", "F", "I", "RUF"]
 exclude = []
+
+[tool.coverage.report]
+omit = [
+  "tests/*",
+]
