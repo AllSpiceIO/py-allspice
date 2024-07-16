@@ -9,7 +9,7 @@ from logging import Logger
 from typing import Optional
 
 from ..allspice import AllSpice
-from ..apiobject import Repository
+from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
 SLEEP_FOR_GENERATED_JSON = 0.5
@@ -51,10 +51,10 @@ def list_components(
     :param client: An AllSpice client instance.
     :param repository: The repository containing the schematic.
     :param source_file: The path to the schematic file from the repo root. The
-        source file must be a PrjPcb file for Altium projects and a DSN file for
-        OrCAD projects. For example, if the schematic is in the folder
-        "Schematics" and the file is named "example.DSN", the path would be
-        "Schematics/example.DSN".
+        source file must be a PrjPcb file for Altium projects, a DSN file for
+        OrCAD projects or an SDAX file for System Capture projects. For
+        example, if the schematic is in the folder "Schematics" and the file is
+        named "example.DSN", the path would be "Schematics/example.DSN".
     :param variant: The variant to apply to the components. If not None, the
         components will be filtered and modified according to the variant. Only
         applies to Altium projects.
@@ -72,6 +72,8 @@ def list_components(
         project_tool = "altium"
     elif source_file.lower().endswith(".dsn"):
         project_tool = "orcad"
+    elif source_file.lower().endswith(".sdax"):
+        project_tool = "system_capture"
     else:
         raise ValueError(
             "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
@@ -98,6 +100,16 @@ def list_components(
                 source_file,
                 ref=ref,
                 combine_multi_part=combine_multi_part,
+            )
+        case "system_capture":
+            if variant:
+                raise ValueError("Variant is not supported for System Capture projects.")
+
+            return list_components_for_system_capture(
+                allspice_client,
+                repository,
+                source_file,
+                ref=ref,
             )
 
 
@@ -221,13 +233,56 @@ def list_components_for_orcad(
         to each component to store the name of the component.
     """
 
+    components = _list_components_multi_page_schematic(allspice_client, repository, dsn_path, ref)
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_orcad(components)
+
+    return components
+
+
+def list_components_for_system_capture(
+    allspice_client: AllSpice,
+    repository: Repository,
+    sdax_path: str,
+    ref: Ref = "main",
+) -> list[dict[str, str]]:
+    """
+    Get a list of all components in a System Capture SDAX schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the System Capture schematic.
+    :param sdax_path: The path to the System Capture SDAX file from the repo
+        root. For example, if the schematic is in the folder "Schematics" and
+        the file is named "example.sdax", the path would be
+        "Schematics/example.sdax".
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    """
+
+    return _list_components_multi_page_schematic(allspice_client, repository, sdax_path, ref)
+
+
+def _list_components_multi_page_schematic(
+    allspice_client: AllSpice,
+    repository: Repository,
+    schematic_path: str,
+    ref: Ref,
+) -> list[dict[str, str]]:
+    """
+    Internal function for getting all components from a multi-page schematic.
+
+    This pattern is followed by OrCAD and System Capture, and potentially other
+    formats in the future.
+    """
+
     allspice_client.logger.debug(
-        f"Listing components in {dsn_path=} from {repository.get_full_name()} on {ref=}"
+        f"Listing components in {schematic_path=} from {repository.get_full_name()} on {ref=}"
     )
 
     # Get the generated JSON for the schematic.
-    dsn_json = _fetch_generated_json(repository, dsn_path, ref)
-    pages = dsn_json["pages"]
+    schematic_json = _fetch_generated_json(repository, schematic_path, ref)
+    pages = schematic_json["pages"]
     components = []
 
     for page in pages:
@@ -241,9 +296,6 @@ def list_components_for_orcad(
             for attribute in component["attributes"].values():
                 component_attributes[attribute["name"]] = attribute["value"]
             components.append(component_attributes)
-
-    if combine_multi_part:
-        components = _combine_multi_part_components_for_orcad(components)
 
     return components
 

@@ -1,0 +1,3546 @@
+[
+  {
+    "LOCATION": "R4",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R4"
+  },
+  {
+    "LOCATION": "R10",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R10"
+  },
+  {
+    "LOCATION": "R9",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R9"
+  },
+  {
+    "LOCATION": "R12",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R12"
+  },
+  {
+    "LOCATION": "R3",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R3"
+  },
+  {
+    "LOCATION": "R8",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R8"
+  },
+  {
+    "LOCATION": "R11",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R11"
+  },
+  {
+    "LOCATION": "Y1",
+    "VALUE": "24MHZ",
+    "VENDOR_PN": "XRCGB24M000F0L00R0",
+    "_name": "",
+    "_reference": "Y1"
+  },
+  {
+    "LOCATION": "U35",
+    "MFG_PART_NO": "SI51219-A14BFT",
+    "VALUE": "CLOCK GENERATOR",
+    "_name": "",
+    "_reference": "U35"
+  },
+  {
+    "LOCATION": "C24",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C24"
+  },
+  {
+    "LOCATION": "R55",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R55"
+  },
+  {
+    "LOCATION": "R56",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R56"
+  },
+  {
+    "LOCATION": "C53",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C53"
+  },
+  {
+    "LOCATION": "R99",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R99"
+  },
+  {
+    "LOCATION": "R110",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R110"
+  },
+  {
+    "LOCATION": "U11",
+    "VALUE": "NC7WZ16",
+    "_name": "",
+    "_reference": "U11"
+  },
+  {
+    "LOCATION": "C9",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C9"
+  },
+  {
+    "LOCATION": "R114",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R114"
+  },
+  {
+    "LOCATION": "U14",
+    "VALUE": "NC7WZ16",
+    "_name": "",
+    "_reference": "U14"
+  },
+  {
+    "LOCATION": "C31",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C31"
+  },
+  {
+    "LOCATION": "C54",
+    "VALUE": "6pF",
+    "_name": "",
+    "_reference": "C54"
+  },
+  {
+    "LOCATION": "C61",
+    "VALUE": "6pF",
+    "_name": "",
+    "_reference": "C61"
+  },
+  {
+    "LOCATION": "C16",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C16"
+  },
+  {
+    "LOCATION": "FB1",
+    "VALUE": "120-OHM_3A",
+    "VENDOR_PN": "BLM18SG121TN1D",
+    "_name": "",
+    "_reference": "FB1"
+  },
+  {
+    "LOCATION": "FB2",
+    "VALUE": "120-OHM_3A",
+    "VENDOR_PN": "BLM18SG121TN1D",
+    "_name": "",
+    "_reference": "FB2"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R80",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R80"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R81",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R81"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "C286",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C286"
+  },
+  {
+    "LOCATION": "C15",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C15"
+  },
+  {
+    "LOCATION": "C14",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C14"
+  },
+  {
+    "LOCATION": "C13",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C13"
+  },
+  {
+    "LOCATION": "R43",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R43"
+  },
+  {
+    "LOCATION": "R45",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R45"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R46",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R46"
+  },
+  {
+    "LOCATION": "R47",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R47"
+  },
+  {
+    "LOCATION": "R49",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R49"
+  },
+  {
+    "LOCATION": "R51",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R51"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R48",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R48"
+  },
+  {
+    "LOCATION": "C10",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C10"
+  },
+  {
+    "LOCATION": "C11",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C11"
+  },
+  {
+    "LOCATION": "R39",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R39"
+  },
+  {
+    "LOCATION": "R38",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R38"
+  },
+  {
+    "LOCATION": "R50",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R50"
+  },
+  {
+    "LOCATION": "R37",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R37"
+  },
+  {
+    "LOCATION": "R36",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R36"
+  },
+  {
+    "LOCATION": "R35",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R35"
+  },
+  {
+    "LOCATION": "R34",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R34"
+  },
+  {
+    "LOCATION": "R33",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R33"
+  },
+  {
+    "LOCATION": "J3",
+    "VALUE": "MicroSD_CARD",
+    "VENDOR_PN": "SCHA5B0200",
+    "_name": "",
+    "_reference": "J3"
+  },
+  {
+    "LOCATION": "U5",
+    "VALUE": "NC7WZ16",
+    "_name": "",
+    "_reference": "U5"
+  },
+  {
+    "LOCATION": "C7",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C7"
+  },
+  {
+    "LOCATION": "R32",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R32"
+  },
+  {
+    "LOCATION": "R75",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R75"
+  },
+  {
+    "LOCATION": "U7",
+    "MFG_PART_NO": "N25Q128A13EF840E",
+    "VALUE": "SPI-FLASH-QUAD",
+    "VENDOR_PN": "N25Q128A13EF840E",
+    "_name": "",
+    "_reference": "U7"
+  },
+  {
+    "LOCATION": "R40",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R40"
+  },
+  {
+    "LOCATION": "J2",
+    "VALUE": "HDR_1X3_TH_VER",
+    "VENDOR_PN": "PBC36SAAN",
+    "_name": "",
+    "_reference": "J2"
+  },
+  {
+    "LOCATION": "R334",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R334"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "R52",
+    "VALUE": "20K",
+    "_name": "",
+    "_reference": "R52"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R76",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R76"
+  },
+  {
+    "LOCATION": "R97",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R97"
+  },
+  {
+    "LOCATION": "C12",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C12"
+  },
+  {
+    "LOCATION": "R28",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R28"
+  },
+  {
+    "LOCATION": "C21",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C21"
+  },
+  {
+    "LOCATION": "C22",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C22"
+  },
+  {
+    "LOCATION": "C20",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C20"
+  },
+  {
+    "LOCATION": "C18",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C18"
+  },
+  {
+    "LOCATION": "C19",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C19"
+  },
+  {
+    "LOCATION": "R63",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R63"
+  },
+  {
+    "LOCATION": "R62",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R62"
+  },
+  {
+    "LOCATION": "C23",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C23"
+  },
+  {
+    "LOCATION": "R61",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R61"
+  },
+  {
+    "LOCATION": "R59",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R59"
+  },
+  {
+    "LOCATION": "R296",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R296"
+  },
+  {
+    "LOCATION": "R60",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R60"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "C17",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C17"
+  },
+  {
+    "LOCATION": "C25",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C25"
+  },
+  {
+    "LOCATION": "C26",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C26"
+  },
+  {
+    "LOCATION": "C27",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C27"
+  },
+  {
+    "LOCATION": "J5",
+    "MFG_PART_NO": "L829-1J1T-43",
+    "VALUE": "RJ-45",
+    "_name": "",
+    "_reference": "J5"
+  },
+  {
+    "LOCATION": "C28",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C28"
+  },
+  {
+    "LOCATION": "R74",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R74"
+  },
+  {
+    "LOCATION": "R79",
+    "VALUE": "4.99K",
+    "_name": "",
+    "_reference": "R79"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R77",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R77"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R78",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R78"
+  },
+  {
+    "LOCATION": "FB5",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB5"
+  },
+  {
+    "LOCATION": "C39",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C39"
+  },
+  {
+    "LOCATION": "C38",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C38"
+  },
+  {
+    "LOCATION": "C36",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C36"
+  },
+  {
+    "LOCATION": "C37",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C37"
+  },
+  {
+    "LOCATION": "FB7",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB7"
+  },
+  {
+    "LOCATION": "C50",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C50"
+  },
+  {
+    "LOCATION": "C49",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C49"
+  },
+  {
+    "LOCATION": "C44",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C44"
+  },
+  {
+    "LOCATION": "C45",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C45"
+  },
+  {
+    "LOCATION": "C46",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C46"
+  },
+  {
+    "LOCATION": "C47",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C47"
+  },
+  {
+    "LOCATION": "C48",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C48"
+  },
+  {
+    "LOCATION": "C32",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C32"
+  },
+  {
+    "LOCATION": "C35",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C35"
+  },
+  {
+    "LOCATION": "C34",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C34"
+  },
+  {
+    "LOCATION": "C33",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C33"
+  },
+  {
+    "LOCATION": "FB4",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB4"
+  },
+  {
+    "LOCATION": "FB6",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB6"
+  },
+  {
+    "LOCATION": "C40",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C40"
+  },
+  {
+    "LOCATION": "C41",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C41"
+  },
+  {
+    "LOCATION": "C42",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C42"
+  },
+  {
+    "LOCATION": "C43",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C43"
+  },
+  {
+    "LOCATION": "FB3",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB3"
+  },
+  {
+    "LOCATION": "U9",
+    "VALUE": "88E1318_1.8V IO",
+    "VENDOR_PN": "88E1318-A0-NNB2C000",
+    "_name": "",
+    "_reference": "U9"
+  },
+  {
+    "LOCATION": "U9",
+    "VALUE": "88E1318_1.8V IO",
+    "VENDOR_PN": "88E1318-A0-NNB2C000",
+    "_name": "",
+    "_reference": "U9"
+  },
+  {
+    "LOCATION": "C62",
+    "VALUE": "6pF",
+    "_name": "",
+    "_reference": "C62"
+  },
+  {
+    "LOCATION": "C85",
+    "VALUE": "6pF",
+    "_name": "",
+    "_reference": "C85"
+  },
+  {
+    "LOCATION": "Y2",
+    "VALUE": "25MHZ",
+    "VENDOR_PN": "XRCGB25M000F0L00R0",
+    "_name": "",
+    "_reference": "Y2"
+  },
+  {
+    "LOCATION": "R71",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R71"
+  },
+  {
+    "LOCATION": "R297",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R297"
+  },
+  {
+    "LOCATION": "R72",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R72"
+  },
+  {
+    "LOCATION": "R73",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R73"
+  },
+  {
+    "LOCATION": "C52",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C52"
+  },
+  {
+    "LOCATION": "C60",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C60"
+  },
+  {
+    "LOCATION": "C59",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C59"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R85",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R85"
+  },
+  {
+    "LOCATION": "C51",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C51"
+  },
+  {
+    "LOCATION": "R90",
+    "VALUE": "8.06K",
+    "_name": "",
+    "_reference": "R90"
+  },
+  {
+    "LOCATION": "U12",
+    "VALUE": "USB_ULPI_XCVR",
+    "VENDOR_PN": "USB3320C-EZK-TR",
+    "_name": "",
+    "_reference": "U12"
+  },
+  {
+    "LOCATION": "C57",
+    "VALUE": "2.2UF",
+    "_name": "",
+    "_reference": "C57"
+  },
+  {
+    "LOCATION": "R86",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R86"
+  },
+  {
+    "LOCATION": "J6",
+    "MFG_PART_NO": "10104111-0001LF",
+    "VALUE": "USB_MICRO_AB_RA",
+    "_name": "",
+    "_reference": "J6"
+  },
+  {
+    "LOCATION": "C56",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C56"
+  },
+  {
+    "LOCATION": "C55",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C55"
+  },
+  {
+    "LOCATION": "C65",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C65"
+  },
+  {
+    "LOCATION": "C64",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C64"
+  },
+  {
+    "LOCATION": "C69",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C69"
+  },
+  {
+    "LOCATION": "C68",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C68"
+  },
+  {
+    "LOCATION": "R101",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R101"
+  },
+  {
+    "LOCATION": "R106",
+    "VALUE": "8.06K",
+    "_name": "",
+    "_reference": "R106"
+  },
+  {
+    "LOCATION": "U17",
+    "VALUE": "USB_ULPI_XCVR",
+    "VENDOR_PN": "USB3320C-EZK-TR",
+    "_name": "",
+    "_reference": "U17"
+  },
+  {
+    "LOCATION": "C66",
+    "VALUE": "2.2UF",
+    "_name": "",
+    "_reference": "C66"
+  },
+  {
+    "LOCATION": "R103",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R103"
+  },
+  {
+    "LOCATION": "J7",
+    "MFG_PART_NO": "10118193-0001LF",
+    "VALUE": "USB_MICRO_B_RA",
+    "_name": "",
+    "_reference": "J7"
+  },
+  {
+    "LOCATION": "C260",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C260"
+  },
+  {
+    "LOCATION": "C261",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C261"
+  },
+  {
+    "LOCATION": "C63",
+    "VALUE": "4.7UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C63"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "CR6",
+    "VALUE": "GREEN",
+    "VENDOR_PN": "LTST-C193KGKT-5A",
+    "_name": "",
+    "_reference": "CR6"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "CR4",
+    "VALUE": "GREEN",
+    "VENDOR_PN": "LTST-C193KGKT-5A",
+    "_name": "",
+    "_reference": "CR4"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R84",
+    "VALUE": "620",
+    "_name": "",
+    "_reference": "R84"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R100",
+    "VALUE": "620",
+    "_name": "",
+    "_reference": "R100"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "CR5",
+    "VALUE": "RED",
+    "VENDOR_PN": "LTST-C193KRKT-5A",
+    "_name": "",
+    "_reference": "CR5"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R89",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R89"
+  },
+  {
+    "LOCATION": "U13",
+    "VALUE": "USB PWR DIST",
+    "VENDOR_PN": "MIC2025-1YM",
+    "_name": "",
+    "_reference": "U13"
+  },
+  {
+    "LOCATION": "R116",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R116"
+  },
+  {
+    "LOCATION": "C84",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C84"
+  },
+  {
+    "LOCATION": "C72",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C72"
+  },
+  {
+    "LOCATION": "C73",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C73"
+  },
+  {
+    "LOCATION": "C74",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C74"
+  },
+  {
+    "LOCATION": "C75",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C75"
+  },
+  {
+    "LOCATION": "C76",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C76"
+  },
+  {
+    "LOCATION": "C77",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C77"
+  },
+  {
+    "LOCATION": "C78",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C78"
+  },
+  {
+    "LOCATION": "C79",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C79"
+  },
+  {
+    "LOCATION": "C80",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C80"
+  },
+  {
+    "LOCATION": "C81",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C81"
+  },
+  {
+    "LOCATION": "R112",
+    "VALUE": "80.6",
+    "_name": "",
+    "_reference": "R112"
+  },
+  {
+    "LOCATION": "R113",
+    "VALUE": "80.6",
+    "_name": "",
+    "_reference": "R113"
+  },
+  {
+    "LOCATION": "C82",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C82"
+  },
+  {
+    "LOCATION": "C83",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C83"
+  },
+  {
+    "LOCATION": "R111",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R111"
+  },
+  {
+    "LOCATION": "R66",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R66"
+  },
+  {
+    "LOCATION": "R67",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R67"
+  },
+  {
+    "LOCATION": "R325",
+    "VALUE": "10",
+    "_name": "",
+    "_reference": "R325"
+  },
+  {
+    "LOCATION": "R302",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R302"
+  },
+  {
+    "LOCATION": "R303",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R303"
+  },
+  {
+    "LOCATION": "R304",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R304"
+  },
+  {
+    "LOCATION": "R305",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R305"
+  },
+  {
+    "LOCATION": "R306",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R306"
+  },
+  {
+    "LOCATION": "R307",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R307"
+  },
+  {
+    "LOCATION": "R308",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R308"
+  },
+  {
+    "LOCATION": "R309",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R309"
+  },
+  {
+    "LOCATION": "R310",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R310"
+  },
+  {
+    "LOCATION": "R311",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R311"
+  },
+  {
+    "LOCATION": "R312",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R312"
+  },
+  {
+    "LOCATION": "R313",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R313"
+  },
+  {
+    "LOCATION": "R314",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R314"
+  },
+  {
+    "LOCATION": "R315",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R315"
+  },
+  {
+    "LOCATION": "R316",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R316"
+  },
+  {
+    "LOCATION": "R317",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R317"
+  },
+  {
+    "LOCATION": "R318",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R318"
+  },
+  {
+    "LOCATION": "R319",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R319"
+  },
+  {
+    "LOCATION": "R320",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R320"
+  },
+  {
+    "LOCATION": "R321",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R321"
+  },
+  {
+    "LOCATION": "R322",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R322"
+  },
+  {
+    "LOCATION": "R323",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R323"
+  },
+  {
+    "LOCATION": "R324",
+    "VALUE": "33",
+    "_name": "",
+    "_reference": "R324"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "C70",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C70"
+  },
+  {
+    "LOCATION": "C71",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C71"
+  },
+  {
+    "LOCATION": "U20",
+    "VALUE": "DDR3_256MX32",
+    "VENDOR_PN": "MT41K256M32SLD-125:E",
+    "_name": "",
+    "_reference": "U20"
+  },
+  {
+    "LOCATION": "C95",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C95"
+  },
+  {
+    "LOCATION": "C96",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C96"
+  },
+  {
+    "LOCATION": "R119",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R119"
+  },
+  {
+    "LOCATION": "C97",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C97"
+  },
+  {
+    "LOCATION": "C98",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C98"
+  },
+  {
+    "LOCATION": "C100",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C100"
+  },
+  {
+    "LOCATION": "C101",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C101"
+  },
+  {
+    "LOCATION": "C102",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C102"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C103",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C103"
+  },
+  {
+    "LOCATION": "C104",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C104"
+  },
+  {
+    "LOCATION": "C105",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C105"
+  },
+  {
+    "LOCATION": "C106",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C106"
+  },
+  {
+    "LOCATION": "C107",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C107"
+  },
+  {
+    "LOCATION": "C99",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C99"
+  },
+  {
+    "LOCATION": "C108",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C108"
+  },
+  {
+    "LOCATION": "C109",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C109"
+  },
+  {
+    "LOCATION": "C110",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C110"
+  },
+  {
+    "LOCATION": "C111",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C111"
+  },
+  {
+    "LOCATION": "C112",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C112"
+  },
+  {
+    "LOCATION": "C113",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C113"
+  },
+  {
+    "LOCATION": "R120",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R120"
+  },
+  {
+    "LOCATION": "R69",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R69"
+  },
+  {
+    "LOCATION": "R70",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R70"
+  },
+  {
+    "LOCATION": "R115",
+    "VALUE": "80.6",
+    "_name": "",
+    "_reference": "R115"
+  },
+  {
+    "LOCATION": "C133",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C133"
+  },
+  {
+    "LOCATION": "C132",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C132"
+  },
+  {
+    "LOCATION": "C129",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C129"
+  },
+  {
+    "LOCATION": "C131",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C131"
+  },
+  {
+    "LOCATION": "C130",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C130"
+  },
+  {
+    "LOCATION": "C128",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C128"
+  },
+  {
+    "LOCATION": "C126",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C126"
+  },
+  {
+    "LOCATION": "C127",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C127"
+  },
+  {
+    "LOCATION": "C142",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C142"
+  },
+  {
+    "LOCATION": "C141",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C141"
+  },
+  {
+    "LOCATION": "C138",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C138"
+  },
+  {
+    "LOCATION": "C140",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C140"
+  },
+  {
+    "LOCATION": "C139",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C139"
+  },
+  {
+    "LOCATION": "C137",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C137"
+  },
+  {
+    "LOCATION": "C135",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C135"
+  },
+  {
+    "LOCATION": "C136",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C136"
+  },
+  {
+    "LOCATION": "R82",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R82"
+  },
+  {
+    "LOCATION": "R94",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R94"
+  },
+  {
+    "LOCATION": "R42",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R42"
+  },
+  {
+    "LOCATION": "R44",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R44"
+  },
+  {
+    "LOCATION": "R41",
+    "VALUE": "22.1",
+    "_name": "",
+    "_reference": "R41"
+  },
+  {
+    "LOCATION": "R223",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R223"
+  },
+  {
+    "LOCATION": "R178",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R178"
+  },
+  {
+    "LOCATION": "R18",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R18"
+  },
+  {
+    "LOCATION": "R20",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R20"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "C134",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C134"
+  },
+  {
+    "LOCATION": "C143",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C143"
+  },
+  {
+    "LOCATION": "C149",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C149"
+  },
+  {
+    "LOCATION": "C150",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C150"
+  },
+  {
+    "LOCATION": "C151",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C151"
+  },
+  {
+    "LOCATION": "C152",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C152"
+  },
+  {
+    "LOCATION": "C153",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C153"
+  },
+  {
+    "LOCATION": "C154",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C154"
+  },
+  {
+    "LOCATION": "C155",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C155"
+  },
+  {
+    "LOCATION": "C156",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C156"
+  },
+  {
+    "LOCATION": "C157",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C157"
+  },
+  {
+    "LOCATION": "C158",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C158"
+  },
+  {
+    "LOCATION": "C159",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C159"
+  },
+  {
+    "LOCATION": "C160",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C160"
+  },
+  {
+    "LOCATION": "C169",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C169"
+  },
+  {
+    "LOCATION": "C170",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C170"
+  },
+  {
+    "LOCATION": "C171",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C171"
+  },
+  {
+    "LOCATION": "C180",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C180"
+  },
+  {
+    "LOCATION": "C181",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C181"
+  },
+  {
+    "LOCATION": "C182",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C182"
+  },
+  {
+    "LOCATION": "C183",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C183"
+  },
+  {
+    "LOCATION": "C184",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C184"
+  },
+  {
+    "LOCATION": "C185",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C185"
+  },
+  {
+    "LOCATION": "C186",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C186"
+  },
+  {
+    "LOCATION": "C187",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C187"
+  },
+  {
+    "LOCATION": "C162",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C162"
+  },
+  {
+    "LOCATION": "C165",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C165"
+  },
+  {
+    "LOCATION": "C174",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C174"
+  },
+  {
+    "LOCATION": "C175",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C175"
+  },
+  {
+    "LOCATION": "C176",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C176"
+  },
+  {
+    "LOCATION": "C177",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C177"
+  },
+  {
+    "LOCATION": "C178",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C178"
+  },
+  {
+    "LOCATION": "FB12",
+    "VALUE": "120-OHM_3A",
+    "VENDOR_PN": "BLM18SG121TN1D",
+    "_name": "",
+    "_reference": "FB12"
+  },
+  {
+    "LOCATION": "C172",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C172"
+  },
+  {
+    "LOCATION": "C164",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C164"
+  },
+  {
+    "LOCATION": "C193",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C193"
+  },
+  {
+    "LOCATION": "C192",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C192"
+  },
+  {
+    "LOCATION": "C191",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C191"
+  },
+  {
+    "LOCATION": "C190",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C190"
+  },
+  {
+    "LOCATION": "C188",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C188"
+  },
+  {
+    "LOCATION": "C189",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C189"
+  },
+  {
+    "LOCATION": "C282",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C282"
+  },
+  {
+    "LOCATION": "C283",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C283"
+  },
+  {
+    "LOCATION": "C307",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C307"
+  },
+  {
+    "LOCATION": "C284",
+    "VALUE": "4.7UF",
+    "_name": "",
+    "_reference": "C284"
+  },
+  {
+    "LOCATION": "C285",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C285"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "U2",
+    "VALUE": "7Z020-CLG400",
+    "VENDOR_PN": "XC7Z020-1CLG400C",
+    "_name": "",
+    "_reference": "U2"
+  },
+  {
+    "LOCATION": "C195",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C195"
+  },
+  {
+    "LOCATION": "C214",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C214"
+  },
+  {
+    "LOCATION": "C216",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C216"
+  },
+  {
+    "LOCATION": "C168",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C168"
+  },
+  {
+    "LOCATION": "C173",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C173"
+  },
+  {
+    "LOCATION": "C179",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C179"
+  },
+  {
+    "LOCATION": "C194",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C194"
+  },
+  {
+    "LOCATION": "C281",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C281"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R156",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R156"
+  },
+  {
+    "LOCATION": "R160",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R160"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R165",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R165"
+  },
+  {
+    "LOCATION": "R166",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R166"
+  },
+  {
+    "LOCATION": "R167",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R167"
+  },
+  {
+    "LOCATION": "R168",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R168"
+  },
+  {
+    "LOCATION": "R169",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R169"
+  },
+  {
+    "LOCATION": "R170",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R170"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R171",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R171"
+  },
+  {
+    "LOCATION": "R157",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R157"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R158",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R158"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R159",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R159"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R161",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R161"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R162",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R162"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R163",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R163"
+  },
+  {
+    "LOCATION": "R164",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R164"
+  },
+  {
+    "LOCATION": "R179",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R179"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "R190",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R190"
+  },
+  {
+    "LOCATION": "R191",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R191"
+  },
+  {
+    "LOCATION": "R180",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R180"
+  },
+  {
+    "LOCATION": "R181",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R181"
+  },
+  {
+    "LOCATION": "R182",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R182"
+  },
+  {
+    "LOCATION": "R183",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R183"
+  },
+  {
+    "LOCATION": "R184",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R184"
+  },
+  {
+    "LOCATION": "R185",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R185"
+  },
+  {
+    "LOCATION": "R186",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R186"
+  },
+  {
+    "LOCATION": "R188",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R188"
+  },
+  {
+    "LOCATION": "R187",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R187"
+  },
+  {
+    "LOCATION": "R189",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R189"
+  },
+  {
+    "LOCATION": "CR1",
+    "VALUE": "RED",
+    "VENDOR_PN": "LTST-C193KRKT-5A",
+    "_name": "",
+    "_reference": "CR1"
+  },
+  {
+    "LOCATION": "R1",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R1"
+  },
+  {
+    "LOCATION": "R221",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R221"
+  },
+  {
+    "LOCATION": "R222",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R222"
+  },
+  {
+    "LOCATION": "U38",
+    "VALUE": "DIFF LINE RECEIVER",
+    "VENDOR_PN": "SN65LVDS4RSER",
+    "_name": "",
+    "_reference": "U38"
+  },
+  {
+    "LOCATION": "R193",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R193"
+  },
+  {
+    "LOCATION": "C297",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C297"
+  },
+  {
+    "LOCATION": "C298",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C298"
+  },
+  {
+    "LOCATION": "R194",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R194"
+  },
+  {
+    "LOCATION": "R195",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R195"
+  },
+  {
+    "LOCATION": "R196",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R196"
+  },
+  {
+    "LOCATION": "R197",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R197"
+  },
+  {
+    "LOCATION": "R198",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R198"
+  },
+  {
+    "LOCATION": "R199",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R199"
+  },
+  {
+    "LOCATION": "R200",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R200"
+  },
+  {
+    "LOCATION": "R201",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R201"
+  },
+  {
+    "LOCATION": "R203",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R203"
+  },
+  {
+    "LOCATION": "R205",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R205"
+  },
+  {
+    "LOCATION": "R207",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R207"
+  },
+  {
+    "LOCATION": "R208",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R208"
+  },
+  {
+    "LOCATION": "R209",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R209"
+  },
+  {
+    "LOCATION": "R210",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R210"
+  },
+  {
+    "LOCATION": "R211",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R211"
+  },
+  {
+    "LOCATION": "R212",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R212"
+  },
+  {
+    "LOCATION": "R213",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R213"
+  },
+  {
+    "LOCATION": "R214",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R214"
+  },
+  {
+    "LOCATION": "R216",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R216"
+  },
+  {
+    "LOCATION": "R217",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R217"
+  },
+  {
+    "LOCATION": "R218",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R218"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "R289",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R289"
+  },
+  {
+    "LOCATION": "R290",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R290"
+  },
+  {
+    "LOCATION": "R291",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R291"
+  },
+  {
+    "LOCATION": "R292",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R292"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R206",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R206"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R226",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R226"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R227",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R227"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R228",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R228"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R229",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R229"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R230",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R230"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R231",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R231"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R232",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R232"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R233",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R233"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R234",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R234"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R235",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R235"
+  },
+  {
+    "LOCATION": "R236",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R236"
+  },
+  {
+    "LOCATION": "R202",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R202"
+  },
+  {
+    "LOCATION": "R215",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R215"
+  },
+  {
+    "LOCATION": "R204",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R204"
+  },
+  {
+    "LOCATION": "R247",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R247"
+  },
+  {
+    "LOCATION": "R240",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R240"
+  },
+  {
+    "LOCATION": "R241",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R241"
+  },
+  {
+    "LOCATION": "R243",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R243"
+  },
+  {
+    "LOCATION": "R242",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R242"
+  },
+  {
+    "LOCATION": "R246",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R246"
+  },
+  {
+    "LOCATION": "R244",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R244"
+  },
+  {
+    "LOCATION": "R245",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R245"
+  },
+  {
+    "LOCATION": "C197",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C197"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C198",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C198"
+  },
+  {
+    "LOCATION": "C199",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C199"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C200",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C200"
+  },
+  {
+    "LOCATION": "C201",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C201"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C202",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C202"
+  },
+  {
+    "LOCATION": "C203",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C203"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C204",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C204"
+  },
+  {
+    "LOCATION": "C205",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C205"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C206",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C206"
+  },
+  {
+    "LOCATION": "C207",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C207"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C208",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C208"
+  },
+  {
+    "LOCATION": "C209",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C209"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C210",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C210"
+  },
+  {
+    "LOCATION": "C211",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C211"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C212",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C212"
+  },
+  {
+    "LOCATION": "C213",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C213"
+  },
+  {
+    "LOCATION": "C215",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C215"
+  },
+  {
+    "LOCATION": "C217",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C217"
+  },
+  {
+    "LOCATION": "C219",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C219"
+  },
+  {
+    "LOCATION": "C221",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C221"
+  },
+  {
+    "LOCATION": "C223",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C223"
+  },
+  {
+    "LOCATION": "C225",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C225"
+  },
+  {
+    "LOCATION": "C227",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C227"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "U23",
+    "VALUE": "16-CORE MICROPROCESSOR",
+    "VENDOR_PN": "E16G301",
+    "_name": "",
+    "_reference": "U23"
+  },
+  {
+    "LOCATION": "R219",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R219"
+  },
+  {
+    "LOCATION": "R220",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R220"
+  },
+  {
+    "LOCATION": "R192",
+    "VALUE": "100",
+    "_name": "",
+    "_reference": "R192"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R238",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R238"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R239",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R239"
+  },
+  {
+    "LOCATION": "J8",
+    "VALUE": "BSH-030-01-F-D-A",
+    "_name": "",
+    "_reference": "J8"
+  },
+  {
+    "LOCATION": "J9",
+    "VALUE": "BSH-030-01-F-D-A",
+    "_name": "",
+    "_reference": "J9"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C270",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C270"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C271",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C271"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C272",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C272"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C273",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C273"
+  },
+  {
+    "LOCATION": "J10",
+    "MFG_PART_NO": "46765-1001",
+    "VALUE": "HDMI_MICRO_D_RA",
+    "_name": "",
+    "_reference": "J10"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "D1",
+    "VALUE": "2mA_75V",
+    "VENDOR_PN": "BAS16XV2T1G",
+    "_name": "",
+    "_reference": "D1"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R225",
+    "VALUE": "27.4K",
+    "_name": "",
+    "_reference": "R225"
+  },
+  {
+    "LOCATION": "R24",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R24"
+  },
+  {
+    "LOCATION": "J11",
+    "VALUE": "BSH-030-01-F-D-A",
+    "_name": "",
+    "_reference": "J11"
+  },
+  {
+    "LOCATION": "U26",
+    "VALUE": "HDMI/DVI XMTR",
+    "VENDOR_PN": "ADV7513BSWZ",
+    "_name": "",
+    "_reference": "U26"
+  },
+  {
+    "LOCATION": "FB16",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB16"
+  },
+  {
+    "LOCATION": "C196",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C196"
+  },
+  {
+    "LOCATION": "C257",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C257"
+  },
+  {
+    "LOCATION": "C262",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C262"
+  },
+  {
+    "LOCATION": "C144",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C144"
+  },
+  {
+    "LOCATION": "C145",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C145"
+  },
+  {
+    "LOCATION": "C233",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C233"
+  },
+  {
+    "LOCATION": "C234",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C234"
+  },
+  {
+    "LOCATION": "C235",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C235"
+  },
+  {
+    "LOCATION": "FB15",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB15"
+  },
+  {
+    "LOCATION": "C58",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C58"
+  },
+  {
+    "LOCATION": "C67",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C67"
+  },
+  {
+    "LOCATION": "C230",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C230"
+  },
+  {
+    "LOCATION": "C231",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C231"
+  },
+  {
+    "LOCATION": "C232",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C232"
+  },
+  {
+    "LOCATION": "FB14",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB14"
+  },
+  {
+    "LOCATION": "C263",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C263"
+  },
+  {
+    "LOCATION": "C266",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C266"
+  },
+  {
+    "LOCATION": "C267",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C267"
+  },
+  {
+    "LOCATION": "FB17",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB17"
+  },
+  {
+    "LOCATION": "U37",
+    "MFG_PART_NO": "TPD12S016PWR",
+    "VALUE": "ESD PROT ~ LEVEL SHIFT",
+    "_name": "",
+    "_reference": "U37"
+  },
+  {
+    "LOCATION": "C239",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C239"
+  },
+  {
+    "LOCATION": "C258",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C258"
+  },
+  {
+    "LOCATION": "C289",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C289"
+  },
+  {
+    "LOCATION": "R237",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R237"
+  },
+  {
+    "LOCATION": "R21",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R21"
+  },
+  {
+    "LOCATION": "R19",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R19"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C268",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C268"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C269",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C269"
+  },
+  {
+    "LOCATION": "R224",
+    "VALUE": "887",
+    "_name": "",
+    "_reference": "R224"
+  },
+  {
+    "LOCATION": "C296",
+    "VALUE": "10UF",
+    "_name": "",
+    "_reference": "C296"
+  },
+  {
+    "LOCATION": "FB18",
+    "VALUE": "120-OHM@100MHz",
+    "_name": "",
+    "_reference": "FB18"
+  },
+  {
+    "LOCATION": "C265",
+    "VALUE": "10nF",
+    "_name": "",
+    "_reference": "C265"
+  },
+  {
+    "LOCATION": "C264",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C264"
+  },
+  {
+    "LOCATION": "R22",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R22"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C236",
+    "VALUE": "6800PF",
+    "VOLTAGE": "100V",
+    "_name": "",
+    "_reference": "C236"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C237",
+    "VALUE": "6800PF",
+    "VOLTAGE": "100V",
+    "_name": "",
+    "_reference": "C237"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C238",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C238"
+  },
+  {
+    "LOCATION": "R276",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R276"
+  },
+  {
+    "LOCATION": "R277",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R277"
+  },
+  {
+    "LOCATION": "R278",
+    "VALUE": "24.9K",
+    "_name": "",
+    "_reference": "R278"
+  },
+  {
+    "LOCATION": "R279",
+    "VALUE": "100K",
+    "_name": "",
+    "_reference": "R279"
+  },
+  {
+    "LOCATION": "C242",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C242"
+  },
+  {
+    "LOCATION": "C243",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C243"
+  },
+  {
+    "LOCATION": "R280",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R280"
+  },
+  {
+    "LOCATION": "R283",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R283"
+  },
+  {
+    "LOCATION": "C247",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C247"
+  },
+  {
+    "LOCATION": "C248",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C248"
+  },
+  {
+    "LOCATION": "C250",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C250"
+  },
+  {
+    "LOCATION": "C251",
+    "VALUE": "1UF",
+    "_name": "",
+    "_reference": "C251"
+  },
+  {
+    "LOCATION": "C252",
+    "VALUE": "1UF",
+    "_name": "",
+    "_reference": "C252"
+  },
+  {
+    "LOCATION": "C241",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C241"
+  },
+  {
+    "LOCATION": "C253",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C253"
+  },
+  {
+    "LOCATION": "C254",
+    "VALUE": "1UF",
+    "_name": "",
+    "_reference": "C254"
+  },
+  {
+    "LOCATION": "C255",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C255"
+  },
+  {
+    "LOCATION": "C256",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C256"
+  },
+  {
+    "LOCATION": "PTH1",
+    "VALUE": "PTH125_200PAD",
+    "_name": "",
+    "_reference": "PTH1"
+  },
+  {
+    "LOCATION": "PTH2",
+    "VALUE": "PTH125_200PAD",
+    "_name": "",
+    "_reference": "PTH2"
+  },
+  {
+    "LOCATION": "PTH3",
+    "VALUE": "PTH125_200PAD",
+    "_name": "",
+    "_reference": "PTH3"
+  },
+  {
+    "LOCATION": "PTH4",
+    "VALUE": "PTH125_200PAD",
+    "_name": "",
+    "_reference": "PTH4"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "TP12",
+    "VALUE": "BLACK",
+    "_name": "",
+    "_reference": "TP12"
+  },
+  {
+    "LOCATION": "U29",
+    "VALUE": "DC-TO-DC PWR SUPPLY",
+    "VENDOR_PN": "ISL9307IRTAANFZ-T",
+    "_name": "",
+    "_reference": "U29"
+  },
+  {
+    "LOCATION": "U30",
+    "MFG_PART_NO": "ISL9305IRTHWBNLZ-T",
+    "VALUE": "DC-TO-DC PWR SUPPLY",
+    "VENDOR_PN": "ISL9305IRTHWBNLZ-T",
+    "_name": "",
+    "_reference": "U30"
+  },
+  {
+    "CURRENT": "2A",
+    "LOCATION": "L8",
+    "VALUE": "1.5uH",
+    "_name": "",
+    "_reference": "L8"
+  },
+  {
+    "CURRENT": "2A",
+    "LOCATION": "L10",
+    "VALUE": "1.5uH",
+    "_name": "",
+    "_reference": "L10"
+  },
+  {
+    "CURRENT": "2A",
+    "LOCATION": "L11",
+    "VALUE": "1.5uH",
+    "_name": "",
+    "_reference": "L11"
+  },
+  {
+    "LOCATION": "CR8",
+    "VALUE": "GREEN",
+    "VENDOR_PN": "LTST-C193KGKT-5A",
+    "_name": "",
+    "_reference": "CR8"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C287",
+    "VALUE": "4.7UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C287"
+  },
+  {
+    "LOCATION": "R288",
+    "VALUE": "620",
+    "_name": "",
+    "_reference": "R288"
+  },
+  {
+    "LOCATION": "F1",
+    "VALUE": "4A",
+    "VENDOR_PN": "ERB-RE4R00V",
+    "_name": "",
+    "_reference": "F1"
+  },
+  {
+    "LOCATION": "R327",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R327"
+  },
+  {
+    "LOCATION": "U36",
+    "VALUE": "NC7SZ125",
+    "_name": "",
+    "_reference": "U36"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C288",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C288"
+  },
+  {
+    "LOCATION": "R328",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R328"
+  },
+  {
+    "LOCATION": "R284",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R284"
+  },
+  {
+    "LOCATION": "R285",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R285"
+  },
+  {
+    "LOCATION": "J14",
+    "VALUE": "HDR_1X3_TH_VER",
+    "VENDOR_PN": "PBC36SAAN",
+    "_name": "",
+    "_reference": "J14"
+  },
+  {
+    "LOCATION": "J12",
+    "VALUE": "PJ-002A",
+    "_name": "",
+    "_reference": "J12"
+  },
+  {
+    "LOCATION": "C244",
+    "VALUE": "0.047UF",
+    "_name": "",
+    "_reference": "C244"
+  },
+  {
+    "LOCATION": "C245",
+    "VALUE": "10UF",
+    "VOLTAGE": "16V",
+    "_name": "",
+    "_reference": "C245"
+  },
+  {
+    "CURRENT": "2A",
+    "LOCATION": "L9",
+    "VALUE": "1.5uH",
+    "_name": "",
+    "_reference": "L9"
+  },
+  {
+    "LOCATION": "R282",
+    "VALUE": "69.8K",
+    "_name": "",
+    "_reference": "R282"
+  },
+  {
+    "LOCATION": "R281",
+    "VALUE": "56.2K",
+    "_name": "",
+    "_reference": "R281"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "TP14",
+    "VALUE": "BLACK",
+    "_name": "",
+    "_reference": "TP14"
+  },
+  {
+    "LOCATION": "R273",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R273"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "TP15",
+    "VALUE": "RED",
+    "_name": "",
+    "_reference": "TP15"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "TP13",
+    "VALUE": "RED",
+    "_name": "",
+    "_reference": "TP13"
+  },
+  {
+    "LOCATION": "R286",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R286"
+  },
+  {
+    "LOCATION": "R287",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R287"
+  },
+  {
+    "LOCATION": "R293",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R293"
+  },
+  {
+    "LOCATION": "R329",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R329"
+  },
+  {
+    "LOCATION": "R330",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R330"
+  },
+  {
+    "LOCATION": "R331",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R331"
+  },
+  {
+    "LOCATION": "R332",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R332"
+  },
+  {
+    "LOCATION": "R333",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R333"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "J15",
+    "VALUE": " HDR_1X2_TH_VER",
+    "VENDOR_PN": "0022102021",
+    "_name": "",
+    "_reference": "J15"
+  },
+  {
+    "LOCATION": "C218",
+    "VALUE": "100uF",
+    "VOLTAGE": "6.3V",
+    "_name": "",
+    "_reference": "C218"
+  },
+  {
+    "LOCATION": "R294",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R294"
+  },
+  {
+    "LOCATION": "C259",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C259"
+  },
+  {
+    "LOCATION": "U33",
+    "VALUE": "NC7SZ125",
+    "_name": "",
+    "_reference": "U33"
+  },
+  {
+    "LOCATION": "R295",
+    "VALUE": "1K",
+    "_name": "",
+    "_reference": "R295"
+  },
+  {
+    "LOCATION": "R298",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R298"
+  },
+  {
+    "LOCATION": "R299",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R299"
+  },
+  {
+    "LOCATION": "R300",
+    "VALUE": "4.75K",
+    "_name": "",
+    "_reference": "R300"
+  },
+  {
+    "LOCATION": "R301",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R301"
+  },
+  {
+    "LOCATION": "SW2",
+    "VALUE": "SW_PB_VERT",
+    "VENDOR_PN": "B3U-1000P",
+    "_name": "",
+    "_reference": "SW2"
+  },
+  {
+    "LOCATION": "J13",
+    "VALUE": "BSH-030-01-F-D-A",
+    "_name": "",
+    "_reference": "J13"
+  },
+  {
+    "LOCATION": "U34",
+    "MFG_PART_NO": "STM6904TWEDS6F",
+    "VALUE": "VOLT_MONITOR",
+    "_name": "",
+    "_reference": "U34"
+  },
+  {
+    "LOCATION": "R326",
+    "VALUE": "10K",
+    "_name": "",
+    "_reference": "R326"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "R95",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R95"
+  },
+  {
+    "LOCATION": "R96",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R96"
+  },
+  {
+    "LOCATION": "C290",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C290"
+  },
+  {
+    "LOCATION": "C291",
+    "VALUE": "0.1UF",
+    "_name": "",
+    "_reference": "C291"
+  },
+  {
+    "LOCATION": "CR10",
+    "VALUE": "GREEN",
+    "VENDOR_PN": "LTST-C193KGKT-5A",
+    "_name": "",
+    "_reference": "CR10"
+  },
+  {
+    "LOCATION": "R30",
+    "VALUE": "240",
+    "_name": "",
+    "_reference": "R30"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C279",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C279"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C274",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C274"
+  },
+  {
+    "LOCATION": "R98",
+    "VALUE": "0",
+    "_name": "",
+    "_reference": "R98"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C275",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C275"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C277",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C277"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C276",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C276"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C278",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C278"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C292",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C292"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C293",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C293"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C294",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C294"
+  },
+  {
+    "INSTALL": "DNI",
+    "LOCATION": "C295",
+    "VALUE": "0.47UF",
+    "_name": "",
+    "_reference": "C295"
+  }
+]
