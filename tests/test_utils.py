@@ -10,6 +10,7 @@ from allspice.utils.bom_generation import (
     generate_bom,
     generate_bom_for_altium,
     generate_bom_for_orcad,
+    generate_bom_for_system_capture,
 )
 from allspice.utils.list_components import list_components_for_altium, list_components_for_orcad
 from allspice.utils.netlist_generation import generate_netlist
@@ -530,12 +531,54 @@ def test_bom_generation_orcad_with_column_config(
     assert bom == csv_snapshot
 
 
-@pytest.mark.vcr
-def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
-    # Test the one-stop API which should automatically figure out the project
-    # type and call the appropriate function.
+def test_bom_generation_system_capture(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
-        request.node.name + "altium",
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+
+    attributes_mapping = {
+        "Description": "VALUE",
+        "Designator": ["LOCATION"],
+        "Part Number": ["VENDOR_PN", "PN"],
+    }
+    bom = generate_bom_for_system_capture(
+        instance,
+        repo,
+        "parallella_schematic.sdax",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="e03461e6bbe72f10b163462cf9325b0309e87201",
+    )
+
+    assert len(bom) == 564
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_system_capture_grouped_failure(request, instance, setup_for_generation):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    with pytest.raises(ValueError, match="Group by column Name not found in selected columns"):
+        generate_bom_for_system_capture(
+            instance,
+            repo,
+            "parallella_schematic.sdax",
+            {},
+            group_by=["Name"],
+        )
+
+
+# The following tests are for the generate_bom function, which is a wrapper
+# around the more specific functions for each EDA tool. We test the specific
+# functions above, so these tests are just to make sure the wrapper works as
+# expected.
+@pytest.mark.vcr
+def test_generate_bom_altium(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
         "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
     )
 
@@ -554,8 +597,12 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     )
     assert len(bom) == 913
     assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_generate_bom_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
-        request.node.name + "orcad",
+        request.node.name,
         "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
     )
     orcad_attributes_mapping = {
@@ -574,6 +621,44 @@ def test_generate_bom(request, instance, setup_for_generation, csv_snapshot):
     )
     assert len(bom) == 846
     assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_generate_bom_system_capture(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    system_capture_attributes_mapping = {
+        "Description": "VALUE",
+        "Designator": ["LOCATION"],
+        "Part Number": ["VENDOR_PN", "PN"],
+    }
+    bom = generate_bom(
+        instance,
+        repo,
+        "parallella_schematic.sdax",
+        system_capture_attributes_mapping,
+        ref="e03461e6bbe72f10b163462cf9325b0309e87201",
+    )
+    assert len(bom) == 564
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_generate_bom_system_capture_fails_with_variant(request, instance, setup_for_generation):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    with pytest.raises(ValueError, match="Variant is not supported for System"):
+        generate_bom(
+            instance,
+            repo,
+            "parallella_schematic.sdax",
+            {},
+            variant="Fitted",
+        )
 
 
 @pytest.mark.vcr
@@ -661,6 +746,76 @@ def test_altium_components_list_with_fitted_variant(
 
     assert len(components) == 945
     assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_system_capture_components_list(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    components = list_components.list_components_for_system_capture(
+        instance,
+        repo,
+        "parallella_schematic.sdax",
+        # We hard-code a ref so that this test is reproducible.
+        ref="e03461e6bbe72f10b163462cf9325b0309e87201",
+    )
+    assert len(components) == 564
+    assert components == json_snapshot
+
+
+# The following tests are for the list_components function, which is a wrapper
+# around the more specific functions for each EDA tool. We test the specific
+# functions above, so these tests are just to make sure the wrapper works as
+# expected.
+
+
+@pytest.mark.vcr
+def test_list_components_system_capture(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    components = list_components.list_components(
+        instance,
+        repo,
+        "parallella_schematic.sdax",
+        # We hard-code a ref so that this test is reproducible.
+        ref="e03461e6bbe72f10b163462cf9325b0309e87201",
+    )
+    assert len(components) == 564
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_list_components_system_capture_fails_with_variant(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+    with pytest.raises(ValueError, match="Variant is not supported for System"):
+        list_components.list_components(
+            instance,
+            repo,
+            "parallella_schematic.sdax",
+            variant="Fitted",
+        )
 
 
 @pytest.mark.vcr

@@ -11,8 +11,10 @@ from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
 from .list_components import (
     ComponentAttributes,
+    SupportedTool,
     list_components_for_altium,
     list_components_for_orcad,
+    list_components_for_system_capture,
 )
 
 QUANTITY_COLUMN_NAME = "Quantity"
@@ -115,11 +117,12 @@ def generate_bom(
     :param allspice_client: The AllSpice client to use.
     :param repository: The repository to generate the BOM for.
     :param source_file: The path to the source file from the root of the
-        repository. The source file must be a PrjPcb file for Altium projects
-        and a DSN file for OrCAD projects. For example, if the source file is
-        in the root of the repository and is named "Archimajor.PrjPcb", the
-        path would be "Archimajor.PrjPcb"; if the source file is in a folder
-        called "Schematics" and is named "Beagleplay.dsn", the path would be
+        repository. The source file must be a PrjPcb file for Altium projects a
+        DSN file for OrCAD projects, or an SDAX file for System Capture
+        projects. For example, if the source file is in the root of the
+        repository and is named "Archimajor.PrjPcb", the path would be
+        "Archimajor.PrjPcb"; if the source file is in a folder called
+        "Schematics" and is named "Beagleplay.dsn", the path would be
         "Schematics/Beagleplay.dsn".
     :param columns: A mapping of the columns in the BOM to the attributes in the
         project. See `ColumnMapping` and `ColumnConfig` for a detailed
@@ -148,9 +151,11 @@ def generate_bom(
     """
 
     if source_file.lower().endswith(".prjpcb"):
-        project_tool = "altium"
+        project_tool = SupportedTool.ALTIUM
     elif source_file.lower().endswith(".dsn"):
-        project_tool = "orcad"
+        project_tool = SupportedTool.ORCAD
+    elif source_file.lower().endswith(".sdax"):
+        project_tool = SupportedTool.SYSTEM_CAPTURE
     else:
         raise ValueError(
             "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
@@ -158,7 +163,7 @@ def generate_bom(
         )
 
     match project_tool:
-        case "altium":
+        case SupportedTool.ALTIUM:
             return generate_bom_for_altium(
                 allspice_client,
                 repository,
@@ -169,11 +174,23 @@ def generate_bom(
                 ref,
                 remove_non_bom_components,
             )
-        case "orcad":
+        case SupportedTool.ORCAD:
             if variant:
                 raise ValueError("Variant is not supported for OrCAD projects.")
 
             return generate_bom_for_orcad(
+                allspice_client,
+                repository,
+                source_file,
+                columns,
+                group_by,
+                ref,
+            )
+        case SupportedTool.SYSTEM_CAPTURE:
+            if variant:
+                raise ValueError("Variant is not supported for System Capture projects.")
+
+            return generate_bom_for_system_capture(
                 allspice_client,
                 repository,
                 source_file,
@@ -319,6 +336,63 @@ def generate_bom_for_orcad(
     bom = _group_entries(mapped_components, group_by, columns_mapping)
     bom = _sort_columns(bom, columns_mapping)
     bom = _filter_rows(bom, columns_mapping)
+
+    return bom
+
+
+def generate_bom_for_system_capture(
+    allspice_client: AllSpice,
+    repository: Repository,
+    sdax_path: str,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
+    ref: Ref = "main",
+) -> Bom:
+    """
+    Generate a BOM for a System Capture SDAX schematic.
+
+    :param allspice_client: The AllSpice client to use.
+    :param repository: The repository to generate the BOM for.
+    :param sdax_path: The System Catpure SDAX schematic file. This can be a
+        Content object returned by the AllSpice API, or a string containing the
+        path to the file in the repo.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        SDAX schematic. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
+    :param ref: The ref, i.e. branch, commit or git ref from which to take the
+        project files. Defaults to "main".
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
+    """
+
+    allspice_client.logger.debug(
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
+    )
+    if group_by is not None:
+        for group_column in group_by:
+            if group_column not in columns:
+                raise ValueError(f"Group by column {group_column} not found in selected columns")
+
+    components = list_components_for_system_capture(
+        allspice_client,
+        repository,
+        sdax_path,
+        ref,
+    )
+
+    columns_mapping = {
+        column_name: (
+            column_config
+            if isinstance(column_config, ColumnConfig)
+            else ColumnConfig(attributes=column_config)
+        )
+        for column_name, column_config in columns.items()
+    }
+
+    mapped_components = _map_attributes(components, columns_mapping)
+    bom = _group_entries(mapped_components, group_by, columns_mapping)
 
     return bom
 
