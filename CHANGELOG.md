@@ -1,5 +1,34 @@
 # Changelog
 
+## v3.4.0
+
+### What's Changed
+
+- Combine multi-part components for OrCAD by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/161
+
+  This fixes a correctness issue where multi-part components would be
+  represented as multiple components in the BOM.
+
+- Implement simple BOM post processing by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/157
+
+  This adds suite of configuration options to customize the output of the
+  `utils.bom_generation` module. You can now sort columns, filter rows using
+  regex, specify the separator for grouped columns, and more. See the docs of
+  the
+  [bom_generation module](https://allspiceio.github.io/py-allspice/allspice/utils/bom_generation.html)
+  for more details.
+
+- Support System Capture SDAX for components list and BOM by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/164
+
+  You can now list the components in a System Capture SDAX file using
+  `utils.list_components.list_components` and generate a BOM using
+  `utils.bom_generation.generate_bom`.
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.3.1...v3.4.0
+
 ## v3.3.1
 
 ### What's Changed
