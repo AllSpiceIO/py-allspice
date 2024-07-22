@@ -31,6 +31,16 @@ SchdocHierarchy = dict[str, list[tuple[str, int]]]
 ComponentAttributes = dict[str, str | None]
 
 
+class SupportedTool(Enum):
+    """
+    ECAD tools supported by list_components.
+    """
+
+    ALTIUM = "altium"
+    ORCAD = "orcad"
+    SYSTEM_CAPTURE = "system_capture"
+
+
 class VariationKind(Enum):
     FITTED_MOD_PARAMS = 0
     NOT_FITTED = 1
@@ -69,11 +79,11 @@ def list_components(
     """
 
     if source_file.lower().endswith(".prjpcb"):
-        project_tool = "altium"
+        project_tool = SupportedTool.ALTIUM
     elif source_file.lower().endswith(".dsn"):
-        project_tool = "orcad"
+        project_tool = SupportedTool.ORCAD
     elif source_file.lower().endswith(".sdax"):
-        project_tool = "system_capture"
+        project_tool = SupportedTool.SYSTEM_CAPTURE
     else:
         raise ValueError(
             "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
@@ -81,7 +91,7 @@ def list_components(
         )
 
     match project_tool:
-        case "altium":
+        case SupportedTool.ALTIUM:
             return list_components_for_altium(
                 allspice_client,
                 repository,
@@ -90,7 +100,7 @@ def list_components(
                 ref=ref,
                 combine_multi_part=combine_multi_part,
             )
-        case "orcad":
+        case SupportedTool.ORCAD:
             if variant:
                 raise ValueError("Variant is not supported for OrCAD projects.")
 
@@ -101,7 +111,7 @@ def list_components(
                 ref=ref,
                 combine_multi_part=combine_multi_part,
             )
-        case "system_capture":
+        case SupportedTool.SYSTEM_CAPTURE:
             if variant:
                 raise ValueError("Variant is not supported for System Capture projects.")
 

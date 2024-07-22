@@ -11,6 +11,7 @@ from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
 from .list_components import (
     ComponentAttributes,
+    SupportedTool,
     list_components_for_altium,
     list_components_for_orcad,
     list_components_for_system_capture,
@@ -150,11 +151,11 @@ def generate_bom(
     """
 
     if source_file.lower().endswith(".prjpcb"):
-        project_tool = "altium"
+        project_tool = SupportedTool.ALTIUM
     elif source_file.lower().endswith(".dsn"):
-        project_tool = "orcad"
+        project_tool = SupportedTool.ORCAD
     elif source_file.lower().endswith(".sdax"):
-        project_tool = "system_capture"
+        project_tool = SupportedTool.SYSTEM_CAPTURE
     else:
         raise ValueError(
             "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
@@ -162,7 +163,7 @@ def generate_bom(
         )
 
     match project_tool:
-        case "altium":
+        case SupportedTool.ALTIUM:
             return generate_bom_for_altium(
                 allspice_client,
                 repository,
@@ -173,7 +174,7 @@ def generate_bom(
                 ref,
                 remove_non_bom_components,
             )
-        case "orcad":
+        case SupportedTool.ORCAD:
             if variant:
                 raise ValueError("Variant is not supported for OrCAD projects.")
 
@@ -185,7 +186,7 @@ def generate_bom(
                 group_by,
                 ref,
             )
-        case "system_capture":
+        case SupportedTool.SYSTEM_CAPTURE:
             if variant:
                 raise ValueError("Variant is not supported for System Capture projects.")
 
