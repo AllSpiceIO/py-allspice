@@ -399,7 +399,7 @@ def generate_bom_for_system_capture(
 
 def _get_first_matching_key_value(
     alternatives: Union[list[str], str],
-    attributes: dict[str, str | None],
+    attributes: dict[str, str],
 ) -> Optional[str]:
     """
     Search for a series of alternative keys in a dictionary, and return the
@@ -437,7 +437,7 @@ def _map_attributes(
 
 def _group_entries(
     components: list[BomEntry],
-    group_by: list[str],
+    group_by: Optional[list[str]],
     columns_mapping: dict[str, ColumnConfig],
 ) -> list[BomEntry]:
     """
@@ -449,7 +449,7 @@ def _group_entries(
 
     # If grouping is off, we just add a quantity of 1 to each component and
     # return early.
-    if group_by is None:
+    if group_by is None or len(group_by) == 0:
         for component in components:
             component[QUANTITY_COLUMN_NAME] = "1"
         return components
@@ -496,7 +496,7 @@ def _group_entries(
     return rows
 
 
-def _remove_non_bom_components(components: list[dict[str, str]]) -> list[dict[str, str]]:
+def _remove_non_bom_components(components: list[ComponentAttributes]) -> list[ComponentAttributes]:
     """
     Filter out components of types that should not be included in the BOM.
     """

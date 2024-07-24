@@ -28,7 +28,7 @@ DESIGNATOR_COLUMN_NAME = "Designator"
 # Maps a sheet name to a list of tuples, where each tuple is a child sheet and
 # the number of repetitions of that child sheet in the parent sheet.
 SchdocHierarchy = dict[str, list[tuple[str, int]]]
-ComponentAttributes = dict[str, str | None]
+ComponentAttributes = dict[str, str]
 
 
 class SupportedTool(Enum):
@@ -52,9 +52,9 @@ def list_components(
     repository: Repository,
     source_file: str,
     variant: Optional[str] = None,
-    ref: str = "main",
+    ref: Ref = "main",
     combine_multi_part: bool = False,
-) -> list[dict[str, str]]:
+) -> list[ComponentAttributes]:
     """
     Get a list of all components in a schematic.
 
@@ -128,9 +128,9 @@ def list_components_for_altium(
     repository: Repository,
     prjpcb_file: str,
     variant: Optional[str] = None,
-    ref: str = "main",
+    ref: Ref = "main",
     combine_multi_part: bool = False,
-) -> list[dict[str, str]]:
+) -> list[ComponentAttributes]:
     """
     Get a list of all components in an Altium project.
 
@@ -170,6 +170,9 @@ def list_components_for_altium(
                 f"Variant {variant} not found in PrjPcb file. "
                 "Please check the name of the variant."
             )
+    else:
+        # Ensuring variant_details is always bound, even if it is not used.
+        variant_details = None
 
     schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
@@ -213,6 +216,10 @@ def list_components_for_altium(
         components = _combine_multi_part_components_for_altium(components)
 
     if variant is not None:
+        if variant_details is None:
+            # This should never happen, but mypy doesn't know that.
+            raise ValueError(f"Variant {variant} not found in PrjPcb file.")
+
         components = _apply_variations(components, variant_details, allspice_client.logger)
 
     return components
@@ -222,9 +229,9 @@ def list_components_for_orcad(
     allspice_client: AllSpice,
     repository: Repository,
     dsn_path: str,
-    ref: str = "main",
+    ref: Ref = "main",
     combine_multi_part: bool = False,
-) -> list[dict[str, str]]:
+) -> list[ComponentAttributes]:
     """
     Get a list of all components in an OrCAD DSN schematic.
 
@@ -256,7 +263,7 @@ def list_components_for_system_capture(
     repository: Repository,
     sdax_path: str,
     ref: Ref = "main",
-) -> list[dict[str, str]]:
+) -> list[ComponentAttributes]:
     """
     Get a list of all components in a System Capture SDAX schematic.
 
@@ -310,7 +317,7 @@ def _list_components_multi_page_schematic(
     return components
 
 
-def _fetch_generated_json(repo: Repository, file_path: str, ref: str) -> dict:
+def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
     attempts = 0
     while attempts < 5:
         try:
@@ -635,10 +642,10 @@ def _extract_variations(
 
 
 def _apply_variations(
-    components: list[dict[str, str | None]],
+    components: list[dict[str, str]],
     variant_details: configparser.SectionProxy,
     logger: Logger,
-) -> list[dict[str, str | None]]:
+) -> list[dict[str, str]]:
     """
     Apply the variations of a specific variant to the components. This should be
     done before the components are mapped to columns or grouped.
@@ -661,7 +668,7 @@ def _apply_variations(
     patch_component_unique_id: dict[str, str] = {}
     # The keys are the same as above, and the values are a key-value of the
     # parameter to patch and the value to patch it to.
-    components_to_patch: dict[tuple[str, str], tuple[str, str]] = {}
+    components_to_patch: dict[tuple[str, str], list[tuple[str, str]]] = {}
 
     for key, value in variant_details.items():
         # Note that this is in lowercase, as configparser stores all keys in

@@ -28,7 +28,7 @@ class NetlistEntry:
     pins: list[str]
 
 
-Netlist = list[str]
+Netlist = dict[NetlistEntry, set[str]]
 
 
 def generate_netlist(
@@ -53,7 +53,17 @@ def generate_netlist(
     allspice_client.logger.info(f"Generating netlist for {repository.name=} on {ref=}")
     allspice_client.logger.info(f"Fetching {pcb_file=}")
 
-    pcb_components = _extract_all_pcb_components(allspice_client.logger, repository, ref, pcb_file)
+    if isinstance(pcb_file, Content):
+        pcb_file_path = pcb_file.path
+    else:
+        pcb_file_path = pcb_file
+
+    pcb_components = _extract_all_pcb_components(
+        allspice_client.logger,
+        repository,
+        ref,
+        pcb_file_path,
+    )
 
     return _group_netlist_entries(pcb_components)
 
@@ -96,7 +106,7 @@ def _extract_all_pcb_components(
     return components
 
 
-def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry]:
+def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry, set[str]]:
     """
     Group connected pins by the net
     """
