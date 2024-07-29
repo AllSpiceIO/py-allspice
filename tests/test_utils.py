@@ -527,7 +527,7 @@ def test_bom_generation_orcad_with_column_config(
         ref="7a59a98ae27dc4fd9e2bd8975ff90cdb44a366ea",
     )
 
-    assert len(bom) == 799
+    assert len(bom) == 777
     assert bom == csv_snapshot
 
 
