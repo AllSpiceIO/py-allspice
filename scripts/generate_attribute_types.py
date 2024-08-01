@@ -28,6 +28,7 @@ import monkeytype.cli
 import monkeytype.stubs
 import monkeytype.typing
 import pytest
+from libcst import codemod
 from libcst.codemod.visitors import ApplyTypeAnnotationsVisitor
 
 HOOKED_FUNCTION_NAME = "parse_response"
@@ -305,7 +306,7 @@ def main():
 
     stub_module = cst.parse_module(module_stub.render())
     source_module = cst.parse_module(source)
-    context = cst.codemod.CodemodContext()
+    context = codemod.CodemodContext()
     CustomApplyTypeAnnotationsVisitor.store_stub_in_context(
         context,
         stub_module,

@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Mapping, Optional, Union
 
 import requests
 import urllib3
@@ -92,7 +92,7 @@ class AllSpice:
         self.logger.debug("Url: %s" % url)
         return url
 
-    def __get(self, endpoint: str, params=frozendict()) -> requests.Response:
+    def __get(self, endpoint: str, params: Mapping = frozendict()) -> requests.Response:
         request = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=params)
         if request.status_code not in [200, 201]:
             message = f"Received status code: {request.status_code} ({request.url})"
@@ -116,7 +116,7 @@ class AllSpice:
             return json.loads(result.text)
         return {}
 
-    def requests_get(self, endpoint: str, params=frozendict(), sudo=None):
+    def requests_get(self, endpoint: str, params: Mapping = frozendict(), sudo=None):
         combined_params = {}
         combined_params.update(params)
         if sudo:
@@ -202,7 +202,9 @@ class AllSpice:
         :return: The JSON response parsed as a dict
         """
 
-        args = {
+        # This should ideally be a TypedDict of the type of arguments taken by
+        # `requests.post`.
+        args: dict[str, Any] = {
             "headers": self.headers.copy(),
         }
         if data is not None:
@@ -258,14 +260,14 @@ class AllSpice:
         results = self.requests_get(AllSpice.GET_USERS_ADMIN)
         return [User.parse_response(self, result) for result in results]
 
-    def get_user_by_email(self, email: str) -> User:
+    def get_user_by_email(self, email: str) -> Optional[User]:
         users = self.get_users()
         for user in users:
             if user.email == email or email in user.emails:
                 return user
         return None
 
-    def get_user_by_name(self, username: str) -> User:
+    def get_user_by_name(self, username: str) -> Optional[User]:
         users = self.get_users()
         for user in users:
             if user.username == username:

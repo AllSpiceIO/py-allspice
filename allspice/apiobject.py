@@ -10,6 +10,7 @@ from typing import (
     Any,
     ClassVar,
     Dict,
+    FrozenSet,
     List,
     Literal,
     Optional,
@@ -18,6 +19,11 @@ from typing import (
     Tuple,
     Union,
 )
+
+try:
+    from typing_extensions import Self
+except ImportError:
+    from typing import Self
 
 from .baseapiobject import ApiObject, ReadonlyApiObject
 from .exceptions import ConflictException, NotFoundException
@@ -70,7 +76,7 @@ class Organization(ApiObject):
         return hash(self.allspice_client) ^ hash(self.name)
 
     @classmethod
-    def request(cls, allspice_client, name: str) -> "Organization":
+    def request(cls, allspice_client, name: str) -> Self:
         return cls._request(allspice_client, {"name": name})
 
     @classmethod
@@ -131,7 +137,7 @@ class Organization(ApiObject):
         else:
             self.allspice_client.logger.error(result["message"])
             raise Exception("Repository not created... (gitea: %s)" % result["message"])
-        return Repository.parse_response(self, result)
+        return Repository.parse_response(self.allspice_client, result)
 
     def get_repositories(self) -> List["Repository"]:
         results = self.allspice_client.requests_get_paginated(
@@ -359,7 +365,7 @@ class User(ApiObject):
         else:
             self.allspice_client.logger.error(result["message"])
             raise Exception("Repository not created... (gitea: %s)" % result["message"])
-        return Repository.parse_response(self, result)
+        return Repository.parse_response(self.allspice_client, result)
 
     def get_repositories(self) -> List["Repository"]:
         """Get all Repositories owned by this User."""
@@ -381,7 +387,7 @@ class User(ApiObject):
     def get_accessible_repos(self) -> List["Repository"]:
         """Get all Repositories accessible by the logged in User."""
         results = self.allspice_client.requests_get("/user/repos", sudo=self)
-        return [Repository.parse_response(self, result) for result in results]
+        return [Repository.parse_response(self.allspice_client, result) for result in results]
 
     def __request_emails(self):
         result = self.allspice_client.requests_get(User.USER_MAIL % self.login)
@@ -562,7 +568,7 @@ class Repository(ApiObject):
             if r["email"] == ""
             else User.parse_response(allspice_client, r)
         ),
-        "updated_at": lambda allspice_client, t: Util.convert_time(t),
+        "updated_at": lambda _, t: Util.convert_time(t),
     }
 
     @classmethod
@@ -747,7 +753,6 @@ class Repository(ApiObject):
             setattr(issue, "_repository", self)
             # This is mostly for compatibility with an older implementation
             Issue._add_read_property("repo", self, issue)
-            Issue._add_read_property("owner", self.owner, issue)
             issues.append(issue)
 
         return issues
@@ -909,7 +914,7 @@ class Repository(ApiObject):
         :return: The created Design Review
         """
 
-        data = {
+        data: dict[str, Any] = {
             "title": title,
         }
 
@@ -1002,11 +1007,11 @@ class Repository(ApiObject):
 
     def transfer_ownership(
         self,
-        new_owner: Union["User", "Organization"],
-        new_teams: Set["Team"] = frozenset(),
+        new_owner: Union[User, Organization],
+        new_teams: Set[Team] | FrozenSet[Team] = frozenset(),
     ):
         url = Repository.REPO_TRANSFER.format(owner=self.owner.username, repo=self.name)
-        data = {"new_owner": new_owner.username}
+        data: dict[str, Any] = {"new_owner": new_owner.username}
         if isinstance(new_owner, Organization):
             new_team_ids = [team.id for team in new_teams if team in new_owner.get_teams()]
             data["team_ids"] = new_team_ids
@@ -1014,10 +1019,10 @@ class Repository(ApiObject):
         # TODO: make sure this instance is either updated or discarded
 
     def get_git_content(
-        self: Optional[str] = None,
+        self,
         ref: Optional["Ref"] = None,
         commit: "Optional[Commit]" = None,
-    ) -> List["Content"]:
+    ) -> List[Content]:
         """
         Get a list of all files in the repository.
 
@@ -1430,8 +1435,8 @@ class Milestone(ApiObject):
         return hash(self.allspice_client) ^ hash(self.id)
 
     _fields_to_parsers: ClassVar[dict] = {
-        "closed_at": lambda allspice_client, t: Util.convert_time(t),
-        "due_on": lambda allspice_client, t: Util.convert_time(t),
+        "closed_at": lambda _, t: Util.convert_time(t),
+        "due_on": lambda _, t: Util.convert_time(t),
     }
 
     _patchable_fields: ClassVar[set[str]] = {
@@ -1508,10 +1513,10 @@ class Comment(ApiObject):
     def __eq__(self, other):
         if not isinstance(other, Comment):
             return False
-        return self.repo == other.repo and self.id == other.id
+        return self.repository == other.repository and self.id == other.id
 
     def __hash__(self):
-        return hash(self.repo) ^ hash(self.id)
+        return hash(self.repository) ^ hash(self.id)
 
     @classmethod
     def request(cls, allspice_client, owner: str, repo: str, id: str) -> "Comment":
@@ -1580,7 +1585,7 @@ class Comment(ApiObject):
         :return: The created attachment.
         """
 
-        args = {
+        args: dict[str, Any] = {
             "files": {"attachment": file},
         }
         if name is not None:
@@ -1702,6 +1707,9 @@ class Commit(ReadonlyApiObject):
     @cached_property
     def _fields_for_path(self) -> dict[str, str]:
         matches = self.URL_REGEXP.search(self.url)
+        if not matches:
+            raise ValueError(f"Invalid commit URL: {self.url}")
+
         return {
             "owner": matches.group(1),
             "repo": matches.group(2),
@@ -1717,7 +1725,7 @@ class CommitStatusState(Enum):
     WARNING = "warning"
 
     @classmethod
-    def try_init(cls, value: str) -> Union[CommitStatusState, str]:
+    def try_init(cls, value: str) -> CommitStatusState | str:
         """
         Try converting a string to the enum, and if that fails, return the
         string itself.
@@ -1726,7 +1734,7 @@ class CommitStatusState(Enum):
         try:
             return cls(value)
         except ValueError:
-            value
+            return value
 
 
 class CommitStatus(ReadonlyApiObject):
@@ -1838,10 +1846,10 @@ class Issue(ApiObject):
     def __eq__(self, other):
         if not isinstance(other, Issue):
             return False
-        return self.repo == other.repo and self.id == other.id
+        return self.repository == other.repository and self.id == other.id
 
     def __hash__(self):
-        return hash(self.repo) ^ hash(self.id)
+        return hash(self.repository) ^ hash(self.id)
 
     _fields_to_parsers: ClassVar[dict] = {
         "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client, m),
@@ -1880,9 +1888,10 @@ class Issue(ApiObject):
         api_object = cls._request(allspice_client, {"owner": owner, "repo": repo, "index": number})
         # The repository in the response is a RepositoryMeta object, so request
         # the full repository object and add it to the issue object.
-        repo = Repository.request(allspice_client, owner, repo)
-        setattr(api_object, "_repository", repo)
-        cls._add_read_property("repo", repo, api_object)
+        repository = Repository.request(allspice_client, owner, repo)
+        setattr(api_object, "_repository", repository)
+        # For legacy reasons
+        cls._add_read_property("repo", repository, api_object)
         return api_object
 
     @classmethod
@@ -1895,9 +1904,13 @@ class Issue(ApiObject):
         cls._add_read_property("repo", repo, issue)
         return issue
 
+    @property
+    def owner(self) -> Organization | User:
+        return self.repository.owner
+
     def get_time_sum(self, user: User) -> int:
         results = self.allspice_client.requests_get(
-            Issue.GET_TIME % (self.owner.username, self.repo.name, self.number)
+            Issue.GET_TIME % (self.owner.username, self.repository.name, self.number)
         )
         return sum(result["time"] for result in results if result and result["user_id"] == user.id)
 
@@ -1921,7 +1934,7 @@ class Issue(ApiObject):
 
         results = self.allspice_client.requests_get(
             self.GET_COMMENTS.format(
-                owner=self.owner.username, repo=self.repo.name, index=self.number
+                owner=self.owner.username, repo=self.repository.name, index=self.number
             )
         )
 
@@ -1931,7 +1944,7 @@ class Issue(ApiObject):
         """https://hub.allspice.io/api/swagger#/issue/issueCreateComment"""
 
         path = self.GET_COMMENTS.format(
-            owner=self.owner.username, repo=self.repo.name, index=self.number
+            owner=self.owner.username, repo=self.repository.name, index=self.number
         )
 
         response = self.allspice_client.requests_post(path, data={"body": body})
@@ -2004,10 +2017,10 @@ class DesignReview(ApiObject):
     def __eq__(self, other):
         if not isinstance(other, DesignReview):
             return False
-        return self.repo == other.repo and self.id == other.id
+        return self.repository == other.repository and self.id == other.id
 
     def __hash__(self):
-        return hash(self.repo) ^ hash(self.id)
+        return hash(self.repository) ^ hash(self.id)
 
     @classmethod
     def parse_response(cls, allspice_client, result) -> "DesignReview":
@@ -2224,6 +2237,7 @@ class Release(ApiObject):
     prerelease: bool
     published_at: str
     repo: Optional["Repository"]
+    repository: Optional["Repository"]
     tag_name: str
     tarball_url: str
     target_commitish: str
@@ -2262,6 +2276,8 @@ class Release(ApiObject):
     @classmethod
     def parse_response(cls, allspice_client, result, repo) -> Release:
         release = super().parse_response(allspice_client, result)
+        Release._add_read_property("repository", repo, release)
+        # For legacy reasons
         Release._add_read_property("repo", repo, release)
         setattr(
             release,
@@ -2283,8 +2299,8 @@ class Release(ApiObject):
     ) -> Release:
         args = {"owner": owner, "repo": repo, "id": id}
         release_response = cls._get_gitea_api_object(allspice_client, args)
-        repo = Repository.request(allspice_client, owner, repo)
-        release = cls.parse_response(allspice_client, release_response, repo)
+        repository = Repository.request(allspice_client, owner, repo)
+        release = cls.parse_response(allspice_client, release_response, repository)
         return release
 
     def commit(self):
@@ -2302,7 +2318,7 @@ class Release(ApiObject):
         :return: The created asset.
         """
 
-        args = {"files": {"attachment": file}}
+        args: dict[str, Any] = {"files": {"attachment": file}}
         if name is not None:
             args["params"] = {"name": name}
 
@@ -2453,12 +2469,13 @@ class Content(ReadonlyApiObject):
         super().__init__(allspice_client)
 
     def __eq__(self, other):
-        if not isinstance(other, Team):
+        if not isinstance(other, Content):
             return False
-        return self.repo == self.repo and self.sha == other.sha and self.name == other.name
+
+        return self.sha == other.sha and self.name == other.name
 
     def __hash__(self):
-        return hash(self.repo) ^ hash(self.sha) ^ hash(self.name)
+        return hash(self.sha) ^ hash(self.name)
 
 
 Ref = Union[Branch, Commit, str]
