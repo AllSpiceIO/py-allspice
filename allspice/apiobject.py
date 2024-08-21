@@ -445,6 +445,30 @@ class Branch(ReadonlyApiObject):
         return cls._request(allspice_client, {"owner": owner, "repo": repo, "branch": branch})
 
 
+class GitEntry(ReadonlyApiObject):
+    """
+    An object representing a file or directory in the Git tree.
+    """
+
+    mode: str
+    path: str
+    sha: str
+    size: int
+    type: str
+    url: str
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, GitEntry):
+            return False
+        return self.sha == other.sha
+
+    def __hash__(self) -> int:
+        return hash(self.sha)
+
+
 class Repository(ApiObject):
     allow_manual_merge: Any
     allow_merge_commits: bool
@@ -530,6 +554,7 @@ class Repository(ApiObject):
     REPO_GET_RELEASE_BY_TAG = "/repos/{owner}/{repo}/releases/tags/{tag}"
     REPO_GET_COMMIT_STATUS = "/repos/{owner}/{repo}/statuses/{sha}"
     REPO_GET_RAW_FILE = "/repos/{owner}/{repo}/raw/{path}"
+    REPO_GET_TREE = "/repos/{owner}/{repo}/git/trees/{ref}"
 
     class ArchiveFormat(Enum):
         """
@@ -1024,7 +1049,7 @@ class Repository(ApiObject):
         commit: "Optional[Commit]" = None,
     ) -> List[Content]:
         """
-        Get a list of all files in the repository.
+        Get the metadata for all files in the root directory.
 
         https://hub.allspice.io/api/swagger#/repository/repoGetContentsList
 
@@ -1039,6 +1064,23 @@ class Repository(ApiObject):
             for f in self.allspice_client.requests_get(url, data)
         ]
         return result
+
+    def get_tree(self, ref: Optional[Ref] = None, recursive: bool = False) -> List[GitEntry]:
+        """
+        Get the repository's tree on a given ref.
+
+        By default, this will only return the top-level entries in the tree. If you want
+        to get the entire tree, set `recursive` to True.
+
+        :param ref: The ref to get the tree from. If not provided, the default branch is used.
+        :param recursive: Whether to get the entire tree or just the top-level entries.
+        """
+
+        ref = Util.data_params_for_ref(ref).get("ref", self.default_branch)
+        url = self.REPO_GET_TREE.format(owner=self.owner.username, repo=self.name, ref=ref)
+        params = {"recursive": recursive}
+        results = self.allspice_client.requests_get_paginated(url, params=params)
+        return [GitEntry.parse_response(self.allspice_client, result) for result in results]
 
     def get_file_content(
         self,
