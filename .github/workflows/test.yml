@@ -120,7 +120,7 @@ jobs:
           python ./scripts/report_coverage.py coverage.xml origin/${{ github.base_ref }} --output coverage.md
       - name: Upload coverage report
         # Only upload one of the coverage reports, since they should be the same.
-        if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' }}
+        if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' && github.actor != 'dependabot[bot]' }}
         uses: mshick/add-pr-comment@v2
         with:
           message-path: coverage.md
