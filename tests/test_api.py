@@ -176,6 +176,13 @@ def test_add_content_to_repo(instance):
     ]
 
 
+def test_get_repo_tree(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    tree = repo.get_tree()
+    assert len(tree) == 2
+    assert tree[0].path == "README.md"
+
+
 def test_get_json_before_generated(instance):
     repo = Repository.request(instance, test_org, test_repo)
     with pytest.raises(NotYetGeneratedException):
