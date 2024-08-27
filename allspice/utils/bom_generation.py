@@ -12,9 +12,8 @@ from ..apiobject import Ref, Repository
 from .list_components import (
     ComponentAttributes,
     SupportedTool,
-    list_components_for_altium,
-    list_components_for_orcad,
-    list_components_for_system_capture,
+    infer_project_tool,
+    list_components,
 )
 
 QUANTITY_COLUMN_NAME = "Quantity"
@@ -128,13 +127,14 @@ def generate_bom(
         project. See `ColumnMapping` and `ColumnConfig` for a detailed
         description of the column configuration.
 
-        Note that special attributes are added by this function depending on the
-        project tool. For Altium projects, these are "_part_id", "_description",
-        "_unique_id" and "_kind", which are the Library Reference, Description,
-        Unique ID and Component Type respectively. For OrCAD projects, "_name"
-        is added, which is the name of the component, and "_reference" and
-        "_logical_reference" may be added, which are the name of the component,
-        and the logical reference of a multi-part component respectively.
+        Note that special attributes are added by this function depending on
+        the project tool. For Altium projects, these are "_part_id",
+        "_description", "_unique_id" and "_kind", which are the Library
+        Reference, Description, Unique ID and Component Type respectively. For
+        OrCAD and System Capture projects, "_name" is added, which is the name
+        of the component, and "_reference" and "_logical_reference" may be
+        added, which are the name of the component, and the logical reference
+        of a multi-part component respectively.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
@@ -150,54 +150,44 @@ def generate_bom(
         a column name and the value is the value for that column.
     """
 
-    if source_file.lower().endswith(".prjpcb"):
-        project_tool = SupportedTool.ALTIUM
-    elif source_file.lower().endswith(".dsn"):
-        project_tool = SupportedTool.ORCAD
-    elif source_file.lower().endswith(".sdax"):
-        project_tool = SupportedTool.SYSTEM_CAPTURE
-    else:
-        raise ValueError(
-            "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
-            "projects."
+    allspice_client.logger.info(
+        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
+    )
+
+    if group_by is not None:
+        for group_column in group_by:
+            if group_column not in columns:
+                raise ValueError(f"Group by column {group_column} not found in selected columns")
+
+    components = list_components(
+        allspice_client,
+        repository,
+        source_file,
+        variant,
+        ref,
+        combine_multi_part=True,
+    )
+
+    if remove_non_bom_components:
+        project_tool = infer_project_tool(source_file)
+        if project_tool == SupportedTool.ALTIUM:
+            components = _remove_non_bom_components(components)
+
+    columns_mapping = {
+        column_name: (
+            column_config
+            if isinstance(column_config, ColumnConfig)
+            else ColumnConfig(attributes=column_config)
         )
+        for column_name, column_config in columns.items()
+    }
 
-    match project_tool:
-        case SupportedTool.ALTIUM:
-            return generate_bom_for_altium(
-                allspice_client,
-                repository,
-                source_file,
-                columns,
-                group_by,
-                variant,
-                ref,
-                remove_non_bom_components,
-            )
-        case SupportedTool.ORCAD:
-            if variant:
-                raise ValueError("Variant is not supported for OrCAD projects.")
+    mapped_components = _map_attributes(components, columns_mapping)
+    bom = _group_entries(mapped_components, group_by, columns_mapping)
+    bom = _filter_rows(bom, columns_mapping)
+    bom = _sort_columns(bom, columns_mapping)
 
-            return generate_bom_for_orcad(
-                allspice_client,
-                repository,
-                source_file,
-                columns,
-                group_by,
-                ref,
-            )
-        case SupportedTool.SYSTEM_CAPTURE:
-            if variant:
-                raise ValueError("Variant is not supported for System Capture projects.")
-
-            return generate_bom_for_system_capture(
-                allspice_client,
-                repository,
-                source_file,
-                columns,
-                group_by,
-                ref,
-            )
+    return bom
 
 
 def generate_bom_for_altium(
@@ -239,42 +229,16 @@ def generate_bom_for_altium(
         a column name and the value is the value for that column.
     """
 
-    allspice_client.logger.info(
-        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
-    )
-
-    if group_by is not None:
-        for group_column in group_by:
-            if group_column not in columns:
-                raise ValueError(f"Group by column {group_column} not found in selected columns")
-
-    components = list_components_for_altium(
+    return generate_bom(
         allspice_client,
         repository,
         prjpcb_file,
-        variant=variant,
-        ref=ref,
-        combine_multi_part=True,
+        columns,
+        group_by,
+        variant,
+        ref,
+        remove_non_bom_components,
     )
-
-    if remove_non_bom_components:
-        components = _remove_non_bom_components(components)
-
-    columns_mapping = {
-        column_name: (
-            column_config
-            if isinstance(column_config, ColumnConfig)
-            else ColumnConfig(attributes=column_config)
-        )
-        for column_name, column_config in columns.items()
-    }
-
-    mapped_components = _map_attributes(components, columns_mapping)
-    bom = _group_entries(mapped_components, group_by, columns_mapping)
-    bom = _filter_rows(bom, columns_mapping)
-    bom = _sort_columns(bom, columns_mapping)
-
-    return bom
 
 
 def generate_bom_for_orcad(
@@ -307,37 +271,15 @@ def generate_bom_for_orcad(
         a column name and the value is the value for that column.
     """
 
-    allspice_client.logger.debug(
-        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
-    )
-    if group_by is not None:
-        for group_column in group_by:
-            if group_column not in columns:
-                raise ValueError(f"Group by column {group_column} not found in selected columns")
-
-    components = list_components_for_orcad(
+    return generate_bom(
         allspice_client,
         repository,
         dsn_path,
-        ref,
-        combine_multi_part=True,
+        columns,
+        group_by,
+        ref=ref,
+        remove_non_bom_components=False,
     )
-
-    columns_mapping = {
-        column_name: (
-            column_config
-            if isinstance(column_config, ColumnConfig)
-            else ColumnConfig(attributes=column_config)
-        )
-        for column_name, column_config in columns.items()
-    }
-
-    mapped_components = _map_attributes(components, columns_mapping)
-    bom = _group_entries(mapped_components, group_by, columns_mapping)
-    bom = _sort_columns(bom, columns_mapping)
-    bom = _filter_rows(bom, columns_mapping)
-
-    return bom
 
 
 def generate_bom_for_system_capture(
@@ -367,34 +309,15 @@ def generate_bom_for_system_capture(
         a column name and the value is the value for that column.
     """
 
-    allspice_client.logger.debug(
-        f"Generating BOM for {repository.get_full_name()=} on {ref=} using {columns=}"
-    )
-    if group_by is not None:
-        for group_column in group_by:
-            if group_column not in columns:
-                raise ValueError(f"Group by column {group_column} not found in selected columns")
-
-    components = list_components_for_system_capture(
+    return generate_bom(
         allspice_client,
         repository,
         sdax_path,
-        ref,
+        columns,
+        group_by,
+        ref=ref,
+        remove_non_bom_components=False,
     )
-
-    columns_mapping = {
-        column_name: (
-            column_config
-            if isinstance(column_config, ColumnConfig)
-            else ColumnConfig(attributes=column_config)
-        )
-        for column_name, column_config in columns.items()
-    }
-
-    mapped_components = _map_attributes(components, columns_mapping)
-    bom = _group_entries(mapped_components, group_by, columns_mapping)
-
-    return bom
 
 
 def _get_first_matching_key_value(
