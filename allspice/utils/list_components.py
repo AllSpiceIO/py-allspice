@@ -58,6 +58,16 @@ def list_components(
     """
     Get a list of all components in a schematic.
 
+
+    Note that special attributes are added by this function depending on
+    the project tool. For Altium projects, these are "_part_id",
+    "_description", "_unique_id" and "_kind", which are the Library
+    Reference, Description, Unique ID and Component Type respectively. For
+    OrCAD and System Capture projects, "_name" is added, which is the name
+    of the component, and "_reference" and "_logical_reference" may be
+    added, which are the name of the component, and the logical reference
+    of a multi-part component respectively.
+
     :param client: An AllSpice client instance.
     :param repository: The repository containing the schematic.
     :param source_file: The path to the schematic file from the repo root. The
@@ -74,22 +84,10 @@ def list_components(
         into a single component.
     :return: A list of all components in the schematic. Each component is a
         dictionary with the keys being the attributes of the component and the
-        values being the values of the attributes. A `_name` attribute is added
-        to each component to store the name of the component.
+        values being the values of the attributes.
     """
 
-    if source_file.lower().endswith(".prjpcb"):
-        project_tool = SupportedTool.ALTIUM
-    elif source_file.lower().endswith(".dsn"):
-        project_tool = SupportedTool.ORCAD
-    elif source_file.lower().endswith(".sdax"):
-        project_tool = SupportedTool.SYSTEM_CAPTURE
-    else:
-        raise ValueError(
-            "The source file must be a PrjPcb file for Altium projects or a DSN file for OrCAD "
-            "projects."
-        )
-
+    project_tool = infer_project_tool(source_file)
     match project_tool:
         case SupportedTool.ALTIUM:
             return list_components_for_altium(
@@ -278,6 +276,27 @@ def list_components_for_system_capture(
     """
 
     return _list_components_multi_page_schematic(allspice_client, repository, sdax_path, ref)
+
+
+def infer_project_tool(source_file: str) -> SupportedTool:
+    """
+    Infer the ECAD tool used in a project from the file extension.
+    """
+
+    if source_file.lower().endswith(".prjpcb"):
+        return SupportedTool.ALTIUM
+    elif source_file.lower().endswith(".dsn"):
+        return SupportedTool.ORCAD
+    elif source_file.lower().endswith(".sdax"):
+        return SupportedTool.SYSTEM_CAPTURE
+    else:
+        raise ValueError("""
+The source file for generate_bom must be:
+
+- A PrjPcb file for Altium projects; or
+- A DSN file for OrCAD projects; or
+- An SDAX file for System Capture projects.
+        """)
 
 
 def _list_components_multi_page_schematic(
