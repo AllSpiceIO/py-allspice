@@ -220,7 +220,7 @@ def list_components_for_altium(
 
         components = _apply_variations(components, variant_details, allspice_client.logger)
 
-    return components
+    return _filter_blank_components(components, allspice_client.logger)
 
 
 def list_components_for_orcad(
@@ -333,7 +333,7 @@ def _list_components_multi_page_schematic(
                 component_attributes[attribute["name"]] = attribute["value"]
             components.append(component_attributes)
 
-    return components
+    return _filter_blank_components(components, allspice_client.logger)
 
 
 def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
@@ -767,5 +767,27 @@ def _apply_variations(
             final_components.append(new_component)
         else:
             final_components.append(component)
+
+    return final_components
+
+
+def _filter_blank_components(
+    components: list[ComponentAttributes],
+    logger: Logger,
+) -> list[ComponentAttributes]:
+    """
+    Remove components that have no attributes, or components for which all
+    attributes are empty strings.
+
+    This funtion also debug logs a warning for components that have no attributes.
+    """
+
+    final_components = []
+
+    for component in components:
+        if not any(component.values()):
+            logger.debug(f"Component {component} has no attributes; skipping.")
+            continue
+        final_components.append(component)
 
     return final_components
