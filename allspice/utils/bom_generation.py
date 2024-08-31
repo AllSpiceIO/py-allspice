@@ -86,6 +86,13 @@ class ColumnConfig:
     the BOM. Otherwise, both will be included.
     """
 
+    skip_in_output: bool = False
+    """
+    If True, this column will be skipped in the output BOM. This can be useful
+    for columns that are used for grouping, sorting or filtering, but should
+    not be included in the final BOM.
+    """
+
 
 ColumnsMapping = dict[str, ColumnConfig | list[str] | str]
 """
@@ -171,7 +178,7 @@ def generate_bom(
     if remove_non_bom_components:
         project_tool = infer_project_tool(source_file)
         if project_tool == SupportedTool.ALTIUM:
-            components = _remove_non_bom_components(components)
+            components = _remove_altium_non_bom_components(components)
 
     columns_mapping = {
         column_name: (
@@ -186,6 +193,7 @@ def generate_bom(
     bom = _group_entries(mapped_components, group_by, columns_mapping)
     bom = _filter_rows(bom, columns_mapping)
     bom = _sort_columns(bom, columns_mapping)
+    bom = _skip_columns(bom, columns_mapping)
 
     return bom
 
@@ -419,7 +427,9 @@ def _group_entries(
     return rows
 
 
-def _remove_non_bom_components(components: list[ComponentAttributes]) -> list[ComponentAttributes]:
+def _remove_altium_non_bom_components(
+    components: list[ComponentAttributes],
+) -> list[ComponentAttributes]:
     """
     Filter out components of types that should not be included in the BOM.
     """
@@ -497,4 +507,19 @@ def _filter_rows(bom_entries: Bom, columns_config: dict[str, ColumnConfig]) -> B
         row
         for row in bom_entries
         if not any(re.search(pattern, row[column]) for column, pattern in columns_to_filter.items())
+    ]
+
+
+def _skip_columns(bom_entries: Bom, columns_config: dict[str, ColumnConfig]) -> Bom:
+    """
+    Skip columns based on the configuration.
+    """
+
+    return [
+        {
+            column: value
+            for column, value in row.items()
+            if column not in columns_config or not columns_config[column].skip_in_output
+        }
+        for row in bom_entries
     ]

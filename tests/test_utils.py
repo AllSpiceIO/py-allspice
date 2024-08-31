@@ -413,9 +413,14 @@ def test_bom_generation_altium_with_column_config(
             attributes=["Manufacturer", "MANUFACTURER"],
             sort=ColumnConfig.SortOrder.DESC,
         ),
+        "tolerance": ColumnConfig(
+            attributes=["Tolerance", "TOLERANCE"],
+            sort=ColumnConfig.SortOrder.ASC,
+            remove_rows_matching="-NA-",
+            skip_in_output=True,
+        ),
         "part_number": ColumnConfig(
             attributes=["PART", "MANUFACTURER #"],
-            remove_rows_matching="^CRC",
             sort=ColumnConfig.SortOrder.ASC,
         ),
     }
@@ -428,7 +433,7 @@ def test_bom_generation_altium_with_column_config(
         group_by=["part_number"],
     )
 
-    assert len(bom) == 100
+    assert len(bom) == 64
     assert bom == csv_snapshot
 
 

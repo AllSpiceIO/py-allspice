@@ -1,5 +1,36 @@
 # Changelog
 
+## v3.5.0
+
+### What's Changed
+
+- Fix many, but not all, typing failures by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/168
+
+  This also fixes a few bugs that have been present in the library for a while, such as adding comments failing for issues requested using `Issue.request`.
+
+- Add endpoint to fetch git trees by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/175
+
+  The new `Repository.get_tree` method can be used to fetch the tree of a commit in a repository. This is useful if you want to list all files in a commit, and can replace most uses of `Repository.get_git_content`.
+
+- Refactor BOM generation to centralize logic by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/177
+
+  This also fixes bugs in the System Capture SDAX BOM generation which prevented sorting and filtering from being applied there.
+
+- Filter out blank components in list_components by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/176
+
+- Add column configuration to skip in output by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/178
+
+  A new column configuration, `skip_in_output`, can be used to remove a column from the BOM output, which is useful when a column is used for grouping, filtering or sorting but isn't required in the BOM.
+
+### Internal Changes
+
+- Update column config cassette to include reference changes by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/166
+- Apply Ruff formatting to examples by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/173
+- Skip coverage comment on dependabot PRs by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/174
+- Update pytest requirement from ~=8.2 to ~=8.3 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/170
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.4.0...v3.5.0
+
 ## v3.4.0
 
 ### What's Changed
