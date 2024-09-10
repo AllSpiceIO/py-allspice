@@ -473,6 +473,8 @@ def _component_attributes_altium(component: dict) -> ComponentAttributes:
 
     if "part_id" in component:
         attributes["_part_id"] = component["part_id"]
+    if "name" in component:
+        attributes["_name"] = component["name"]
     if "description" in component:
         attributes["_description"] = component["description"]
     if "unique_id" in component:
