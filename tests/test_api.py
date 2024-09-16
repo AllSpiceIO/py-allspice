@@ -627,6 +627,27 @@ def test_get_issue_attachments(instance):
     assert attachments[0].name == "requirements.txt"
 
 
+def test_download_issue_attachment(instance, tmp_path):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    comment = issue.get_comments()[0]
+    attachment = comment.get_attachments()[0]
+
+    filename = uuid.uuid4().hex[:8] + ".txt"
+    filepath = tmp_path / filename
+    with open(filepath, "wb") as f:
+        attachment.download_to_file(f)
+
+    with open(filepath, "r") as actual_f:
+        with open("requirements.txt", "r") as expected_f:
+            attachment_content = actual_f.read()
+            assert len(attachment_content) > 0
+
+            expected_content = expected_f.read()
+            assert expected_content == attachment_content
+
+
 def test_edit_issue_attachment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
