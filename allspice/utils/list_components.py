@@ -3,6 +3,7 @@
 import configparser
 import pathlib
 import re
+import os
 import time
 from enum import Enum
 from logging import Logger
@@ -10,7 +11,7 @@ from typing import Optional
 
 from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
-from ..exceptions import NotYetGeneratedException
+from ..exceptions import NotYetGeneratedException, NotFoundException
 
 SLEEP_FOR_GENERATED_JSON = 0.5
 """The amount of time to sleep between attempts to fetch generated JSON files."""
@@ -52,6 +53,8 @@ def list_components(
     repository: Repository,
     source_file: str,
     variant: Optional[str] = None,
+    design_reuse_repos: Optional[list[Repository]] = None,
+    use_first_found_design_reuse_match: Optional[bool] = False,
     ref: Ref = "main",
     combine_multi_part: bool = False,
 ) -> list[ComponentAttributes]:
@@ -95,6 +98,8 @@ def list_components(
                 repository,
                 source_file,
                 variant=variant,
+                design_reuse_repos=design_reuse_repos,
+                use_first_found_design_reuse_match=use_first_found_design_reuse_match,
                 ref=ref,
                 combine_multi_part=combine_multi_part,
             )
@@ -126,6 +131,8 @@ def list_components_for_altium(
     repository: Repository,
     prjpcb_file: str,
     variant: Optional[str] = None,
+    design_reuse_repos: Optional[list[Repository]] = None,
+    use_first_found_design_reuse_match: Optional[bool] = False,
     ref: Ref = "main",
     combine_multi_part: bool = False,
 ) -> list[ComponentAttributes]:
@@ -175,14 +182,39 @@ def list_components_for_altium(
     schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
     allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
 
-    schdoc_jsons = {
-        schdoc_file: _fetch_generated_json(
-            repository,
-            _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file),
-            ref,
-        )
-        for schdoc_file in schdoc_files_in_proj
-    }
+    tree = repository.get_tree(recursive=True)
+    files_in_this_repo = [file.path for file in tree]
+
+    schdoc_jsons = {}
+
+    for schdoc_file in schdoc_files_in_proj:
+        # For files not found in this repo, try the design reuse repos
+        if schdoc_file not in files_in_this_repo:
+            target_repo, target_filepath = _find_schdoc_file_by_filename_in_ext_repos(
+                design_reuse_repos, prjpcb_file, schdoc_file, use_first_found_design_reuse_match
+            )
+        # For files found in this repo, process them as found
+        else:
+            target_repo = repository
+            target_filepath = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
+
+        if target_repo:
+            try:
+                schdoc_json = _fetch_generated_json(
+                    target_repo,
+                    target_filepath,
+                    ref,
+                )
+                schdoc_jsons[target_filepath] = schdoc_json
+            except NotFoundException:
+                raise ValueError(
+                    f"Could not fetch generated JSON for {schdoc_file} from repository {target_repo.url}. File does not exist."
+                )
+        else:
+            raise ValueError(
+                f"Could not fetch generated JSON for {schdoc_file}. File does not exist."
+            )
+
     schdoc_entries = {
         schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
         for schdoc_file, schdoc_json in schdoc_jsons.items()
@@ -418,7 +450,14 @@ def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
     child = pathlib.PureWindowsPath(child_path)
     parent = pathlib.PureWindowsPath(parent_path)
 
-    return str(parent.parent / child)
+    relative_path = str(parent.parent / child)
+
+    # Some sheet references don't have the attribute of the doc ending
+    # with .SchDoc extension. When that is the case, add the extension.
+    if not relative_path.lower().endswith(".schdoc"):
+        relative_path += ".SchDoc"
+
+    return relative_path
 
 
 def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
@@ -815,3 +854,77 @@ def _filter_blank_components(
         final_components.append(component)
 
     return final_components
+
+
+
+
+def _find_schdoc_file_by_filename_in_ext_repos(
+    design_reuse_repos: list[Repository] | None,
+    prjpcb_file: str,
+    schdoc_file: str,
+    use_first_found_design_reuse_match: bool | None,
+) -> tuple[Repository | None, str]:
+    """
+    Find a matching schematic document in one or more external repositories
+
+    :param design_reuse_repos: A list of external repositories to search
+    :param prjpcb_file: The Altium project file for the design in hand
+    :param schdoc_file: Desired .SchDoc file to find in external repositories
+    :param use_first_found_design_reuse_match: Option to return the file from the first matched repo
+
+    :returns: The first matching external repository containing the target file,
+    and the target filepath of the desired .SchDoc file in that repository.
+    Duplicates found will result in a ValueError.
+    """
+
+    # Get the target POSIX filepath
+    target_filepath = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
+
+    # Get the filepath from the repo root down
+    exact_match_repo_name, exact_match_filepath_without_repo_root = _get_schdoc_filepath_from_repo_root(target_filepath)
+    # Get the schdoc filename
+    schdoc_filename = os.path.basename(target_filepath)
+
+    matches = []
+
+    if design_reuse_repos:
+        for repo in design_reuse_repos:
+            # If evaluating multiple repositories, matches have already
+            # been found, and the option to use the first found match
+            # is True, terminate the remaining search
+            if matches and use_first_found_design_reuse_match:
+                break
+            # Get the tree listing for this repo
+            ext_repo_file_list = [file.path.lower() for file in repo.get_tree(recursive=True)]
+            # Attempt exact match first
+            if exact_match_repo_name == repo.name and exact_match_filepath_without_repo_root.lower() in ext_repo_file_list:
+                return (repo, exact_match_filepath_without_repo_root)
+            # Attempt filename match next
+            matches_in_repo = [
+                schdoc_filename if schdoc_filename.lower() in filepath else None for filepath in ext_repo_file_list
+            ]
+            matches_in_repo = list(filter(None, matches_in_repo))
+            [matches.append({"repo": repo, "file": match}) for match in matches_in_repo]
+
+    if not matches:
+        raise ValueError(
+            f"Could not find sheet {schdoc_file} in the specified design reuse repositories."
+        )
+    elif len(matches) >= 2:
+        raise ValueError(
+            f"Found multiple matches for {schdoc_file} in the specified design reuse repositories."
+        )
+    else:
+        return(matches[0]["repo"], matches[0]["file"])
+
+    return (None, "")
+
+
+def _get_schdoc_filepath_from_repo_root(
+    target_filepath: str,
+) -> tuple[str, str]:
+    filepath_search = re.search('[./]{1,}(.*)', target_filepath)
+    if filepath_search:
+        filepath_fields = filepath_search.group(1).split("/")
+        return (filepath_fields[0], "/".join(filepath_fields[1:]))
+    return ("","")
