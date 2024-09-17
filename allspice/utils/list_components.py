@@ -856,8 +856,6 @@ def _filter_blank_components(
     return final_components
 
 
-
-
 def _find_schdoc_file_by_filename_in_ext_repos(
     design_reuse_repos: list[Repository] | None,
     prjpcb_file: str,
@@ -881,7 +879,9 @@ def _find_schdoc_file_by_filename_in_ext_repos(
     target_filepath = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
 
     # Get the filepath from the repo root down
-    exact_match_repo_name, exact_match_filepath_without_repo_root = _get_schdoc_filepath_from_repo_root(target_filepath)
+    exact_match_repo_name, exact_match_filepath_without_repo_root = (
+        _get_schdoc_filepath_from_repo_root(target_filepath)
+    )
     # Get the schdoc filename
     schdoc_filename = os.path.basename(target_filepath)
 
@@ -897,11 +897,15 @@ def _find_schdoc_file_by_filename_in_ext_repos(
             # Get the tree listing for this repo
             ext_repo_file_list = [file.path.lower() for file in repo.get_tree(recursive=True)]
             # Attempt exact match first
-            if exact_match_repo_name == repo.name and exact_match_filepath_without_repo_root.lower() in ext_repo_file_list:
+            if (
+                exact_match_repo_name == repo.name
+                and exact_match_filepath_without_repo_root.lower() in ext_repo_file_list
+            ):
                 return (repo, exact_match_filepath_without_repo_root)
             # Attempt filename match next
             matches_in_repo = [
-                schdoc_filename if schdoc_filename.lower() in filepath else None for filepath in ext_repo_file_list
+                schdoc_filename if schdoc_filename.lower() in filepath else None
+                for filepath in ext_repo_file_list
             ]
             matches_in_repo = list(filter(None, matches_in_repo))
             [matches.append({"repo": repo, "file": match}) for match in matches_in_repo]
@@ -915,7 +919,7 @@ def _find_schdoc_file_by_filename_in_ext_repos(
             f"Found multiple matches for {schdoc_file} in the specified design reuse repositories."
         )
     else:
-        return(matches[0]["repo"], matches[0]["file"])
+        return (matches[0]["repo"], matches[0]["file"])
 
     return (None, "")
 
@@ -923,8 +927,8 @@ def _find_schdoc_file_by_filename_in_ext_repos(
 def _get_schdoc_filepath_from_repo_root(
     target_filepath: str,
 ) -> tuple[str, str]:
-    filepath_search = re.search('[./]{1,}(.*)', target_filepath)
+    filepath_search = re.search("[./]{1,}(.*)", target_filepath)
     if filepath_search:
         filepath_fields = filepath_search.group(1).split("/")
         return (filepath_fields[0], "/".join(filepath_fields[1:]))
-    return ("","")
+    return ("", "")
