@@ -1531,6 +1531,28 @@ class Attachment(ReadonlyApiObject):
     def __hash__(self):
         return hash(self.uuid)
 
+    def download_to_file(self, io: IO):
+        """
+        Download the raw, binary data of this Attachment to a file-like object.
+
+        Example:
+
+            with open("my_file.zip", "wb") as f:
+                attachment.download_to_file(f)
+
+        :param io: The file-like object to write the data to.
+        """
+
+        response = self.allspice_client.requests.get(
+            self.browser_download_url,
+            headers=self.allspice_client.headers,
+            stream=True,
+        )
+        # 4kb chunks
+        for chunk in response.iter_content(chunk_size=4096):
+            if chunk:
+                io.write(chunk)
+
 
 class Comment(ApiObject):
     assets: List[Union[Any, Dict[str, Union[int, str]]]]
