@@ -323,14 +323,7 @@ def _list_components_multi_page_schematic(
 
     for page in pages:
         for component in page["components"].values():
-            component_attributes = {}
-            component_attributes["_name"] = component["name"]
-            if "reference" in component:
-                component_attributes["_reference"] = component.get("reference")
-            if "logical_reference" in component:
-                component_attributes["_logical_reference"] = component.get("logical_reference")
-            for attribute in component["attributes"].values():
-                component_attributes[attribute["name"]] = attribute["value"]
+            component_attributes = _component_attributes_multi_page(component)
             components.append(component_attributes)
 
     return _filter_blank_components(components, allspice_client.logger)
@@ -460,12 +453,12 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
     return repetitions
 
 
-def _component_attributes(component: dict) -> ComponentAttributes:
+def _component_attributes_altium(component: dict) -> ComponentAttributes:
     """
     Extract the attributes of a component into a dict.
 
-    This also adds two properties of the component that are not attributes into
-    the dict.
+    This also adds some top-level properties of the component that are not
+    attributes into the dict.
     """
 
     attributes = {}
@@ -480,6 +473,8 @@ def _component_attributes(component: dict) -> ComponentAttributes:
 
     if "part_id" in component:
         attributes["_part_id"] = component["part_id"]
+    if "name" in component:
+        attributes["_name"] = component["name"]
     if "description" in component:
         attributes["_description"] = component["description"]
     if "unique_id" in component:
@@ -489,8 +484,37 @@ def _component_attributes(component: dict) -> ComponentAttributes:
     if "part_count" in component:
         attributes["_part_count"] = component["part_count"]
         attributes["_current_part_id"] = component["current_part_id"]
+    if "pins" in component:
+        attributes["_pins"] = component["pins"]
 
     return attributes
+
+
+def _component_attributes_multi_page(component: dict) -> ComponentAttributes:
+    """
+    Extract attributes of components from a multi-page document into a dict.
+
+    This also adds some of the top-level properties of the component that
+    are not attributes into the dict.
+    """
+
+    component_attributes = {}
+
+    component_attributes["_name"] = component["name"]
+    if "reference" in component:
+        component_attributes["_reference"] = component.get("reference")
+    if "logical_reference" in component:
+        component_attributes["_logical_reference"] = component.get("logical_reference")
+    if "pins" in component:
+        # Multi-sheet documents have pins as an object of ids to pin objects.
+        # The id is also inside the pin object, so we can flatten this into an
+        # array, which is also compatible with how Altium outputs them.
+        component_attributes["_pins"] = list(component["pins"].values())
+
+    for attribute in component["attributes"].values():
+        component_attributes[attribute["name"]] = attribute["value"]
+
+    return component_attributes
 
 
 def _letters_for_repetition(rep: int) -> str:
@@ -558,7 +582,7 @@ def _extract_components(
         if entry["type"] != "Component":
             continue
 
-        component = _component_attributes(entry)
+        component = _component_attributes_altium(entry)
         components.append(component)
 
     if sheet_name not in hierarchy:
