@@ -24,8 +24,14 @@ def port(pytestconfig):
     return pytestconfig.getoption("port")
 
 
+@pytest.fixture(scope="session")
+def client_log_level(pytestconfig):
+    """Load --client-log-level command-line arg if set"""
+    return pytestconfig.getoption("client_log_level")
+
+
 @pytest.fixture
-def instance(port, pytestconfig):
+def instance(port, client_log_level, pytestconfig):
     # The None record mode is the default and is equivalent to "once"
     if pytestconfig.getoption("record_mode") in ["none", "once", None]:
         # If we're using cassettes, we don't want BOM generation to sleep
@@ -37,6 +43,7 @@ def instance(port, pytestconfig):
             f"http://localhost:{port}",
             open(".token", "r").read().strip(),
             ratelimiting=None,
+            log_level=client_log_level or "INFO",
         )
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
@@ -467,6 +474,39 @@ def test_bom_generation_altium_repeated_multi_part_component_variant(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+    )
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ["Designator"],
+        "Comment": ["Comment"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        attributes_mapping,
+        design_reuse_repos=[design_reuse_repo],
+        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+    )
+
+    assert len(bom) == 38
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
@@ -536,6 +576,7 @@ def test_bom_generation_orcad_with_column_config(
     assert bom == csv_snapshot
 
 
+@pytest.mark.vcr
 def test_bom_generation_system_capture(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
@@ -750,6 +791,33 @@ def test_altium_components_list_with_fitted_variant(
     )
 
     assert len(components) == 945
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+    )
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+    )
+
+    assert len(components) == 38
     assert components == json_snapshot
 
 

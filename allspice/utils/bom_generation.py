@@ -114,8 +114,7 @@ def generate_bom(
     columns: ColumnsMapping,
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
-    design_reuse_repos: Optional[list[Repository]] = None,
-    use_first_found_design_reuse_match: Optional[bool] = False,
+    design_reuse_repos: list[Repository] = [],
     ref: Ref = "main",
     remove_non_bom_components: bool = True,
 ) -> Bom:
@@ -174,7 +173,6 @@ def generate_bom(
         source_file,
         variant,
         design_reuse_repos,
-        use_first_found_design_reuse_match,
         ref,
         combine_multi_part=True,
     )
@@ -209,8 +207,7 @@ def generate_bom_for_altium(
     columns: ColumnsMapping,
     group_by: Optional[list[str]] = None,
     variant: Optional[str] = None,
-    design_reuse_repos: Optional[list[Repository]] = None,
-    use_first_found_design_reuse_match: Optional[bool] = False,
+    design_reuse_repos: list[Repository] = [],
     ref: Ref = "main",
     remove_non_bom_components: bool = True,
 ) -> Bom:
@@ -251,7 +248,6 @@ def generate_bom_for_altium(
         group_by,
         variant,
         design_reuse_repos,
-        use_first_found_design_reuse_match,
         ref,
         remove_non_bom_components,
     )
