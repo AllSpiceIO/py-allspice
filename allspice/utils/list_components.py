@@ -53,9 +53,9 @@ def list_components(
     repository: Repository,
     source_file: str,
     variant: Optional[str] = None,
-    design_reuse_repos: list[Repository] = [],
     ref: Ref = "main",
     combine_multi_part: bool = False,
+    design_reuse_repos: list[Repository] = [],
 ) -> list[ComponentAttributes]:
     """
     Get a list of all components in a schematic.
@@ -97,9 +97,9 @@ def list_components(
                 repository,
                 source_file,
                 variant=variant,
-                design_reuse_repos=design_reuse_repos,
                 ref=ref,
                 combine_multi_part=combine_multi_part,
+                design_reuse_repos=design_reuse_repos,
             )
         case SupportedTool.ORCAD:
             if variant:
@@ -129,9 +129,9 @@ def list_components_for_altium(
     repository: Repository,
     prjpcb_file: str,
     variant: Optional[str] = None,
-    design_reuse_repos: list[Repository] = [],
     ref: Ref = "main",
     combine_multi_part: bool = False,
+    design_reuse_repos: list[Repository] = [],
 ) -> list[ComponentAttributes]:
     """
     Get a list of all components in an Altium project.
