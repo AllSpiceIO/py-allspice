@@ -399,6 +399,9 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
 def _fetch_all_files_in_repo(repo: Repository) -> list[str]:
     """
     Fetch a list of all files in a repository at the default branch.
+
+    :param repo: The repository.
+    :returns: A list of all file paths in the repo.
     """
 
     tree = repo.get_tree(recursive=True)
@@ -413,10 +416,9 @@ def _extract_schdoc_list_from_prjpcb(
     Extract sets of all schematic files used in this project.
 
     :param prjpcb_ini: The contents of the PrjPcb file as a ConfigParser.
-    :returns: two sets. The first set is of relative paths from the porject
-    file to all the Schematic Documents in this project, and the strings are
-    paths to the schematic documents from the project file, and the second is
-    of relative paths to device sheets from the project file.
+    :returns: two sets. The first set is of relative paths from the project
+        file to all the Schematic Documents in this project, and the second is
+        of relative paths to device sheets from the project file.
     """
 
     schdoc_files = set()
@@ -425,11 +427,11 @@ def _extract_schdoc_list_from_prjpcb(
     for section in prjpcb_ini.sections():
         if section.casefold().startswith("document"):
             document_path = prjpcb_ini[section].get("DocumentPath")
-            if document_path and document_path.endswith(".SchDoc"):
+            if document_path and document_path.casefold().endswith(".schdoc"):
                 schdoc_files.add(document_path)
         elif section.casefold().startswith("devicesheet"):
             document_path = prjpcb_ini[section].get("DocumentPath")
-            if document_path and document_path.endswith(".SchDoc"):
+            if document_path and document_path.casefold().endswith(".schdoc"):
                 device_sheets.add(document_path)
 
     return (schdoc_files, device_sheets)
@@ -451,7 +453,7 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
 
 
 def _build_schdoc_hierarchy(
-    document_jsons: dict[str, dict],
+    schematic_document_jsons: dict[str, dict],
     device_sheet_jsons: dict[str, dict],
 ) -> tuple[set[str], SchdocHierarchy]:
     """
@@ -473,13 +475,13 @@ def _build_schdoc_hierarchy(
 
     hierarchy = {}
 
-    document_entries = {
+    schematic_document_entries = {
         schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
-        for schdoc_file, schdoc_json in document_jsons.items()
+        for schdoc_file, schdoc_json in schematic_document_jsons.items()
     }
-    document_refs = {
+    schematic_document_refs = {
         schdoc_file: [entry for entry in entries if entry.get("type") == "SheetRef"]
-        for schdoc_file, entries in document_entries.items()
+        for schdoc_file, entries in schematic_document_entries.items()
     }
 
     device_sheet_entries = {
@@ -496,9 +498,9 @@ def _build_schdoc_hierarchy(
     # We start by assuming all the document sheets are independent. Device
     # sheets cannot be independent, as they must be referred to by a document
     # sheet or another device sheet.
-    independent_sheets = set(document_refs.keys())
+    independent_sheets = set(schematic_document_refs.keys())
     # This is what we'll use to compare with the sheet names in repetitions.
-    document_names_downcased = {sheet.casefold(): sheet for sheet in independent_sheets}
+    schematic_document_names_downcased = {sheet.casefold(): sheet for sheet in independent_sheets}
     device_sheet_names_downcased = {sheet.casefold(): sheet for sheet in device_sheet_refs.keys()}
 
     # First, we'll build the hierarchy for device sheets, since they cannot
@@ -518,24 +520,26 @@ def _build_schdoc_hierarchy(
 
     # Now for the document sheets, which can point to both other document
     # sheets and device sheets
-    for document_sheet, document_refs in document_refs.items():
-        if not document_refs or len(document_refs) == 0:
+    for schematic_document_sheet, refs in schematic_document_refs.items():
+        if not refs or len(refs) == 0:
             continue
 
-        repetitions = _extract_repetitions(document_refs)
+        repetitions = _extract_repetitions(refs)
 
         for child_sheet, count in repetitions.items():
-            child_path = _resolve_child_relative_path(child_sheet, document_sheet).casefold()
-            if child_path in document_names_downcased:
-                child_name = document_names_downcased[child_path]
+            child_path = _resolve_child_relative_path(
+                child_sheet, schematic_document_sheet
+            ).casefold()
+            if child_path in schematic_document_names_downcased:
+                child_name = schematic_document_names_downcased[child_path]
             else:
                 # Note the `child_sheet` below - we use the bare text without
                 # any path resolution for device sheets.
                 child_name = device_sheet_names_downcased[child_sheet.casefold()]
-            if document_sheet in hierarchy:
-                hierarchy[document_sheet].append((child_name, count))
+            if schematic_document_sheet in hierarchy:
+                hierarchy[schematic_document_sheet].append((child_name, count))
             else:
-                hierarchy[document_sheet] = [(child_name, count)]
+                hierarchy[schematic_document_sheet] = [(child_name, count)]
             independent_sheets.discard(child_name)
 
     return (independent_sheets, hierarchy)
@@ -977,25 +981,29 @@ def _find_device_sheet(
     # Paths stored in the PrjPcb are Windows paths
     device_sheet_path = pathlib.PureWindowsPath(device_sheet)
     # Note that this will include the .SchDoc extension.
-    device_sheet_name = device_sheet_path.name
+    device_sheet_name = device_sheet_path.name.casefold()
 
     # First, we'll resolve the actual path of the device sheet in the project
     # repo, and if that's a real file then we use that.
     device_sheet_path_from_repo_root = _resolve_prjpcb_relative_path(
         device_sheet,
         project_file_path,
-    )
+    ).casefold()
     project_repo_tree = _fetch_all_files_in_repo(project_repository)
-    if device_sheet_path_from_repo_root in project_repo_tree:
-        logger.info("Found device sheet %s in project repository; using that.", device_sheet)
-        return (project_repository, pathlib.PurePosixPath(device_sheet_path_from_repo_root))
+    for filepath in project_repo_tree:
+        if device_sheet_path_from_repo_root == filepath.casefold():
+            logger.info("Found device sheet %s in project repository; using that.", device_sheet)
+            return (
+                project_repository,
+                pathlib.PurePosixPath(filepath),
+            )
 
     for repo in design_reuse_repos:
         files_in_repo = _fetch_all_files_in_repo(repo)
         for file_in_repo in files_in_repo:
             # Paths as reported by ASH are Unix paths
             file_path = pathlib.PurePosixPath(file_in_repo)
-            if device_sheet_name == file_path.name:
+            if device_sheet_name == file_path.name.casefold():
                 matches.append((repo, file_path))
 
     if len(matches) == 0:
