@@ -1,10 +1,12 @@
 # cspell:ignore jsons
 
 import configparser
+import dataclasses
 import functools
 import pathlib
 import re
 import time
+from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
 from typing import Optional
@@ -26,9 +28,6 @@ REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
 DESIGNATOR_COLUMN_NAME = "Designator"
 """The name of the designator attribute in Altium projects."""
 
-# Maps a sheet name to a list of tuples, where each tuple is a child sheet and
-# the number of repetitions of that child sheet in the parent sheet.
-SchdocHierarchy = dict[str, list[tuple[str, int]]]
 ComponentAttributes = dict[str, str]
 
 
@@ -46,6 +45,36 @@ class VariationKind(Enum):
     FITTED_MOD_PARAMS = 0
     NOT_FITTED = 1
     ALT_COMP = 2
+
+
+@dataclass
+class AltiumChildSheet:
+    """
+    A child sheet of a schematic in the hierarchy. The fields here are
+    Altium-specific.
+    """
+
+    unique_id: str
+    """
+    The Unique ID of the SheetRef instance.
+    """
+
+    name: str
+    """
+    The name of the child sheet. This can be a path for documents or a name for
+    a device sheet.
+    """
+
+    repetitions: int = 1
+    """
+    The number of times the child sheet is repeated in the parent sheet.
+    """
+
+
+SchdocHierarchy = dict[str, list[AltiumChildSheet]]
+"""
+Mapping of the name of a sheet to its children.
+"""
 
 
 def list_components(
@@ -473,7 +502,7 @@ def _build_schdoc_hierarchy(
        of any other sheet, it will be mapped to an empty list.
     """
 
-    hierarchy = {}
+    hierarchy: SchdocHierarchy = {}
 
     schematic_document_entries = {
         schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
@@ -510,13 +539,12 @@ def _build_schdoc_hierarchy(
             continue
 
         repetitions = _extract_repetitions(device_sheet_refs)
-        for child_sheet, count in repetitions.items():
+        for child_sheet in repetitions:
             # child_sheet should just be a filename
-            child_name = device_sheet_names_downcased[child_sheet.casefold()]
-            if device_sheet_name in hierarchy:
-                hierarchy[device_sheet_name].append((child_name, count))
-            else:
-                hierarchy[device_sheet_name] = [(child_name, count)]
+            child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
+            # We have to replace the name in the sheet ref with the name in the project file we expect
+            child_sheet = dataclasses.replace(child_sheet, name=child_name)
+            hierarchy.setdefault(device_sheet_name, []).append(child_sheet)
 
     # Now for the document sheets, which can point to both other document
     # sheets and device sheets
@@ -526,20 +554,19 @@ def _build_schdoc_hierarchy(
 
         repetitions = _extract_repetitions(refs)
 
-        for child_sheet, count in repetitions.items():
+        for child_sheet in repetitions:
             child_path = _resolve_child_relative_path(
-                child_sheet, schematic_document_sheet
+                child_sheet.name, schematic_document_sheet
             ).casefold()
             if child_path in schematic_document_names_downcased:
                 child_name = schematic_document_names_downcased[child_path]
             else:
                 # Note the `child_sheet` below - we use the bare text without
                 # any path resolution for device sheets.
-                child_name = device_sheet_names_downcased[child_sheet.casefold()]
-            if schematic_document_sheet in hierarchy:
-                hierarchy[schematic_document_sheet].append((child_name, count))
-            else:
-                hierarchy[schematic_document_sheet] = [(child_name, count)]
+                child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
+            # We have to replace the name in the sheet ref with the name in the project file we expect
+            child_sheet = dataclasses.replace(child_sheet, name=child_name)
+            hierarchy.setdefault(schematic_document_sheet, []).append(child_sheet)
             independent_sheets.discard(child_name)
 
     return (independent_sheets, hierarchy)
@@ -560,13 +587,14 @@ def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
     return (parent.parent / child).as_posix()
 
 
-def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
+def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
     """
-    Takes a list of sheet references and returns a dictionary of each child
-    sheet to the number of repetitions of that sheet in the parent sheet.
+    Takes a list of sheet references and returns all child sheets, which include
+    the repetition count for each child sheet.
     """
 
-    repetitions = {}
+    repetitions: list[AltiumChildSheet] = []
+
     for sheet_ref in sheet_refs:
         sheet_name = (sheet_ref.get("sheet_name", {}) or {}).get("name", "") or ""
         try:
@@ -578,17 +606,18 @@ def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
                 "Sheet filename is null in for a sheet. Please check sheet references in this "
                 "project for an empty file path."
             )
+
         if match := REPETITIONS_REGEX.search(sheet_name):
             count = int(match.group(2)) - int(match.group(1)) + 1
-            if sheet_file_name in repetitions:
-                repetitions[sheet_file_name] += count
-            else:
-                repetitions[sheet_file_name] = count
         else:
-            if sheet_file_name in repetitions:
-                repetitions[sheet_file_name] += 1
-            else:
-                repetitions[sheet_file_name] = 1
+            count = 1
+
+        repetitions.append(
+            AltiumChildSheet(
+                name=sheet_file_name, unique_id=sheet_ref["unique_id"], repetitions=count
+            )
+        )
+
     return repetitions
 
 
@@ -727,11 +756,24 @@ def _extract_components(
     if sheet_name not in hierarchy:
         return components
 
-    for child_sheet, count in hierarchy[sheet_name]:
-        child_components = _extract_components(child_sheet, sheets_to_entries, hierarchy)
-        if count > 1:
+    # Earlier, this function would deal only with counts, but now we have
+    # instances of ChildSheet. If there are multiple ChildSheet instances of
+    # the same sheet, which can happen if there are multiple SheetRefs, we need
+    # to consider both the total count and each instance. The instances are
+    # useful for processing annotations, while the count is useful for the
+    # suffix logic.
+
+    child_sheets_of_name = {}
+
+    for child_sheet in hierarchy[sheet_name]:
+        child_sheets_of_name.setdefault(child_sheet.name, []).append(child_sheet)
+
+    for child_sheet_name, child_sheets in child_sheets_of_name.items():
+        child_components = _extract_components(child_sheet_name, sheets_to_entries, hierarchy)
+        total_repetitions = sum(child_sheet.repetitions for child_sheet in child_sheets)
+        if total_repetitions > 1:
             for component in child_components:
-                components.extend(_append_designator_letters(component, count))
+                components.extend(_append_designator_letters(component, total_repetitions))
         else:
             components.extend(child_components)
 
