@@ -209,6 +209,19 @@ def list_components_for_altium(
     allspice_client.logger.info("Found %d SchDoc files", len(project_documents))
     allspice_client.logger.info("Found %d Device Sheet files", len(device_sheets))
 
+    if not project_documents:
+        raise ValueError("No Project Documents found in the PrjPcb file.")
+
+    if device_sheets:
+        try:
+            annotations_data = _fetch_and_parse_annotation_file(repository, prjpcb_file, ref)
+        except Exception as e:
+            allspice_client.logger.warning("Failed to fetch annotations file: %s", e)
+            allspice_client.logger.warning("Component designators may not be correct.")
+            annotations_data = {}
+    else:
+        annotations_data = {}
+
     # Mapping of schdoc file paths from the project file to their JSON
     schdoc_jsons: dict[str, dict] = {}
     # Mapping of device sheet *names* to their JSON.
@@ -1071,3 +1084,84 @@ def _find_device_sheet(
         )
 
     return matches[0]
+
+
+def _fetch_and_parse_annotation_file(
+    repository: Repository,
+    prjpcb_path: str,
+    ref: Ref,
+) -> dict:
+    """
+    Determine the path to the annotation file, fetch it and parse it.
+
+    :param repository: The repository containing the annotation file.
+    :param prjpcb_path: The path to the PrjPcb file from the repo root.
+    :param ref: The git ref to check.
+    :returns: The parsed contents of the annotation file. The returned
+        dictionary maps the full component id to the change. For example, a
+        component with id \\A\\B\\C that should change from C1 to C12 will be
+        stored as {"\\A\\B\\C": {"from": "C1", "to": "C12"}}.
+    """
+
+    # According to the Altium documentation, the annotation file is stored with
+    # the PrjPcb file and has the same name as the PrjPcb file, but with a
+    # .Annotation extension.
+
+    prjpcb_posix_path = pathlib.PurePosixPath(prjpcb_path)
+    prjpcb_directory = prjpcb_posix_path.parent
+    annotation_file_path = prjpcb_directory / (prjpcb_posix_path.stem + ".Annotation")
+    caseless_annotation_file_path = annotation_file_path.as_posix().casefold()
+
+    # We need to check case-insensitively because the project is made on
+    # Windows, but ASH has a Unix-like filesystem.
+
+    files_in_repo = _fetch_all_files_in_repo(repository)
+    # Since we're checking case insensitively, we need to make sure there's only
+    # one match for the annotation file path.
+    matches = []
+    for file_path in files_in_repo:
+        if file_path.casefold() == caseless_annotation_file_path:
+            matches.append(file_path)
+
+    if len(matches) == 0:
+        raise Exception(
+            f"Could not find annotation file {annotation_file_path} in repository {repository.url}."
+        )
+    if len(matches) > 1:
+        raise Exception(
+            f"Multiple matches found for annotation file {annotation_file_path} in repository "
+            f"{repository.url} when checking case-insensitively: {matches}."
+        )
+
+    annotation_file_path = matches[0]
+
+    annotation_file_contents = repository.get_raw_file(annotation_file_path, ref=ref).decode(
+        "utf-8-sig"
+    )
+
+    annotation_file_ini = configparser.ConfigParser()
+    annotation_file_ini.read_string(annotation_file_contents)
+
+    designator_manager_section = annotation_file_ini["DesignatorManager"]
+    changes = {}
+
+    # We'll manually loop through change numbers until we find one which
+    # doesn't exist.
+    change_number = 0
+
+    while True:
+        unique_id_key = f"UniqueID{change_number}"
+        if unique_id_key not in designator_manager_section:
+            break
+        unique_id = designator_manager_section[unique_id_key]
+        logical_designator = designator_manager_section[f"LogicalDesignator{change_number}"]
+        physical_designator = designator_manager_section[f"PhysicalDesignator{change_number}"]
+
+        changes[unique_id] = {
+            "from": logical_designator,
+            "to": physical_designator,
+        }
+
+        change_number += 1
+
+    return changes
