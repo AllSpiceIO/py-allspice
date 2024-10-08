@@ -15,8 +15,9 @@ from allspice import AllSpice
 
 
 def pytest_addoption(parser):
-    """add option to specify localhost port for tests"""
+    """add option to specify localhost port and log level for tests"""
     parser.addoption("--port", action="store", default="3000")
+    parser.addoption("--client-log-level", action="store", default="INFO")
 
 
 @pytest.fixture

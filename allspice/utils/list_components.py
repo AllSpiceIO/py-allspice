@@ -1,6 +1,7 @@
 # cspell:ignore jsons
 
 import configparser
+import functools
 import pathlib
 import re
 import time
@@ -54,6 +55,7 @@ def list_components(
     variant: Optional[str] = None,
     ref: Ref = "main",
     combine_multi_part: bool = False,
+    design_reuse_repos: list[Repository] = [],
 ) -> list[ComponentAttributes]:
     """
     Get a list of all components in a schematic.
@@ -97,6 +99,7 @@ def list_components(
                 variant=variant,
                 ref=ref,
                 combine_multi_part=combine_multi_part,
+                design_reuse_repos=design_reuse_repos,
             )
         case SupportedTool.ORCAD:
             if variant:
@@ -128,6 +131,7 @@ def list_components_for_altium(
     variant: Optional[str] = None,
     ref: Ref = "main",
     combine_multi_part: bool = False,
+    design_reuse_repos: list[Repository] = [],
 ) -> list[ComponentAttributes]:
     """
     Get a list of all components in an Altium project.
@@ -172,26 +176,77 @@ def list_components_for_altium(
         # Ensuring variant_details is always bound, even if it is not used.
         variant_details = None
 
-    schdoc_files_in_proj = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
-    allspice_client.logger.info("Found %d SchDoc files", len(schdoc_files_in_proj))
+    project_documents, device_sheets = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
+    allspice_client.logger.info("Found %d SchDoc files", len(project_documents))
+    allspice_client.logger.info("Found %d Device Sheet files", len(device_sheets))
 
-    schdoc_jsons = {
-        schdoc_file: _fetch_generated_json(
+    # Mapping of schdoc file paths from the project file to their JSON
+    schdoc_jsons: dict[str, dict] = {}
+    # Mapping of device sheet *names* to their JSON.
+    device_sheet_jsons: dict[str, dict] = {}
+
+    # When working with Device Sheets, there are three different paths to keep
+    # in mind:
+    #
+    # 1. The path as given in the PrjPcb file: Used to find a possible match in
+    #    the current repo, e.g. if it is a monorepo. If not found, we get the
+    #    basename and use that to match in the design reuse repos, yielding (2)
+    #    after which this is no longer used.
+    # 2. The path of the file in the design reuse repository: Used for fetching
+    #    the JSON, after which this is no longer used.
+    # 3. The name stored in the `filename` property of the SheetRef: This is the
+    #    stem of the path. We need to match a SheetRef to the device sheet it is
+    #    referring to using this, which is why `device_sheet_jsons` uses these
+    #    as the keys.
+
+    for schdoc_file in project_documents:
+        schdoc_path_from_repo_root = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
+
+        schdoc_json = _fetch_generated_json(
             repository,
-            _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file),
+            schdoc_path_from_repo_root,
             ref,
         )
-        for schdoc_file in schdoc_files_in_proj
-    }
-    schdoc_entries = {
-        schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
-        for schdoc_file, schdoc_json in schdoc_jsons.items()
-    }
-    schdoc_refs = {
-        schdoc_file: [entry for entry in entries if entry.get("type") == "SheetRef"]
-        for schdoc_file, entries in schdoc_entries.items()
-    }
-    independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_refs)
+        schdoc_jsons[schdoc_path_from_repo_root] = schdoc_json
+
+    for device_sheet in device_sheets:
+        device_sheet_repo, device_sheet_path = _find_device_sheet(
+            device_sheet,
+            repository,
+            prjpcb_file,
+            design_reuse_repos,
+            allspice_client.logger,
+        )
+        device_sheet_json = _fetch_generated_json(
+            device_sheet_repo,
+            device_sheet_path.as_posix(),
+            # Note the default branch here - we can't assume the same ref is
+            # available.
+            device_sheet_repo.default_branch,
+        )
+        device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
+
+    independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_jsons, device_sheet_jsons)
+
+    allspice_client.logger.debug("Independent sheets: %s", independent_sheets)
+    allspice_client.logger.debug("Hierarchy: %s", hierarchy)
+
+    # Now we can build a combined mapping of documents and device sheets:
+    sheets_to_components = {}
+    for schdoc_file, schdoc_json in schdoc_jsons.items():
+        schdoc_components = [
+            value
+            for value in schdoc_json.values()
+            if isinstance(value, dict) and value.get("type") == "Component"
+        ]
+        sheets_to_components[schdoc_file] = schdoc_components
+    for device_sheet_name, device_sheet_json in device_sheet_jsons.items():
+        device_sheet_components = [
+            value
+            for value in device_sheet_json.values()
+            if isinstance(value, dict) and value.get("type") == "Component"
+        ]
+        sheets_to_components[device_sheet_name] = device_sheet_components
 
     components = []
 
@@ -199,7 +254,7 @@ def list_components_for_altium(
         components.extend(
             _extract_components(
                 independent_sheet,
-                schdoc_entries,
+                sheets_to_components,
                 hierarchy,
             )
         )
@@ -340,16 +395,46 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
     raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
 
 
-def _extract_schdoc_list_from_prjpcb(prjpcb_ini: configparser.ConfigParser) -> set[str]:
+@functools.cache
+def _fetch_all_files_in_repo(repo: Repository) -> list[str]:
     """
-    Get a list of SchDoc files from a PrjPcb file.
+    Fetch a list of all files in a repository at the default branch.
+
+    :param repo: The repository.
+    :returns: A list of all file paths in the repo.
     """
 
-    return {
-        section["DocumentPath"]
-        for (_, section) in prjpcb_ini.items()
-        if "DocumentPath" in section and section["DocumentPath"].endswith(".SchDoc")
-    }
+    tree = repo.get_tree(recursive=True)
+
+    return [file.path for file in tree]
+
+
+def _extract_schdoc_list_from_prjpcb(
+    prjpcb_ini: configparser.ConfigParser,
+) -> tuple[set[str], set[str]]:
+    """
+    Extract sets of all schematic files used in this project.
+
+    :param prjpcb_ini: The contents of the PrjPcb file as a ConfigParser.
+    :returns: two sets. The first set is of relative paths from the project
+        file to all the Schematic Documents in this project, and the second is
+        of relative paths to device sheets from the project file.
+    """
+
+    schdoc_files = set()
+    device_sheets = set()
+
+    for section in prjpcb_ini.sections():
+        if section.casefold().startswith("document"):
+            document_path = prjpcb_ini[section].get("DocumentPath")
+            if document_path and document_path.casefold().endswith(".schdoc"):
+                schdoc_files.add(document_path)
+        elif section.casefold().startswith("devicesheet"):
+            document_path = prjpcb_ini[section].get("DocumentPath")
+            if document_path and document_path.casefold().endswith(".schdoc"):
+                device_sheets.add(document_path)
+
+    return (schdoc_files, device_sheets)
 
 
 def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
@@ -368,42 +453,93 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
 
 
 def _build_schdoc_hierarchy(
-    sheets_to_refs: dict[str, list[dict]],
+    schematic_document_jsons: dict[str, dict],
+    device_sheet_jsons: dict[str, dict],
 ) -> tuple[set[str], SchdocHierarchy]:
     """
     Build a hierarchy of sheets from a mapping of sheet names to the references
     of their children.
 
-    The output of this function is a tuple of two values:
+    :param document_jsons: A mapping of document sheet paths from project root
+        to their JSON.
+    :param device_sheet_jsons: A mapping of device sheet *names* to their JSON.
+    :returns: The output of this function is a tuple of two values:
 
     1. A set of "independent" sheets, which can be taken to be roots of the
-    hierarchy.
-
-    2. A mapping of each sheet that has children to a list of tuples, where each
-    tuple is a child sheet and the number of repetitions of that child sheet in
-    the parent sheet. If a sheet has no children and is not a child of any other
-    sheet, it will be mapped to an empty list.
+       hierarchy.
+    2. A mapping of each sheet that has children to a list of tuples, where
+       each tuple is a child sheet and the number of repetitions of that child
+       sheet in the parent sheet. If a sheet has no children and is not a child
+       of any other sheet, it will be mapped to an empty list.
     """
 
     hierarchy = {}
 
-    # We start by assuming all sheets are independent.
-    independent_sheets = set(sheets_to_refs.keys())
-    # This is what we'll use to compare with the sheet names in repetitions.
-    sheet_names_downcased = {sheet.lower(): sheet for sheet in independent_sheets}
+    schematic_document_entries = {
+        schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
+        for schdoc_file, schdoc_json in schematic_document_jsons.items()
+    }
+    schematic_document_refs = {
+        schdoc_file: [entry for entry in entries if entry.get("type") == "SheetRef"]
+        for schdoc_file, entries in schematic_document_entries.items()
+    }
 
-    for parent_sheet, refs in sheets_to_refs.items():
+    device_sheet_entries = {
+        device_sheet_name: [
+            value for value in device_sheet_json.values() if isinstance(value, dict)
+        ]
+        for device_sheet_name, device_sheet_json in device_sheet_jsons.items()
+    }
+    device_sheet_refs = {
+        device_sheet_name: [entry for entry in entries if entry.get("type") == "SheetRef"]
+        for device_sheet_name, entries in device_sheet_entries.items()
+    }
+
+    # We start by assuming all the document sheets are independent. Device
+    # sheets cannot be independent, as they must be referred to by a document
+    # sheet or another device sheet.
+    independent_sheets = set(schematic_document_refs.keys())
+    # This is what we'll use to compare with the sheet names in repetitions.
+    schematic_document_names_downcased = {sheet.casefold(): sheet for sheet in independent_sheets}
+    device_sheet_names_downcased = {sheet.casefold(): sheet for sheet in device_sheet_refs.keys()}
+
+    # First, we'll build the hierarchy for device sheets, since they cannot
+    # point to document sheets.
+    for device_sheet_name, device_sheet_refs in device_sheet_refs.items():
+        if not device_sheet_refs:
+            continue
+
+        repetitions = _extract_repetitions(device_sheet_refs)
+        for child_sheet, count in repetitions.items():
+            # child_sheet should just be a filename
+            child_name = device_sheet_names_downcased[child_sheet.casefold()]
+            if device_sheet_name in hierarchy:
+                hierarchy[device_sheet_name].append((child_name, count))
+            else:
+                hierarchy[device_sheet_name] = [(child_name, count)]
+
+    # Now for the document sheets, which can point to both other document
+    # sheets and device sheets
+    for schematic_document_sheet, refs in schematic_document_refs.items():
         if not refs or len(refs) == 0:
             continue
 
         repetitions = _extract_repetitions(refs)
+
         for child_sheet, count in repetitions.items():
-            child_path = _resolve_child_relative_path(child_sheet, parent_sheet)
-            child_name = sheet_names_downcased[child_path.lower()]
-            if parent_sheet in hierarchy:
-                hierarchy[parent_sheet].append((child_name, count))
+            child_path = _resolve_child_relative_path(
+                child_sheet, schematic_document_sheet
+            ).casefold()
+            if child_path in schematic_document_names_downcased:
+                child_name = schematic_document_names_downcased[child_path]
             else:
-                hierarchy[parent_sheet] = [(child_name, count)]
+                # Note the `child_sheet` below - we use the bare text without
+                # any path resolution for device sheets.
+                child_name = device_sheet_names_downcased[child_sheet.casefold()]
+            if schematic_document_sheet in hierarchy:
+                hierarchy[schematic_document_sheet].append((child_name, count))
+            else:
+                hierarchy[schematic_document_sheet] = [(child_name, count)]
             independent_sheets.discard(child_name)
 
     return (independent_sheets, hierarchy)
@@ -411,14 +547,17 @@ def _build_schdoc_hierarchy(
 
 def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
     """
-    Converts a relative path in a sheet ref to a relative path from the prjpcb
-    file.
+    Converts a relative path in a sheet ref to a POSIX relative path from the
+    prjpcb file.
+
+    The returned path is POSIX as we convert them to POSIX paths when fetching
+    JSONs.
     """
 
     child = pathlib.PureWindowsPath(child_path)
     parent = pathlib.PureWindowsPath(parent_path)
 
-    return str(parent.parent / child)
+    return (parent.parent / child).as_posix()
 
 
 def _extract_repetitions(sheet_refs: list[dict]) -> dict[str, int]:
@@ -725,7 +864,7 @@ def _apply_variations(
                 unique_id = variation_details["UniqueId"].split("\\")[-1]
                 kind = variation_details["Kind"]
             except KeyError:
-                logger.warn(
+                logger.warning(
                     "Designator, UniqueId, or Kind not found in details of variation "
                     f"{variation_details}; skipping this variation."
                 )
@@ -733,7 +872,7 @@ def _apply_variations(
             try:
                 kind = VariationKind(int(variation_details["Kind"]))
             except ValueError:
-                logger.warn(
+                logger.warning(
                     f"Kind {variation_details['Kind']} of variation {variation_details} must be "
                     "either 0, 1 or 2; skipping this variation."
                 )
@@ -753,7 +892,7 @@ def _apply_variations(
                 # This can happen sometimes - Altium allows param variations
                 # even when the component is not fitted, so we just log and
                 # ignore.
-                logger.warn(
+                logger.warning(
                     f"ParamVariation{variation_id} found for component {designator} either before "
                     "the corresponding Variation or for a component that is not fitted.\n"
                     "Ignoring this ParamVariation."
@@ -766,7 +905,7 @@ def _apply_variations(
                     variation_details["VariantValue"],
                 )
             except KeyError:
-                logger.warn(
+                logger.warning(
                     f"ParameterName or VariantValue not found in ParamVariation{variation_id} "
                     "details."
                 )
@@ -815,3 +954,78 @@ def _filter_blank_components(
         final_components.append(component)
 
     return final_components
+
+
+def _find_device_sheet(
+    device_sheet: str,
+    project_repository: Repository,
+    project_file_path: str,
+    design_reuse_repos: list[Repository],
+    logger: Logger,
+) -> tuple[Repository, pathlib.PurePosixPath]:
+    """
+    Find a device sheet by name in the design reuse repositories.
+
+    This currently does not use the directory structure of the device sheet
+    path from the PrjPcb file, and instead only matches on the filename. If
+    multiple matches are found, they are logged.
+
+    :param design_reuse_repos: The design reuse repositories to search.
+    :param device_sheet: The path of the device sheet as given in the PrjPcb.
+    :returns: The first matching repository and the path to the device sheet in
+        that repository.
+    """
+
+    matches: list[tuple[Repository, pathlib.PurePosixPath]] = []
+
+    # Paths stored in the PrjPcb are Windows paths
+    device_sheet_path = pathlib.PureWindowsPath(device_sheet)
+    # Note that this will include the .SchDoc extension.
+    device_sheet_name = device_sheet_path.name.casefold()
+
+    # First, we'll resolve the actual path of the device sheet in the project
+    # repo, and if that's a real file then we use that.
+    device_sheet_path_from_repo_root = _resolve_prjpcb_relative_path(
+        device_sheet,
+        project_file_path,
+    ).casefold()
+    project_repo_tree = _fetch_all_files_in_repo(project_repository)
+    for filepath in project_repo_tree:
+        if device_sheet_path_from_repo_root == filepath.casefold():
+            logger.info("Found device sheet %s in project repository; using that.", device_sheet)
+            return (
+                project_repository,
+                pathlib.PurePosixPath(filepath),
+            )
+
+    for repo in design_reuse_repos:
+        files_in_repo = _fetch_all_files_in_repo(repo)
+        for file_in_repo in files_in_repo:
+            # Paths as reported by ASH are Unix paths
+            file_path = pathlib.PurePosixPath(file_in_repo)
+            if device_sheet_name == file_path.name.casefold():
+                matches.append((repo, file_path))
+
+    if len(matches) == 0:
+        raise ValueError(
+            f"No matching device sheet found for {device_sheet_path} in the design reuse "
+            "repositories.",
+        )
+
+    if len(matches) > 1:
+        logger.info(
+            "Multiple matches found for device sheet %s in design reuse repositories; set log "
+            "level to debug to see all matches.",
+            device_sheet,
+        )
+        for match in matches:
+            logger.debug("Matching repository: %s, matching file path: %s", match[0].url, match[1])
+
+        first_match = matches[0]
+        logger.info(
+            "Picking first match, i.e. Repository: %s, File Path: %s",
+            first_match[0].url,
+            first_match[1],
+        )
+
+    return matches[0]
