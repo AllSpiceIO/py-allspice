@@ -23,10 +23,12 @@ PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 PART_REFERENCE_ATTR_NAME = "Part Reference"
 """The name of the part reference attribute in OrCAD projects."""
 
-REPETITIONS_REGEX = re.compile(r"Repeat\(\w+,(\d+),(\d+)\)")
+REPETITIONS_REGEX = re.compile(r"Repeat\((\w+),(\d+),(\d+)\)")
 
 DESIGNATOR_COLUMN_NAME = "Designator"
 """The name of the designator attribute in Altium projects."""
+
+LOGICAL_DESIGNATOR = "_logical_designator"
 
 ComponentAttributes = dict[str, str]
 
@@ -56,7 +58,9 @@ class AltiumChildSheet:
 
     unique_id: str
     """
-    The Unique ID of the SheetRef instance.
+    The Unique ID of the SheetRef instance. Note that this may not be unique
+    for child sheets, as the same sheetref can be expanded into multiple
+    instances via channels.
     """
 
     name: str
@@ -65,9 +69,9 @@ class AltiumChildSheet:
     a device sheet.
     """
 
-    repetitions: int = 1
+    channel_name: str
     """
-    The number of times the child sheet is repeated in the parent sheet.
+    See https://www.altium.com/documentation/altium-designer/creating-multi-channel-design#the-repeat-keyword
     """
 
 
@@ -212,14 +216,13 @@ def list_components_for_altium(
     if not project_documents:
         raise ValueError("No Project Documents found in the PrjPcb file.")
 
-    if device_sheets:
-        try:
-            annotations_data = _fetch_and_parse_annotation_file(repository, prjpcb_file, ref)
-        except Exception as e:
+    try:
+        annotations_data = _fetch_and_parse_annotation_file(repository, prjpcb_file, ref)
+        allspice_client.logger.info("Found annotations file, %d entries", len(annotations_data))
+    except Exception as e:
+        if device_sheets:
             allspice_client.logger.warning("Failed to fetch annotations file: %s", e)
             allspice_client.logger.warning("Component designators may not be correct.")
-            annotations_data = {}
-    else:
         annotations_data = {}
 
     # Mapping of schdoc file paths from the project file to their JSON
@@ -294,12 +297,21 @@ def list_components_for_altium(
 
     for independent_sheet in independent_sheets:
         components.extend(
-            _extract_components(
+            _extract_components_altium(
                 independent_sheet,
                 sheets_to_components,
                 hierarchy,
+                parent_sheet_id="",
+                current_sheet=None,
             )
         )
+
+    # At this stage, we have components where the designators are not final.
+
+    if annotations_data:
+        components = _apply_annotation_file(components, annotations_data)
+    else:
+        components = _compute_repetitions(components)
 
     if combine_multi_part:
         # Multi part components must be combined *after* we've processed
@@ -621,15 +633,27 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
             )
 
         if match := REPETITIONS_REGEX.search(sheet_name):
-            count = int(match.group(2)) - int(match.group(1)) + 1
+            channel_identifier = match.group(1)
+            start = int(match.group(2))
+            end = int(match.group(3))
+            for channel_index in range(start, end + 1):
+                repetitions.append(
+                    AltiumChildSheet(
+                        name=sheet_file_name,
+                        # The UniqueID of this specific instance has to include
+                        # the channel index before it.
+                        unique_id=f"{channel_index}{sheet_ref['unique_id']}",
+                        channel_name=f"{channel_identifier}{channel_index}",
+                    )
+                )
         else:
-            count = 1
-
-        repetitions.append(
-            AltiumChildSheet(
-                name=sheet_file_name, unique_id=sheet_ref["unique_id"], repetitions=count
+            repetitions.append(
+                AltiumChildSheet(
+                    name=sheet_file_name,
+                    unique_id=sheet_ref["unique_id"],
+                    channel_name=sheet_name,
+                )
             )
-        )
 
     return repetitions
 
@@ -650,7 +674,7 @@ def _component_attributes_altium(component: dict) -> ComponentAttributes:
     # The designator attribute has a `value` key which contains the unchanged
     # designator from the schematic file. This is useful when combining multi-
     # part components.
-    attributes["_logical_designator"] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
+    attributes[LOGICAL_DESIGNATOR] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
 
     if "part_id" in component:
         attributes["_part_id"] = component["part_id"]
@@ -716,46 +740,38 @@ def _letters_for_repetition(rep: int) -> str:
     return suffix
 
 
-def _append_designator_letters(
-    component_attributes: ComponentAttributes,
-    repetitions: int,
-) -> list[ComponentAttributes]:
-    """
-    Append a letter to the designator of each component in a list of components
-    based on the number of repetitions of each component in the parent sheet.
-    """
-
-    if repetitions == 1:
-        return [component_attributes]
-
-    try:
-        designator = component_attributes[DESIGNATOR_COLUMN_NAME]
-        logical_designator = component_attributes["_logical_designator"]
-    except KeyError:
-        raise ValueError(f"Designator not found in {component_attributes=}")
-
-    if designator is None:
-        return [component_attributes] * repetitions
-
-    return [
-        {
-            **component_attributes,
-            DESIGNATOR_COLUMN_NAME: f"{designator}{_letters_for_repetition(i)}",
-            # The designator value should also get the page ordinal, because
-            # each time the page is repeated we're dealing with a different
-            # component.
-            "_logical_designator": f"{logical_designator}{_letters_for_repetition(i)}",
-        }
-        for i in range(1, repetitions + 1)
-    ]
-
-
-def _extract_components(
+def _extract_components_altium(
     sheet_name: str,
     sheets_to_entries: dict[str, list[dict]],
     hierarchy: SchdocHierarchy,
+    parent_sheet_id: str,
+    current_sheet: AltiumChildSheet | None = None,
 ) -> list[ComponentAttributes]:
+    """
+    Extract the components from a sheet in an Altium project.
+
+    :param sheet_name: The name of the sheet to extract components from. This
+        is required because independent sheets do not have an AltiumChildSheet
+        instance, and we need the name to look up the components.
+    :param sheets_to_entries: A mapping of sheet names to the entries in the
+        JSON for that sheet.
+    :param hierarchy: The hierarchy of the sheets in the project.
+    :param parent_sheet_id: The Unique ID of the parent sheet in the hierarchy.
+        For independent sheets, this should be empty.
+    :param current_sheet: The AltiumChildSheet instance for the current sheet.
+        If this is an independent sheet, this should be None.
+    :returns: A list of components in the sheet. The designators of the
+        components here are not final and should be patched, either with the
+        Annotation file or through the repetitions logic.
+    """
+
     components = []
+
+    if current_sheet is not None:
+        current_sheet_id = f"{parent_sheet_id}\\{current_sheet.unique_id}"
+    else:
+        current_sheet_id = parent_sheet_id
+
     if sheet_name not in sheets_to_entries:
         return components
 
@@ -764,31 +780,26 @@ def _extract_components(
             continue
 
         component = _component_attributes_altium(entry)
+        component_unique_id = f"{current_sheet_id}\\{component['_unique_id']}"
+        component["_unique_id"] = component_unique_id
+        if current_sheet is not None:
+            component["_channel_name"] = current_sheet.channel_name
+
         components.append(component)
 
     if sheet_name not in hierarchy:
         return components
 
-    # Earlier, this function would deal only with counts, but now we have
-    # instances of ChildSheet. If there are multiple ChildSheet instances of
-    # the same sheet, which can happen if there are multiple SheetRefs, we need
-    # to consider both the total count and each instance. The instances are
-    # useful for processing annotations, while the count is useful for the
-    # suffix logic.
-
-    child_sheets_of_name = {}
-
     for child_sheet in hierarchy[sheet_name]:
-        child_sheets_of_name.setdefault(child_sheet.name, []).append(child_sheet)
+        child_components = _extract_components_altium(
+            child_sheet.name,
+            sheets_to_entries,
+            hierarchy,
+            current_sheet_id,
+            child_sheet,
+        )
 
-    for child_sheet_name, child_sheets in child_sheets_of_name.items():
-        child_components = _extract_components(child_sheet_name, sheets_to_entries, hierarchy)
-        total_repetitions = sum(child_sheet.repetitions for child_sheet in child_sheets)
-        if total_repetitions > 1:
-            for component in child_components:
-                components.extend(_append_designator_letters(component, total_repetitions))
-        else:
-            components.extend(child_components)
+        components.extend(child_components)
 
     return components
 
@@ -811,7 +822,7 @@ def _combine_multi_part_components_for_altium(
 
     for component in components:
         if "_part_count" in component and "_current_part_id" in component:
-            designator = component["_logical_designator"]
+            designator = component[LOGICAL_DESIGNATOR]
             multi_part_components_by_designator.setdefault(designator, []).append(component)
         else:
             combined_components.append(component)
@@ -894,18 +905,17 @@ def _apply_variations(
     :returns: The components with the variations applied.
     """
 
-    # Each item in the list is a pairing of (unique_id, designator), as both are
-    # required to identify a component.
-    components_to_remove: list[tuple[str, str]] = []
+    # List of component UniqueIDs to remove from the BOM.
+    components_to_remove: list[str] = []
     # When patching components, the ParamVariation doesn't have the unique ID,
     # only a designator. However, ParamVariations follow the Variation entry, so
     # if we note down the last unique id we saw for a designator when going
     # through the variations, we can use that unique id when handling a param
     # variation. This dict holds that information.
     patch_component_unique_id: dict[str, str] = {}
-    # The keys are the same as above, and the values are a key-value of the
+    # The keys are the unique IDs, and the values are a key-value of the
     # parameter to patch and the value to patch it to.
-    components_to_patch: dict[tuple[str, str], list[tuple[str, str]]] = {}
+    components_to_patch: dict[str, list[tuple[str, str]]] = {}
 
     for key, value in variant_details.items():
         # Note that this is in lowercase, as configparser stores all keys in
@@ -914,9 +924,7 @@ def _apply_variations(
             variation_details = dict(details.split("=", 1) for details in value.split("|"))
             try:
                 designator = variation_details["Designator"]
-                # The unique ID field is a "path" separated by backslashes, and
-                # the the unique id we want is the last entry in that path.
-                unique_id = variation_details["UniqueId"].split("\\")[-1]
+                unique_id = variation_details["UniqueId"]
                 kind = variation_details["Kind"]
             except KeyError:
                 logger.warning(
@@ -934,7 +942,7 @@ def _apply_variations(
                 continue
 
             if kind == VariationKind.NOT_FITTED:
-                components_to_remove.append((unique_id, designator))
+                components_to_remove.append(unique_id)
             else:
                 patch_component_unique_id[designator] = unique_id
         elif re.match(r"paramvariation[\d]+", key):
@@ -966,21 +974,18 @@ def _apply_variations(
                 )
                 continue
 
-            if (unique_id, designator) in components_to_patch:
-                components_to_patch[(unique_id, designator)].append(parameter_patch)
-            else:
-                components_to_patch[(unique_id, designator)] = [parameter_patch]
+            components_to_patch.setdefault(unique_id, []).append(parameter_patch)
 
     final_components = []
 
     for component in components:
-        identifying_pair = (component["_unique_id"], component[DESIGNATOR_COLUMN_NAME])
-        if identifying_pair in components_to_remove:
+        unique_id = component["_unique_id"]
+        if unique_id in components_to_remove:
             continue
 
-        if identifying_pair in components_to_patch:
+        if unique_id in components_to_patch:
             new_component = component.copy()
-            for parameter, value in components_to_patch[identifying_pair]:
+            for parameter, value in components_to_patch[unique_id]:
                 new_component[parameter] = value
             final_components.append(new_component)
         else:
@@ -1098,9 +1103,10 @@ def _fetch_and_parse_annotation_file(
     :param prjpcb_path: The path to the PrjPcb file from the repo root.
     :param ref: The git ref to check.
     :returns: The parsed contents of the annotation file. The returned
-        dictionary maps the full component id to the change. For example, a
-        component with id \\A\\B\\C that should change from C1 to C12 will be
-        stored as {"\\A\\B\\C": {"from": "C1", "to": "C12"}}.
+        dictionary maps the full component unique id to a list of changes. For
+        example, a component with id \\A\\B\\C with channel name CN that should
+        change from C1 to C12 will be stored as
+        {"\\A\\B\\C": [{"from": "C1", "to": "C12", "channel_name": "CN"}]}.
     """
 
     # According to the Altium documentation, the annotation file is stored with
@@ -1154,14 +1160,104 @@ def _fetch_and_parse_annotation_file(
         if unique_id_key not in designator_manager_section:
             break
         unique_id = designator_manager_section[unique_id_key]
+        channel_name = designator_manager_section[f"ChannelName{change_number}"]
         logical_designator = designator_manager_section[f"LogicalDesignator{change_number}"]
         physical_designator = designator_manager_section[f"PhysicalDesignator{change_number}"]
 
-        changes[unique_id] = {
-            "from": logical_designator,
-            "to": physical_designator,
-        }
+        changes.setdefault(unique_id, []).append(
+            {
+                "from": logical_designator,
+                "to": physical_designator,
+                "channel_name": channel_name,
+            }
+        )
 
         change_number += 1
 
     return changes
+
+
+def _apply_annotation_file(
+    components: list[ComponentAttributes],
+    annotations_data: dict,
+) -> list[ComponentAttributes]:
+    """
+    Apply a Board Level Annotations file to get the compnents with their final
+    designators.
+    """
+
+    final_components = []
+
+    for component in components:
+        unique_id = component["_unique_id"]
+        annotations_for_component = annotations_data.get(unique_id)
+
+        if not annotations_for_component:
+            final_components.append(component)
+            continue
+
+        if len(annotations_for_component) == 1:
+            # This ID must be unique, so we can apply this annotation
+            # without considering the channel.
+            new_component = component.copy()
+            new_component[DESIGNATOR_COLUMN_NAME] = annotations_for_component[0]["to"]
+            if LOGICAL_DESIGNATOR in new_component:
+                new_component[LOGICAL_DESIGNATOR] = annotations_for_component[0]["to"]
+            final_components.append(new_component)
+            continue
+
+        component_channel = component.get("_channel_name")
+        channel_found = False
+        for change in annotations_for_component:
+            if change["channel_name"] == component_channel:
+                new_component = component.copy()
+                new_component[DESIGNATOR_COLUMN_NAME] = change["to"]
+                if LOGICAL_DESIGNATOR in new_component:
+                    new_component[LOGICAL_DESIGNATOR] = change["to"]
+                channel_found = True
+                final_components.append(new_component)
+                break
+
+        # If the channel was not found, we'll just append the component as
+        # is, because there was no annotation for this channel.
+        if not channel_found:
+            final_components.append(component)
+
+    return final_components
+
+
+def _compute_repetitions(components: list[ComponentAttributes]) -> list[ComponentAttributes]:
+    """
+    In the absence of an Annotation file, manually append suffixes to repeated
+    components.
+    """
+
+    final_components = []
+
+    # The rough logic here is that for all components with the same ID, i.e.
+    # the LAST segment of their unique ID, we sort them by channel name and
+    # suffix the index based on its position in the sorted list.
+
+    components_by_id = {}
+
+    for component in components:
+        unique_id = component["_unique_id"]
+        last_segment = unique_id.split("\\")[-1]
+        components_by_id.setdefault(last_segment, []).append(component)
+
+    for components in components_by_id.values():
+        if len(components) == 1:
+            final_components.append(components[0])
+            continue
+
+        # If there are multiple components with the same ID, they *must* be
+        # from repeated sheets, so we they *must* have the _channel_name field
+        # in the component attributes.
+        components.sort(key=lambda component: component["_channel_name"])
+        for i, component in enumerate(components):
+            new_component = component.copy()
+            new_component[DESIGNATOR_COLUMN_NAME] += _letters_for_repetition(i + 1)
+            new_component[LOGICAL_DESIGNATOR] += _letters_for_repetition(i + 1)
+            final_components.append(new_component)
+
+    return final_components

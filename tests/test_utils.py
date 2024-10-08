@@ -822,6 +822,25 @@ def test_altium_components_list_with_device_sheets(
 
 
 @pytest.mark.vcr
+def test_altium_components_list_with_annotations(
+    request, instance, setup_for_generation, json_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/FlatSat",
+    )
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "FlatSat/FlatSat.PrjPCB",
+        ref="471d42ba87032682c7dc7a0235ffcc02808a3e37",
+    )
+
+    assert len(components) == 408
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
 def test_system_capture_components_list(
     request,
     instance,
@@ -876,7 +895,6 @@ def test_list_components_system_capture_fails_with_variant(
     request,
     instance,
     setup_for_generation,
-    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,

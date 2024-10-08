@@ -86,7 +86,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "CKKFFKEU"
+    "_unique_id": "\\CKKFFKEU"
   },
   {
     "Color": "Black",
@@ -175,7 +175,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "FDGFKJFG"
+    "_unique_id": "\\FDGFKJFG"
   },
   {
     "Color": "Black",
@@ -264,7 +264,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "HLQWWSME"
+    "_unique_id": "\\HLQWWSME"
   },
   {
     "Color": "Black",
@@ -353,7 +353,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "JIAHICCV"
+    "_unique_id": "\\JIAHICCV"
   },
   {
     "Color": "Black",
@@ -442,7 +442,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "LTXQWVMA"
+    "_unique_id": "\\LTXQWVMA"
   },
   {
     "Color": "Black",
@@ -531,7 +531,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "QUWPQJOX"
+    "_unique_id": "\\QUWPQJOX"
   },
   {
     "Color": "Black",
@@ -620,7 +620,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "SCSMQEYY"
+    "_unique_id": "\\SCSMQEYY"
   },
   {
     "Color": "Black",
@@ -709,7 +709,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "YBFHWAHP"
+    "_unique_id": "\\YBFHWAHP"
   },
   {
     "Code_JEDEC": "MO-169-AC",
@@ -732,6 +732,7 @@
     "PowerWise": "N",
     "RevisionNote": "Component URLs added",
     "RoHS": "N",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "SIMPLE SWITCHER® High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263",
     "_kind": "STANDARD",
     "_logical_designator": "U1",
@@ -907,7 +908,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "DFYQLROK"
+    "_unique_id": "\\EUAWEYBK\\DFYQLROK"
   },
   {
     "Average Rectified Current": "10A",
@@ -937,6 +938,7 @@
     "Series": "SBR®",
     "Weight": "0.012346oz",
     "Width": "6.2mm",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "DIODE SBR 45V 10A DPAK",
     "_kind": "STANDARD",
     "_logical_designator": "D1",
@@ -1016,7 +1018,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "KEKPXMBA"
+    "_unique_id": "\\EUAWEYBK\\KEKPXMBA"
   },
   {
     "Comment": "UUD1C331MNL1GS",
@@ -1043,6 +1045,7 @@
     "Rated Voltage": "16 V",
     "RoHS": "TRUE",
     "Tolerance Rated Capacitance": "-20 to 20%",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "Aluminum Electrolytic Capacitor, UD Series, Low Impedance, 330 uF, 16 V, + / - 20%, -55 to 105 degC, Chip Type, 8 x 10 mm D x L, Pb-Free, Reel",
     "_kind": "STANDARD",
     "_logical_designator": "C4",
@@ -1098,7 +1101,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "LXPHEHEF"
+    "_unique_id": "\\EUAWEYBK\\LXPHEHEF"
   },
   {
     "Capacitance": "10nF",
@@ -1124,6 +1127,7 @@
     "Voltage Rating": "10V",
     "Voltage Rating (DC)": "10V",
     "Width": "0.012inch",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0201, 10000pF, X5R, 15%, 10%, 10V",
     "_kind": "STANDARD",
     "_logical_designator": "C1",
@@ -1179,7 +1183,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "QZVZMIAZ"
+    "_unique_id": "\\EUAWEYBK\\QZVZMIAZ"
   },
   {
     "Capacitance": "100nF",
@@ -1204,6 +1208,7 @@
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
     "Width": "0.02inch",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0402, 0.10uF, X5R, 15%, 10%, 50V",
     "_kind": "STANDARD",
     "_logical_designator": "C3",
@@ -1259,7 +1264,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "RFHDYTVM"
+    "_unique_id": "\\EUAWEYBK\\RFHDYTVM"
   },
   {
     "Case/Package": "3232",
@@ -1292,6 +1297,7 @@
     "Test Frequency": "100kHz",
     "Tolerance": "20%",
     "Width": "0.322inch",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "FIXED IND 10UH 5.2A 59.9 MOHM",
     "_kind": "STANDARD",
     "_logical_designator": "L1",
@@ -1347,7 +1353,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XBZAXNZC"
+    "_unique_id": "\\EUAWEYBK\\XBZAXNZC"
   },
   {
     "Capacitance": "47uF",
@@ -1381,6 +1387,7 @@
     "Voltage": "50V",
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
+    "_channel_name": "U_PSU-DCDC-3V3-TI-LM2678SX",
     "_description": "CAP ALUM 47UF 20% 50V SMD",
     "_kind": "STANDARD",
     "_logical_designator": "C2",
@@ -1436,7 +1443,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XWKTDZQK"
+    "_unique_id": "\\EUAWEYBK\\XWKTDZQK"
   },
   {
     "Code_JEDEC": "MO-169-AC",
@@ -1459,6 +1466,7 @@
     "PowerWise": "N",
     "RevisionNote": "Component URLs added",
     "RoHS": "N",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "SIMPLE SWITCHER® High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263",
     "_kind": "STANDARD",
     "_logical_designator": "U1",
@@ -1634,7 +1642,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "ASTIQASJ"
+    "_unique_id": "\\MMUIQBOM\\ASTIQASJ"
   },
   {
     "Average Rectified Current": "10A",
@@ -1664,6 +1672,7 @@
     "Series": "SBR®",
     "Weight": "0.012346oz",
     "Width": "6.2mm",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "DIODE SBR 45V 10A DPAK",
     "_kind": "STANDARD",
     "_logical_designator": "D1",
@@ -1743,7 +1752,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "KEKPXMBA"
+    "_unique_id": "\\MMUIQBOM\\KEKPXMBA"
   },
   {
     "Comment": "UUD1C331MNL1GS",
@@ -1770,6 +1779,7 @@
     "Rated Voltage": "16 V",
     "RoHS": "TRUE",
     "Tolerance Rated Capacitance": "-20 to 20%",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "Aluminum Electrolytic Capacitor, UD Series, Low Impedance, 330 uF, 16 V, + / - 20%, -55 to 105 degC, Chip Type, 8 x 10 mm D x L, Pb-Free, Reel",
     "_kind": "STANDARD",
     "_logical_designator": "C4",
@@ -1825,7 +1835,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "LXPHEHEF"
+    "_unique_id": "\\MMUIQBOM\\LXPHEHEF"
   },
   {
     "Capacitance": "10nF",
@@ -1851,6 +1861,7 @@
     "Voltage Rating": "10V",
     "Voltage Rating (DC)": "10V",
     "Width": "0.012inch",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0201, 10000pF, X5R, 15%, 10%, 10V",
     "_kind": "STANDARD",
     "_logical_designator": "C1",
@@ -1906,7 +1917,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "QZVZMIAZ"
+    "_unique_id": "\\MMUIQBOM\\QZVZMIAZ"
   },
   {
     "Capacitance": "100nF",
@@ -1931,6 +1942,7 @@
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
     "Width": "0.02inch",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0402, 0.10uF, X5R, 15%, 10%, 50V",
     "_kind": "STANDARD",
     "_logical_designator": "C3",
@@ -1986,7 +1998,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "RFHDYTVM"
+    "_unique_id": "\\MMUIQBOM\\RFHDYTVM"
   },
   {
     "Case/Package": "3232",
@@ -2019,6 +2031,7 @@
     "Test Frequency": "100kHz",
     "Tolerance": "20%",
     "Width": "0.322inch",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "FIXED IND 10UH 5.2A 59.9 MOHM",
     "_kind": "STANDARD",
     "_logical_designator": "L1",
@@ -2074,7 +2087,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XBZAXNZC"
+    "_unique_id": "\\MMUIQBOM\\XBZAXNZC"
   },
   {
     "Capacitance": "47uF",
@@ -2108,6 +2121,7 @@
     "Voltage": "50V",
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
+    "_channel_name": "U_PSU-DCDC-12V0-TI-LM2678SX",
     "_description": "CAP ALUM 47UF 20% 50V SMD",
     "_kind": "STANDARD",
     "_logical_designator": "C2",
@@ -2163,7 +2177,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XWKTDZQK"
+    "_unique_id": "\\MMUIQBOM\\XWKTDZQK"
   },
   {
     "Case Code (Imperial)": "0805",
@@ -2174,7 +2188,7 @@
     "Datasheet URL": "http://www.yageo.com/NewPortal/yageodocoutput?fileName=/pdf/R-Chip/PYu-RC_Group_51_RoHS_L_5.pdf",
     "Datasheet Version": "Rev. 5, 10/2016",
     "Depth": "1.25mm",
-    "Designator": "R?",
+    "Designator": "R2",
     "Height": "0.024inch",
     "Lead Free": "LeadFree",
     "Length": "0.079inch",
@@ -2200,9 +2214,10 @@
     "Voltage Rating": "150V",
     "Voltage Rating (DC)": "150V",
     "Width": "0.049inch",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "Chip Resistor, 1 KOhm, +/- 1%, 125 mW, -55 to 155 degC, 0805 (2012 Metric), RoHS, Tape and Reel",
     "_kind": "STANDARD",
-    "_logical_designator": "R?",
+    "_logical_designator": "R2",
     "_name": "RES-2",
     "_part_id": "CMP-2100-03671-1",
     "_pins": [
@@ -2255,16 +2270,17 @@
         "visible": true
       }
     ],
-    "_unique_id": "FGTZIWAJ"
+    "_unique_id": "\\XQJCETTR\\FGTZIWAJ"
   },
   {
     "Comment": "RC0402FR-077K5L",
-    "Designator": "R?",
+    "Designator": "R1",
     "Manufacturer": "Yageo / Phycomp",
     "Part Number": "RC0402FR-077K5L",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": null,
     "_kind": "STANDARD",
-    "_logical_designator": "R?",
+    "_logical_designator": "R1",
     "_name": "RES",
     "_part_id": "CMP-1011-00609-2",
     "_pins": [
@@ -2317,7 +2333,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "IMSGPJJR"
+    "_unique_id": "\\XQJCETTR\\IMSGPJJR"
   },
   {
     "Average Rectified Current": "10A",
@@ -2347,6 +2363,7 @@
     "Series": "SBR®",
     "Weight": "0.012346oz",
     "Width": "6.2mm",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "DIODE SBR 45V 10A DPAK",
     "_kind": "STANDARD",
     "_logical_designator": "D1",
@@ -2426,7 +2443,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "KEKPXMBA"
+    "_unique_id": "\\XQJCETTR\\KEKPXMBA"
   },
   {
     "Comment": "UUD1C331MNL1GS",
@@ -2453,6 +2470,7 @@
     "Rated Voltage": "16 V",
     "RoHS": "TRUE",
     "Tolerance Rated Capacitance": "-20 to 20%",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "Aluminum Electrolytic Capacitor, UD Series, Low Impedance, 330 uF, 16 V, + / - 20%, -55 to 105 degC, Chip Type, 8 x 10 mm D x L, Pb-Free, Reel",
     "_kind": "STANDARD",
     "_logical_designator": "C4",
@@ -2508,7 +2526,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "LXPHEHEF"
+    "_unique_id": "\\XQJCETTR\\LXPHEHEF"
   },
   {
     "Capacitance": "10nF",
@@ -2534,6 +2552,7 @@
     "Voltage Rating": "10V",
     "Voltage Rating (DC)": "10V",
     "Width": "0.012inch",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0201, 10000pF, X5R, 15%, 10%, 10V",
     "_kind": "STANDARD",
     "_logical_designator": "C1",
@@ -2589,7 +2608,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "QZVZMIAZ"
+    "_unique_id": "\\XQJCETTR\\QZVZMIAZ"
   },
   {
     "Capacitance": "100nF",
@@ -2614,6 +2633,7 @@
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
     "Width": "0.02inch",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0402, 0.10uF, X5R, 15%, 10%, 50V",
     "_kind": "STANDARD",
     "_logical_designator": "C3",
@@ -2669,7 +2689,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "RFHDYTVM"
+    "_unique_id": "\\XQJCETTR\\RFHDYTVM"
   },
   {
     "Code_JEDEC": "MO-169-AC",
@@ -2682,7 +2702,7 @@
     "ComponentLink3Description": "TS7B Package Page",
     "ComponentLink3URL": "http://www.national.com/packaging/folders/ts7b.html",
     "DatasheetVersion": "May-2008",
-    "Designator": "U?",
+    "Designator": "U1",
     "Manufacturer": "National Semiconductor",
     "PackageDescription": "TO-263, Molded, .400 x .390 x .180in Body, 7 Lead, .050in Pitch, Surface Mount",
     "PackageReference": "TS7B",
@@ -2692,9 +2712,10 @@
     "PowerWise": "N",
     "RevisionNote": "Component URLs added",
     "RoHS": "N",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "SIMPLE SWITCHER® High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263",
     "_kind": "STANDARD",
-    "_logical_designator": "U?",
+    "_logical_designator": "U1",
     "_name": "CMP-0069-00190-2",
     "_part_id": "CMP-0069-00190-2",
     "_pins": [
@@ -2867,7 +2888,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "VBJHZJJF"
+    "_unique_id": "\\XQJCETTR\\VBJHZJJF"
   },
   {
     "Case/Package": "3232",
@@ -2900,6 +2921,7 @@
     "Test Frequency": "100kHz",
     "Tolerance": "20%",
     "Width": "0.322inch",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "FIXED IND 10UH 5.2A 59.9 MOHM",
     "_kind": "STANDARD",
     "_logical_designator": "L1",
@@ -2955,7 +2977,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XBZAXNZC"
+    "_unique_id": "\\XQJCETTR\\XBZAXNZC"
   },
   {
     "Capacitance": "47uF",
@@ -2989,6 +3011,7 @@
     "Voltage": "50V",
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
+    "_channel_name": "U_PSU-DCDC-ADJ-9V0-TI-LM2678SX",
     "_description": "CAP ALUM 47UF 20% 50V SMD",
     "_kind": "STANDARD",
     "_logical_designator": "C2",
@@ -3044,7 +3067,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XWKTDZQK"
+    "_unique_id": "\\XQJCETTR\\XWKTDZQK"
   },
   {
     "Case/Package": "TO-263",
@@ -3072,6 +3095,7 @@
     "Series": "SIMPLE SWITCHER®",
     "Switching Frequency": "260kHz",
     "Synchronous Rectifier": "No",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "IC REG BUCK 5V 5A TO263-7",
     "_kind": "STANDARD",
     "_logical_designator": "U1",
@@ -3247,7 +3271,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "JFYXYGXI"
+    "_unique_id": "\\ZYXHIAPW\\JFYXYGXI"
   },
   {
     "Average Rectified Current": "10A",
@@ -3277,6 +3301,7 @@
     "Series": "SBR®",
     "Weight": "0.012346oz",
     "Width": "6.2mm",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "DIODE SBR 45V 10A DPAK",
     "_kind": "STANDARD",
     "_logical_designator": "D1",
@@ -3356,7 +3381,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "KEKPXMBA"
+    "_unique_id": "\\ZYXHIAPW\\KEKPXMBA"
   },
   {
     "Comment": "UUD1C331MNL1GS",
@@ -3383,6 +3408,7 @@
     "Rated Voltage": "16 V",
     "RoHS": "TRUE",
     "Tolerance Rated Capacitance": "-20 to 20%",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "Aluminum Electrolytic Capacitor, UD Series, Low Impedance, 330 uF, 16 V, + / - 20%, -55 to 105 degC, Chip Type, 8 x 10 mm D x L, Pb-Free, Reel",
     "_kind": "STANDARD",
     "_logical_designator": "C4",
@@ -3438,7 +3464,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "LXPHEHEF"
+    "_unique_id": "\\ZYXHIAPW\\LXPHEHEF"
   },
   {
     "Capacitance": "10nF",
@@ -3464,6 +3490,7 @@
     "Voltage Rating": "10V",
     "Voltage Rating (DC)": "10V",
     "Width": "0.012inch",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0201, 10000pF, X5R, 15%, 10%, 10V",
     "_kind": "STANDARD",
     "_logical_designator": "C1",
@@ -3519,7 +3546,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "QZVZMIAZ"
+    "_unique_id": "\\ZYXHIAPW\\QZVZMIAZ"
   },
   {
     "Capacitance": "100nF",
@@ -3544,6 +3571,7 @@
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
     "Width": "0.02inch",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "Chip Multilayer Ceramic Capacitors for General Purpose, 0402, 0.10uF, X5R, 15%, 10%, 50V",
     "_kind": "STANDARD",
     "_logical_designator": "C3",
@@ -3599,7 +3627,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "RFHDYTVM"
+    "_unique_id": "\\ZYXHIAPW\\RFHDYTVM"
   },
   {
     "Case/Package": "3232",
@@ -3632,6 +3660,7 @@
     "Test Frequency": "100kHz",
     "Tolerance": "20%",
     "Width": "0.322inch",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "FIXED IND 10UH 5.2A 59.9 MOHM",
     "_kind": "STANDARD",
     "_logical_designator": "L1",
@@ -3687,7 +3716,7 @@
         "visible": true
       }
     ],
-    "_unique_id": "XBZAXNZC"
+    "_unique_id": "\\ZYXHIAPW\\XBZAXNZC"
   },
   {
     "Capacitance": "47uF",
@@ -3721,6 +3750,7 @@
     "Voltage": "50V",
     "Voltage Rating": "50V",
     "Voltage Rating (DC)": "50V",
+    "_channel_name": "U_PSU-DCDC-5V0-TI-LM2678SX",
     "_description": "CAP ALUM 47UF 20% 50V SMD",
     "_kind": "STANDARD",
     "_logical_designator": "C2",
@@ -3776,6 +3806,6 @@
         "visible": true
       }
     ],
-    "_unique_id": "XWKTDZQK"
+    "_unique_id": "\\ZYXHIAPW\\XWKTDZQK"
   }
 ]
