@@ -56,6 +56,26 @@ class AltiumChildSheet:
     Altium-specific.
     """
 
+    class ChildSheetKind(Enum):
+        """
+        The type of child sheet.
+        """
+
+        DOCUMENT = "Document"
+        """
+        A document in the project.
+        """
+
+        DEVICE_SHEET = "DeviceSheet"
+        """
+        A Device Sheet external to the project.
+        """
+
+    kind: ChildSheetKind
+    """
+    The type of child sheet referenced.
+    """
+
     unique_id: str
     """
     The Unique ID of the SheetRef instance. Note that this may not be unique
@@ -272,6 +292,13 @@ def list_components_for_altium(
         device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
 
     independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_jsons, device_sheet_jsons)
+
+    if device_sheets:
+        hierarchy = _correct_device_sheet_reference_unique_ids(
+            hierarchy,
+            prjpcb_ini,
+            allspice_client.logger,
+        )
 
     allspice_client.logger.debug("Independent sheets: %s", independent_sheets)
     allspice_client.logger.debug("Hierarchy: %s", hierarchy)
@@ -567,8 +594,13 @@ def _build_schdoc_hierarchy(
         for child_sheet in repetitions:
             # child_sheet should just be a filename
             child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
-            # We have to replace the name in the sheet ref with the name in the project file we expect
-            child_sheet = dataclasses.replace(child_sheet, name=child_name)
+            # We have to replace the name in the sheet ref with the name in the
+            # project file we expect
+            child_sheet = dataclasses.replace(
+                child_sheet,
+                name=child_name,
+                kind=AltiumChildSheet.ChildSheetKind.DEVICE_SHEET,
+            )
             hierarchy.setdefault(device_sheet_name, []).append(child_sheet)
 
     # Now for the document sheets, which can point to both other document
@@ -589,6 +621,13 @@ def _build_schdoc_hierarchy(
                 # Note the `child_sheet` below - we use the bare text without
                 # any path resolution for device sheets.
                 child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
+                # Now we know that this child sheet is a Device Sheet, we can
+                # replace the kind.
+                child_sheet = dataclasses.replace(
+                    child_sheet,
+                    kind=AltiumChildSheet.ChildSheetKind.DEVICE_SHEET,
+                )
+
             # We have to replace the name in the sheet ref with the name in the project file we expect
             child_sheet = dataclasses.replace(child_sheet, name=child_name)
             hierarchy.setdefault(schematic_document_sheet, []).append(child_sheet)
@@ -636,9 +675,13 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
             channel_identifier = match.group(1)
             start = int(match.group(2))
             end = int(match.group(3))
+
             for channel_index in range(start, end + 1):
                 repetitions.append(
                     AltiumChildSheet(
+                        # At this stage, we assume everything is a document, as
+                        # we can't know if it is a device sheet or not.
+                        kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
                         name=sheet_file_name,
                         # The UniqueID of this specific instance has to include
                         # the channel index before it.
@@ -649,6 +692,9 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
         else:
             repetitions.append(
                 AltiumChildSheet(
+                    # At this stage, we assume everything is a document, as
+                    # we can't know if it is a device sheet or not.
+                    kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
                     name=sheet_file_name,
                     unique_id=sheet_ref["unique_id"],
                     channel_name=sheet_name,
@@ -1261,3 +1307,132 @@ def _compute_repetitions(components: list[ComponentAttributes]) -> list[Componen
             final_components.append(new_component)
 
     return final_components
+
+
+def _correct_device_sheet_reference_unique_ids(
+    hierarchy: SchdocHierarchy,
+    prjpcb_ini: configparser.ConfigParser,
+    logger: Logger,
+) -> SchdocHierarchy:
+    """
+    When using device sheets, the UniqueIDs of the sheet references in Device
+    sheets are updated by Altium to be unique to the project. All UniqueID
+    paths to the files are stored in the PrjPcb file, so this function compares
+    the hierarchy to the paths in the PrjPcb path to correct the UniqueIDs of
+    the SheetRefs to be what they should be in the project.
+
+    This is known to not work in the following cases:
+
+    - There are multiple top sheets in the project. Altium warns in this case,
+      so this is not supported.
+    - There are multiple sheets with the same name in the project. Altium also
+      doesn't support this well and will do unusual things, so we don't
+      support this.
+    """
+
+    try:
+        annotate_section = prjpcb_ini["Annotate"]
+    except KeyError:
+        logger.warning(
+            "Annotate section not found in PrjPcb; Designators of componets within Device Sheets may be incorrect."
+        )
+        return hierarchy
+
+    paths_to_documents: dict[str, list[str]] = {}
+    document_index = 0
+
+    while True:
+        try:
+            document_name = annotate_section[f"DocumentName{document_index}"]
+            unique_id_path = annotate_section[f"UniqueIDPath{document_index}"]
+        except KeyError:
+            break
+
+        document_index += 1
+
+        if not unique_id_path:
+            # The unique ID path can be blank for the top sheet - we'll just
+            # skip it, because we already know the top sheet.
+            continue
+
+        paths_to_documents.setdefault(document_name, []).append(unique_id_path)
+
+    # How this works:
+    #
+    # We have a list of paths which are based on the hierarchy of sheet ref
+    # unique IDs, and a list of the sheetrefs that are on each sheet. We also
+    # know that all instances of a sheet have the same SheetRefs with the same
+    # IDs. So if a Sheet1.SchDoc has two children Sheet2.SchDoc and
+    # Sheet3.SchDoc, it will have two sheet refs, and across all instances of
+    # Sheet1.SchDoc those sheetrefs will have the same unique Id.
+    #
+    # Therefore, we can take one of the paths to Sheet1, which gives us the
+    # path for an instance of Sheet1. Then we take the list of children of
+    # Sheet1 and pick a child, say Sheet2, and find all paths to Sheet2 that
+    # passes through this instance of Sheet1. We also filter out paths that
+    # aren't immediate children of this instance, and so we'll have a list of
+    # unique IDs for the sheet refs, which we then reconcile with the sheetrefs
+    # we do have.
+
+    changed_hierarchy = {}
+
+    for sheet_name, children in hierarchy.items():
+        if not sheet_name.endswith(".SchDoc"):
+            sheet_name_with_extension = sheet_name + ".SchDoc"
+        else:
+            sheet_name_with_extension = sheet_name
+
+        if sheet_name_with_extension not in paths_to_documents:
+            changed_hierarchy[sheet_name] = children
+            continue
+
+        unique_id_paths = paths_to_documents[sheet_name_with_extension]
+        # Since all instances of this sheet should have the same children, we
+        # only need one of the unique paths.
+        path_to_this_sheet = unique_id_paths[0]
+        children_by_name: dict[str, list[AltiumChildSheet]] = {}
+
+        final_children = []
+        for child in children:
+            if child.kind == AltiumChildSheet.ChildSheetKind.DOCUMENT:
+                # We don't need to change the IDs of documents - they're
+                # already correct.
+                final_children.append(child)
+                continue
+
+            children_by_name.setdefault(child.name, []).append(child)
+
+        for child_name, children_of_name in children_by_name.items():
+            # The name in the paths_to_documents dict has a SchDoc appended to
+            # it
+            child_name += ".SchDoc"
+            paths_to_children = paths_to_documents.get(child_name, [])
+
+            if not paths_to_children:
+                logger.warning(
+                    f"Could not find any paths for {child_name} in the PrjPcb file; skipping."
+                )
+                final_children.extend(children_of_name)
+                continue
+
+            ids: list[str] = []
+            for path in paths_to_children:
+                if not path.startswith(path_to_this_sheet):
+                    continue
+
+                path = path.removeprefix(path_to_this_sheet + "\\")
+
+                if "\\" in path:
+                    # This path is deeper in the hierarchy, we can't use it.
+                    continue
+
+                # Now the path is the UniqueID of the child sheet
+                ids.append(path)
+
+            # Now we have the ids we can map to the children
+            for child, unique_id in zip(children_of_name, ids, strict=True):
+                final_children.append(dataclasses.replace(child, unique_id=unique_id))
+
+        changed_hierarchy[sheet_name] = final_children
+
+    return changed_hierarchy

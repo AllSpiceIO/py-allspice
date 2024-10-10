@@ -507,6 +507,41 @@ def test_bom_generation_altium_with_device_sheets(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_hierarchical_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ["Designator"],
+        "Comment": ["Comment"],
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    assert len(bom) == 14
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
@@ -837,6 +872,33 @@ def test_altium_components_list_with_annotations(
     )
 
     assert len(components) == 408
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_hierarchical_device_sheets_and_annotations(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    assert len(components) == 980
     assert components == json_snapshot
 
 
