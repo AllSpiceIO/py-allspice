@@ -293,6 +293,7 @@ def list_components_for_altium(
 
     independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_jsons, device_sheet_jsons)
 
+    unique_ids_mapping = _create_unique_ids_mapping(prjpcb_ini)
     if device_sheets:
         hierarchy = _correct_device_sheet_reference_unique_ids(
             hierarchy,
@@ -336,7 +337,12 @@ def list_components_for_altium(
     # At this stage, we have components where the designators are not final.
 
     if annotations_data:
-        components = _apply_annotation_file(components, annotations_data)
+        components = _apply_annotation_file(
+            components,
+            annotations_data,
+            unique_ids_mapping,
+            allspice_client.logger,
+        )
     else:
         components = _compute_repetitions(components)
 
@@ -1206,18 +1212,14 @@ def _fetch_and_parse_annotation_file(
         if unique_id_key not in designator_manager_section:
             break
         unique_id = designator_manager_section[unique_id_key]
-        channel_name = designator_manager_section[f"ChannelName{change_number}"]
         logical_designator = designator_manager_section[f"LogicalDesignator{change_number}"]
         physical_designator = designator_manager_section[f"PhysicalDesignator{change_number}"]
 
-        changes.setdefault(unique_id, []).append(
-            {
-                "from": logical_designator,
-                "to": physical_designator,
-                "channel_name": channel_name,
-            }
-        )
+        if unique_id in changes:
+            repository.allspice_client.logger.warning("Multiple changes found for %s", unique_id)
+            continue
 
+        changes[unique_id] = {"from": logical_designator, "to": physical_designator}
         change_number += 1
 
     return changes
@@ -1226,6 +1228,8 @@ def _fetch_and_parse_annotation_file(
 def _apply_annotation_file(
     components: list[ComponentAttributes],
     annotations_data: dict,
+    unique_ids_mapping: dict[str, str],
+    logger: Logger,
 ) -> list[ComponentAttributes]:
     """
     Apply a Board Level Annotations file to get the compnents with their final
@@ -1234,40 +1238,62 @@ def _apply_annotation_file(
 
     final_components = []
 
+    # Map sheet id to dict of component id to change.
+    annotations_by_sheet = {}
+    # Map sheet id to dict of designator to list of changes.
+    annotations_by_sheet_and_designator = {}
+
+    for unique_id, change in annotations_data.items():
+        sheet_id, component_id = unique_id.rsplit("\\", 1)
+        annotations_by_sheet.setdefault(sheet_id, {})[component_id] = change
+        annotations_by_sheet_and_designator.setdefault(sheet_id, {}).setdefault(
+            change["from"], []
+        ).append(change)
+
     for component in components:
         unique_id = component["_unique_id"]
-        annotations_for_component = annotations_data.get(unique_id)
+        sheet_id, component_id = unique_id.rsplit("\\", 1)
+        ids_to_test = [component_id]
+        if component_id in unique_ids_mapping:
+            logger.debug("Found component %s in unique ID mapping", component_id)
+            other_component_ids = unique_ids_mapping[component_id]
+            ids_to_test.extend(other_component_ids)
 
-        if not annotations_for_component:
-            final_components.append(component)
-            continue
-
-        if len(annotations_for_component) == 1:
-            # This ID must be unique, so we can apply this annotation
-            # without considering the channel.
-            new_component = component.copy()
-            new_component[DESIGNATOR_COLUMN_NAME] = annotations_for_component[0]["to"]
-            if LOGICAL_DESIGNATOR in new_component:
-                new_component[LOGICAL_DESIGNATOR] = annotations_for_component[0]["to"]
-            final_components.append(new_component)
-            continue
-
-        component_channel = component.get("_channel_name")
-        channel_found = False
-        for change in annotations_for_component:
-            if change["channel_name"] == component_channel:
-                new_component = component.copy()
-                new_component[DESIGNATOR_COLUMN_NAME] = change["to"]
-                if LOGICAL_DESIGNATOR in new_component:
-                    new_component[LOGICAL_DESIGNATOR] = change["to"]
-                channel_found = True
-                final_components.append(new_component)
+        annotation_for_component = None
+        for id_to_test in ids_to_test:
+            annotation_for_component = annotations_by_sheet.get(id_to_test)
+            if annotation_for_component:
                 break
 
-        # If the channel was not found, we'll just append the component as
-        # is, because there was no annotation for this channel.
-        if not channel_found:
+        if not annotation_for_component:
+            logger.debug(
+                "No annotation found for component %s by unique ID, trying by designator.",
+                component_id,
+            )
+            component_designator = component[DESIGNATOR_COLUMN_NAME]
+            annotations_for_designator = annotations_by_sheet_and_designator.get(sheet_id, {}).get(
+                component_designator
+            )
+            if annotations_for_designator and len(annotations_for_designator) == 1:
+                logger.debug(
+                    "Found exact match for component %s, using annotation.", component_designator
+                )
+                annotation_for_component = annotations_for_designator[0]
+            else:
+                logger.debug(
+                    "Found multiple annotations for designator %s; skipping.", component_designator
+                )
+
+        if not annotation_for_component:
             final_components.append(component)
+            continue
+
+        new_component = component.copy()
+        new_component[DESIGNATOR_COLUMN_NAME] = annotation_for_component["to"]
+        if LOGICAL_DESIGNATOR in new_component:
+            new_component[LOGICAL_DESIGNATOR] = annotation_for_component["to"]
+        final_components.append(new_component)
+        continue
 
     return final_components
 
@@ -1415,7 +1441,7 @@ def _correct_device_sheet_reference_unique_ids(
                 final_children.extend(children_of_name)
                 continue
 
-            ids: list[str] = []
+            ids: set[str] = set()
             for path in paths_to_children:
                 if not path.startswith(path_to_this_sheet):
                     continue
@@ -1427,12 +1453,52 @@ def _correct_device_sheet_reference_unique_ids(
                     continue
 
                 # Now the path is the UniqueID of the child sheet
-                ids.append(path)
+                ids.add(path)
 
-            # Now we have the ids we can map to the children
-            for child, unique_id in zip(children_of_name, ids, strict=True):
+            # Filter out children that already have the correct ids.
+            children_to_correct = []
+            for child in children_of_name:
+                if child.unique_id in ids:
+                    ids.remove(child.unique_id)
+                    final_children.append(child)
+                else:
+                    children_to_correct.append(child)
+
+            # Now we have the children who need new ids and the new ids
+            for child, unique_id in zip(children_to_correct, ids, strict=True):
                 final_children.append(dataclasses.replace(child, unique_id=unique_id))
 
         changed_hierarchy[sheet_name] = final_children
 
     return changed_hierarchy
+
+
+def _create_unique_ids_mapping(prjpcb_ini: configparser.ConfigParser) -> dict:
+    """
+    If multiple components in the same project have the same UniqueIDs, Altium
+    creates a mapping between them. This function reads that mapping from the
+    PrjPcb file.
+    """
+
+    if "UniqueIdsMappings" not in prjpcb_ini.sections():
+        return {}
+
+    unique_ids_mapping = {}
+    unique_ids_section = prjpcb_ini["UniqueIdsMappings"]
+    # this section starts with one for some reason
+    mapping_index = 1
+
+    while True:
+        try:
+            mapping = unique_ids_section[f"Mapping{mapping_index}"]
+        except KeyError:
+            break
+        (sch_handle, unique_id_mapping) = mapping.split("|")
+        _, sch_handle = sch_handle.split("=", 1)
+        _, unique_id_mapping = unique_id_mapping.split("=", 1)
+        # The sch handle is a path, we only need the last part of it.
+        component_id = sch_handle.split("\\")[-1]
+        unique_ids_mapping.setdefault(component_id, []).append(unique_id_mapping)
+        mapping_index += 1
+
+    return unique_ids_mapping

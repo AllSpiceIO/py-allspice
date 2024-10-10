@@ -498,11 +498,12 @@ def test_bom_generation_altium_with_device_sheets(
         repo,
         "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
         attributes_mapping,
+        group_by=["Comment"],
         design_reuse_repos=[design_reuse_repo],
-        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
     )
 
-    assert len(bom) == 38
+    assert len(bom) == 13
     assert bom == csv_snapshot
 
 
@@ -524,8 +525,11 @@ def test_bom_generation_altium_with_hierarchical_device_sheets(
 
     attributes_mapping = {
         "Name": ["_name"],
-        "Designator": ["Designator"],
-        "Comment": ["Comment"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
     }
 
     bom = generate_bom_for_altium(
@@ -849,7 +853,7 @@ def test_altium_components_list_with_device_sheets(
         repo,
         "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
         design_reuse_repos=[design_reuse_repo],
-        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
     )
 
     assert len(components) == 38
@@ -898,6 +902,7 @@ def test_altium_components_list_with_hierarchical_device_sheets_and_annotations(
         design_reuse_repos=[design_reuse_repo],
     )
 
+    components.sort(key=lambda x: x["Designator"])
     assert len(components) == 980
     assert components == json_snapshot
 

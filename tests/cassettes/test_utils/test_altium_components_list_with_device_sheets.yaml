@@ -27,7 +27,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:45 GMT
+      - Thu, 10 Oct 2024 18:02:14 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -65,7 +65,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:45 GMT
+      - Thu, 10 Oct 2024 18:02:14 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -96,7 +96,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2143,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets","full_name":"test/test-test_altium_components_list_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-08T14:25:45-04:00","updated_at":"2024-10-08T14:25:45-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2165,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets","full_name":"test/test-test_altium_components_list_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-10T14:02:14-04:00","updated_at":"2024-10-10T14:02:15-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
 
         '
     headers:
@@ -105,7 +105,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:45 GMT
+      - Thu, 10 Oct 2024 18:02:15 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -145,7 +145,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:45 GMT
+      - Thu, 10 Oct 2024 18:02:15 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -172,7 +172,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets
   response:
     body:
-      string: '{"id":2143,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets","full_name":"test/test-test_altium_components_list_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":46,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-08T14:25:45-04:00","updated_at":"2024-10-08T14:25:45-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2165,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets","full_name":"test/test-test_altium_components_list_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":54,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-10T14:02:14-04:00","updated_at":"2024-10-10T14:02:15-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
 
         '
     headers:
@@ -181,7 +181,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:45 GMT
+      - Thu, 10 Oct 2024 18:02:15 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -214,7 +214,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2144,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets_reuse","full_name":"test/test-test_altium_components_list_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-08T14:25:45-04:00","updated_at":"2024-10-08T14:25:46-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2166,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets_reuse","full_name":"test/test-test_altium_components_list_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-10T14:02:15-04:00","updated_at":"2024-10-10T14:02:16-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
 
         '
     headers:
@@ -223,7 +223,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -263,7 +263,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -290,7 +290,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse
   response:
     body:
-      string: '{"id":2144,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets_reuse","full_name":"test/test-test_altium_components_list_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":54,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-08T14:25:45-04:00","updated_at":"2024-10-08T14:25:46-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2166,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_altium_components_list_with_device_sheets_reuse","full_name":"test/test-test_altium_components_list_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":54,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_altium_components_list_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_altium_components_list_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-10T14:02:15-04:00","updated_at":"2024-10-10T14:02:16-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
 
         '
     headers:
@@ -299,7 +299,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -325,12 +325,12 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.PrjPcb?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.PrjPcb?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: "\uFEFF[Design]\nVersion=1.0\nHierarchyMode=0\nChannelRoomNamingStyle=0\nReleasesFolder=\nChannelDesignatorFormatString=$Component_$RoomName\nChannelRoomLevelSeperator=_\nOpenOutputs=1\nArchiveProject=0\nTimestampOutput=0\nSeparateFolders=0\nTemplateLocationPath=\nPinSwapBy_Netlabel=1\nPinSwapBy_Pin=1\nAllowPortNetNames=0\nAllowSheetEntryNetNames=1\nAppendSheetNumberToLocalNets=0\nNetlistSinglePinNets=0\nDefaultConfiguration=Sources\nUserID=0xFFFFFFFF\nDefaultPcbProtel=1\nDefaultPcbPcad=0\nReorderDocumentsOnCompile=1\nNameNetsHierarchically=0\nPowerPortNamesTakePriority=0\nAutoSheetNumbering=1\nAutoCrossReferences=1\nNewIndexingOfSheetSymbols=1\nPushECOToAnnotationFile=1\nDItemRevisionGUID=\nReportSuppressedErrorsInMessages=0\nFSMCodingStyle=eFMSDropDownList_OneProcess\nFSMEncodingStyle=eFMSDropDownList_OneHot\nIsProjectConflictPreventionWarningsEnabled=0\nConstraintManagerFlow=0\nIsVirtualBomDocumentRemoved=0\nOutputPath=\nLogFolderPath=\nManagedProjectGUID=\nIncludeDesignInRelease=0\nCrossRefSheetStyle=1\nCrossRefLocationStyle=1\nCrossRefPorts=3\nCrossRefCrossSheets=1\nCrossRefSheetEntries=0\nCrossRefFollowFromMainSettings=1\n\n[Preferences]\nPrefsVaultGUID=\nPrefsRevisionGUID=\n\n[Document1]\nDocumentPath=DCDC
         Regulators.SchDoc\nAnnotationEnabled=1\nAnnotateStartValue=1\nAnnotationIndexControlEnabled=0\nAnnotateSuffix=\nAnnotateScope=All\nAnnotateOrder=0\nDoLibraryUpdate=1\nDoDatabaseUpdate=1\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nDItemRevisionGUID=\nGenerateClassCluster=0\nDocumentUniqueId=ZQWYTYMC\n\n[Document2]\nDocumentPath=DCDC
-        Regulators Breakout.Annotation\nAnnotationEnabled=1\nAnnotateStartValue=1\nAnnotationIndexControlEnabled=0\nAnnotateSuffix=\nAnnotateScope=All\nAnnotateOrder=-1\nDoLibraryUpdate=1\nDoDatabaseUpdate=1\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nDItemRevisionGUID=\nGenerateClassCluster=0\nDocumentUniqueId=\n\n[DeviceSheet1]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-3V3-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet2]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-5V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet3]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-12V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet4]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[Configuration1]\nName=Sources\nParameterCount=0\nConstraintFileCount=0\nReleaseItemId=\nVariant=[No
+        Regulators Breakout.Annotation\nAnnotationEnabled=1\nAnnotateStartValue=1\nAnnotationIndexControlEnabled=0\nAnnotateSuffix=\nAnnotateScope=All\nAnnotateOrder=-1\nDoLibraryUpdate=1\nDoDatabaseUpdate=1\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nDItemRevisionGUID=\nGenerateClassCluster=0\nDocumentUniqueId=\n\n[DeviceSheet1]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-12V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet2]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet3]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-5V0-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[DeviceSheet4]\nDocumentPath=..\\..\\Altium-Device-Sheets\\PSU-DCDC-FIXED\\PSU-DCDC-3V3-TI-LM2678SX.SchDoc\nClassGenCCAutoEnabled=1\nClassGenCCAutoRoomEnabled=0\nClassGenNCAutoScope=None\nGenerateClassCluster=0\n\n[Configuration1]\nName=Sources\nParameterCount=0\nConstraintFileCount=0\nReleaseItemId=\nVariant=[No
         Variations]\nOutputJobsCount=0\nContentTypeGUID=CB6F2064-E317-11DF-B822-12313F0024A2\nConfigurationType=Source\n\n[OutputGroup1]\nName=Netlist
         Outputs\nDescription=\nTargetPrinter=OrCADPS_23.1\nPrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1\nOutputType1=CadnetixNetlist\nOutputName1=Cadnetix
         Netlist\nOutputDocumentPath1=\nOutputVariantName1=\nOutputDefault1=0\nOutputType2=CalayNetlist\nOutputName2=Calay
@@ -370,7 +370,8 @@ interactions:
         Variations]\nOutputDefault9=0\nPageOptions9=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\nOutputType10=Report
         Print\nOutputName10=Report Prints\nOutputDocumentPath10=\nOutputVariantName10=\nOutputDefault10=0\nPageOptions10=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\nOutputType11=Schematic
         Print\nOutputName11=Schematic Prints\nOutputDocumentPath11=\nOutputVariantName11=\nOutputDefault11=0\nPageOptions11=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\nOutputType12=SimView
-        Print\nOutputName12=SimView Prints\nOutputDocumentPath12=\nOutputVariantName12=\nOutputDefault12=0\nPageOptions12=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\n\n[OutputGroup4]\nName=Assembly
+        Print\nOutputName12=SimView Prints\nOutputDocumentPath12=\nOutputVariantName12=\nOutputDefault12=0\nPageOptions12=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\nOutputType13=PDF3D
+        MBA\nOutputName13=PDF3D MBA\nOutputDocumentPath13=\nOutputVariantName13=\nOutputDefault13=0\nPageOptions13=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\n\n[OutputGroup4]\nName=Assembly
         Outputs\nDescription=\nTargetPrinter=OrCADPS_23.1\nPrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1\nOutputType1=Assembly\nOutputName1=Assembly
         Drawings\nOutputDocumentPath1=\nOutputVariantName1=[No Variations]\nOutputDefault1=0\nPageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=Letter|PaperIndex=1\nOutputType2=Pick
         Place\nOutputName2=Generates pick and place files\nOutputDocumentPath2=\nOutputVariantName2=[No
@@ -422,15 +423,17 @@ interactions:
         As/Export PCB\nOutputName7=Save As/Export PCB\nOutputDocumentPath7=\nOutputVariantName7=\nOutputDefault7=0\nOutputType8=Save
         As/Export Schematic\nOutputName8=Save As/Export Schematic\nOutputDocumentPath8=\nOutputVariantName8=\nOutputDefault8=0\nOutputType9=Specctra
         Design PCB\nOutputName9=Specctra Design PCB\nOutputDocumentPath9=\nOutputVariantName9=\nOutputDefault9=0\nOutputType10=Web
-        ReviewOutputName\nOutputName10=Web Review Data\nOutputDocumentPath10=\nOutputVariantName10=\nOutputDefault10=0\n\n[OutputGroup10]\nName=PostProcess
+        ReviewOutputName\nOutputName10=Web Review Data\nOutputDocumentPath10=\nOutputVariantName10=\nOutputDefault10=0\nOutputType11=MBAExportPARASOLID\nOutputName11=Export
+        PARASOLID\nOutputDocumentPath11=\nOutputVariantName11=\nOutputDefault11=0\nOutputType12=MBAExportSTEP\nOutputName12=Export
+        STEP\nOutputDocumentPath12=\nOutputVariantName12=\nOutputDefault12=0\n\n[OutputGroup10]\nName=PostProcess
         Outputs\nDescription=\nTargetPrinter=OrCADPS_23.1\nPrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1\nOutputType1=Copy
         Files\nOutputName1=Copy Files\nOutputDocumentPath1=\nOutputVariantName1=\nOutputDefault1=0\n\n[Modification
         Levels]\nType1=1\nType2=1\nType3=1\nType4=1\nType5=1\nType6=1\nType7=1\nType8=1\nType9=1\nType10=1\nType11=1\nType12=1\nType13=1\nType14=1\nType15=1\nType16=1\nType17=1\nType18=1\nType19=1\nType20=1\nType21=1\nType22=1\nType23=1\nType24=1\nType25=1\nType26=1\nType27=1\nType28=1\nType29=1\nType30=1\nType31=1\nType32=1\nType33=1\nType34=1\nType35=1\nType36=1\nType37=1\nType38=1\nType39=1\nType40=1\nType41=1\nType42=1\nType43=1\nType44=1\nType45=1\nType46=1\nType47=1\nType48=1\nType49=1\nType50=1\nType51=1\nType52=1\nType53=1\nType54=1\nType55=1\nType56=1\nType57=1\nType58=1\nType59=1\nType60=1\nType61=1\nType62=1\nType63=1\nType64=1\nType65=1\nType66=1\nType67=1\nType68=1\nType69=1\nType70=1\nType71=1\nType72=1\nType73=1\nType74=1\nType75=1\nType76=1\nType77=1\nType78=1\nType79=1\nType80=1\nType81=1\nType82=1\nType83=1\nType84=1\nType85=1\nType86=1\nType87=1\nType88=1\nType89=1\nType90=1\nType91=1\nType92=1\nType93=1\nType94=1\nType95=1\nType96=1\nType97=1\nType98=1\nType99=1\nType100=1\nType101=1\nType102=1\nType103=1\nType104=1\nType105=1\nType106=1\nType107=1\nType108=1\nType109=1\nType110=1\nType111=1\nType112=1\nType113=1\nType114=1\nType115=1\nType116=1\nType117=1\nType118=1\nType119=1\nType120=1\nType121=1\nType122=1\nType123=1\nType124=1\nType125=1\nType126=1\nType127=1\nType128=1\nType129=1\nType130=1\nType131=1\nType132=1\nType133=1\nType134=1\nType135=1\nType136=1\nType137=1\nType138=1\nType139=1\nType140=1\nType141=1\nType142=1\nType143=1\nType144=1\nType145=1\nType146=1\nType147=1\nType148=1\nType149=1\nType150=1\n\n[Difference
         Levels]\nType1=1\nType2=1\nType3=1\nType4=1\nType5=1\nType6=1\nType7=1\nType8=1\nType9=1\nType10=1\nType11=1\nType12=1\nType13=1\nType14=1\nType15=1\nType16=1\nType17=1\nType18=1\nType19=1\nType20=1\nType21=1\nType22=1\nType23=1\nType24=1\nType25=1\nType26=1\nType27=1\nType28=1\nType29=1\nType30=1\nType31=1\nType32=1\nType33=1\nType34=1\nType35=1\nType36=1\nType37=1\nType38=1\nType39=1\nType40=1\nType41=1\nType42=1\nType43=1\nType44=1\nType45=1\nType46=1\nType47=1\nType48=1\nType49=1\nType50=1\nType51=1\nType52=1\nType53=1\nType54=1\nType55=1\nType56=1\nType57=1\nType58=1\nType59=1\nType60=1\nType61=1\nType62=1\nType63=1\nType64=1\nType65=1\nType66=1\nType67=1\nType68=1\nType69=1\nType70=1\nType71=1\nType72=1\nType73=1\nType74=1\nType75=1\nType76=1\nType77=1\nType78=1\nType79=1\nType80=1\nType81=1\n\n[Electrical
         Rules Check]\nType1=1\nType2=1\nType3=2\nType4=1\nType5=2\nType6=2\nType7=0\nType8=1\nType9=1\nType10=1\nType11=2\nType12=2\nType13=2\nType14=1\nType15=1\nType16=1\nType17=1\nType18=1\nType19=1\nType20=0\nType21=0\nType22=0\nType23=0\nType24=1\nType25=2\nType26=0\nType27=2\nType28=1\nType29=1\nType30=1\nType31=1\nType32=2\nType33=0\nType34=2\nType35=1\nType36=2\nType37=1\nType38=2\nType39=2\nType40=2\nType41=0\nType42=2\nType43=1\nType44=0\nType45=0\nType46=0\nType47=0\nType48=0\nType49=0\nType50=2\nType51=0\nType52=0\nType53=1\nType54=1\nType55=1\nType56=2\nType57=1\nType58=1\nType59=2\nType60=0\nType61=0\nType62=0\nType63=0\nType64=0\nType65=2\nType66=3\nType67=2\nType68=2\nType69=0\nType70=2\nType71=2\nType72=2\nType73=2\nType74=1\nType75=2\nType76=1\nType77=1\nType78=1\nType79=1\nType80=2\nType81=3\nType82=3\nType83=3\nType84=3\nType85=3\nType86=2\nType87=2\nType88=2\nType89=1\nType90=1\nType91=3\nType92=3\nType93=2\nType94=2\nType95=2\nType96=2\nType97=2\nType98=0\nType99=1\nType100=2\nType101=0\nType102=2\nType103=2\nType104=1\nType105=2\nType106=2\nType107=2\nType108=2\nType109=1\nType110=1\nType111=1\nType112=1\nType113=1\nType114=2\nType115=2\nType116=2\nType117=3\nType118=3\nType119=3\nMultiChannelAlternate=0\nAlternateItemFail=3\nType122=2\nType123=1\nType124=1\nType125=1\nType126=1\nType127=1\nType128=2\nType129=2\nType130=2\nType131=2\nType132=2\nType133=2\nType134=2\nType135=2\nType136=2\nType137=2\nType138=1\nType139=1\nType140=1\nType141=1\nType142=1\nType143=1\nType144=1\nType145=1\nType146=1\nType147=2\nType148=2\nType149=2\nType150=2\nType151=2\nType152=1\nType153=1\n\n[ERC
         Connection Matrix]\nL1=NNNNNNNNNNNWNNNWW\nL2=NNWNNNNWWWNWNWNWN\nL3=NWEENEEEENEWNEEWN\nL4=NNENNNWEENNWNENWN\nL5=NNNNNNNNNNNNNNNNN\nL6=NNENNNNEENNWNENWN\nL7=NNEWNNWEENNWNENWN\nL8=NWEENEENEEENNEENN\nL9=NWEENEEEENEWNEEWW\nL10=NWNNNNNENNEWNNEWN\nL11=NNENNNNEEENWNENWN\nL12=WWWWNWWNWWWNWWWNN\nL13=NNNNNNNNNNNWNNNWW\nL14=NWEENEEEENEWNEEWW\nL15=NNENNNNEEENWNENWW\nL16=WWWWNWWNWWWNWWWNW\nL17=WNNNNNNNWNNNWWWWN\n\n[Annotate]\nSortOrder=3\nSortLocation=0\nReplaceSubparts=0\nMatchParameter1=Comment\nMatchStrictly1=1\nMatchParameter2=Library
-        Reference\nMatchStrictly2=1\nPhysicalNamingFormat=$Component_$RoomName\nGlobalIndexSortOrder=3\nGlobalIndexSortLocation=0\nUniqueIDPath0=\nDocumentName0=DCDC
-        Regulators.SchDoc\nIsEnabled0=1\nSelectionScope0=All\nOrder0=1\nIndexEnabled0=0\nIndexStartValue0=1\nSuffix0=\nUniqueIDPath1=\\EUAWEYBK\nDocumentName1=PSU-DCDC-3V3-TI-LM2678SX.SchDoc\nIsEnabled1=1\nSelectionScope1=All\nOrder1=2\nIndexEnabled1=0\nIndexStartValue1=1\nSuffix1=\nUniqueIDPath2=\\ZYXHIAPW\nDocumentName2=PSU-DCDC-5V0-TI-LM2678SX.SchDoc\nIsEnabled2=1\nSelectionScope2=All\nOrder2=3\nIndexEnabled2=0\nIndexStartValue2=1\nSuffix2=\nUniqueIDPath3=\\MMUIQBOM\nDocumentName3=PSU-DCDC-12V0-TI-LM2678SX.SchDoc\nIsEnabled3=1\nSelectionScope3=All\nOrder3=4\nIndexEnabled3=0\nIndexStartValue3=1\nSuffix3=\nUniqueIDPath4=\\XQJCETTR\nDocumentName4=PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc\nIsEnabled4=1\nSelectionScope4=All\nOrder4=5\nIndexEnabled4=0\nIndexStartValue4=1\nSuffix4=\n\n[PrjClassGen]\nCompClassManualEnabled=0\nCompClassManualRoomEnabled=0\nNetClassAutoBusEnabled=1\nNetClassAutoCompEnabled=0\nNetClassAutoNamedHarnessEnabled=0\nNetClassManualEnabled=1\nNetClassSeparateForBusSections=0\n\n[LibraryUpdateOptions]\nSelectedOnly=0\nUpdateVariants=1\nUpdateToLatestRevision=1\nPartTypes=0\nFullReplace=1\nUpdateDesignatorLock=1\nUpdatePartIDLock=1\nPreserveParameterLocations=1\nPreserveParameterVisibility=1\nDoGraphics=1\nDoParameters=1\nDoModels=1\nAddParameters=0\nRemoveParameters=0\nAddModels=1\nRemoveModels=1\nUpdateCurrentModels=1\n\n[DatabaseUpdateOptions]\nSelectedOnly=0\nUpdateVariants=1\nUpdateToLatestRevision=1\nPartTypes=0\n\n[Comparison
+        Reference\nMatchStrictly2=1\nPhysicalNamingFormat=$ComponentPrefix$GlobalIndex\nGlobalIndexSortOrder=3\nGlobalIndexSortLocation=0\nUniqueIDPath0=\nDocumentName0=DCDC
+        Regulators.SchDoc\nIsEnabled0=1\nSelectionScope0=All\nOrder0=1\nIndexEnabled0=0\nIndexStartValue0=1\nSuffix0=\nUniqueIDPath1=\\EUAWEYBK\nDocumentName1=PSU-DCDC-3V3-TI-LM2678SX.SchDoc\nIsEnabled1=1\nSelectionScope1=All\nOrder1=2\nIndexEnabled1=0\nIndexStartValue1=1\nSuffix1=\nUniqueIDPath2=\\ZYXHIAPW\nDocumentName2=PSU-DCDC-5V0-TI-LM2678SX.SchDoc\nIsEnabled2=1\nSelectionScope2=All\nOrder2=3\nIndexEnabled2=0\nIndexStartValue2=1\nSuffix2=\nUniqueIDPath3=\\MMUIQBOM\nDocumentName3=PSU-DCDC-12V0-TI-LM2678SX.SchDoc\nIsEnabled3=1\nSelectionScope3=All\nOrder3=4\nIndexEnabled3=0\nIndexStartValue3=1\nSuffix3=\nUniqueIDPath4=\\XQJCETTR\nDocumentName4=PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc\nIsEnabled4=1\nSelectionScope4=All\nOrder4=5\nIndexEnabled4=0\nIndexStartValue4=1\nSuffix4=\n\n[PrjClassGen]\nCompClassManualEnabled=0\nCompClassManualRoomEnabled=0\nNetClassAutoBusEnabled=1\nNetClassAutoCompEnabled=0\nNetClassAutoNamedHarnessEnabled=0\nNetClassManualEnabled=1\nNetClassSeparateForBusSections=0\n\n[LibraryUpdateOptions]\nSelectedOnly=1\nUpdateVariants=1\nUpdateToLatestRevision=1\nPartTypes=0\nFullReplace=1\nUpdateDesignatorLock=1\nUpdatePartIDLock=1\nPreserveParameterLocations=1\nPreserveParameterVisibility=1\nDoGraphics=1\nDoParameters=1\nDoModels=1\nAddParameters=0\nRemoveParameters=0\nAddModels=1\nRemoveModels=1\nUpdateCurrentModels=1\n\n[DatabaseUpdateOptions]\nSelectedOnly=0\nUpdateVariants=1\nUpdateToLatestRevision=1\nPartTypes=0\n\n[UniqueIdsMappings]\nMapping1=SchHandle=FBNQPCTQ\\KEKPXMBA|UniqueIdMapping=KPZWIZHB\nMapping2=SchHandle=FBNQPCTQ\\LXPHEHEF|UniqueIdMapping=VUOLRSBG\nMapping3=SchHandle=FBNQPCTQ\\QZVZMIAZ|UniqueIdMapping=ABHSZHTO\nMapping4=SchHandle=FBNQPCTQ\\RFHDYTVM|UniqueIdMapping=HLEDUQXC\nMapping5=SchHandle=FBNQPCTQ\\XBZAXNZC|UniqueIdMapping=HMODJEFW\nMapping6=SchHandle=FBNQPCTQ\\XWKTDZQK|UniqueIdMapping=DKZMLPYH\nMapping7=SchHandle=FJAHBQLE\\KEKPXMBA|UniqueIdMapping=ETYZJTLM\nMapping8=SchHandle=FJAHBQLE\\LXPHEHEF|UniqueIdMapping=BTOFINTV\nMapping9=SchHandle=FJAHBQLE\\QZVZMIAZ|UniqueIdMapping=PBSGDQDB\nMapping10=SchHandle=FJAHBQLE\\RFHDYTVM|UniqueIdMapping=IKZIKLCQ\nMapping11=SchHandle=FJAHBQLE\\XBZAXNZC|UniqueIdMapping=XNNNELXO\nMapping12=SchHandle=FJAHBQLE\\XWKTDZQK|UniqueIdMapping=JURBSIID\nMapping13=SchHandle=TRVUUGLH\\KEKPXMBA|UniqueIdMapping=OOVWIWVG\nMapping14=SchHandle=TRVUUGLH\\LXPHEHEF|UniqueIdMapping=XXNMFVFF\nMapping15=SchHandle=TRVUUGLH\\QZVZMIAZ|UniqueIdMapping=HSJEZXLU\nMapping16=SchHandle=TRVUUGLH\\RFHDYTVM|UniqueIdMapping=PEAQLULR\nMapping17=SchHandle=TRVUUGLH\\XBZAXNZC|UniqueIdMapping=TWSHYCJY\nMapping18=SchHandle=TRVUUGLH\\XWKTDZQK|UniqueIdMapping=YLNPDHHL\n\n[Comparison
         Options]\nComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0\nComparisonOptions1=Kind=Net
         Class|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0\nComparisonOptions2=Kind=Component
         Class|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0\nComparisonOptions3=Kind=Rule|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0\nComparisonOptions4=Kind=Differential
@@ -444,15 +447,15 @@ interactions:
       Content-Disposition:
       - inline; filename="DCDC Regulators Breakout.PrjPcb"; filename*=UTF-8''DCDC%20Regulators%20Breakout.PrjPcb
       Content-Length:
-      - '30022'
+      - '31863'
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Etag:
-      - '"f56d51a47a71ae30a547eae6322f52c8a858f1d2"'
+      - '"6ec84df8ec75c96e8569c7d9a91871d9b9f89c8b"'
       Last-Modified:
-      - Tue, 24 Sep 2024 13:06:04 GMT
+      - Wed, 09 Oct 2024 13:24:23 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -481,12 +484,14 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/main?recursive=True&page=1
   response:
     body:
-      string: '{"sha":"db729cf7f701d7e1f4cda691be67575b2e56ea0e","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/db729cf7f701d7e1f4cda691be67575b2e56ea0e","tree":[{"path":".gitignore","mode":"100644","type":"blob","size":411,"sha":"f4b44ec6aecbbe4421adeba7e19bc407118f575a","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/f4b44ec6aecbbe4421adeba7e19bc407118f575a"},{"path":"DCDC
-        Regulators Breakout","mode":"040000","type":"tree","size":0,"sha":"0e9db25bafcc2557a79a8b3a91cfcb50b8b6f45e","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/0e9db25bafcc2557a79a8b3a91cfcb50b8b6f45e"},{"path":"DCDC
-        Regulators Breakout/DCDC Regulators Breakout.Annotation","mode":"100644","type":"blob","size":8356,"sha":"fc09c80a9b4cb8232d927045ef39cc8d50fdf00d","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/fc09c80a9b4cb8232d927045ef39cc8d50fdf00d"},{"path":"DCDC
-        Regulators Breakout/DCDC Regulators Breakout.PrjPcb","mode":"100644","type":"blob","size":30022,"sha":"f56d51a47a71ae30a547eae6322f52c8a858f1d2","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/f56d51a47a71ae30a547eae6322f52c8a858f1d2"},{"path":"DCDC
-        Regulators Breakout/DCDC Regulators Breakout.PrjPcbStructure","mode":"100644","type":"blob","size":1486,"sha":"087781cd5874129d1dc130590483baa78f264640","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/087781cd5874129d1dc130590483baa78f264640"},{"path":"DCDC
-        Regulators Breakout/DCDC Regulators.SchDoc","mode":"100644","type":"blob","size":85504,"sha":"3a509dfdb6c749abc4fdee4a916b803bb99c8fcf","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/3a509dfdb6c749abc4fdee4a916b803bb99c8fcf"},{"path":"README.md","mode":"100644","type":"blob","size":104,"sha":"3de77cb62f3bedc7b5ccc93b146c2757b25a670c","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/3de77cb62f3bedc7b5ccc93b146c2757b25a670c"}],"truncated":false,"page":1,"total_count":7}
+      string: '{"sha":"5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3","tree":[{"path":".gitignore","mode":"100644","type":"blob","size":411,"sha":"f4b44ec6aecbbe4421adeba7e19bc407118f575a","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/f4b44ec6aecbbe4421adeba7e19bc407118f575a"},{"path":"DCDC
+        Regulators Breakout","mode":"040000","type":"tree","size":0,"sha":"2e974083caae2947e919d8a85ea06dfe595f5728","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/2e974083caae2947e919d8a85ea06dfe595f5728"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators Breakout BOM Minimal.csv","mode":"100644","type":"blob","size":1273,"sha":"11c948a61eab2a599c505d2ed9d0e729e77d4de6","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/11c948a61eab2a599c505d2ed9d0e729e77d4de6"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators Breakout BOM.csv","mode":"100644","type":"blob","size":2747,"sha":"20b066175fbf6c2e5a56fb81c53d7e48c3c72d40","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/20b066175fbf6c2e5a56fb81c53d7e48c3c72d40"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators Breakout.Annotation","mode":"100644","type":"blob","size":8363,"sha":"416269206286980792e4f5e572a4082e0f9aec49","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/416269206286980792e4f5e572a4082e0f9aec49"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators Breakout.PrjPcb","mode":"100644","type":"blob","size":31863,"sha":"6ec84df8ec75c96e8569c7d9a91871d9b9f89c8b","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/6ec84df8ec75c96e8569c7d9a91871d9b9f89c8b"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators Breakout.PrjPcbStructure","mode":"100644","type":"blob","size":4771,"sha":"70af2f39eaa97b5efc3de5807c08185721a89fe5","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/70af2f39eaa97b5efc3de5807c08185721a89fe5"},{"path":"DCDC
+        Regulators Breakout/DCDC Regulators.SchDoc","mode":"100644","type":"blob","size":85504,"sha":"bfd2188b27fb93c0164249df9e5f76d284ed67a7","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/bfd2188b27fb93c0164249df9e5f76d284ed67a7"},{"path":"README.md","mode":"100644","type":"blob","size":104,"sha":"3de77cb62f3bedc7b5ccc93b146c2757b25a670c","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/blobs/3de77cb62f3bedc7b5ccc93b146c2757b25a670c"}],"truncated":false,"page":1,"total_count":9}
 
         '
     headers:
@@ -497,7 +502,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -507,7 +512,7 @@ interactions:
       X-Gitea-Debug:
       - RUN_MODE=dev
       X-Total-Count:
-      - '7'
+      - '9'
     status:
       code: 200
       message: OK
@@ -528,7 +533,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/main?recursive=True&page=2
   response:
     body:
-      string: '{"sha":"db729cf7f701d7e1f4cda691be67575b2e56ea0e","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/db729cf7f701d7e1f4cda691be67575b2e56ea0e","tree":null,"truncated":false,"page":2,"total_count":7}
+      string: '{"sha":"5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3","url":"http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/git/trees/5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3","tree":null,"truncated":false,"page":2,"total_count":9}
 
         '
     headers:
@@ -541,7 +546,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -549,7 +554,7 @@ interactions:
       X-Gitea-Debug:
       - RUN_MODE=dev
       X-Total-Count:
-      - '7'
+      - '9'
     status:
       code: 200
       message: OK
@@ -567,7 +572,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.Annotation?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.Annotation?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: '[DesignatorManager]
@@ -586,7 +591,7 @@ interactions:
 
         PhysicalDesignatorLocked0=0
 
-        LogicalDesignator1=L1
+        LogicalDesignator1=U1
 
         LogicalPartID1=1
 
@@ -594,13 +599,13 @@ interactions:
 
         ChannelName1=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID1=\EUAWEYBK\AVIZWMZB
+        UniqueID1=\EUAWEYBK\DFYQLROK
 
-        PhysicalDesignator1=L1
+        PhysicalDesignator1=U1
 
         PhysicalDesignatorLocked1=0
 
-        LogicalDesignator2=U1
+        LogicalDesignator2=C1
 
         LogicalPartID2=1
 
@@ -608,13 +613,13 @@ interactions:
 
         ChannelName2=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID2=\EUAWEYBK\DFYQLROK
+        UniqueID2=\EUAWEYBK\ECVDRMOD
 
-        PhysicalDesignator2=U1
+        PhysicalDesignator2=C1
 
         PhysicalDesignatorLocked2=0
 
-        LogicalDesignator3=C3
+        LogicalDesignator3=L1
 
         LogicalPartID3=1
 
@@ -622,13 +627,13 @@ interactions:
 
         ChannelName3=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID3=\EUAWEYBK\FTMVUYID
+        UniqueID3=\EUAWEYBK\FNMZZOES
 
-        PhysicalDesignator3=C3
+        PhysicalDesignator3=L2
 
         PhysicalDesignatorLocked3=0
 
-        LogicalDesignator4=C1
+        LogicalDesignator4=C4
 
         LogicalPartID4=1
 
@@ -636,13 +641,13 @@ interactions:
 
         ChannelName4=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID4=\EUAWEYBK\HYJKKQAQ
+        UniqueID4=\EUAWEYBK\HTUXPOQQ
 
-        PhysicalDesignator4=C1
+        PhysicalDesignator4=C4
 
         PhysicalDesignatorLocked4=0
 
-        LogicalDesignator5=C4
+        LogicalDesignator5=D1
 
         LogicalPartID5=1
 
@@ -650,13 +655,13 @@ interactions:
 
         ChannelName5=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID5=\EUAWEYBK\JVTQLRTC
+        UniqueID5=\EUAWEYBK\KWHZURPA
 
-        PhysicalDesignator5=C4
+        PhysicalDesignator5=D1
 
         PhysicalDesignatorLocked5=0
 
-        LogicalDesignator6=C2
+        LogicalDesignator6=C3
 
         LogicalPartID6=1
 
@@ -664,13 +669,13 @@ interactions:
 
         ChannelName6=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID6=\EUAWEYBK\KCUEPGXD
+        UniqueID6=\EUAWEYBK\VYLAEJDZ
 
-        PhysicalDesignator6=C2
+        PhysicalDesignator6=C3
 
         PhysicalDesignatorLocked6=0
 
-        LogicalDesignator7=D1
+        LogicalDesignator7=C2
 
         LogicalPartID7=1
 
@@ -678,9 +683,9 @@ interactions:
 
         ChannelName7=U_PSU-DCDC-3V3-TI-LM2678SX
 
-        UniqueID7=\EUAWEYBK\QUYHFUUC
+        UniqueID7=\EUAWEYBK\WPJMEIWS
 
-        PhysicalDesignator7=D1
+        PhysicalDesignator7=C2
 
         PhysicalDesignatorLocked7=0
 
@@ -740,7 +745,7 @@ interactions:
 
         PhysicalDesignatorLocked11=0
 
-        LogicalDesignator12=U1
+        LogicalDesignator12=C1
 
         LogicalPartID12=1
 
@@ -748,13 +753,13 @@ interactions:
 
         ChannelName12=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID12=\MMUIQBOM\ASTIQASJ
+        UniqueID12=\MMUIQBOM\ABHSZHTO
 
-        PhysicalDesignator12=U1
+        PhysicalDesignator12=C9
 
         PhysicalDesignatorLocked12=0
 
-        LogicalDesignator13=C4
+        LogicalDesignator13=U1
 
         LogicalPartID13=1
 
@@ -762,13 +767,13 @@ interactions:
 
         ChannelName13=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID13=\MMUIQBOM\BAYWPLQD
+        UniqueID13=\MMUIQBOM\ASTIQASJ
 
-        PhysicalDesignator13=C4
+        PhysicalDesignator13=U3
 
         PhysicalDesignatorLocked13=0
 
-        LogicalDesignator14=D1
+        LogicalDesignator14=C2
 
         LogicalPartID14=1
 
@@ -776,13 +781,13 @@ interactions:
 
         ChannelName14=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID14=\MMUIQBOM\CCBRCCGA
+        UniqueID14=\MMUIQBOM\DKZMLPYH
 
-        PhysicalDesignator14=D1
+        PhysicalDesignator14=C10
 
         PhysicalDesignatorLocked14=0
 
-        LogicalDesignator15=C1
+        LogicalDesignator15=C3
 
         LogicalPartID15=1
 
@@ -790,9 +795,9 @@ interactions:
 
         ChannelName15=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID15=\MMUIQBOM\IDTRVCMF
+        UniqueID15=\MMUIQBOM\HLEDUQXC
 
-        PhysicalDesignator15=C1
+        PhysicalDesignator15=C11
 
         PhysicalDesignatorLocked15=0
 
@@ -804,13 +809,13 @@ interactions:
 
         ChannelName16=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID16=\MMUIQBOM\PQGCXICS
+        UniqueID16=\MMUIQBOM\HMODJEFW
 
         PhysicalDesignator16=L1
 
         PhysicalDesignatorLocked16=0
 
-        LogicalDesignator17=C3
+        LogicalDesignator17=D1
 
         LogicalPartID17=1
 
@@ -818,13 +823,13 @@ interactions:
 
         ChannelName17=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID17=\MMUIQBOM\REKIKOWN
+        UniqueID17=\MMUIQBOM\KPZWIZHB
 
-        PhysicalDesignator17=C3
+        PhysicalDesignator17=D3
 
         PhysicalDesignatorLocked17=0
 
-        LogicalDesignator18=C2
+        LogicalDesignator18=C4
 
         LogicalPartID18=1
 
@@ -832,9 +837,9 @@ interactions:
 
         ChannelName18=U_PSU-DCDC-12V0-TI-LM2678SX
 
-        UniqueID18=\MMUIQBOM\WUYUXCMV
+        UniqueID18=\MMUIQBOM\VUOLRSBG
 
-        PhysicalDesignator18=C2
+        PhysicalDesignator18=C12
 
         PhysicalDesignatorLocked18=0
 
@@ -904,7 +909,7 @@ interactions:
 
         UniqueID23=\XQJCETTR\KEKPXMBA
 
-        PhysicalDesignator23=D1
+        PhysicalDesignator23=D4
 
         PhysicalDesignatorLocked23=0
 
@@ -918,7 +923,7 @@ interactions:
 
         UniqueID24=\XQJCETTR\LXPHEHEF
 
-        PhysicalDesignator24=C4
+        PhysicalDesignator24=C16
 
         PhysicalDesignatorLocked24=0
 
@@ -932,7 +937,7 @@ interactions:
 
         UniqueID25=\XQJCETTR\QZVZMIAZ
 
-        PhysicalDesignator25=C1
+        PhysicalDesignator25=C13
 
         PhysicalDesignatorLocked25=0
 
@@ -946,7 +951,7 @@ interactions:
 
         UniqueID26=\XQJCETTR\RFHDYTVM
 
-        PhysicalDesignator26=C3
+        PhysicalDesignator26=C15
 
         PhysicalDesignatorLocked26=0
 
@@ -960,7 +965,7 @@ interactions:
 
         UniqueID27=\XQJCETTR\VBJHZJJF
 
-        PhysicalDesignator27=U1
+        PhysicalDesignator27=U4
 
         PhysicalDesignatorLocked27=0
 
@@ -974,7 +979,7 @@ interactions:
 
         UniqueID28=\XQJCETTR\XBZAXNZC
 
-        PhysicalDesignator28=L1
+        PhysicalDesignator28=L4
 
         PhysicalDesignatorLocked28=0
 
@@ -988,7 +993,7 @@ interactions:
 
         UniqueID29=\XQJCETTR\XWKTDZQK
 
-        PhysicalDesignator29=C2
+        PhysicalDesignator29=C14
 
         PhysicalDesignatorLocked29=0
 
@@ -1006,7 +1011,7 @@ interactions:
 
         PhysicalDesignatorLocked30=0
 
-        LogicalDesignator31=L1
+        LogicalDesignator31=C1
 
         LogicalPartID31=1
 
@@ -1014,13 +1019,13 @@ interactions:
 
         ChannelName31=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID31=\ZYXHIAPW\ACQDALEV
+        UniqueID31=\ZYXHIAPW\AAQQYRVT
 
-        PhysicalDesignator31=L1
+        PhysicalDesignator31=C5
 
         PhysicalDesignatorLocked31=0
 
-        LogicalDesignator32=C1
+        LogicalDesignator32=U1
 
         LogicalPartID32=1
 
@@ -1028,13 +1033,13 @@ interactions:
 
         ChannelName32=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID32=\ZYXHIAPW\HKXTWEBI
+        UniqueID32=\ZYXHIAPW\JFYXYGXI
 
-        PhysicalDesignator32=C1
+        PhysicalDesignator32=U2
 
         PhysicalDesignatorLocked32=0
 
-        LogicalDesignator33=U1
+        LogicalDesignator33=L1
 
         LogicalPartID33=1
 
@@ -1042,13 +1047,13 @@ interactions:
 
         ChannelName33=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID33=\ZYXHIAPW\JFYXYGXI
+        UniqueID33=\ZYXHIAPW\MJYLMGHT
 
-        PhysicalDesignator33=U1
+        PhysicalDesignator33=L3
 
         PhysicalDesignatorLocked33=0
 
-        LogicalDesignator34=C4
+        LogicalDesignator34=C3
 
         LogicalPartID34=1
 
@@ -1056,13 +1061,13 @@ interactions:
 
         ChannelName34=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID34=\ZYXHIAPW\RIXMRQXG
+        UniqueID34=\ZYXHIAPW\QNTNOVXL
 
-        PhysicalDesignator34=C4
+        PhysicalDesignator34=C7
 
         PhysicalDesignatorLocked34=0
 
-        LogicalDesignator35=D1
+        LogicalDesignator35=C4
 
         LogicalPartID35=1
 
@@ -1070,9 +1075,9 @@ interactions:
 
         ChannelName35=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID35=\ZYXHIAPW\RSVEXLHI
+        UniqueID35=\ZYXHIAPW\VFMZDWFV
 
-        PhysicalDesignator35=D1
+        PhysicalDesignator35=C8
 
         PhysicalDesignatorLocked35=0
 
@@ -1084,13 +1089,13 @@ interactions:
 
         ChannelName36=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID36=\ZYXHIAPW\SXHSLWJQ
+        UniqueID36=\ZYXHIAPW\YMTCQQWG
 
-        PhysicalDesignator36=C2
+        PhysicalDesignator36=C6
 
         PhysicalDesignatorLocked36=0
 
-        LogicalDesignator37=C3
+        LogicalDesignator37=D1
 
         LogicalPartID37=1
 
@@ -1098,9 +1103,9 @@ interactions:
 
         ChannelName37=U_PSU-DCDC-5V0-TI-LM2678SX
 
-        UniqueID37=\ZYXHIAPW\VEPFBPOJ
+        UniqueID37=\ZYXHIAPW\ZYQHRCSY
 
-        PhysicalDesignator37=C3
+        PhysicalDesignator37=D2
 
         PhysicalDesignatorLocked37=0
 
@@ -1152,15 +1157,15 @@ interactions:
       Content-Disposition:
       - inline; filename="DCDC Regulators Breakout.Annotation"; filename*=UTF-8''DCDC%20Regulators%20Breakout.Annotation
       Content-Length:
-      - '8356'
+      - '8363'
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Etag:
-      - '"fc09c80a9b4cb8232d927045ef39cc8d50fdf00d"'
+      - '"416269206286980792e4f5e572a4082e0f9aec49"'
       Last-Modified:
-      - Tue, 24 Sep 2024 13:06:04 GMT
+      - Wed, 09 Oct 2024 13:32:10 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -1186,7 +1191,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: ''
@@ -1196,7 +1201,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:46 GMT
+      - Thu, 10 Oct 2024 18:02:16 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -1222,7 +1227,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: ''
@@ -1232,7 +1237,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:47 GMT
+      - Thu, 10 Oct 2024 18:02:17 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -1258,7 +1263,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: ''
@@ -1268,7 +1273,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:47 GMT
+      - Thu, 10 Oct 2024 18:02:17 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -1294,10 +1299,10 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=db729cf7f701d7e1f4cda691be67575b2e56ea0e
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
-      string: "{\n  \"html_id\": \"d-c196793c-a1fa-4b23-ab1c-7315478f01b7\",\n  \"CKKFFKEU\":
+      string: "{\n  \"html_id\": \"d-61d6ba0f-f002-439f-a870-378921b0fc26\",\n  \"CKKFFKEU\":
         {\n    \"color\": null,\n    \"unique_id\": \"CKKFFKEU\",\n    \"type\": \"Component\",\n
         \   \"name\": \"Header_Male_1R_02P\",\n    \"description\": null,\n    \"part_id\":
         \"CMP-1712-00002-6\",\n    \"pins\": [\n      {\n        \"color\": null,\n
@@ -3705,7 +3710,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:48 GMT
+      - Thu, 10 Oct 2024 18:02:18 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -3743,7 +3748,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:48 GMT
+      - Thu, 10 Oct 2024 18:02:18 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -3787,7 +3792,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:48 GMT
+      - Thu, 10 Oct 2024 18:02:18 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -3823,7 +3828,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:48 GMT
+      - Thu, 10 Oct 2024 18:02:18 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -3852,7 +3857,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-5V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-7907bb9a-a255-42bd-9075-e21beed946b8\",\n  \"JFYXYGXI\":
+      string: "{\n  \"html_id\": \"d-55adde2c-4775-48dd-93b2-175b0e90ed9b\",\n  \"JFYXYGXI\":
         {\n    \"color\": null,\n    \"unique_id\": \"JFYXYGXI\",\n    \"type\": \"Component\",\n
         \   \"name\": \"7e88065a8287dcd79b9e61a875172dc\",\n    \"description\": \"IC
         REG BUCK 5V 5A TO263-7\",\n    \"part_id\": \"CMP-04918-000486-1\",\n    \"pins\":
@@ -5614,7 +5619,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:49 GMT
+      - Thu, 10 Oct 2024 18:02:19 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -5648,7 +5653,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:49 GMT
+      - Thu, 10 Oct 2024 18:02:19 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -5677,7 +5682,43 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-37b8e616-e69e-4487-8d11-e91050c87451\",\n  \"FGTZIWAJ\":
+      string: ''
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate, no-transform
+      Content-Length:
+      - '0'
+      Date:
+      - Thu, 10 Oct 2024 18:02:19 GMT
+      Retry-After:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Gitea-Debug:
+      - RUN_MODE=dev
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc?ref=main
+  response:
+    body:
+      string: "{\n  \"html_id\": \"d-a25e4ab3-e17b-4067-8f6c-222ad62dc247\",\n  \"FGTZIWAJ\":
         {\n    \"color\": null,\n    \"unique_id\": \"FGTZIWAJ\",\n    \"type\": \"Component\",\n
         \   \"name\": \"RES-2\",\n    \"description\": \"Chip Resistor, 1 KOhm, +/-
         1%, 125 mW, -55 to 155 degC, 0805 (2012 Metric), RoHS, Tape and Reel\",\n
@@ -7757,7 +7798,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:49 GMT
+      - Thu, 10 Oct 2024 18:02:20 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -7791,7 +7832,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:49 GMT
+      - Thu, 10 Oct 2024 18:02:20 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -7820,43 +7861,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-3V3-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Tue, 08 Oct 2024 18:25:50 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-3V3-TI-LM2678SX.SchDoc?ref=main
-  response:
-    body:
-      string: "{\n  \"html_id\": \"d-767215c6-0ad1-45b8-838b-9a2cb3010fde\",\n  \"DFYQLROK\":
+      string: "{\n  \"html_id\": \"d-cc156e29-6251-4402-bbe7-9775519485ac\",\n  \"DFYQLROK\":
         {\n    \"color\": null,\n    \"unique_id\": \"DFYQLROK\",\n    \"type\": \"Component\",\n
         \   \"name\": \"CMP-0069-00188-2\",\n    \"description\": \"SIMPLE SWITCHER\\u00ae
         High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263\",\n    \"part_id\":
@@ -9586,7 +9591,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:50 GMT
+      - Thu, 10 Oct 2024 18:02:21 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -9620,7 +9625,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:50 GMT
+      - Thu, 10 Oct 2024 18:02:21 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -9656,7 +9661,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Tue, 08 Oct 2024 18:25:51 GMT
+      - Thu, 10 Oct 2024 18:02:21 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -9685,7 +9690,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_altium_components_list_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-12V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-068df84c-40fe-448a-a0e5-c8aad2b243ae\",\n  \"ASTIQASJ\":
+      string: "{\n  \"html_id\": \"d-feeaf5f9-9786-4001-8c2e-8aa8deb354a5\",\n  \"ASTIQASJ\":
         {\n    \"color\": null,\n    \"unique_id\": \"ASTIQASJ\",\n    \"type\": \"Component\",\n
         \   \"name\": \"CMP-0069-00189-2\",\n    \"description\": \"SIMPLE SWITCHER\\u00ae
         High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263\",\n    \"part_id\":
@@ -11415,7 +11420,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 08 Oct 2024 18:25:52 GMT
+      - Thu, 10 Oct 2024 18:02:22 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -11449,7 +11454,7 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Tue, 08 Oct 2024 18:25:52 GMT
+      - Thu, 10 Oct 2024 18:02:22 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -11483,7 +11488,7 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Tue, 08 Oct 2024 18:25:52 GMT
+      - Thu, 10 Oct 2024 18:02:22 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
