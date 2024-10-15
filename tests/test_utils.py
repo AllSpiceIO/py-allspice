@@ -498,11 +498,50 @@ def test_bom_generation_altium_with_device_sheets(
         repo,
         "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
         attributes_mapping,
+        group_by=["Comment"],
         design_reuse_repos=[design_reuse_repo],
-        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
     )
 
-    assert len(bom) == 38
+    assert len(bom) == 13
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_hierarchical_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    assert len(bom) == 14
     assert bom == csv_snapshot
 
 
@@ -814,10 +853,57 @@ def test_altium_components_list_with_device_sheets(
         repo,
         "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
         design_reuse_repos=[design_reuse_repo],
-        ref="db729cf7f701d7e1f4cda691be67575b2e56ea0e",
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
     )
 
     assert len(components) == 38
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_annotations(
+    request, instance, setup_for_generation, json_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/FlatSat",
+    )
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "FlatSat/FlatSat.PrjPCB",
+        ref="471d42ba87032682c7dc7a0235ffcc02808a3e37",
+    )
+
+    assert len(components) == 408
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_hierarchical_device_sheets_and_annotations(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    components.sort(key=lambda x: x["Designator"])
+    assert len(components) == 980
     assert components == json_snapshot
 
 
@@ -876,7 +962,6 @@ def test_list_components_system_capture_fails_with_variant(
     request,
     instance,
     setup_for_generation,
-    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,

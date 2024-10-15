@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Iterable, Optional, Union
+from typing import Iterable, Mapping, Optional, Union
 
 from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
@@ -94,7 +94,7 @@ class ColumnConfig:
     """
 
 
-ColumnsMapping = dict[str, ColumnConfig | list[str] | str]
+ColumnsMapping = Mapping[str, ColumnConfig | list[str] | str]
 """
 Configuration for the columns in the BOM. See `ColumnConfig` for a detailed
 description of the configuration for each column. The keys in this dictionary
