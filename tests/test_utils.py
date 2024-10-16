@@ -24,8 +24,14 @@ def port(pytestconfig):
     return pytestconfig.getoption("port")
 
 
+@pytest.fixture(scope="session")
+def client_log_level(pytestconfig):
+    """Load --client-log-level command-line arg if set"""
+    return pytestconfig.getoption("client_log_level")
+
+
 @pytest.fixture
-def instance(port, pytestconfig):
+def instance(port, client_log_level, pytestconfig):
     # The None record mode is the default and is equivalent to "once"
     if pytestconfig.getoption("record_mode") in ["none", "once", None]:
         # If we're using cassettes, we don't want BOM generation to sleep
@@ -37,6 +43,7 @@ def instance(port, pytestconfig):
             f"http://localhost:{port}",
             open(".token", "r").read().strip(),
             ratelimiting=None,
+            log_level=client_log_level or "INFO",
         )
         print("AllSpice Hub Version: " + g.get_version())
         print("API-Token belongs to user: " + g.get_user().username)
@@ -467,6 +474,78 @@ def test_bom_generation_altium_repeated_multi_part_component_variant(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+    )
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ["Designator"],
+        "Comment": ["Comment"],
+    }
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
+    )
+
+    assert len(bom) == 13
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_hierarchical_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    assert len(bom) == 14
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
@@ -536,6 +615,7 @@ def test_bom_generation_orcad_with_column_config(
     assert bom == csv_snapshot
 
 
+@pytest.mark.vcr
 def test_bom_generation_system_capture(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
@@ -754,6 +834,80 @@ def test_altium_components_list_with_fitted_variant(
 
 
 @pytest.mark.vcr
+def test_altium_components_list_with_device_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+    )
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
+    )
+
+    assert len(components) == 38
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_annotations(
+    request, instance, setup_for_generation, json_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/FlatSat",
+    )
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "FlatSat/FlatSat.PrjPCB",
+        ref="471d42ba87032682c7dc7a0235ffcc02808a3e37",
+    )
+
+    assert len(components) == 408
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_hierarchical_device_sheets_and_annotations(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    components.sort(key=lambda x: x["Designator"])
+    assert len(components) == 980
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
 def test_system_capture_components_list(
     request,
     instance,
@@ -808,7 +962,6 @@ def test_list_components_system_capture_fails_with_variant(
     request,
     instance,
     setup_for_generation,
-    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,

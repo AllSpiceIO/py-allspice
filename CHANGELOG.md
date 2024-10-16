@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.6.0
+
+### What's Changed
+
+## What's Changed
+
+- Generate BOMs with Device Sheets and Board Level Annotations on Altium
+  Projects by @shrik450 and @polypour in
+  https://github.com/AllSpiceIO/py-allspice/pull/182 and
+  https://github.com/AllSpiceIO/py-allspice/pull/183/
+
+  Adds support for Altium Device Sheets and Board Level Annotations in
+  `list_components` and `generate_bom`. To use device sheets located in another
+  repo, pass the `design_reuse_repositories` argument to those functions.
+
+- Update syrupy requirement from ~=4.6 to ~=4.7 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/179
+- Add method to download an attachment by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/181
+- Include pin information in components by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/180
+- Update pdoc requirement from ~=14.5 to ~=14.7 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/185
+
 ## v3.5.0
 
 ### What's Changed
