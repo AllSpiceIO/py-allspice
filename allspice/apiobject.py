@@ -40,6 +40,7 @@ class Organization(ApiObject):
     followers_count: Optional[int]
     following_count: Optional[int]
     full_name: str
+    html_url: Optional[str]
     id: int
     is_admin: Optional[bool]
     language: Optional[str]
@@ -51,6 +52,7 @@ class Organization(ApiObject):
     prohibit_login: Optional[bool]
     repo_admin_change_team_access: Optional[bool]
     restricted: Optional[bool]
+    source_id: Optional[int]
     starred_repos_count: Optional[int]
     username: str
     visibility: str
@@ -249,6 +251,7 @@ class User(ApiObject):
     followers_count: int
     following_count: int
     full_name: str
+    html_url: str
     id: int
     is_admin: bool
     language: str
@@ -261,6 +264,7 @@ class User(ApiObject):
     password: Any
     prohibit_login: bool
     restricted: bool
+    source_id: int
     starred_repos_count: int
     username: str
     visibility: str
@@ -470,6 +474,7 @@ class GitEntry(ReadonlyApiObject):
 
 
 class Repository(ApiObject):
+    allow_fast_forward_only_merge: bool
     allow_manual_merge: Any
     allow_merge_commits: bool
     allow_rebase: bool
@@ -513,6 +518,7 @@ class Repository(ApiObject):
     mirror_interval: str
     mirror_updated: str
     name: str
+    object_format_name: str
     open_issues_count: int
     open_pr_counter: int
     original_url: str
@@ -520,6 +526,7 @@ class Repository(ApiObject):
     parent: Any
     permissions: Dict[str, bool]
     private: bool
+    projects_mode: str
     release_counter: int
     repo_transfer: Any
     size: int
@@ -2027,16 +2034,20 @@ class DesignReview(ApiObject):
     it exists.
     """
 
+    additions: int
     allow_maintainer_edit: bool
     allow_maintainer_edits: Any
     assignee: User
     assignees: List["User"]
     base: str
     body: str
+    changed_files: int
     closed_at: Any
     comments: int
     created_at: str
+    deletions: int
     diff_url: str
+    draft: bool
     due_date: Optional[str]
     head: str
     html_url: str
@@ -2055,6 +2066,7 @@ class DesignReview(ApiObject):
     pin_order: int
     repository: Optional["Repository"]
     requested_reviewers: Any
+    review_comments: int
     state: str
     title: str
     updated_at: str
