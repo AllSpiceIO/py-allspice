@@ -15,7 +15,7 @@ from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
 from ..exceptions import NotYetGeneratedException
 
-SLEEP_FOR_GENERATED_JSON = 0.5
+SLEEP_FOR_GENERATED_JSON = 1
 """The amount of time to sleep between attempts to fetch generated JSON files."""
 
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
