@@ -477,6 +477,7 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
         try:
             return repo.get_generated_json(file_path, ref=ref)
         except NotYetGeneratedException:
+            attempts += 1
             time.sleep(SLEEP_FOR_GENERATED_JSON)
 
     raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
