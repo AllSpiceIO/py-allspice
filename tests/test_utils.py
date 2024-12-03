@@ -1,9 +1,11 @@
 import base64
+from unittest.mock import patch
 
 import pytest
 from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
+from allspice.exceptions import NotYetGeneratedException
 from allspice.utils import list_components
 from allspice.utils.bom_generation import (
     ColumnConfig,
@@ -974,6 +976,25 @@ def test_list_components_system_capture_fails_with_variant(
             "parallella_schematic.sdax",
             variant="Fitted",
         )
+
+
+def test_list_components_retries_time_out(
+    request,
+    instance,
+    setup_for_generation,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+    )
+
+    with patch.object(repo, "get_generated_json", side_effect=NotYetGeneratedException):
+        with pytest.raises(TimeoutError):
+            list_components.list_components(
+                instance,
+                repo,
+                "parallella_schematic.sdax",
+            )
 
 
 @pytest.mark.vcr
