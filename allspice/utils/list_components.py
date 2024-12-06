@@ -18,6 +18,9 @@ from ..exceptions import NotYetGeneratedException
 SLEEP_FOR_GENERATED_JSON = 1
 """The amount of time to sleep between attempts to fetch generated JSON files."""
 
+MAX_RETRIES_FOR_GENERATED_JSON = 10
+"""The maximum number of times to retry fetching generated JSON files."""
+
 PCB_FOOTPRINT_ATTR_NAME = "PCB Footprint"
 
 PART_REFERENCE_ATTR_NAME = "Part Reference"
@@ -473,7 +476,7 @@ def _list_components_multi_page_schematic(
 
 def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
     attempts = 0
-    while attempts < 5:
+    while attempts < MAX_RETRIES_FOR_GENERATED_JSON:
         try:
             return repo.get_generated_json(file_path, ref=ref)
         except NotYetGeneratedException:
