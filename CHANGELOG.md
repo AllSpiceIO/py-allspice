@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.7.0
+
+### What's Changed
+
+- Update system capture test snapshots with added component attributes by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/187
+- Update type annotations for 1.22 by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/197
+- Enforce max retries in list_components by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/198
+
+  > [!CAUTION]
+  >
+  > This could potentially break your BOM generation if individual files were
+  > taking too long to render.
+
+### Internal Changes
+
+- Update pdoc requirement from ~=14.7 to ~=15.0 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/189
+- Update ruff by @kdumontnu in https://github.com/AllSpiceIO/py-allspice/pull/196
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.6.0...v3.7.0
+
 ## v3.6.0
 
 ### What's Changed
