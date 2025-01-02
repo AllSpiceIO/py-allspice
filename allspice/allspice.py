@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from typing import Any, Dict, List, Mapping, Optional, Union
 
 import requests
@@ -59,6 +60,11 @@ class AllSpice:
         """
 
         self.logger = logging.getLogger(__name__)
+        handler = logging.StreamHandler(sys.stderr)
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        )
+        self.logger.addHandler(handler)
         self.logger.setLevel(log_level)
         self.headers = {
             "Content-type": "application/json",
