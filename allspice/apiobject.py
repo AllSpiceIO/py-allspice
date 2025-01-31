@@ -2380,7 +2380,10 @@ class Release(ApiObject):
         return release
 
     def commit(self):
-        args = {"owner": self.repo.owner.name, "repo": self.repo.name, "id": self.id}
+        if self.repo is None:
+            raise ValueError("Cannot commit a release without a repository.")
+
+        args = {"owner": self.repo.owner.username, "repo": self.repo.name, "id": self.id}
         self._commit(args)
 
     def create_asset(self, file: IO, name: Optional[str] = None) -> ReleaseAsset:
@@ -2393,6 +2396,9 @@ class Release(ApiObject):
         :param name: The name of the file.
         :return: The created asset.
         """
+
+        if self.repo is None:
+            raise ValueError("Cannot commit a release without a repository.")
 
         args: dict[str, Any] = {"files": {"attachment": file}}
         if name is not None:
@@ -2409,7 +2415,10 @@ class Release(ApiObject):
         return ReleaseAsset.parse_response(self.allspice_client, result, self)
 
     def delete(self):
-        args = {"owner": self.repo.owner.name, "repo": self.repo.name, "id": self.id}
+        if self.repo is None:
+            raise ValueError("Cannot commit a release without a repository.")
+
+        args = {"owner": self.repo.owner.username, "repo": self.repo.name, "id": self.id}
         self.allspice_client.requests_delete(self.API_OBJECT.format(**args))
         self.deleted = True
 
@@ -2464,8 +2473,11 @@ class ReleaseAsset(ApiObject):
         return asset
 
     def commit(self):
+        if self.release is None or self.release.repo is None:
+            raise ValueError("Cannot commit a release asset without a release or a repository.")
+
         args = {
-            "owner": self.release.repo.owner,
+            "owner": self.release.repo.owner.username,
             "repo": self.release.repo.name,
             "release_id": self.release.id,
             "id": self.id,
@@ -2513,8 +2525,11 @@ class ReleaseAsset(ApiObject):
                 io.write(chunk)
 
     def delete(self):
+        if self.release is None or self.release.repo is None:
+            raise ValueError("Cannot commit a release asset without a release or a repository.")
+
         args = {
-            "owner": self.release.repo.owner.name,
+            "owner": self.release.repo.owner.username,
             "repo": self.release.repo.name,
             "release_id": self.release.id,
             "id": self.id,
