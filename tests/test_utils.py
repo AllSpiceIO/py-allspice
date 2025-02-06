@@ -39,6 +39,12 @@ def instance(port, client_log_level, pytestconfig):
         # If we're using cassettes, we don't want BOM generation to sleep
         # between requests to wait for the generated JSON to be available.
         list_components.SLEEP_FOR_GENERATED_JSON = 0
+    else:
+        # The CI runner is anemic and often cannot generate the outputs in five
+        # retries, so we set it to a very high number to make it effectively
+        # retry for a fair amount of time if we're not using cassettes. If it
+        # cannot generate even in ~100s, that could indicate a real issue.
+        list_components.MAX_RETRIES_FOR_GENERATED_JSON = 100
 
     try:
         g = AllSpice(

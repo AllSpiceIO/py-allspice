@@ -483,7 +483,9 @@ def _fetch_generated_json(repo: Repository, file_path: str, ref: Ref) -> dict:
             attempts += 1
             time.sleep(SLEEP_FOR_GENERATED_JSON)
 
-    raise TimeoutError(f"Failed to fetch JSON for {file_path} after 5 attempts.")
+    raise TimeoutError(
+        f"Failed to fetch JSON for {file_path} after {MAX_RETRIES_FOR_GENERATED_JSON} attempts."
+    )
 
 
 @functools.cache
