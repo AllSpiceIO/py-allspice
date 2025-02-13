@@ -1,4 +1,5 @@
 import base64
+import os
 from unittest.mock import patch
 
 import pytest
@@ -34,16 +35,21 @@ def client_log_level(pytestconfig):
 
 @pytest.fixture
 def instance(port, client_log_level, pytestconfig):
-    # The None record mode is the default and is equivalent to "once"
-    if pytestconfig.getoption("record_mode") in ["none", "once", None]:
+    # The None record mode is the default and is equivalent to "once", but it
+    # can also be set to None if recording is disabled entirely.
+    if (
+        pytestconfig.getoption("record_mode") in ["none", "once", None]
+    ) and not pytestconfig.getoption("disable_recording"):
         # If we're using cassettes, we don't want BOM generation to sleep
         # between requests to wait for the generated JSON to be available.
         list_components.SLEEP_FOR_GENERATED_JSON = 0
-    else:
-        # The CI runner is anemic and often cannot generate the outputs in five
-        # retries, so we set it to a very high number to make it effectively
-        # retry for a fair amount of time if we're not using cassettes. If it
-        # cannot generate even in ~100s, that could indicate a real issue.
+
+    if os.environ.get("CI") == "true":
+        # The CI runner is anemic and may not be able to generate the outputs
+        # in the default number of retries, so we set it to a very high number
+        # to make it effectively retry for a fair amount of time if we're not
+        # using cassettes. If it cannot generate even in ~100s, that could
+        # indicate a real issue.
         list_components.MAX_RETRIES_FOR_GENERATED_JSON = 100
 
     try:
@@ -115,7 +121,7 @@ def csv_snapshot(snapshot):
 def test_bom_generation_flat(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -144,7 +150,7 @@ def test_bom_generation_with_odd_line_endings(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     # We hard-code a ref so that this test is reproducible.
@@ -198,7 +204,7 @@ def test_bom_generation_with_odd_line_endings(
 def test_bom_generation_grouped(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -232,7 +238,7 @@ def test_bom_generation_with_folder_hierarchy(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorInFolders.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorInFolders.git",
     )
 
     attributes_mapping = {
@@ -259,7 +265,7 @@ def test_bom_generation_with_folder_hierarchy(
 def test_bom_generation_with_default_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -292,7 +298,7 @@ def test_bom_generation_with_default_variant(request, instance, setup_for_genera
 def test_bom_generation_with_fitted_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -322,7 +328,7 @@ def test_bom_generation_with_fitted_variant(request, instance, setup_for_generat
 def test_bom_generation_with_grouped_variant(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
     )
 
     attributes_mapping = {
@@ -353,7 +359,7 @@ def test_bom_generation_altium_with_non_bom_components(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     attributes_mapping = {
@@ -383,7 +389,7 @@ def test_bom_generation_altium_repeated_multi_part_component(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorRepeated.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorRepeated.git",
     )
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
@@ -458,7 +464,7 @@ def test_bom_generation_altium_repeated_multi_part_component_variant(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorRepeatedVariant.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorRepeatedVariant.git",
     )
     attributes_mapping = {
         "description": ["PART DESCRIPTION"],
@@ -490,11 +496,11 @@ def test_bom_generation_altium_with_device_sheets(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo",
     )
     design_reuse_repo = setup_for_generation(
         request.node.name + "_reuse",
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets",
     )
     attributes_mapping = {
         "Name": ["_name"],
@@ -524,11 +530,11 @@ def test_bom_generation_altium_with_hierarchical_device_sheets(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
     )
     design_reuse_repo = setup_for_generation(
         request.node.name + "_reuse",
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
     )
 
     attributes_mapping = {
@@ -557,7 +563,7 @@ def test_bom_generation_altium_with_hierarchical_device_sheets(
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
+        "https://hub.allspice.io/NoIndexTests/beagleplay.git",
     )
 
     attributes_mapping = {
@@ -627,7 +633,7 @@ def test_bom_generation_orcad_with_column_config(
 def test_bom_generation_system_capture(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
 
     attributes_mapping = {
@@ -652,7 +658,7 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
 def test_bom_generation_system_capture_grouped_failure(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     with pytest.raises(ValueError, match="Group by column Name not found in selected columns"):
         generate_bom_for_system_capture(
@@ -672,7 +678,7 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
 def test_generate_bom_altium(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     altium_attributes_mapping = {
@@ -696,7 +702,7 @@ def test_generate_bom_altium(request, instance, setup_for_generation, csv_snapsh
 def test_generate_bom_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
+        "https://hub.allspice.io/NoIndexTests/beagleplay.git",
     )
     orcad_attributes_mapping = {
         "Name": ["_name"],
@@ -720,7 +726,7 @@ def test_generate_bom_orcad(request, instance, setup_for_generation, csv_snapsho
 def test_generate_bom_system_capture(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     system_capture_attributes_mapping = {
         "Description": "VALUE",
@@ -742,7 +748,7 @@ def test_generate_bom_system_capture(request, instance, setup_for_generation, cs
 def test_generate_bom_system_capture_fails_with_variant(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     with pytest.raises(ValueError, match="Variant is not supported for System"):
         generate_bom(
@@ -758,7 +764,7 @@ def test_generate_bom_system_capture_fails_with_variant(request, instance, setup
 def test_orcad_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/beagleplay.git",
+        "https://hub.allspice.io/NoIndexTests/beagleplay.git",
     )
 
     components = list_components_for_orcad(
@@ -777,7 +783,7 @@ def test_orcad_components_list(request, instance, setup_for_generation, json_sna
 def test_altium_components_list(request, instance, setup_for_generation, json_snapshot):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     components = list_components_for_altium(
@@ -801,7 +807,7 @@ def test_altium_components_list_with_folder_hierarchy(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorInFolders.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorInFolders.git",
     )
 
     components = list_components_for_altium(
@@ -825,7 +831,7 @@ def test_altium_components_list_with_fitted_variant(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorVariants.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
     )
 
     components = list_components_for_altium(
@@ -850,11 +856,11 @@ def test_altium_components_list_with_device_sheets(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheet-Usage-Demo",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo",
     )
     design_reuse_repo = setup_for_generation(
         request.node.name + "_reuse",
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets",
     )
     components = list_components_for_altium(
         instance,
@@ -874,7 +880,7 @@ def test_altium_components_list_with_annotations(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/FlatSat",
+        "https://hub.allspice.io/NoIndexTests/FlatSat",
     )
     components = list_components_for_altium(
         instance,
@@ -896,11 +902,11 @@ def test_altium_components_list_with_hierarchical_device_sheets_and_annotations(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
     )
     design_reuse_repo = setup_for_generation(
         request.node.name + "_reuse",
-        "https://hub.allspice.io/AllSpiceTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
     )
 
     components = list_components_for_altium(
@@ -924,7 +930,7 @@ def test_system_capture_components_list(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     components = list_components.list_components_for_system_capture(
         instance,
@@ -952,7 +958,7 @@ def test_list_components_system_capture(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     components = list_components.list_components(
         instance,
@@ -973,7 +979,7 @@ def test_list_components_system_capture_fails_with_variant(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
     with pytest.raises(ValueError, match="Variant is not supported for System"):
         list_components.list_components(
@@ -991,7 +997,7 @@ def test_list_components_retries_time_out(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/parallela-sdax.git",
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
 
     with patch.object(repo, "get_generated_json", side_effect=NotYetGeneratedException):
@@ -1007,7 +1013,7 @@ def test_list_components_retries_time_out(
 def test_netlist_generation(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/AllSpiceTests/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
 
     netlist = generate_netlist(
