@@ -2042,7 +2042,7 @@ class DesignReview(ApiObject):
     base: str
     body: str
     changed_files: int
-    closed_at: Any
+    closed_at: Optional[str]
     comments: int
     created_at: str
     deletions: int
@@ -2055,11 +2055,11 @@ class DesignReview(ApiObject):
     is_locked: bool
     labels: List[Any]
     merge_base: str
-    merge_commit_sha: Any
+    merge_commit_sha: Optional[str]
     mergeable: bool
     merged: bool
-    merged_at: Any
-    merged_by: Any
+    merged_at: Optional[str]
+    merged_by: Optional["User"]
     milestone: Any
     number: int
     patch_url: str
@@ -2165,7 +2165,7 @@ class DesignReview(ApiObject):
         :param merge_type: The type of merge to perform. See the MergeType enum.
         """
 
-        self.allspice_client.requests_put(
+        self.allspice_client.requests_post(
             self.MERGE_DESIGN_REVIEW.format(
                 owner=self.repository.owner.username,
                 repo=self.repository.name,

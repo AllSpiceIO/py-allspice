@@ -674,6 +674,11 @@ def test_create_design_review(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     branch = Branch.request(instance, org.username, test_repo, "master")
+    repo.create_file(
+        "new_file.txt",
+        base64.b64encode(b"new file contents").decode("utf-8"),
+        {"branch": "test_branch"},
+    )
     due_date = datetime.datetime.now() + datetime.timedelta(days=7)
     review = repo.create_design_review(
         "TestDesignReview",
@@ -760,6 +765,33 @@ def test_get_design_review_attachments(instance):
     attachments = comment.get_attachments()
     assert len(attachments) > 0
     assert attachments[0].name == "requirements.txt"
+
+
+def test_merge_design_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+
+    assert dr.state == "open"
+
+    # The API may fail with this message. It isn't in the scope of this test to
+    # make sure the API can merge, so we'll keep retrying until it works or we
+    # retry too many times.
+    attempts = 0
+    while attempts < 5:
+        try:
+            dr.merge(DesignReview.MergeType.MERGE)
+            break
+        except Exception as e:
+            if "Please try again later" in str(e):
+                attempts += 1
+                time.sleep(1)
+                continue
+            else:
+                raise e
+
+    dr = repo.get_design_reviews()[0]
+    assert dr.state == "closed"
 
 
 def test_repo_create_release(instance):
