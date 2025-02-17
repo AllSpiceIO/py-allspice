@@ -417,7 +417,7 @@ def test_bom_generation_altium_with_column_config(
 ):
     repo = setup_for_generation(
         request.node.name,
-        "https://hub.allspice.io/ProductDevelopmentFirm/ArchimajorDemo.git",
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
     )
     columns = {
         "description": ColumnConfig(
