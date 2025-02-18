@@ -673,6 +673,7 @@ class Repository(ApiObject):
         "enable_prune",
         "external_tracker",
         "external_wiki",
+        "has_actions",
         "has_issues",
         "has_projects",
         "has_pull_requests",
