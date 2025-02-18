@@ -555,6 +555,28 @@ def test_change_issue(instance):
     )
 
 
+def test_create_issue_attachment(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    attachment = issue.create_attachment(open("requirements.txt", "rb"))
+    assert attachment.name == "requirements.txt"
+    assert attachment.download_count == 0
+
+
+def test_get_issue_attachments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    issue = repo.get_issues()[0]
+    attachments = issue.get_attachments()
+    assert len(attachments) > 0
+    assert attachments[0].name == "requirements.txt"
+
+    issue = Issue.request(instance, org.username, repo.name, issue.number)
+    assert len(issue.assets) == 1
+    assert issue.assets[0].name == "requirements.txt"
+
+
 def test_create_issue_comment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
@@ -597,7 +619,7 @@ def test_delete_issue_comment(instance):
         Comment.request(instance, org.username, repo.name, comment_id)
 
 
-def test_create_issue_attachment(instance):
+def test_create_issue_comment_attachment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
@@ -607,7 +629,7 @@ def test_create_issue_attachment(instance):
     assert attachment.download_count == 0
 
 
-def test_create_issue_attachment_with_name(instance):
+def test_create_issue_comment_attachment_with_name(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
@@ -617,7 +639,7 @@ def test_create_issue_attachment_with_name(instance):
     assert attachment.download_count == 0
 
 
-def test_get_issue_attachments(instance):
+def test_get_issue_comment_attachments(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
@@ -627,7 +649,7 @@ def test_get_issue_attachments(instance):
     assert attachments[0].name == "requirements.txt"
 
 
-def test_download_issue_attachment(instance, tmp_path):
+def test_download_issue_comment_attachment(instance, tmp_path):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
@@ -648,7 +670,7 @@ def test_download_issue_attachment(instance, tmp_path):
             assert expected_content == attachment_content
 
 
-def test_edit_issue_attachment(instance):
+def test_edit_issue_comment_attachment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
@@ -660,7 +682,7 @@ def test_edit_issue_attachment(instance):
     assert attachment2.name == "this is a new attachment"
 
 
-def test_delete_issue_attachment(instance):
+def test_delete_issue_comment_attachment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]

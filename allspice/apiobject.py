@@ -1877,7 +1877,16 @@ class CommitCombinedStatus(ReadonlyApiObject):
 
 
 class Issue(ApiObject):
-    assets: List[Any]
+    """
+    An issue on a repository.
+
+    Note: `Issue.assets` may not have any entries even if the issue has
+    attachments. This happens when an issue is fetched via a bulk method like
+    `Repository.get_issues`. In most cases, prefer using
+    `Issue.get_attachments` to get the attachments on an issue.
+    """
+
+    assets: List[Union[Any, "Attachment"]]
     assignee: Any
     assignees: Any
     body: str
@@ -1907,6 +1916,7 @@ class Issue(ApiObject):
     GET_TIME = """/repos/%s/%s/issues/%s/times"""  # <owner, repo, index>
     GET_COMMENTS = """/repos/{owner}/{repo}/issues/{index}/comments"""
     CREATE_ISSUE = """/repos/{owner}/{repo}/issues"""
+    GET_ATTACHMENTS = """/repos/{owner}/{repo}/issues/{index}/assets"""
 
     OPENED = "open"
     CLOSED = "closed"
@@ -1925,6 +1935,9 @@ class Issue(ApiObject):
     _fields_to_parsers: ClassVar[dict] = {
         "milestone": lambda allspice_client, m: Milestone.parse_response(allspice_client, m),
         "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
+        "assets": lambda allspice_client, assets: [
+            Attachment.parse_response(allspice_client, a) for a in assets
+        ],
         "assignee": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "assignees": lambda allspice_client, us: [
             User.parse_response(allspice_client, u) for u in us
@@ -2020,6 +2033,50 @@ class Issue(ApiObject):
 
         response = self.allspice_client.requests_post(path, data={"body": body})
         return Comment.parse_response(self.allspice_client, response)
+
+    def get_attachments(self) -> List[Attachment]:
+        """
+        Fetch all attachments on this issue.
+
+        Unlike the assets field, this will always fetch all attachments from the
+        API.
+
+        See https://hub.allspice.io/api/swagger#/issue/issueListIssueAttachments
+        """
+
+        path = self.GET_ATTACHMENTS.format(
+            owner=self.owner.username, repo=self.repository.name, index=self.number
+        )
+        response = self.allspice_client.requests_get(path)
+
+        return [Attachment.parse_response(self.allspice_client, result) for result in response]
+
+    def create_attachment(self, file: IO, name: Optional[str] = None) -> Attachment:
+        """
+        Create an attachment on this issue.
+
+        https://hub.allspice.io/api/swagger#/issue/issueCreateIssueAttachment
+
+        :param file: The file to attach. This should be a file-like object.
+        :param name: The name of the file. If not provided, the name of the file will be
+                     used.
+        :return: The created attachment.
+        """
+
+        args: dict[str, Any] = {
+            "files": {"attachment": file},
+        }
+        if name is not None:
+            args["params"] = {"name": name}
+
+        result = self.allspice_client.requests_post(
+            self.GET_ATTACHMENTS.format(
+                owner=self.owner.username, repo=self.repository.name, index=self.number
+            ),
+            **args,
+        )
+
+        return Attachment.parse_response(self.allspice_client, result)
 
 
 class DesignReview(ApiObject):
