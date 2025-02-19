@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.8.0
+
+### Highlights
+
+* Fix invalid arguments when committing releases and assets by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/204
+* Create and use a log handler to actually set log level by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/188
+* Use POST instead of PUT for merging Design Reviews by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/208
+* Make `has_actions` patchable on Repository by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/202
+* Add method to get and create Issue attachments by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/210
+
+### Other Changes
+
+* Bump ruff from 0.8.1 to 0.8.4 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/201
+* Update libcst requirement from ~=1.4.0 to ~=1.6.0 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/206
+* Change AllSpice Hub Test org name by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/207
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.7.0...v3.8.0
+
 ## v3.7.0
 
 ### What's Changed
