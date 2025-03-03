@@ -64,10 +64,12 @@ def instance(port, client_log_level, pytestconfig):
 
         return g
     except Exception:
-        assert False, f"AllSpice Hub could not load. Is there: \
+        assert False, (
+            f"AllSpice Hub could not load. Is there: \
                 - an Instance running at http://localhost:{port} \
                 - a Token at .token \
                     ?"
+        )
 
 
 @pytest.fixture

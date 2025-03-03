@@ -26,10 +26,12 @@ def instance(port, scope="module"):
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
-        assert False, f"AllSpice Hub could not load. \
+        assert False, (
+            f"AllSpice Hub could not load. \
                 - Instance running at http://localhost:{port} \
                 - Token at .token   \
                     ?"
+        )
 
 
 def test_access_is_ratelimited(instance):
