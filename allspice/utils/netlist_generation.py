@@ -82,6 +82,10 @@ def _extract_all_pcb_components(
     component_instances = get_all_pcb_components(repository, ref, pcb_file)
 
     for component in component_instances.values():
+        if "designator" not in component:
+            logger.warning("No component designator: component has no defined designator.")
+            continue
+
         pins = []
         for pin in component["pads"].values():
             try:
