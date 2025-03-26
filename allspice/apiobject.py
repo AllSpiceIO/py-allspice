@@ -1,7 +1,10 @@
+# cSpell:words ECAD
+
 from __future__ import annotations
 
 import logging
 import re
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from functools import cached_property
@@ -2104,6 +2107,64 @@ class Issue(ApiObject):
         return Attachment.parse_response(self.allspice_client, result)
 
 
+class DesignReviewReview(ReadonlyApiObject):
+    """
+    A review on a Design Review.
+    """
+
+    body: str
+    comments_count: int
+    commit_id: str
+    dismissed: bool
+    html_url: str
+    id: int
+    official: bool
+    pull_request_url: str
+    stale: bool
+    state: ReviewEvent
+    submitted_at: str
+    team: Any
+    updated_at: str
+    user: User
+
+    class ReviewEvent(Enum):
+        APPROVED = "APPROVED"
+        PENDING = "PENDING"
+        COMMENT = "COMMENT"
+        REQUEST_CHANGES = "REQUEST_CHANGES"
+        REQUEST_REVIEW = "REQUEST_REVIEW"
+        UNKNOWN = ""
+
+    @dataclass
+    class ReviewComment:
+        """
+        Data required to create a review comment on a design review.
+
+        :param body: The body of the comment.
+        :param path: The path of the file to comment on. If you have a
+            `Content` object, get the path using the `path` property.
+        :param new_position: The line number of the source code file after the
+            change to add this comment on. Optional, leave unset if this is an ECAD
+            file or the comment must be on the entire file.
+        :param old_position: The line number of the source code file before the
+            change to add this comment on. Optional, leave unset if this is an ECAD
+            file or the comment must be on the entire file.
+        """
+
+        body: str
+        path: str
+        new_position: Optional[int] = None
+        old_position: Optional[int] = None
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    _fields_to_parsers: ClassVar[dict] = {
+        "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
+        "state": lambda _, s: DesignReviewReview.ReviewEvent(s),
+    }
+
+
 class DesignReview(ApiObject):
     """
     A Design Review. See
@@ -2157,6 +2218,8 @@ class DesignReview(ApiObject):
 
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}"
     MERGE_DESIGN_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/merge"
+    GET_REVIEWS = "/repos/{owner}/{repo}/pulls/{index}/reviews"
+    GET_REVIEW = "/repos/{owner}/{repo}/pulls/{index}/reviews/{review_id}"
     GET_COMMENTS = "/repos/{owner}/{repo}/issues/{index}/comments"
 
     OPEN = "open"
@@ -2294,6 +2357,113 @@ class DesignReview(ApiObject):
             data={"body": body},
         )
         return Comment.parse_response(self.allspice_client, result)
+
+    def create_review(
+        self,
+        *,
+        body: Optional[str] = None,
+        event: Optional[DesignReviewReview.ReviewEvent] = None,
+        comments: Optional[List[DesignReviewReview.ReviewComment]] = None,
+        commit_id: Optional[str] = None,
+    ) -> DesignReviewReview:
+        """
+        Create a review on this design review.
+
+        https://hub.allspice.io/api/swagger#/repository/repoCreatePullRequestReview
+
+        Note: in most cases, you should not set the body or event when creating
+        a review. The event is automatically set to "PENDING" when the review
+        is created. You should then use `submit_review` to submit the review
+        with the desired event and body.
+
+        :param body: The body of the review. This is the top-level comment on
+            the review. If not provided, the review will be created with no body.
+        :param event: The event of the review. This is the overall status of the
+            review. See the ReviewEvent enum. If not provided, the API will
+            default to "PENDING".
+        :param comments: A list of comments on the review. Each comment should
+            be a ReviewComment object. If not provided, only the base comment
+            will be created.
+        :param commit_id: The commit SHA to associate with the review. This is
+            optional.
+        """
+
+        data: dict[str, Any] = {}
+
+        if body is not None:
+            data["body"] = body
+        if event is not None:
+            data["event"] = event.value
+        if commit_id is not None:
+            data["commit_id"] = commit_id
+        if comments is not None:
+            data["comments"] = [asdict(comment) for comment in comments]
+
+        result = self.allspice_client.requests_post(
+            self.GET_REVIEWS.format(
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
+            ),
+            data=data,
+        )
+
+        return DesignReviewReview.parse_response(self.allspice_client, result)
+
+    def get_reviews(self) -> List[DesignReviewReview]:
+        """
+        Get all reviews on this design review.
+
+        https://hub.allspice.io/api/swagger#/repository/repoListPullReviews
+        """
+
+        results = self.allspice_client.requests_get(
+            self.GET_REVIEWS.format(
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
+            )
+        )
+
+        return [
+            DesignReviewReview.parse_response(self.allspice_client, result) for result in results
+        ]
+
+    def submit_review(
+        self,
+        review_id: int,
+        event: DesignReviewReview.ReviewEvent,
+        *,
+        body: Optional[str] = None,
+    ):
+        """
+        Submit a review on this design review.
+
+        https://hub.allspice.io/api/swagger#/repository/repoSubmitPullReview
+
+        :param review_id: The ID of the review to submit.
+        :param event: The event to submit the review with. See the ReviewEvent
+            enum for the possible values.
+        :param body: Optional body text for the review submission.
+        """
+
+        data = {
+            "event": event.value,
+        }
+        if body is not None:
+            data["body"] = body
+
+        result = self.allspice_client.requests_post(
+            self.GET_REVIEW.format(
+                owner=self.repository.owner.username,
+                repo=self.repository.name,
+                index=self.number,
+                review_id=review_id,
+            ),
+            data=data,
+        )
+
+        return result
 
 
 class Team(ApiObject):
