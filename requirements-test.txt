@@ -1,4 +1,4 @@
-coverage~=7.5
+coverage~=7.8
 diff_cover~=9.1
 libcst~=1.6.0
 MonkeyType~=23.3
