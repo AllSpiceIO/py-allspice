@@ -85,8 +85,8 @@ def generate_coverage_summary(coverage_data, total_coverage):
 
 ## Total Project Coverage
 
-- **Line Coverage**: {total_coverage['line_rate']:.2%} ({total_coverage['covered_lines']}/{total_coverage['total_lines']})
-- **Branch Coverage**: {total_coverage['branch_rate']:.2%} ({total_coverage['covered_branches']}/{total_coverage['total_branches']})
+- **Line Coverage**: {total_coverage["line_rate"]:.2%} ({total_coverage["covered_lines"]}/{total_coverage["total_lines"]})
+- **Branch Coverage**: {total_coverage["branch_rate"]:.2%} ({total_coverage["covered_branches"]}/{total_coverage["total_branches"]})
 
 ## Coverage by File
 

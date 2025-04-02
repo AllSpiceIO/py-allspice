@@ -225,8 +225,7 @@ def list_components_for_altium(
             variant_details = _extract_variations(variant, prjpcb_ini)
         except ValueError:
             raise ValueError(
-                f"Variant {variant} not found in PrjPcb file. "
-                "Please check the name of the variant."
+                f"Variant {variant} not found in PrjPcb file. Please check the name of the variant."
             )
     else:
         # Ensuring variant_details is always bound, even if it is not used.

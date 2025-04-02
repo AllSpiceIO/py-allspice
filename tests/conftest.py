@@ -35,7 +35,9 @@ def instance(scope="module"):
         print("API-Token belongs to user: " + g.get_user().username)
         return g
     except Exception:
-        assert False, "AllSpice Hub could not load. \
+        assert False, (
+            "AllSpice Hub could not load. \
                 - Instance running at http://localhost:3000 \
                 - Token at .token   \
                     ?"
+        )
