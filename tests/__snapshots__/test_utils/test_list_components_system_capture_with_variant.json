@@ -1,0 +1,1145 @@
+[
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R1",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 0.0,
+          "y": -3.81
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": 0.0,
+          "y": 3.81
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R1"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8N899S511163C22XM0MW0",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R2",
+    "NAME": "Resistor_Test-4.7k",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "4.7K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R2"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8N899S511163C22XM0MW0",
+    "CDS_LMAN_SYM_OUTLINE": "-12700,-25400,12700,25400",
+    "CDS_PART_NAME": "CAPACITOR-SMDCAP",
+    "CHIPS_PART_NAME": "CAPACITOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "U1",
+    "NAME": "Resistor_Test-4.7k",
+    "PART_NAME": "CAPACITOR",
+    "SEC": "1",
+    "TOL": "5",
+    "VALUE": "4.7K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": 0.0,
+          "y": 3.81
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 0.0,
+          "y": -3.81
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "U1"
+  },
+  {
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -2.54
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -10.16
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N6",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -17.78
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N7",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -25.4
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N8",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 12.7,
+          "y": -17.78
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N5",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 12.7,
+          "y": -2.54
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N3",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -2.54,
+          "y": 7.62
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N4",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 5.08,
+          "y": 7.62
+        },
+        "symbol": "AllSymbols"
+      }
+    ]
+  },
+  {
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -2.54
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -10.16
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N6",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -17.78
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N7",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -12.7,
+          "y": -25.4
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N8",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 12.7,
+          "y": -17.78
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N5",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 12.7,
+          "y": -2.54
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N3",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": -2.54,
+          "y": 7.62
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "_N4",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 5.08,
+          "y": 7.62
+        },
+        "symbol": "AllSymbols"
+      }
+    ]
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8N899S511163C22XM0MW0",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R5",
+    "NAME": "Resistor_Test-4.7k",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "4.7K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R5"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R6",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R6"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R4",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R4"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R11",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R11"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R12",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R12"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R13",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R13"
+  },
+  {
+    "CDS_LIBRARY_ID": "01HGE8KPXB1BPT1AWG000T1F68",
+    "CDS_LMAN_SYM_OUTLINE": "-25400,-12700,25400,12700",
+    "CDS_PART_NAME": "RESISTOR-SMDRES",
+    "CHIPS_PART_NAME": "RESISTOR",
+    "JEDEC_TYPE": "smdres",
+    "LOCATION": "R14",
+    "NAME": "Resistor_Test",
+    "PART_NAME": "RESISTOR",
+    "SEC": "1",
+    "VALUE": "1K",
+    "_name": "",
+    "_pins": [
+      {
+        "description": "",
+        "designator": "2",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "2",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Right",
+        "position": {
+          "x": 3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      },
+      {
+        "description": "",
+        "designator": "1",
+        "designator_color": "#000000",
+        "designator_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "electrical_type": "Io",
+        "is_designator_visible": false,
+        "is_name_visible": false,
+        "length": 0.0,
+        "name": "1",
+        "name_color": "#000000",
+        "name_position": {
+          "margin": 0.0,
+          "orientation": "Parallel",
+          "relative_to": "Pin"
+        },
+        "orientation": "Left",
+        "position": {
+          "x": -3.81,
+          "y": 0.0
+        },
+        "symbol": "AllSymbols"
+      }
+    ],
+    "_reference": "R14"
+  }
+]

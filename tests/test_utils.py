@@ -655,6 +655,32 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
 
 
 @pytest.mark.vcr
+def test_bom_generation_system_capture_variants(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
+    )
+
+    attributes_mapping = {
+        "Description": "VALUE",
+        "Designator": ["LOCATION"],
+        "Part Number": ["VENDOR_PN", "PN"],
+        "Name": ["NAME", "value"]
+    }
+    bom = generate_bom_for_system_capture(
+        instance,
+        repo,
+        "variant-test-1.sdax",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b",
+        variant="TESTVAR",
+    )
+
+    assert len(bom) == 12
+    assert bom == csv_snapshot
+
+@pytest.mark.vcr
 def test_bom_generation_system_capture_grouped_failure(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
@@ -742,22 +768,6 @@ def test_generate_bom_system_capture(request, instance, setup_for_generation, cs
     )
     assert len(bom) == 564
     assert bom == csv_snapshot
-
-
-@pytest.mark.vcr
-def test_generate_bom_system_capture_fails_with_variant(request, instance, setup_for_generation):
-    repo = setup_for_generation(
-        request.node.name,
-        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
-    )
-    with pytest.raises(ValueError, match="Variant is not supported for System"):
-        generate_bom(
-            instance,
-            repo,
-            "parallella_schematic.sdax",
-            {},
-            variant="Fitted",
-        )
 
 
 @pytest.mark.vcr
@@ -972,22 +982,26 @@ def test_list_components_system_capture(
 
 
 @pytest.mark.vcr
-def test_list_components_system_capture_fails_with_variant(
+def test_list_components_system_capture_with_variant(
     request,
     instance,
     setup_for_generation,
+    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
-    with pytest.raises(ValueError, match="Variant is not supported for System"):
-        list_components.list_components(
-            instance,
-            repo,
-            "parallella_schematic.sdax",
-            variant="Fitted",
-        )
+    components = list_components.list_components(
+        instance,
+        repo,
+        "variant-test-1.sdax",
+        # We hard-code a ref so that this test is reproducible.
+        ref="ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b",
+        variant="TESTVAR"
+    )
+    assert len(components) == 12
+    assert components == json_snapshot
 
 
 def test_list_components_retries_time_out(
