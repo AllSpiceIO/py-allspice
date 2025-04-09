@@ -9,15 +9,11 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
-from typing import (
-    Optional,
-    Callable,
-    Union
-)
+from typing import Callable, Optional, Union
 
 from ..allspice import AllSpice
-from ..apiobject import Ref, Repository, Content
-from ..exceptions import NotYetGeneratedException, NotFoundException
+from ..apiobject import Content, Ref, Repository
+from ..exceptions import NotFoundException, NotYetGeneratedException
 
 SLEEP_FOR_GENERATED_JSON = 1
 """The amount of time to sleep between attempts to fetch generated JSON files."""
@@ -395,7 +391,9 @@ def list_components_for_orcad(
         to each component to store the name of the component.
     """
 
-    components = _list_components_multi_page_schematic(allspice_client, repository, dsn_path, None, ref)
+    components = _list_components_multi_page_schematic(
+        allspice_client, repository, dsn_path, None, ref
+    )
 
     if combine_multi_part:
         components = _combine_multi_part_components_for_orcad(components)
@@ -425,7 +423,9 @@ def list_components_for_system_capture(
         name, or tag name. Default is "main", i.e. the main branch.
     """
 
-    return _list_components_multi_page_schematic(allspice_client, repository, sdax_path, variant, ref)
+    return _list_components_multi_page_schematic(
+        allspice_client, repository, sdax_path, variant, ref
+    )
 
 
 def infer_project_tool(source_file: str) -> SupportedTool:
@@ -470,16 +470,15 @@ def _list_components_multi_page_schematic(
     variant_id = ""
 
     # verify that the provided variant exists and convert to an id
-    if variant != None:
+    if variant is not None:
         prj_data = _fetch_generated_json(repository.get_generated_projectdata, schematic_path, ref)
-        if 'variants' in prj_data:
-            for id, name in prj_data['variants'].items():
+        if "variants" in prj_data:
+            for id, name in prj_data["variants"].items():
                 if name == variant:
                     variant_id = id
 
         if variant_id == "":
             raise NotFoundException("Variant %s does not exist in design." % variant)
-
 
     # Get the generated JSON for the schematic.
     schematic_json = _fetch_generated_json(repository.get_generated_json, schematic_path, ref)
@@ -488,10 +487,14 @@ def _list_components_multi_page_schematic(
 
     for page in pages:
         for component in page["components"].values():
-            if variant != None and 'variants' in component and variant_id in component['variants']:
-                var_state = component['variants'][variant_id]
+            if (
+                variant is not None
+                and "variants" in component
+                and variant_id in component["variants"]
+            ):
+                var_state = component["variants"][variant_id]
 
-                if var_state != None:
+                if var_state is not None:
                     # replace component
                     component_attributes = _component_attributes_multi_page(var_state)
                     components.append(component_attributes)
@@ -504,7 +507,9 @@ def _list_components_multi_page_schematic(
     return _filter_blank_components(components, allspice_client.logger)
 
 
-def _fetch_generated_json(method: Callable[[Union[Content, str], Optional[Ref]], dict], file_path: str, ref: Ref) -> dict:
+def _fetch_generated_json(
+    method: Callable[[Union[Content, str], Optional[Ref]], dict], file_path: str, ref: Ref
+) -> dict:
     attempts = 0
     while attempts < MAX_RETRIES_FOR_GENERATED_JSON:
         try:

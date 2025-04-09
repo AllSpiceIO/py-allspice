@@ -1225,7 +1225,9 @@ class Repository(ApiObject):
         data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, data)
 
-    def get_generated_projectdata(self, content: Union[Content, str], ref: Optional[Ref] = None) -> dict:
+    def get_generated_projectdata(
+        self, content: Union[Content, str], ref: Optional[Ref] = None
+    ) -> dict:
         """
         Get the json project data based on the cad file provided
 

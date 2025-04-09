@@ -655,7 +655,9 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
 
 
 @pytest.mark.vcr
-def test_bom_generation_system_capture_variants(request, instance, setup_for_generation, csv_snapshot):
+def test_bom_generation_system_capture_variants(
+    request, instance, setup_for_generation, csv_snapshot
+):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
@@ -665,7 +667,7 @@ def test_bom_generation_system_capture_variants(request, instance, setup_for_gen
         "Description": "VALUE",
         "Designator": ["LOCATION"],
         "Part Number": ["VENDOR_PN", "PN"],
-        "Name": ["NAME", "value"]
+        "Name": ["NAME", "value"],
     }
     bom = generate_bom_for_system_capture(
         instance,
@@ -679,6 +681,7 @@ def test_bom_generation_system_capture_variants(request, instance, setup_for_gen
 
     assert len(bom) == 12
     assert bom == csv_snapshot
+
 
 @pytest.mark.vcr
 def test_bom_generation_system_capture_grouped_failure(request, instance, setup_for_generation):
@@ -998,7 +1001,7 @@ def test_list_components_system_capture_with_variant(
         "variant-test-1.sdax",
         # We hard-code a ref so that this test is reproducible.
         ref="ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b",
-        variant="TESTVAR"
+        variant="TESTVAR",
     )
     assert len(components) == 12
     assert components == json_snapshot
