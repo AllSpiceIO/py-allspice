@@ -147,8 +147,9 @@ def generate_bom(
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
         is provided, the BOM will be generated for the specified variant. If
-        this is not provided, or is None, the BOM will be generated for the
-        default variant.
+        this is not provided, or is None, the BOM will be generated without
+        considering variants. Variants are supported for all tools where
+        AllSpice Hub shows variants.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
     :param remove_non_bom_components: If True, components of types that should
@@ -318,8 +319,8 @@ def generate_bom_for_system_capture(
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
         is provided, the BOM will be generated for the specified variant. If
-        this is not provided, or is None, the BOM will be generated for the
-        default variant.
+        this is not provided, or is None, the BOM will be generated without
+        considering variants.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
     :return: A list of BOM entries. Each entry is a dictionary where the key is

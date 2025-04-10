@@ -7,7 +7,7 @@ from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
 from allspice.exceptions import NotYetGeneratedException
-from allspice.utils import list_components
+from allspice.utils import list_components, retry_generated
 from allspice.utils.bom_generation import (
     ColumnConfig,
     generate_bom,
@@ -42,7 +42,7 @@ def instance(port, client_log_level, pytestconfig):
     ) and not pytestconfig.getoption("disable_recording"):
         # If we're using cassettes, we don't want BOM generation to sleep
         # between requests to wait for the generated JSON to be available.
-        list_components.SLEEP_FOR_GENERATED_JSON = 0
+        retry_generated.SLEEP_FOR_GENERATED_JSON = 0
 
     if os.environ.get("CI") == "true":
         # The CI runner is anemic and may not be able to generate the outputs
@@ -50,7 +50,7 @@ def instance(port, client_log_level, pytestconfig):
         # to make it effectively retry for a fair amount of time if we're not
         # using cassettes. If it cannot generate even in ~100s, that could
         # indicate a real issue.
-        list_components.MAX_RETRIES_FOR_GENERATED_JSON = 100
+        retry_generated.MAX_RETRIES_FOR_GENERATED_JSON = 100
 
     try:
         g = AllSpice(
