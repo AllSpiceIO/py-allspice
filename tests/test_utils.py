@@ -7,7 +7,7 @@ from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
 from allspice.exceptions import NotYetGeneratedException
-from allspice.utils import list_components
+from allspice.utils import list_components, retry_generated
 from allspice.utils.bom_generation import (
     ColumnConfig,
     generate_bom,
@@ -42,7 +42,7 @@ def instance(port, client_log_level, pytestconfig):
     ) and not pytestconfig.getoption("disable_recording"):
         # If we're using cassettes, we don't want BOM generation to sleep
         # between requests to wait for the generated JSON to be available.
-        list_components.SLEEP_FOR_GENERATED_JSON = 0
+        retry_generated.SLEEP_FOR_GENERATED_JSON = 0
 
     if os.environ.get("CI") == "true":
         # The CI runner is anemic and may not be able to generate the outputs
@@ -50,7 +50,7 @@ def instance(port, client_log_level, pytestconfig):
         # to make it effectively retry for a fair amount of time if we're not
         # using cassettes. If it cannot generate even in ~100s, that could
         # indicate a real issue.
-        list_components.MAX_RETRIES_FOR_GENERATED_JSON = 100
+        retry_generated.MAX_RETRIES_FOR_GENERATED_JSON = 100
 
     try:
         g = AllSpice(
@@ -657,6 +657,35 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
 
 
 @pytest.mark.vcr
+def test_bom_generation_system_capture_variants(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
+    )
+
+    attributes_mapping = {
+        "Description": "VALUE",
+        "Designator": ["LOCATION"],
+        "Part Number": ["VENDOR_PN", "PN"],
+        "Name": ["NAME", "value"],
+    }
+    bom = generate_bom_for_system_capture(
+        instance,
+        repo,
+        "variant-test-1.sdax",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b",
+        variant="TESTVAR",
+    )
+
+    assert len(bom) == 12
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_system_capture_grouped_failure(request, instance, setup_for_generation):
     repo = setup_for_generation(
         request.node.name,
@@ -744,22 +773,6 @@ def test_generate_bom_system_capture(request, instance, setup_for_generation, cs
     )
     assert len(bom) == 564
     assert bom == csv_snapshot
-
-
-@pytest.mark.vcr
-def test_generate_bom_system_capture_fails_with_variant(request, instance, setup_for_generation):
-    repo = setup_for_generation(
-        request.node.name,
-        "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
-    )
-    with pytest.raises(ValueError, match="Variant is not supported for System"):
-        generate_bom(
-            instance,
-            repo,
-            "parallella_schematic.sdax",
-            {},
-            variant="Fitted",
-        )
 
 
 @pytest.mark.vcr
@@ -974,22 +987,26 @@ def test_list_components_system_capture(
 
 
 @pytest.mark.vcr
-def test_list_components_system_capture_fails_with_variant(
+def test_list_components_system_capture_with_variant(
     request,
     instance,
     setup_for_generation,
+    json_snapshot,
 ):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/parallela-sdax.git",
     )
-    with pytest.raises(ValueError, match="Variant is not supported for System"):
-        list_components.list_components(
-            instance,
-            repo,
-            "parallella_schematic.sdax",
-            variant="Fitted",
-        )
+    components = list_components.list_components(
+        instance,
+        repo,
+        "variant-test-1.sdax",
+        # We hard-code a ref so that this test is reproducible.
+        ref="ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b",
+        variant="TESTVAR",
+    )
+    assert len(components) == 12
+    assert components == json_snapshot
 
 
 def test_list_components_retries_time_out(

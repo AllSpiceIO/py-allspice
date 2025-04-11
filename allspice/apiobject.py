@@ -554,6 +554,7 @@ class Repository(ApiObject):
     REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
     REPO_GET_ALLSPICE_JSON = "/repos/{owner}/{repo}/allspice_generated/json/{content}"
     REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
+    REPO_GET_ALLSPICE_PROJECT = "/repos/{owner}/{repo}/allspice_generated/project/{content}"
     REPO_GET_TOPICS = "/repos/{owner}/{repo}/topics"
     REPO_ADD_TOPIC = "/repos/{owner}/{repo}/topics/{topic}"
     REPO_GET_RELEASES = "/repos/{owner}/{repo}/releases"
@@ -1223,6 +1224,29 @@ class Repository(ApiObject):
         )
         data = Util.data_params_for_ref(ref)
         return self.allspice_client.requests_get_raw(url, data)
+
+    def get_generated_projectdata(
+        self, content: Union[Content, str], ref: Optional[Ref] = None
+    ) -> dict:
+        """
+        Get the json project data based on the cad file provided
+
+        WARNING: This is still experimental and not yet recommended for
+        critical applications. The content of the returned dictionary can change
+        at any time.
+
+        See https://hub.allspice.io/api/swagger#/repository/repoGetAllSpiceProject
+        """
+        if isinstance(content, Content):
+            content = content.path
+
+        url = self.REPO_GET_ALLSPICE_PROJECT.format(
+            owner=self.owner.username,
+            repo=self.name,
+            content=content,
+        )
+        data = Util.data_params_for_ref(ref)
+        return self.allspice_client.requests_get(url, data)
 
     def create_file(self, file_path: str, content: str, data: Optional[dict] = None):
         """https://hub.allspice.io/api/swagger#/repository/repoCreateFile"""

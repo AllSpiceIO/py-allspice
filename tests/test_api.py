@@ -20,6 +20,7 @@ from allspice import (
 )
 from allspice.apiobject import CommitStatusState, Util
 from allspice.exceptions import NotYetGeneratedException
+from allspice.utils.retry_generated import retry_not_yet_generated
 
 # put a ".token" file into your directory containg only the token for AllSpice Hub
 
@@ -200,16 +201,16 @@ def test_get_svg_before_generated(instance):
 def test_get_generated_json(instance):
     repo = Repository.request(instance, test_org, test_repo)
     branch = repo.get_branches()[0]
-    # This is scuffed but not much better we can do :(
-    while True:
-        try:
-            json = repo.get_generated_json("test.pcbdoc", branch)
-            break
-        except NotYetGeneratedException:
-            time.sleep(1)
-            pass
+    json = retry_not_yet_generated(repo.get_generated_json, "test.pcbdoc", branch)
     assert json is not None
     assert json["type"] == "Pcb"
+
+
+def test_get_generated_project_json(instance):
+    repo = Repository.request(instance, test_org, test_repo)
+    branch = repo.get_branches()[0]
+    json = retry_not_yet_generated(repo.get_generated_projectdata, "test.pcbdoc", branch)
+    assert json is not None
 
 
 def test_get_generated_svg(instance):
