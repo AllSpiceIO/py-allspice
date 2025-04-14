@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.9.0
+
+### Highlights
+
+* Add support for sdax variants when generating BOM  by @jackHay22 in https://github.com/AllSpiceIO/py-allspice/pull/217
+
+### Other Changes
+
+* Bump ruff from 0.8.4 to 0.9.9 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/213
+
+**Full Changelog**: https://github.com/AllSpiceIO/py-allspice/compare/v3.8.0...v3.9.0
+
 ## v3.8.0
 
 ### Highlights
