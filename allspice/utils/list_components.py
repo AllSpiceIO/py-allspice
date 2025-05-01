@@ -643,20 +643,37 @@ def _build_schdoc_hierarchy(
         repetitions = _extract_repetitions(refs)
 
         for child_sheet in repetitions:
-            child_path = _resolve_child_relative_path(
-                child_sheet.name, schematic_document_sheet
-            ).casefold()
-            if child_path in schematic_document_names_downcased:
-                child_name = schematic_document_names_downcased[child_path]
-            else:
+            # Document sheet names may not include the .schdoc file extension,
+            # so we have to try both the name and the name with the extension.
+            alternates = [child_sheet.name, child_sheet.name + ".schdoc"]
+            child_paths = [
+                _resolve_child_relative_path(alternate, schematic_document_sheet).casefold()
+                for alternate in alternates
+            ]
+
+            child_name = None
+            for child_path in child_paths:
+                if child_path in schematic_document_names_downcased:
+                    child_name = schematic_document_names_downcased[child_path]
+                    break
+
+            # If both the name and the name with the extension are not found,
+            # this must be either a device sheet or a sheet that we couldn't
+            # find.
+            if not child_name:
                 # Note the `child_sheet` below - we use the bare text without
                 # any path resolution for device sheets.
-                child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
+                child_name = device_sheet_names_downcased.get(child_sheet.name.casefold())
                 # Now we know that this child sheet is a Device Sheet, we can
                 # replace the kind.
                 child_sheet = dataclasses.replace(
                     child_sheet,
                     kind=AltiumChildSheet.ChildSheetKind.DEVICE_SHEET,
+                )
+
+            if not child_name:
+                raise ValueError(
+                    f"Could not find child sheet {child_sheet.name} of sheet {schematic_document_sheet} in project."
                 )
 
             # We have to replace the name in the sheet ref with the name in the project file we expect
