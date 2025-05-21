@@ -147,7 +147,7 @@
     "JEDEC_TYPE": "smdres",
     "LOCATION": "U1",
     "NAME": "Resistor_Test-4.7k",
-    "PART_NAME": "CAPACITOR",
+    "PART_NAME": "RESISTOR",
     "SEC": "1",
     "TOL": "5",
     "VALUE": "4.7K",
@@ -211,6 +211,10 @@
     "_reference": "U1"
   },
   {
+    "BLOCK": "TRUE",
+    "LIBRARY1": "ieee",
+    "USE1": "work.all",
+    "USE2": "ieee.std_logic_1164.all",
     "_name": "",
     "_pins": [
       {
@@ -432,6 +436,10 @@
     ]
   },
   {
+    "BLOCK": "TRUE",
+    "LIBRARY1": "ieee",
+    "USE1": "work.all",
+    "USE2": "ieee.std_logic_1164.all",
     "_name": "",
     "_pins": [
       {
