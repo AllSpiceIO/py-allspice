@@ -10,6 +10,7 @@ from allspice import (
     Branch,
     Comment,
     DesignReview,
+    DesignReviewReview,
     Issue,
     Milestone,
     NotFoundException,
@@ -790,6 +791,42 @@ def test_get_design_review_attachments(instance):
     attachments = comment.get_attachments()
     assert len(attachments) > 0
     assert attachments[0].name == "requirements.txt"
+
+
+def test_create_design_review_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.create_review(
+        body="New Review",
+        comments=[DesignReviewReview.ReviewComment("Comment within review", "new_file.txt")],
+    )
+
+    assert review.body == "New Review"
+    assert review.comments_count == 1
+    assert review.state == DesignReviewReview.ReviewEvent.PENDING
+
+
+def test_get_design_review_reviews(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    reviews = dr.get_reviews()
+    assert len(reviews) > 0
+    assert reviews[0].body == "New Review"
+
+
+def test_submit_design_review_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.get_reviews()[0]
+    assert review.state == DesignReviewReview.ReviewEvent.PENDING
+    dr.submit_review(review.id, DesignReviewReview.ReviewEvent.COMMENT, body="New Body")
+    del review
+    review = dr.get_reviews()[0]
+    assert review.state == DesignReviewReview.ReviewEvent.COMMENT
+    assert review.body == "New Body"
 
 
 def test_merge_design_review(instance):
