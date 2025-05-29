@@ -816,6 +816,17 @@ def test_get_design_review_reviews(instance):
     assert reviews[0].body == "New Review"
 
 
+def test_get_design_review_review_comments(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.get_reviews()[0]
+    comments = review.get_comments()
+
+    assert len(comments) == 1
+    assert comments[0].body == "Comment within review"
+
+
 def test_submit_design_review_review(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
@@ -827,6 +838,17 @@ def test_submit_design_review_review(instance):
     review = dr.get_reviews()[0]
     assert review.state == DesignReviewReview.ReviewEvent.COMMENT
     assert review.body == "New Body"
+
+
+def test_delete_design_review_review(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.get_reviews()[0]
+    review.delete()
+
+    reviews = dr.get_reviews()
+    assert len(reviews) == 0
 
 
 def test_merge_design_review(instance):

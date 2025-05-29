@@ -2107,6 +2107,37 @@ class Issue(ApiObject):
         return Attachment.parse_response(self.allspice_client, result)
 
 
+class DesignReviewReviewComment(ApiObject):
+    """
+    A comment on a Design Review Review.
+    """
+
+    body: str
+    commit_id: str
+    created_at: str
+    diff_hunk: str
+    html_url: str
+    id: int
+    original_commit_id: str
+    original_position: int
+    path: str
+    position: int
+    pull_request_review_id: int
+    pull_request_url: str
+    resolver: Any
+    sub_path: str
+    updated_at: str
+    user: User
+
+    def __init__(self, allspice_client):
+        super().__init__(allspice_client)
+
+    _fields_to_parsers: ClassVar[dict] = {
+        "resolver": lambda allspice_client, r: User.parse_response(allspice_client, r),
+        "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
+    }
+
+
 class DesignReviewReview(ReadonlyApiObject):
     """
     A review on a Design Review.
@@ -2127,6 +2158,11 @@ class DesignReviewReview(ReadonlyApiObject):
     updated_at: str
     user: User
 
+    _url_regex = r"https?://[^/]+/(?P<owner>[^/]+)/(?P<repo>[^/]+)/pulls/(?P<index>\d+)"
+
+    API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}"
+    GET_COMMENTS = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}/comments"
+
     class ReviewEvent(Enum):
         APPROVED = "APPROVED"
         PENDING = "PENDING"
@@ -2143,6 +2179,8 @@ class DesignReviewReview(ReadonlyApiObject):
         :param body: The body of the comment.
         :param path: The path of the file to comment on. If you have a
             `Content` object, get the path using the `path` property.
+        :param sub_path: The sub-path of the file to comment on. This is
+            usually the page ID of the page in the multi-page document.
         :param new_position: The line number of the source code file after the
             change to add this comment on. Optional, leave unset if this is an ECAD
             file or the comment must be on the entire file.
@@ -2153,6 +2191,7 @@ class DesignReviewReview(ReadonlyApiObject):
 
         body: str
         path: str
+        sub_path: Optional[str] = None
         new_position: Optional[int] = None
         old_position: Optional[int] = None
 
@@ -2163,6 +2202,44 @@ class DesignReviewReview(ReadonlyApiObject):
         "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
         "state": lambda _, s: DesignReviewReview.ReviewEvent(s),
     }
+
+    def _get_dr_properties(self) -> dict[str, str]:
+        """
+        Get the owner, repo name and design review number from the URL of this
+        review's DR.
+        """
+
+        match = re.search(self._url_regex, self.pull_request_url)
+        if not match:
+            raise ValueError(f"Invalid review URL: {self.pull_request_url}")
+
+        return {
+            "owner": match.group("owner"),
+            "repo": match.group("repo"),
+            "index": match.group("index"),
+        }
+
+    def delete(self):
+        """
+        Delete this review.
+        """
+
+        args = self._get_dr_properties()
+        self.allspice_client.requests_delete(self.API_OBJECT.format(**args, id=self.id))
+        self.deleted = True
+
+    def get_comments(self) -> List[DesignReviewReviewComment]:
+        """
+        Get the comments on this review.
+        """
+
+        args = self._get_dr_properties()
+        result = self.allspice_client.requests_get(self.GET_COMMENTS.format(**args, id=self.id))
+
+        return [
+            DesignReviewReviewComment.parse_response(self.allspice_client, comment)
+            for comment in result
+        ]
 
 
 class DesignReview(ApiObject):
