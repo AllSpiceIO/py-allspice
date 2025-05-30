@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.10.0
+
+### Highlights
+
+* Add API to create design review reviews by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/214
+* Add APIs to get DRR Comments and delete a DRR by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/224
+
+### Other Changes
+
+* Bump ruff from 0.9.9 to 0.11.8 by @dependabot in https://github.com/AllSpiceIO/py-allspice/pull/219
+* Update system capture cassette and snapshot by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/221
+
 ## v3.9.0
 
 ### Highlights
