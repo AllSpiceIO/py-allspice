@@ -42,7 +42,7 @@ def instance(port, client_log_level, pytestconfig):
     ) and not pytestconfig.getoption("disable_recording"):
         # If we're using cassettes, we don't want BOM generation to sleep
         # between requests to wait for the generated JSON to be available.
-        retry_generated.SLEEP_FOR_GENERATED_JSON = 0
+        retry_generated.SLEEP_FOR_GENERATED = 0
 
     if os.environ.get("CI") == "true":
         # The CI runner is anemic and may not be able to generate the outputs
@@ -50,7 +50,7 @@ def instance(port, client_log_level, pytestconfig):
         # to make it effectively retry for a fair amount of time if we're not
         # using cassettes. If it cannot generate even in ~100s, that could
         # indicate a real issue.
-        retry_generated.MAX_RETRIES_FOR_GENERATED_JSON = 100
+        retry_generated.MAX_RETRIES_FOR_GENERATED = 100
 
     try:
         g = AllSpice(
