@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 from logging import Logger
 from typing import Union
@@ -24,11 +25,25 @@ class ComponentPin:
 
 @dataclass
 class NetlistEntry:
+    """
+    .. deprecated:: 3.10.0
+    """
+
     net: str
     pins: list[str]
 
+    def __post_init__(self):
+        warnings.warn(
+            "NetlistEntry is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            2,
+        )
 
-Netlist = dict[NetlistEntry, set[str]]
+
+Netlist = dict[str, set[str]]
+"""
+Mapping of net names to sets of pin designators.
+"""
 
 
 def generate_netlist(
@@ -83,7 +98,7 @@ def _extract_all_pcb_components(
 
     for component in component_instances.values():
         if "designator" not in component:
-            logger.warning(f"Component has no designator: {component}. Skipping.")
+            logger.warning(f"Component has no designator: {component.get('id')}. Skipping.")
             continue
 
         pins = []
@@ -91,7 +106,7 @@ def _extract_all_pcb_components(
             try:
                 designator = pin["designator"]
             except KeyError:
-                logger.warn(
+                logger.warning(
                     f"No pad designator: pad in component {component['designator']} has no defined designator."
                 )
                 continue
@@ -110,12 +125,16 @@ def _extract_all_pcb_components(
     return components
 
 
-def _group_netlist_entries(components: list[PcbComponent]) -> dict[NetlistEntry, set[str]]:
+def _group_netlist_entries(components: list[PcbComponent]) -> dict[str, set[str]]:
     """
-    Group connected pins by the net
+    Group connected pins by the net.
+
+    Returns:
+        dict[str, set[str]]: A dictionary where the keys are net names and the
+        values are sets of the designator of the pin in `component.pin` format.
     """
 
-    netlist_entries_by_net = {}
+    netlist_entries_by_net: dict[str, set[str]] = {}
 
     for component in components:
         for pin in component.pins:
