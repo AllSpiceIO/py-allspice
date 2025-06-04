@@ -1,6 +1,6 @@
 coverage~=7.5
 diff_cover~=9.3
-libcst~=1.6.0
+libcst~=1.8.0
 MonkeyType~=23.3
 pdoc~=15.0
 pyright~=1.1
