@@ -840,6 +840,33 @@ def test_submit_design_review_review(instance):
     assert review.body == "New Body"
 
 
+def test_drr_computed_properties(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.get_reviews()[0]
+
+    assert review.owner_name == org.username
+    assert review.repository_name == repo.name
+    assert int(review.index) == dr.number
+
+
+def test_drr_computed_properties_on_server_with_subpath(instance):
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    review = dr.get_reviews()[0]
+    # Hacky, but works for a test without having to set up a real server with a
+    # subpath. Note that "owner" and "repo" are not the actual names (which are
+    # randomly generated and guaranteed to not be these strings) of the owner
+    # and repo, so this ensures the computed properties work.
+    review.__setattr__("_pull_request_url", "https://hub.allspice.io/subpath/owner/repo/pulls/1")
+
+    assert review.owner_name == "owner"
+    assert review.repository_name == "repo"
+    assert review.index == "1"
+
+
 def test_delete_design_review_review(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)

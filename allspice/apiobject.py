@@ -2160,8 +2160,6 @@ class DesignReviewReview(ReadonlyApiObject):
     updated_at: str
     user: User
 
-    _url_regex = r"https?://[^/]+/(?P<owner>[^/]+)/(?P<repo>[^/]+)/pulls/(?P<index>\d+)"
-
     API_OBJECT = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}"
     GET_COMMENTS = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}/comments"
 
@@ -2211,23 +2209,56 @@ class DesignReviewReview(ReadonlyApiObject):
         review's DR.
         """
 
-        match = re.search(self._url_regex, self.pull_request_url)
-        if not match:
-            raise ValueError(f"Invalid review URL: {self.pull_request_url}")
+        parts = self.pull_request_url.strip("/").split("/")
 
-        return {
-            "owner": match.group("owner"),
-            "repo": match.group("repo"),
-            "index": match.group("index"),
-        }
+        try:
+            index = parts[-1]
+            assert parts[-2] == "pulls" or parts[-2] == "pull", (
+                "Expected the second last part of the URL to be 'pulls' or 'pull', "
+            )
+            repo = parts[-3]
+            owner = parts[-4]
+
+            return {
+                "owner": owner,
+                "repo": repo,
+                "index": index,
+            }
+        except IndexError:
+            raise ValueError("Malformed design review URL: {}".format(self.pull_request_url))
+
+    @cached_property
+    def owner_name(self) -> str:
+        """
+        The owner of the repository this review is on.
+        """
+
+        return self._get_dr_properties()["owner"]
+
+    @cached_property
+    def repository_name(self) -> str:
+        """
+        The name of the repository this review is on.
+        """
+
+        return self._get_dr_properties()["repo"]
+
+    @cached_property
+    def index(self) -> str:
+        """
+        The index of the design review this review is on.
+        """
+
+        return self._get_dr_properties()["index"]
 
     def delete(self):
         """
         Delete this review.
         """
 
-        args = self._get_dr_properties()
-        self.allspice_client.requests_delete(self.API_OBJECT.format(**args, id=self.id))
+        self.allspice_client.requests_delete(
+            self.API_OBJECT.format(**self._get_dr_properties(), id=self.id)
+        )
         self.deleted = True
 
     def get_comments(self) -> List[DesignReviewReviewComment]:
@@ -2235,8 +2266,9 @@ class DesignReviewReview(ReadonlyApiObject):
         Get the comments on this review.
         """
 
-        args = self._get_dr_properties()
-        result = self.allspice_client.requests_get(self.GET_COMMENTS.format(**args, id=self.id))
+        result = self.allspice_client.requests_get(
+            self.GET_COMMENTS.format(**self._get_dr_properties(), id=self.id)
+        )
 
         return [
             DesignReviewReviewComment.parse_response(self.allspice_client, comment)
