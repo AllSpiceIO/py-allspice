@@ -516,6 +516,7 @@ class Repository(ApiObject):
     internal_tracker: Dict[str, bool]
     language: str
     languages_url: str
+    licenses: Any
     link: str
     mirror: bool
     mirror_interval: str
@@ -536,6 +537,7 @@ class Repository(ApiObject):
     ssh_url: str
     stars_count: int
     template: bool
+    topics: List[Union[Any, str]]
     updated_at: datetime
     url: str
     watchers_count: int
@@ -2254,18 +2256,18 @@ class DesignReview(ApiObject):
     it exists.
     """
 
-    additions: int
+    additions: Optional[int]
     allow_maintainer_edit: bool
     allow_maintainer_edits: Any
     assignee: User
     assignees: List["User"]
     base: str
     body: str
-    changed_files: int
+    changed_files: Optional[int]
     closed_at: Optional[str]
     comments: int
     created_at: str
-    deletions: int
+    deletions: Optional[int]
     diff_url: str
     draft: bool
     due_date: Optional[str]
@@ -2279,13 +2281,14 @@ class DesignReview(ApiObject):
     mergeable: bool
     merged: bool
     merged_at: Optional[str]
-    merged_by: Optional["User"]
+    merged_by: Any
     milestone: Any
     number: int
     patch_url: str
     pin_order: int
     repository: Optional["Repository"]
     requested_reviewers: Any
+    requested_reviewers_teams: Any
     review_comments: int
     state: str
     title: str
