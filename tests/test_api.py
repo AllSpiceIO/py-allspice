@@ -680,10 +680,10 @@ def test_edit_issue_comment_attachment(instance):
     issue = repo.get_issues()[0]
     comment = issue.get_comments()[0]
     attachment = comment.get_attachments()[0]
-    comment.edit_attachment(attachment, {"name": "this is a new attachment"})
+    comment.edit_attachment(attachment, {"name": "this is a new attachment.txt"})
     del attachment
     attachment2 = comment.get_attachments()[0]
-    assert attachment2.name == "this is a new attachment"
+    assert attachment2.name == "this is a new attachment.txt"
 
 
 def test_delete_issue_comment_attachment(instance):
