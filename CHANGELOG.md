@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.10.1
+
+### Highlights
+
+* Fix a bug where Design Review Reviews couldn't be updated or deleted on instances on a subpath by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/229
+
 ## v3.10.0
 
 ### Highlights
