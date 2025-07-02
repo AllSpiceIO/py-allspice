@@ -16,9 +16,9 @@ from allspice.utils.bom_generation import (
     generate_bom_for_system_capture,
 )
 from allspice.utils.list_components import (
+    _resolve_prjpcb_relative_path,
     list_components_for_altium,
     list_components_for_orcad,
-    _resolve_prjpcb_relative_path,
 )
 from allspice.utils.netlist_generation import generate_netlist
 
