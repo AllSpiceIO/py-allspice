@@ -15,7 +15,11 @@ from allspice.utils.bom_generation import (
     generate_bom_for_orcad,
     generate_bom_for_system_capture,
 )
-from allspice.utils.list_components import list_components_for_altium, list_components_for_orcad
+from allspice.utils.list_components import (
+    _resolve_prjpcb_relative_path,
+    list_components_for_altium,
+    list_components_for_orcad,
+)
 from allspice.utils.netlist_generation import generate_netlist
 
 from .csv_snapshot_extension import CSVSnapshotExtension
@@ -1053,3 +1057,10 @@ def test_netlist_generation(request, instance, setup_for_generation):
             assert (net + "\n") == f.readline()
             pins_on_net = sorted(netlist[net])
             assert (" " + " ".join(pins_on_net) + "\n") == f.readline()
+
+
+def test_resolve_prjpcb_relative_path():
+    assert (
+        _resolve_prjpcb_relative_path("..\\device-sheets\\sheet.SchDoc", "Project/Project.PrjPCB")
+        == "device-sheets/sheet.SchDoc"
+    )

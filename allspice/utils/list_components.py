@@ -4,6 +4,7 @@ import configparser
 import dataclasses
 import functools
 import pathlib
+import posixpath
 import re
 from dataclasses import dataclass
 from enum import Enum
@@ -561,7 +562,7 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
     # convert the result into a posix path as a string for use in ASH.
     schdoc = pathlib.PureWindowsPath(schdoc_path)
     prjpcb = pathlib.PurePosixPath(prjpcb_path)
-    return (prjpcb.parent / schdoc).as_posix()
+    return posixpath.normpath((prjpcb.parent / schdoc).as_posix())
 
 
 def _build_schdoc_hierarchy(
@@ -679,7 +680,7 @@ def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
     child = pathlib.PureWindowsPath(child_path)
     parent = pathlib.PureWindowsPath(parent_path)
 
-    return (parent.parent / child).as_posix()
+    return posixpath.normpath((parent.parent / child).as_posix())
 
 
 def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
