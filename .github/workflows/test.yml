@@ -150,7 +150,7 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             attachments:
-              - color: "${{ needs.test.result == 'success' && 'good' || needs.test.result == 'failure' && 'danger' || 'warning' }}",
+              - color: "${{ needs.test.result == 'success' && 'good' || needs.test.result == 'failure' && 'danger' || 'warning' }}"
                 fields: 
-                  - title: "py-allspice CI: ${{ needs.test.result }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+                  - title: "py-allspice CI: ${{ needs.test.result }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
                     value: "GitHub Action build result: ${{ needs.test.result }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
