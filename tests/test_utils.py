@@ -528,6 +528,43 @@ def test_bom_generation_altium_with_device_sheets(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_external_device_sheet(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Usage-Demo",
+    )
+
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+    attributes_mapping = {
+        "Comment": ["Comment"],
+        "Description": ["_description"],
+        "Designator": ["Designator"],
+        "LibRef": ["_part_id"],
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+        ref="kd/generate-bom",
+    )
+
+    assert len(bom) == 14
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_altium_with_hierarchical_device_sheets(
     request,
     instance,
