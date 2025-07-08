@@ -539,7 +539,6 @@ def test_bom_generation_altium_with_external_device_sheet(
         "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Usage-Demo",
     )
 
-    # TODO remove
     design_reuse_repo = setup_for_generation(
         request.node.name + "_reuse",
         "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
