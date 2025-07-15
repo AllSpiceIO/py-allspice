@@ -1,5 +1,8 @@
 import base64
+import csv
+import io
 import os
+from collections import Counter
 from unittest.mock import patch
 
 import pytest
@@ -35,6 +38,37 @@ def port(pytestconfig):
 def client_log_level(pytestconfig):
     """Load --client-log-level command-line arg if set"""
     return pytestconfig.getoption("client_log_level")
+
+
+def normalize_csv_row(row, skip_cols):
+    """Sort a csv row by column and exclude colums to be skipped.
+    Designator lists need to be individually sorted"""
+
+    def normalize_value(k, v):
+        v = v.strip() if v else ""
+        if k.lower() == "designator":
+            parts = [x.strip() for x in v.split(",")]
+            parts.sort()
+            return ", ".join(parts)
+        return v
+
+    return tuple(
+        sorted(
+            (k.strip(), normalize_value(k.strip(), v))
+            for k, v in row.items()
+            if k.strip() not in skip_cols
+        )
+    )
+
+
+def compare_golden_bom(golden_csv, generated_bom_rows, skip_cols):
+    """Verify a generated BOM against a checked in BOM"""
+
+    csv_stream = io.StringIO(golden_csv)
+
+    assert Counter(
+        [normalize_csv_row(row, skip_cols) for row in csv.DictReader(csv_stream)]
+    ) == Counter([normalize_csv_row(row, skip_cols) for row in generated_bom_rows])
 
 
 @pytest.fixture
@@ -562,6 +596,11 @@ def test_bom_generation_altium_with_external_device_sheet(
 
     assert len(bom) == 14
     assert bom == csv_snapshot
+
+    golden_bytes = repo.get_raw_file("NestedDeviceSheets.csv", ref="kd/generate-bom").decode(
+        "windows-1252"
+    )
+    compare_golden_bom(golden_bytes, bom, ["Footprint"])
 
 
 @pytest.mark.vcr
