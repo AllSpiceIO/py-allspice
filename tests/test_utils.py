@@ -276,6 +276,8 @@ def test_bom_generation_with_folder_hierarchy(
     setup_for_generation,
     csv_snapshot,
 ):
+    """Test Altium BOM generation where design documents are in folders
+    relative to the project file."""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/ArchimajorInFolders.git",
@@ -303,6 +305,7 @@ def test_bom_generation_with_folder_hierarchy(
 
 @pytest.mark.vcr
 def test_bom_generation_with_default_variant(request, instance, setup_for_generation, csv_snapshot):
+    """Test Altium BOM generation with the default variant (not explicitly specified)"""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
@@ -336,6 +339,7 @@ def test_bom_generation_with_default_variant(request, instance, setup_for_genera
 
 @pytest.mark.vcr
 def test_bom_generation_with_fitted_variant(request, instance, setup_for_generation, csv_snapshot):
+    """Test Altium BOM generation with a non-default variant"""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
@@ -502,6 +506,8 @@ def test_bom_generation_altium_with_column_config(
 def test_bom_generation_altium_repeated_multi_part_component_variant(
     request, instance, setup_for_generation, csv_snapshot
 ):
+    """Test Altium BOM generation with a repeated multipart component as well
+    as a non-default variant"""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/ArchimajorRepeatedVariant.git",
@@ -534,6 +540,7 @@ def test_bom_generation_altium_with_device_sheets(
     setup_for_generation,
     csv_snapshot,
 ):
+    """Test Altium BOM generation with a design reuse repo."""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo",
@@ -567,6 +574,9 @@ def test_bom_generation_altium_with_external_device_sheet(
     instance,
     setup_for_generation,
 ):
+    """Test Altium BOM generation with design reuse against an Altium generated BOM.
+    Note: the design reuse repo is added as a submodule for use in testing future
+    submodule-based design reuse support."""
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Usage-Demo",
@@ -577,9 +587,12 @@ def test_bom_generation_altium_with_external_device_sheet(
         "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
     )
     attributes_mapping = {
-        "Comment": ["Comment"],
         "Description": ["_description"],
-        "Designator": ["Designator"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
         "LibRef": ["_part_id"],
     }
 
@@ -599,44 +612,6 @@ def test_bom_generation_altium_with_external_device_sheet(
         "windows-1252"
     )
     compare_golden_bom(golden_bytes, bom, ["Footprint"])
-
-
-@pytest.mark.vcr
-def test_bom_generation_altium_with_hierarchical_device_sheets(
-    request,
-    instance,
-    setup_for_generation,
-    csv_snapshot,
-):
-    repo = setup_for_generation(
-        request.node.name,
-        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
-    )
-    design_reuse_repo = setup_for_generation(
-        request.node.name + "_reuse",
-        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
-    )
-
-    attributes_mapping = {
-        "Name": ["_name"],
-        "Designator": ColumnConfig(
-            attributes=["Designator"],
-            grouped_values_sort=ColumnConfig.SortOrder.ASC,
-        ),
-        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
-    }
-
-    bom = generate_bom_for_altium(
-        instance,
-        repo,
-        "NestedDeviceSheets.PrjPcb",
-        attributes_mapping,
-        group_by=["Comment"],
-        design_reuse_repos=[design_reuse_repo],
-    )
-
-    assert len(bom) == 14
-    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
