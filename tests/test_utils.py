@@ -573,6 +573,7 @@ def test_bom_generation_altium_with_external_device_sheet(
     request,
     instance,
     setup_for_generation,
+    csv_snapshot,
 ):
     """Test Altium BOM generation with design reuse against an Altium generated BOM.
     Note: the design reuse repo is added as a submodule for use in testing future
@@ -607,6 +608,7 @@ def test_bom_generation_altium_with_external_device_sheet(
     )
 
     assert len(bom) == 14
+    assert bom == csv_snapshot
 
     golden_bytes = repo.get_raw_file("NestedDeviceSheets.csv", ref="kd/generate-bom").decode(
         "windows-1252"
