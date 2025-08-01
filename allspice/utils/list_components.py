@@ -1240,13 +1240,13 @@ def _fetch_and_parse_annotation_file(
         unique_id = designator_manager_section[unique_id_key]
         logical_designator = designator_manager_section[f"LogicalDesignator{change_number}"]
         physical_designator = designator_manager_section[f"PhysicalDesignator{change_number}"]
+        change_number += 1
 
         if unique_id in changes:
             repository.allspice_client.logger.warning("Multiple changes found for %s", unique_id)
             continue
 
         changes[unique_id] = {"from": logical_designator, "to": physical_designator}
-        change_number += 1
 
     return changes
 
