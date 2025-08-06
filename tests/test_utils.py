@@ -778,7 +778,7 @@ def test_generate_bom_altium(request, instance, setup_for_generation, csv_snapsh
         repo,
         "Archimajor.PrjPcb",
         altium_attributes_mapping,
-        ref="e8b39ed25839a0f99553afc35e5d50bf8c9edc20",
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
     )
     assert len(bom) == 913
     assert bom == csv_snapshot
@@ -909,11 +909,11 @@ def test_altium_components_list_with_fitted_variant(
         repo,
         "Archimajor.PrjPcb",
         # We hard-code a ref so that this test is reproducible.
-        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        ref="fbde2fe9fb7576c7e32827368224ec18717a1ffe",
         variant="Fitted",
     )
 
-    assert len(components) == 945
+    assert len(components) == 953
     assert components == json_snapshot
 
 
