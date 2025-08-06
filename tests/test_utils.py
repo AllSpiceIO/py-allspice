@@ -778,7 +778,7 @@ def test_generate_bom_altium(request, instance, setup_for_generation, csv_snapsh
         repo,
         "Archimajor.PrjPcb",
         altium_attributes_mapping,
-        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        ref="e8b39ed25839a0f99553afc35e5d50bf8c9edc20",
     )
     assert len(bom) == 913
     assert bom == csv_snapshot

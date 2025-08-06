@@ -207,10 +207,15 @@ def list_components_for_altium(
     allspice_client.logger.info(f"Fetching {prjpcb_file=}")
 
     # Altium adds the Byte Order Mark to UTF-8 files, so we need to decode the
-    # file content with utf-8-sig to remove it.
-    prjpcb_file_contents = repository.get_raw_file(prjpcb_file, ref=ref).decode("utf-8-sig")
+    # file content with utf-8-sig to remove it. However, some files may contain
+    # ISO-8859-1 characters, so we'll try UTF-8 and fall back to ISO-8859-1.
+    raw_content = repository.get_raw_file(prjpcb_file, ref=ref)
+    try:
+        prjpcb_file_contents = raw_content.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        prjpcb_file_contents = raw_content.decode("iso-8859-1")
 
-    prjpcb_ini = configparser.ConfigParser()
+    prjpcb_ini = configparser.ConfigParser(interpolation=None)
     prjpcb_ini.read_string(prjpcb_file_contents)
 
     if variant is not None:
@@ -1219,11 +1224,13 @@ def _fetch_and_parse_annotation_file(
 
     annotation_file_path = matches[0]
 
-    annotation_file_contents = repository.get_raw_file(annotation_file_path, ref=ref).decode(
-        "utf-8-sig"
-    )
+    raw_annotation_content = repository.get_raw_file(annotation_file_path, ref=ref)
+    try:
+        annotation_file_contents = raw_annotation_content.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        annotation_file_contents = raw_annotation_content.decode("iso-8859-1")
 
-    annotation_file_ini = configparser.ConfigParser()
+    annotation_file_ini = configparser.ConfigParser(interpolation=None)
     annotation_file_ini.read_string(annotation_file_contents)
 
     designator_manager_section = annotation_file_ini["DesignatorManager"]
