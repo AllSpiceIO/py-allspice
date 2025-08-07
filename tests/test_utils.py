@@ -909,11 +909,11 @@ def test_altium_components_list_with_fitted_variant(
         repo,
         "Archimajor.PrjPcb",
         # We hard-code a ref so that this test is reproducible.
-        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        ref="fbde2fe9fb7576c7e32827368224ec18717a1ffe",
         variant="Fitted",
     )
 
-    assert len(components) == 945
+    assert len(components) == 953
     assert components == json_snapshot
 
 
