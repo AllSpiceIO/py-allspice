@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.10.2
+
+### Highlights
+
+* Normalize joined paths for finding device sheets by @jackHay22 in https://github.com/AllSpiceIO/py-allspice/pull/236
+* Move change_number iteration up in the loop by @yeiterjoe in https://github.com/AllSpiceIO/py-allspice/pull/239
+* Remove interpolation, add iso-8859-1 fallback	by @jackHay22 in https://github.com/AllSpiceIO/py-allspice/pull/244
+
 ## v3.10.1
 
 ### Highlights
