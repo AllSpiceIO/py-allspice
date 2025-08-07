@@ -1,5 +1,5 @@
 coverage~=7.10
-diff_cover~=9.4
+diff_cover~=9.6
 libcst~=1.8.2
 MonkeyType~=23.3
 pdoc~=15.0
