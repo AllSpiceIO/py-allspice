@@ -756,6 +756,38 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
         )
 
 
+@pytest.mark.vcr
+def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Cyclone-HDL.git",
+    )
+
+    attributes_mapping = {
+        "Name": ["_name"],
+        "REFDES": "LOCATION", 
+        "DESCRIPTION": "VALUE",
+        "MFR": "VENDOR",
+        "MFG PN": ["VENDOR_PN", "PN"], 
+        "COMMENT": "COMMENT",
+    }
+
+    bom = generate_bom(
+        instance,
+        repo,
+        "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
+        attributes_mapping,
+        group_by=["Name"],
+        ref="main",
+    )
+
+    # Verify the generated BOM against the golden BOM
+    golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
+    compare_golden_bom(golden_csv_content, bom, ["ITEM", "MFG PN"])
+
+    assert bom == csv_snapshot
+
+
 # The following tests are for the generate_bom function, which is a wrapper
 # around the more specific functions for each EDA tool. We test the specific
 # functions above, so these tests are just to make sure the wrapper works as
