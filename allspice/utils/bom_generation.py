@@ -125,8 +125,8 @@ def generate_bom(
     :param repository: The repository to generate the BOM for.
     :param source_file: The path to the source file from the root of the
         repository. The source file must be a PrjPcb file for Altium projects a
-        DSN file for OrCAD projects, or an SDAX file for System Capture
-        projects. For example, if the source file is in the root of the
+        DSN file for OrCAD projects, an SDAX file for System Capture
+        projects, or a CPM file for DeHDL projects. For example, if the source file is in the root of the
         repository and is named "Archimajor.PrjPcb", the path would be
         "Archimajor.PrjPcb"; if the source file is in a folder called
         "Schematics" and is named "Beagleplay.dsn", the path would be
@@ -139,7 +139,7 @@ def generate_bom(
         the project tool. For Altium projects, these are "_part_id",
         "_description", "_unique_id" and "_kind", which are the Library
         Reference, Description, Unique ID and Component Type respectively. For
-        OrCAD and System Capture projects, "_name" is added, which is the name
+        OrCAD, System Capture, and DeHDL projects, "_name" is added, which is the name
         of the component, and "_reference" and "_logical_reference" may be
         added, which are the name of the component, and the logical reference
         of a multi-part component respectively.
@@ -154,7 +154,7 @@ def generate_bom(
         project files. Defaults to "main".
     :param remove_non_bom_components: If True, components of types that should
         not be included in the BOM will be removed. Defaults to True. Only
-        applicable for Altium projects.
+        applicable for Altium and DeHDL projects.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -182,6 +182,8 @@ def generate_bom(
         project_tool = infer_project_tool(source_file)
         if project_tool == SupportedTool.ALTIUM:
             components = _remove_altium_non_bom_components(components)
+        elif project_tool == SupportedTool.DEHDL:
+            components = _remove_dehdl_non_bom_components(components)
 
     columns_mapping = {
         column_name: (
@@ -339,6 +341,52 @@ def generate_bom_for_system_capture(
     )
 
 
+def generate_bom_for_dehdl(
+    allspice_client: AllSpice,
+    repository: Repository,
+    cpm_path: str,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
+    ref: Ref = "main",
+    remove_non_bom_components: bool = True,
+) -> Bom:
+    """
+    Generate a BOM for a DeHDL CPM schematic.
+
+    :param allspice_client: The AllSpice client to use.
+    :param repository: The repository to generate the BOM for.
+    :param cpm_path: The DeHDL CPM schematic file. This can be a
+        Content object returned by the AllSpice API, or a string containing the
+        path to the file in the repo.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        CPM schematic. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+
+        Note that special attributes are added by this function, namely, "_name"
+        is added, which is the name of the component.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
+    :param ref: The ref, i.e. branch, commit or git ref from which to take the
+        project files. Defaults to "main".
+    :param remove_non_bom_components: If True, components that should not be
+        included in the BOM will be removed. Components with MATERIAL="EMPTY"
+        are excluded. Defaults to True.
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
+    """
+
+    return generate_bom(
+        allspice_client,
+        repository,
+        cpm_path,
+        columns,
+        group_by,
+        variant=None,
+        ref=ref,
+        remove_non_bom_components=remove_non_bom_components,
+    )
+
+
 def _get_first_matching_key_value(
     alternatives: Union[list[str], str],
     attributes: dict[str, str],
@@ -450,6 +498,17 @@ def _remove_altium_non_bom_components(
         for component in components
         if component.get("_kind") not in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
     ]
+
+
+def _remove_dehdl_non_bom_components(
+    components: list[ComponentAttributes],
+) -> list[ComponentAttributes]:
+    """
+    Filter out DeHDL components that should not be included in the BOM.
+    Components with MATERIAL="EMPTY" are excluded from the BOM.
+    """
+
+    return [component for component in components if component.get("MATERIAL") != "EMPTY"]
 
 
 def _sort_values(

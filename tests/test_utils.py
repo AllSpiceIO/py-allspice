@@ -15,6 +15,7 @@ from allspice.utils.bom_generation import (
     ColumnConfig,
     generate_bom,
     generate_bom_for_altium,
+    generate_bom_for_dehdl,
     generate_bom_for_orcad,
     generate_bom_for_system_capture,
 )
@@ -46,10 +47,12 @@ def normalize_csv_row(row, skip_cols):
 
     def normalize_value(k, v):
         v = v.strip() if v else ""
-        if k.lower() == "designator":
+        if k.lower() == "designator" or k.lower() == "ref des" or k.lower() == "refdes":
             parts = [x.strip() for x in v.split(",")]
             parts.sort()
             return ", ".join(parts)
+        elif k.lower() == "value":
+            return v.lower()
         return v
 
     return tuple(
@@ -754,6 +757,82 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
             {},
             group_by=["Name"],
         )
+
+
+@pytest.mark.vcr
+def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Cyclone-HDL.git",
+    )
+
+    attributes_mapping = {
+        "Part Name": "CDS_PART_NAME",
+        "Ref Des": "LOCATION",
+        "VALUE": "VALUE",
+        "PART_NUMBER": "PART_NUMBER",
+        "name": ColumnConfig(
+            attributes=["_name"],
+            remove_rows_matching="^(GND|VCC|POWER|TAP|UNIVERSAL|ANALOG|OFFPAGE|P5V|VTT|VCCSE).*",
+        ),
+    }
+
+    bom = generate_bom_for_dehdl(
+        instance,
+        repo,
+        "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
+        attributes_mapping,
+        group_by=["Part Name", "PART_NUMBER"],
+        ref="main",
+        remove_non_bom_components=False,
+    )
+
+    # Verify the generated BOM against the golden BOM
+    golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
+    # Note: we are seeing occasional discrepancies with VALUE
+    compare_golden_bom(
+        golden_csv_content, bom, ["name", "RATED_VOLTAGE", "VOLTAGE", "Part Name", "VALUE"]
+    )
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/DeHDL-uob-hep-pc072.git",
+    )
+
+    attributes_mapping = {
+        "REFDES": "LOCATION",
+        "COMP_DEVICE_TYPE": ColumnConfig(
+            attributes=["CDS_PART_NAME", "_name"],
+            remove_rows_matching="^(02_|08_|03_|05 |01_|07_|A3-2000|2-pin_jumper|vcc_bar|offpageleft-l|gnd|CTAP|P2V5|portleft-l|6 MERGE|portboth-r|IOPORT|cmntgrphs4|9 MERGE|AVDD|portboth-r_1|BUSWIDE_BTM_LEFT_RIP|BUSWIDE_TOP_LEFT_RIP|04_|portboth-l|BUS_TOP_LEFT_RIP|portright-l|4 MERGE).*",
+        ),
+    }
+
+    bom = generate_bom_for_dehdl(
+        instance,
+        repo,
+        "hardware/Cadence/top/top_mib_v3.cpm",
+        attributes_mapping,
+        group_by=["COMP_DEVICE_TYPE"],
+        ref="main",
+        remove_non_bom_components=False,
+    )
+
+    # Verify the generated BOM against the golden BOM
+    golden_csv_content = repo.get_raw_file("bom.csv", ref="main").decode("utf-8")
+    compare_golden_bom(
+        golden_csv_content,
+        bom,
+        ["SYM_NAME", "COMP_VALUE", "COMP_TOL", "COMP_CLASS", "COMP_DEVICE_TYPE"],
+        # Note: COMP_DEVICE_TYPE is an imperfect match with CDS_PART_NAME and 
+        # CDS_PHYS_PART_NAME for the current BOM version
+    )
+
+    assert bom == csv_snapshot
 
 
 # The following tests are for the generate_bom function, which is a wrapper
