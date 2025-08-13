@@ -358,7 +358,7 @@ def generate_bom_for_dehdl(
     :param columns: A mapping of the columns in the BOM to the attributes in the
         CPM schematic. The attributes are tried in order, and the first one
         found is used as the value for that column.
-    
+
         Note that special attributes are added by this function, namely, "_name"
         is added, which is the name of the component.
     :param group_by: A list of columns to group the BOM by. If this is provided,
