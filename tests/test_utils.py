@@ -47,7 +47,7 @@ def normalize_csv_row(row, skip_cols):
 
     def normalize_value(k, v):
         v = v.strip() if v else ""
-        if k.lower() == "designator" or k.lower() == "refdes":
+        if k.lower() == "designator" or k.lower() == "ref des":
             parts = [x.strip() for x in v.split(",")]
             parts.sort()
             return ", ".join(parts)
@@ -765,13 +765,12 @@ def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snaps
     )
 
     attributes_mapping = {
-        "REFDES": "LOCATION",
-        "NAME": ColumnConfig(
+        "Ref Des": "LOCATION",
+        "Part Name": "CDS_PART_NAME",
+        "name": ColumnConfig(
             attributes=["_name"],
             remove_rows_matching="^(GND|VCC|POWER|TAP|UNIVERSAL|ANALOG|OFFPAGE|P5V|VTT|VCCSE).*",
         ),
-        "MFG PN": ["PART_NUMBER", "VENDOR_PN", "PN", "Part Number", "PART", "MFG_PN"],
-        "DESCRIPTION": "CDS_PART_NAME",
     }
 
     bom = generate_bom_for_dehdl(
@@ -779,15 +778,14 @@ def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snaps
         repo,
         "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
         attributes_mapping,
-        group_by=["NAME", "MFG PN"],
+        group_by=["Part Name"],
         ref="main",
+        remove_non_bom_components=False,
     )
 
     # Verify the generated BOM against the golden BOM
     golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
-    compare_golden_bom(
-        golden_csv_content, bom, ["ITEM", "DESCRIPTION", "NAME", "MFG PN", "MFR", "COMMENT"]
-    )
+    compare_golden_bom(golden_csv_content, bom, ["name"])
 
     assert bom == csv_snapshot
 
