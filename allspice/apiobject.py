@@ -559,7 +559,7 @@ class Repository(ApiObject):
     REPO_GET_ARCHIVE = "/repos/{owner}/{repo}/archive/{ref}.{format}"
     REPO_GET_ALLSPICE_JSON = "/repos/{owner}/{repo}/allspice_generated/json/{content}"
     REPO_GET_ALLSPICE_SVG = "/repos/{owner}/{repo}/allspice_generated/svg/{content}"
-    REPO_GET_ALLSPICE_PROJECT = "/repos/{owner}/{repo}/allspice_generated/project/{content}"
+    REPO_GET_ALLSPICE_PROJECT = "/repos/{owner}/{repo}/allspice_generated/projectV2/{content}"
     REPO_GET_TOPICS = "/repos/{owner}/{repo}/topics"
     REPO_ADD_TOPIC = "/repos/{owner}/{repo}/topics/{topic}"
     REPO_GET_RELEASES = "/repos/{owner}/{repo}/releases"
@@ -1251,7 +1251,16 @@ class Repository(ApiObject):
             content=content,
         )
         data = Util.data_params_for_ref(ref)
-        return self.allspice_client.requests_get(url, data)
+        result = self.allspice_client.requests_get(url, data)
+
+        # Log any warnings from the project data
+        if "warnings" in result:
+            for warning in result["warnings"]:
+                self.allspice_client.logger.warning(
+                    f"Project data warning for {warning.get('file_path', 'unknown file')}: {warning.get('detail', 'No details provided')}"
+                )
+
+        return result
 
     def create_file(self, file_path: str, content: str, data: Optional[dict] = None):
         """https://hub.allspice.io/api/swagger#/repository/repoCreateFile"""
