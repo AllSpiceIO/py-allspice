@@ -1252,14 +1252,14 @@ class Repository(ApiObject):
         )
         data = Util.data_params_for_ref(ref)
         result = self.allspice_client.requests_get(url, data)
-        
+
         # Log any warnings from the project data
         if "warnings" in result:
             for warning in result["warnings"]:
                 self.allspice_client.logger.warning(
                     f"Project data warning for {warning.get('file_path', 'unknown file')}: {warning.get('detail', 'No details provided')}"
                 )
-        
+
         return result
 
     def create_file(self, file_path: str, content: str, data: Optional[dict] = None):
