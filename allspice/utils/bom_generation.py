@@ -154,7 +154,7 @@ def generate_bom(
         project files. Defaults to "main".
     :param remove_non_bom_components: If True, components of types that should
         not be included in the BOM will be removed. Defaults to True. Only
-        applicable for Altium projects.
+        applicable for Altium and DeHDL projects.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -182,6 +182,8 @@ def generate_bom(
         project_tool = infer_project_tool(source_file)
         if project_tool == SupportedTool.ALTIUM:
             components = _remove_altium_non_bom_components(components)
+        elif project_tool == SupportedTool.DEHDL:
+            components = _remove_dehdl_non_bom_components(components)
 
     columns_mapping = {
         column_name: (
@@ -346,6 +348,7 @@ def generate_bom_for_dehdl(
     columns: ColumnsMapping,
     group_by: Optional[list[str]] = None,
     ref: Ref = "main",
+    remove_non_bom_components: bool = True,
 ) -> Bom:
     """
     Generate a BOM for a DeHDL CPM schematic.
@@ -365,6 +368,9 @@ def generate_bom_for_dehdl(
         the BOM will be grouped by the values of these columns.
     :param ref: The ref, i.e. branch, commit or git ref from which to take the
         project files. Defaults to "main".
+    :param remove_non_bom_components: If True, components that should not be
+        included in the BOM will be removed. Components with MATERIAL="EMPTY"
+        are excluded. Defaults to True.
     :return: A list of BOM entries. Each entry is a dictionary where the key is
         a column name and the value is the value for that column.
     """
@@ -377,7 +383,7 @@ def generate_bom_for_dehdl(
         group_by,
         variant=None,
         ref=ref,
-        remove_non_bom_components=False,
+        remove_non_bom_components=remove_non_bom_components,
     )
 
 
@@ -492,6 +498,17 @@ def _remove_altium_non_bom_components(
         for component in components
         if component.get("_kind") not in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
     ]
+
+
+def _remove_dehdl_non_bom_components(
+    components: list[ComponentAttributes],
+) -> list[ComponentAttributes]:
+    """
+    Filter out DeHDL components that should not be included in the BOM.
+    Components with MATERIAL="EMPTY" are excluded from the BOM.
+    """
+
+    return [component for component in components if component.get("MATERIAL") != "EMPTY"]
 
 
 def _sort_values(

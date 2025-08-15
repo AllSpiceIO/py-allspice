@@ -766,11 +766,12 @@ def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snaps
 
     attributes_mapping = {
         "REFDES": "LOCATION",
-        "DESCRIPTION": ColumnConfig(
+        "NAME": ColumnConfig(
             attributes=["_name"],
             remove_rows_matching="^(GND|VCC|POWER|TAP|UNIVERSAL|ANALOG|OFFPAGE|P5V|VTT|VCCSE).*",
         ),
         "MFG PN": ["PART_NUMBER", "VENDOR_PN", "PN", "Part Number", "PART", "MFG_PN"],
+        "DESCRIPTION": "CDS_PART_NAME",
     }
 
     bom = generate_bom_for_dehdl(
@@ -778,13 +779,15 @@ def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snaps
         repo,
         "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
         attributes_mapping,
-        group_by=["DESCRIPTION", "MFG PN"],
+        group_by=["NAME", "MFG PN"],
         ref="main",
     )
 
     # Verify the generated BOM against the golden BOM
     golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
-    compare_golden_bom(golden_csv_content, bom, ["ITEM", "DESCRIPTION", "MFG PN", "MFR", "COMMENT"])
+    compare_golden_bom(
+        golden_csv_content, bom, ["ITEM", "DESCRIPTION", "NAME", "MFG PN", "MFR", "COMMENT"]
+    )
 
     assert bom == csv_snapshot
 
