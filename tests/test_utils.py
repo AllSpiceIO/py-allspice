@@ -15,6 +15,7 @@ from allspice.utils.bom_generation import (
     ColumnConfig,
     generate_bom,
     generate_bom_for_altium,
+    generate_bom_for_dehdl,
     generate_bom_for_orcad,
     generate_bom_for_system_capture,
 )
@@ -46,7 +47,7 @@ def normalize_csv_row(row, skip_cols):
 
     def normalize_value(k, v):
         v = v.strip() if v else ""
-        if k.lower() == "designator":
+        if k.lower() == "designator" or k.lower() == "ref des":
             parts = [x.strip() for x in v.split(",")]
             parts.sort()
             return ", ".join(parts)
@@ -754,6 +755,39 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
             {},
             group_by=["Name"],
         )
+
+
+@pytest.mark.vcr
+def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Cyclone-HDL.git",
+    )
+
+    attributes_mapping = {
+        "Ref Des": "LOCATION",
+        "Part Name": "CDS_PART_NAME",
+        "name": ColumnConfig(
+            attributes=["_name"],
+            remove_rows_matching="^(GND|VCC|POWER|TAP|UNIVERSAL|ANALOG|OFFPAGE|P5V|VTT|VCCSE).*",
+        ),
+    }
+
+    bom = generate_bom_for_dehdl(
+        instance,
+        repo,
+        "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
+        attributes_mapping,
+        group_by=["Part Name"],
+        ref="main",
+        remove_non_bom_components=False,
+    )
+
+    # Verify the generated BOM against the golden BOM
+    golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
+    compare_golden_bom(golden_csv_content, bom, ["name"])
+
+    assert bom == csv_snapshot
 
 
 # The following tests are for the generate_bom function, which is a wrapper

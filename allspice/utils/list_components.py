@@ -39,6 +39,7 @@ class SupportedTool(Enum):
     ALTIUM = "altium"
     ORCAD = "orcad"
     SYSTEM_CAPTURE = "system_capture"
+    DEHDL = "dehdl"
 
 
 class VariationKind(Enum):
@@ -165,6 +166,14 @@ def list_components(
             )
         case SupportedTool.SYSTEM_CAPTURE:
             return list_components_for_system_capture(
+                allspice_client,
+                repository,
+                source_file,
+                variant=variant,
+                ref=ref,
+            )
+        case SupportedTool.DEHDL:
+            return list_components_for_dehdl(
                 allspice_client,
                 repository,
                 source_file,
@@ -432,6 +441,34 @@ def list_components_for_system_capture(
     )
 
 
+def list_components_for_dehdl(
+    allspice_client: AllSpice,
+    repository: Repository,
+    cpm_path: str,
+    variant: Optional[str] = None,
+    ref: Ref = "main",
+) -> list[ComponentAttributes]:
+    """
+    Get a list of all components in a DeHDL CPM schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the DeHDL schematic.
+    :param cpm_path: The path to the DeHDL CPM file from the repo
+        root. For example, if the schematic is in the folder "Schematics" and
+        the file is named "example.cpm", the path would be
+        "Schematics/example.cpm".
+    :param variant: The variant to apply to the components. If not None, the
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    """
+
+    return _list_components_multi_page_schematic(
+        allspice_client, repository, cpm_path, variant, ref
+    )
+
+
 def infer_project_tool(source_file: str) -> SupportedTool:
     """
     Infer the ECAD tool used in a project from the file extension.
@@ -443,13 +480,16 @@ def infer_project_tool(source_file: str) -> SupportedTool:
         return SupportedTool.ORCAD
     elif source_file.lower().endswith(".sdax"):
         return SupportedTool.SYSTEM_CAPTURE
+    elif source_file.lower().endswith(".cpm"):
+        return SupportedTool.DEHDL
     else:
         raise ValueError("""
 The source file for generate_bom must be:
 
 - A PrjPcb file for Altium projects; or
 - A DSN file for OrCAD projects; or
-- An SDAX file for System Capture projects.
+- An SDAX file for System Capture projects; or
+- A CPM file for DeHDL projects.
         """)
 
 
