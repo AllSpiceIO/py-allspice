@@ -828,7 +828,7 @@ def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_s
         golden_csv_content,
         bom,
         ["SYM_NAME", "COMP_VALUE", "COMP_TOL", "COMP_CLASS", "COMP_DEVICE_TYPE"],
-        # Note: COMP_DEVICE_TYPE is an imperfect match with CDS_PART_NAME and 
+        # Note: COMP_DEVICE_TYPE is an imperfect match with CDS_PART_NAME and
         # CDS_PHYS_PART_NAME for the current BOM version
     )
 
