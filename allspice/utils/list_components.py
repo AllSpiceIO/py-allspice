@@ -999,7 +999,9 @@ def _combine_multi_part_components_for_dehdl(
     components: list[dict[str, str]],
 ) -> list[dict[str, str]]:
     """
-    Combine multi-part components for DeHDL projects.
+    Combine multi-part components for DeHDL projects. Note: this is a temporary
+    solution. We'll add a more robust mechanism for handling multipart components
+    to the design JSON.
 
     In DeHDL, multipart components share the same LOCATION (reference designator)
     but may appear on different pages. This function combines them into single
