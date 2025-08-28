@@ -847,32 +847,6 @@ def _component_attributes_multi_page(component: dict) -> ComponentAttributes:
     for attribute in component["attributes"].values():
         component_attributes[attribute["name"]] = attribute["value"]
 
-    # Add synthesized _cds_part_name for DeHDL components using template:
-    # ${CHIPS_PART_NAME}_${PACK_TYPE}-${VALUE},${TOLERANCE},${WATTAGE},${MATERIAL},${PART_NUMBER}
-    if all(
-        key in component_attributes
-        for key in [
-            "CHIPS_PART_NAME",
-            "PACK_TYPE",
-            "VALUE",
-            "TOLERANCE",
-            "WATTAGE",
-            "MATERIAL",
-            "PART_NUMBER",
-        ]
-    ):
-        chips_part_name = component_attributes.get("CHIPS_PART_NAME", "")
-        pack_type = component_attributes.get("PACK_TYPE", "")
-        value = component_attributes.get("VALUE", "")
-        tolerance = component_attributes.get("TOLERANCE", "")
-        wattage = component_attributes.get("WATTAGE", "")
-        material = component_attributes.get("MATERIAL", "")
-        part_number = component_attributes.get("PART_NUMBER", "")
-
-        component_attributes["_cds_part_name"] = (
-            f"{chips_part_name}_{pack_type}-{value},{tolerance},{wattage},{material},{part_number}"
-        )
-
     return component_attributes
 
 

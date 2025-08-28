@@ -20,6 +20,7 @@ from allspice.utils.bom_generation import (
     generate_bom_for_system_capture,
 )
 from allspice.utils.list_components import (
+    _combine_multi_part_components_for_dehdl,
     _resolve_prjpcb_relative_path,
     list_components_for_altium,
     list_components_for_orcad,
@@ -759,6 +760,29 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
         )
 
 
+def test_combine_multi_part_components_for_dehdl():
+    """Test that multi-part components with the same LOCATION are combined correctly."""
+    # Test data with components having the same LOCATION
+    components = [
+        {"LOCATION": "UT4", "CHIPS_PART_NAME": "RES_0402", "OTHER": "1"},
+        {"LOCATION": "UT4", "CHIPS_PART_NAME": "RES_0402", "OTHER": "2"},
+        {"LOCATION": "UT4", "CHIPS_PART_NAME": "RES_0402", "OTHER": "3"},
+        {"LOCATION": "UT7", "CHIPS_PART_NAME": "CAP_0603", "OTHER": "1"},
+        {"LOCATION": "UT7", "CHIPS_PART_NAME": "CAP_0603", "OTHER": "2"},
+        {"LOCATION": "R1", "CHIPS_PART_NAME": "RES_0603", "OTHER": "1"},
+        {"LOCATION": "C1", "CHIPS_PART_NAME": "CAP_0402", "OTHER": "1"},
+        {"LOCATION": "", "CHIPS_PART_NAME": "RES_0402", "VALUE": "10K"},
+        {"CHIPS_PART_NAME": "CAP_0603", "VALUE": "100nF"},
+    ]
+
+    result = _combine_multi_part_components_for_dehdl(components)
+
+    # Should have 4 unique components (UT4, UT7, R1, C1)
+    assert len(result) == 4
+    locations = {comp["LOCATION"] for comp in result}
+    assert locations == {"UT4", "UT7", "R1", "C1"}
+
+
 @pytest.mark.vcr
 def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
@@ -768,6 +792,8 @@ def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_s
 
     attributes_mapping = {
         "REFDES": "LOCATION",
+        # Note: we ignore COMP_DEVICE_TYPE in the final BOM but use it to remove
+        # rows from the bom and to group components
         "COMP_DEVICE_TYPE": ColumnConfig(
             attributes=["CDS_PART_NAME", "_name"],
             remove_rows_matching="^(02_|08_|03_|05 |01_|07_|A3-2000|2-pin_jumper|vcc_bar|offpageleft-l|gnd|CTAP|P2V5|portleft-l|6 MERGE|portboth-r|IOPORT|cmntgrphs4|9 MERGE|AVDD|portboth-r_1|BUSWIDE_BTM_LEFT_RIP|BUSWIDE_TOP_LEFT_RIP|04_|portboth-l|BUS_TOP_LEFT_RIP|portright-l|4 MERGE).*",
