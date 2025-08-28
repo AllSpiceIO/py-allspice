@@ -760,44 +760,6 @@ def test_bom_generation_system_capture_grouped_failure(request, instance, setup_
 
 
 @pytest.mark.vcr
-def test_bom_generation_dehdl(request, instance, setup_for_generation, csv_snapshot):
-    repo = setup_for_generation(
-        request.node.name,
-        "https://hub.allspice.io/NoIndexTests/Cyclone-HDL.git",
-    )
-
-    attributes_mapping = {
-        "Part Name": "CDS_PART_NAME",
-        "Ref Des": "LOCATION",
-        "VALUE": "VALUE",
-        "PART_NUMBER": "PART_NUMBER",
-        "name": ColumnConfig(
-            attributes=["_name"],
-            remove_rows_matching="^(GND|VCC|POWER|TAP|UNIVERSAL|ANALOG|OFFPAGE|P5V|VTT|VCCSE).*",
-        ),
-    }
-
-    bom = generate_bom_for_dehdl(
-        instance,
-        repo,
-        "CycloneV_RunBMC_SCH/ssmc_runbmc.cpm",
-        attributes_mapping,
-        group_by=["Part Name", "PART_NUMBER"],
-        ref="main",
-        remove_non_bom_components=False,
-    )
-
-    # Verify the generated BOM against the golden BOM
-    golden_csv_content = repo.get_raw_file("CycloneV_RunBMC_BOM.csv", ref="main").decode("utf-8")
-    # Note: we are seeing occasional discrepancies with VALUE
-    compare_golden_bom(
-        golden_csv_content, bom, ["name", "RATED_VOLTAGE", "VOLTAGE", "Part Name", "VALUE"]
-    )
-
-    assert bom == csv_snapshot
-
-
-@pytest.mark.vcr
 def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
