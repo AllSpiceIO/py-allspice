@@ -39,6 +39,7 @@ class SupportedTool(Enum):
     ALTIUM = "altium"
     ORCAD = "orcad"
     SYSTEM_CAPTURE = "system_capture"
+    DEHDL = "dehdl"
 
 
 class VariationKind(Enum):
@@ -170,6 +171,15 @@ def list_components(
                 source_file,
                 variant=variant,
                 ref=ref,
+            )
+        case SupportedTool.DEHDL:
+            return list_components_for_dehdl(
+                allspice_client,
+                repository,
+                source_file,
+                variant=variant,
+                ref=ref,
+                combine_multi_part=combine_multi_part,
             )
 
 
@@ -432,6 +442,43 @@ def list_components_for_system_capture(
     )
 
 
+def list_components_for_dehdl(
+    allspice_client: AllSpice,
+    repository: Repository,
+    cpm_path: str,
+    variant: Optional[str] = None,
+    ref: Ref = "main",
+    combine_multi_part: bool = False,
+) -> list[ComponentAttributes]:
+    """
+    Get a list of all components in a DeHDL CPM schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the DeHDL schematic.
+    :param cpm_path: The path to the DeHDL CPM file from the repo
+        root. For example, if the schematic is in the folder "Schematics" and
+        the file is named "example.cpm", the path would be
+        "Schematics/example.cpm".
+    :param variant: The variant to apply to the components. If not None, the
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component. This prevents double-counting components that
+        appear on multiple schematic pages but represent the same physical component.
+    """
+
+    components = _list_components_multi_page_schematic(
+        allspice_client, repository, cpm_path, variant, ref
+    )
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_dehdl(components)
+
+    return components
+
+
 def infer_project_tool(source_file: str) -> SupportedTool:
     """
     Infer the ECAD tool used in a project from the file extension.
@@ -443,13 +490,16 @@ def infer_project_tool(source_file: str) -> SupportedTool:
         return SupportedTool.ORCAD
     elif source_file.lower().endswith(".sdax"):
         return SupportedTool.SYSTEM_CAPTURE
+    elif source_file.lower().endswith(".cpm"):
+        return SupportedTool.DEHDL
     else:
         raise ValueError("""
 The source file for generate_bom must be:
 
 - A PrjPcb file for Altium projects; or
 - A DSN file for OrCAD projects; or
-- An SDAX file for System Capture projects.
+- An SDAX file for System Capture projects; or
+- A CPM file for DeHDL projects.
         """)
 
 
@@ -946,6 +996,32 @@ def _combine_multi_part_components_for_orcad(
         combined_component[PART_REFERENCE_ATTR_NAME] = designator
         combined_component["_reference"] = designator
         combined_components.append(combined_component)
+
+    return combined_components
+
+
+def _combine_multi_part_components_for_dehdl(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part components for DeHDL projects. Note: this is a temporary
+    solution. We'll add a more robust mechanism for handling multipart components
+    to the design JSON.
+
+    In DeHDL, multipart components share the same LOCATION (reference designator)
+    but may appear on different pages. This function combines them into single
+    components with quantity 1 to prevent double-counting in BOM generation.
+
+    Components with the same LOCATION are treated as a single physical component.
+    """
+    seen_locations = set()
+    combined_components = []
+
+    for component in components:
+        location = component.get("LOCATION", "")
+        if location and location not in seen_locations:
+            seen_locations.add(location)
+            combined_components.append(component)
 
     return combined_components
 
