@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.11.0
+
+### Highlights
+
+* Add support for DeHDL BOM generation by @jackHay22 in https://github.com/AllSpiceIO/py-allspice/pull/246
+
 ## v3.10.2
 
 ### Highlights
