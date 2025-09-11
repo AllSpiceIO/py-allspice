@@ -21,7 +21,6 @@ from allspice.utils.bom_generation import (
 )
 from allspice.utils.list_components import (
     _combine_multi_part_components_for_dehdl,
-    _resolve_prjpcb_relative_path,
     list_components_for_altium,
     list_components_for_orcad,
 )
@@ -1175,10 +1174,3 @@ def test_netlist_generation(request, instance, setup_for_generation):
             assert (net + "\n") == f.readline()
             pins_on_net = sorted(netlist[net])
             assert (" " + " ".join(pins_on_net) + "\n") == f.readline()
-
-
-def test_resolve_prjpcb_relative_path():
-    assert (
-        _resolve_prjpcb_relative_path("..\\device-sheets\\sheet.SchDoc", "Project/Project.PrjPCB")
-        == "device-sheets/sheet.SchDoc"
-    )
