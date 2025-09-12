@@ -1261,7 +1261,7 @@ class Repository(ApiObject):
                         self.allspice_client.logger.warning(
                             "Project warning in %s: %s",
                             warning.get("file_path", "unknown file"),
-                            warning.get("detail", "no details provided")
+                            warning.get("detail", "no details provided"),
                         )
         
         return result

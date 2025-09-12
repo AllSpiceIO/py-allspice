@@ -232,15 +232,11 @@ def list_components_for_altium(
     allspice_client.logger.info(f"Fetching project data for {prjpcb_file=}")
 
     # Fetch project data
-    prj_data = retry_not_yet_generated(
-        repository.get_generated_projectdata, prjpcb_file, ref
-    )
-    
+    prj_data = retry_not_yet_generated(repository.get_generated_projectdata, prjpcb_file, ref)
+
     if "projects" not in prj_data or len(prj_data["projects"]) != 1:
-        raise ValueError(
-            f"Data not found for project {prjpcb_file=}."
-        )
-        
+        raise ValueError(f"Data not found for project {prjpcb_file=}.")
+
     prj_data = prj_data["projects"][0]
 
     if variant is not None:
@@ -600,10 +596,10 @@ def _extract_schdoc_list_for_project(
         file to all the Schematic Documents in this project, and the second is
         of relative paths to device sheets from the project file.
     """
-    
+
     project_documents = set()
     device_sheets = set()
-    
+
     if "documents" in prj_data:
         for doc in prj_data["documents"]:
             if doc.get("path", "").lower().endswith(".schdoc"):
