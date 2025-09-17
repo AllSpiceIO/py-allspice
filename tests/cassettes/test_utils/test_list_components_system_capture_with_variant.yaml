@@ -5,7 +5,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -16,7 +16,7 @@ interactions:
     uri: http://localhost:3000/api/v1/version
   response:
     body:
-      string: '{"version":"1.22.6+23-2-g58f75a668c"}
+      string: '{"version":"1.23.8+18-7-g8873dddf82"}
 
         '
     headers:
@@ -27,7 +27,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:31 GMT
+      - Wed, 17 Sep 2025 20:20:04 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -43,7 +43,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -54,7 +54,7 @@ interactions:
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-03-26T13:58:44-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
@@ -65,7 +65,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:31 GMT
+      - Wed, 17 Sep 2025 20:20:04 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -83,7 +83,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-Length:
@@ -96,7 +96,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2430,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_list_components_system_capture_with_variant","full_name":"test/test-test_list_components_system_capture_with_variant","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":27,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/languages","html_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant","url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant","link":"","ssh_url":"shrik450@localhost:test/test-test_list_components_system_capture_with_variant.git","clone_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-05-20T12:40:31-04:00","updated_at":"2025-05-20T12:40:32-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2539,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_list_components_system_capture_with_variant","full_name":"test/test-test_list_components_system_capture_with_variant","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":27,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/languages","html_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant","url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant","link":"","ssh_url":"shrik450@localhost:test/test-test_list_components_system_capture_with_variant.git","clone_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:20:04-04:00","updated_at":"2025-09-17T16:20:05-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -105,7 +105,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:32 GMT
+      - Wed, 17 Sep 2025 20:20:05 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -123,7 +123,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -134,7 +134,7 @@ interactions:
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-03-26T13:58:44-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
@@ -145,7 +145,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:32 GMT
+      - Wed, 17 Sep 2025 20:20:05 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -161,7 +161,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -172,7 +172,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant
   response:
     body:
-      string: '{"id":2430,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_list_components_system_capture_with_variant","full_name":"test/test-test_list_components_system_capture_with_variant","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":1541,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/languages","html_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant","url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant","link":"","ssh_url":"shrik450@localhost:test/test-test_list_components_system_capture_with_variant.git","clone_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-05-20T12:40:31-04:00","updated_at":"2025-05-20T12:40:32-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2539,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_list_components_system_capture_with_variant","full_name":"test/test-test_list_components_system_capture_with_variant","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":1541,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/languages","html_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant","url":"http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant","link":"","ssh_url":"shrik450@localhost:test/test-test_list_components_system_capture_with_variant.git","clone_url":"http://localhost:3000/test/test-test_list_components_system_capture_with_variant.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:20:04-04:00","updated_at":"2025-09-17T16:20:05-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -181,7 +181,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:32 GMT
+      - Wed, 17 Sep 2025 20:20:05 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -199,7 +199,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -210,126 +210,18 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/project/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
   response:
     body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Tue, 20 May 2025 16:40:32 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/project/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
-  response:
-    body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Tue, 20 May 2025 16:40:33 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/project/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
-  response:
-    body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Tue, 20 May 2025 16:40:34 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/project/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
-  response:
-    body:
-      string: '{"documents":{},"variants":{"fda64c8c6a68d4547130":"TESTVAR"},"external_design_blocks":{},"warnings":[]}
+      string: '{"documents":{},"variants":{"fda64c8c6a68d4547130":"TESTVAR"},"external_design_blocks":{},"warnings":[],"project_path":"variant-test-1.sdax"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate
       Content-Length:
-      - '105'
+      - '142'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:35 GMT
+      - Wed, 17 Sep 2025 20:20:05 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -345,7 +237,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-type:
@@ -356,7 +248,79 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/json/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
   response:
     body:
-      string: '{"type":"Schematic","variants":{"fda64c8c6a68d4547130":"TESTVAR"},"pages":[{"id":"8780b0445242a18bf1e9","name":"Page(1)","ui_group_id":"4608fac28f429202cdbd","ui_group_name":"hierarchical","page_size":{"x":558.8,"y":431.8},"border":{"stroke_width":0.1524,"margin":{"left":-2.54,"right":-2.54,"top":-2.54,"bottom":-2.54},"horizontal_label":{"width":2.54,"count":8,"numbering":"ArabicNumeral","ascending":true},"vertical_label":{"width":2.54,"count":4,"numbering":"UppercaseAlphabet","ascending":false}},"title_blocks":{"69cc7ca40de25c8ef80b":{"id":"69cc7ca40de25c8ef80b","name":"","position":{"x":467.36,"y":27.94},"polylines":{},"polygons":{},"rectangles":{"cedd4fe0cdb908ef055e":{"id":"cedd4fe0cdb908ef055e","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-10.16},"width":91.44,"height":10.16,"is_transparent":true},"a541b7571b45f36c639f":{"id":"a541b7571b45f36c639f","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-17.78},"width":91.44,"height":7.62,"is_transparent":true},"3bc608380f3ea9c761f0":{"id":"3bc608380f3ea9c761f0","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-25.4},"width":7.62,"height":7.62,"is_transparent":true},"9f7e0c22a5317e52fb54":{"id":"9f7e0c22a5317e52fb54","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":7.62,"y":-25.4},"width":76.2,"height":7.62,"is_transparent":true},"bef239727c8e88003911":{"id":"bef239727c8e88003911","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":83.82,"y":-25.4},"width":7.62,"height":7.62,"is_transparent":true},"1e7515d977c45a2e971c":{"id":"1e7515d977c45a2e971c","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-27.94},"width":50.8,"height":2.54,"is_transparent":true},"8d51615cb6aeabc449fd":{"id":"8d51615cb6aeabc449fd","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":50.8,"y":-27.94},"width":40.64,"height":2.54,"is_transparent":true}},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"fbc6d6eeb8b9dd48acc6":{"id":"fbc6d6eeb8b9dd48acc6","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":0.0,"y":-12.954},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Title"},"bb7339eafcdd883f8555":{"id":"bb7339eafcdd883f8555","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":0.0,"y":-20.574},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Size"},"112d936f69db220dc453":{"id":"112d936f69db220dc453","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":10.16,"y":-20.574},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Document
+      string: ''
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate, no-transform
+      Content-Length:
+      - '0'
+      Date:
+      - Wed, 17 Sep 2025 20:20:05 GMT
+      Retry-After:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Gitea-Debug:
+      - RUN_MODE=dev
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/json/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
+  response:
+    body:
+      string: ''
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate, no-transform
+      Content-Length:
+      - '0'
+      Date:
+      - Wed, 17 Sep 2025 20:20:06 GMT
+      Retry-After:
+      - '1'
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Gitea-Debug:
+      - RUN_MODE=dev
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      User-Agent:
+      - python-requests/2.32.3
+    method: GET
+    uri: http://localhost:3000/api/v1/repos/test/test-test_list_components_system_capture_with_variant/allspice_generated/json/variant-test-1.sdax?ref=ac41c9dc9aaa5acb215f3cc77f453bd754b49a8b
+  response:
+    body:
+      string: '{"type":"Schematic","variants":{"fda64c8c6a68d4547130":"TESTVAR"},"nets":{},"pages":[{"id":"8780b0445242a18bf1e9","name":"Page(1)","ui_group_id":"4608fac28f429202cdbd","ui_group_name":"hierarchical","page_size":{"x":558.8,"y":431.8},"border":{"stroke_width":0.1524,"margin":{"left":-2.54,"right":-2.54,"top":-2.54,"bottom":-2.54},"horizontal_label":{"width":2.54,"count":8,"numbering":"ArabicNumeral","ascending":true},"vertical_label":{"width":2.54,"count":4,"numbering":"UppercaseAlphabet","ascending":false}},"title_blocks":{"69cc7ca40de25c8ef80b":{"id":"69cc7ca40de25c8ef80b","name":"","position":{"x":467.36,"y":27.94},"polylines":{},"polygons":{},"rectangles":{"cedd4fe0cdb908ef055e":{"id":"cedd4fe0cdb908ef055e","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-10.16},"width":91.44,"height":10.16,"is_transparent":true},"a541b7571b45f36c639f":{"id":"a541b7571b45f36c639f","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-17.78},"width":91.44,"height":7.62,"is_transparent":true},"3bc608380f3ea9c761f0":{"id":"3bc608380f3ea9c761f0","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-25.4},"width":7.62,"height":7.62,"is_transparent":true},"9f7e0c22a5317e52fb54":{"id":"9f7e0c22a5317e52fb54","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":7.62,"y":-25.4},"width":76.2,"height":7.62,"is_transparent":true},"bef239727c8e88003911":{"id":"bef239727c8e88003911","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":83.82,"y":-25.4},"width":7.62,"height":7.62,"is_transparent":true},"1e7515d977c45a2e971c":{"id":"1e7515d977c45a2e971c","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":0.0,"y":-27.94},"width":50.8,"height":2.54,"is_transparent":true},"8d51615cb6aeabc449fd":{"id":"8d51615cb6aeabc449fd","symbol":"AllSymbols","is_visible":true,"color":"#000000","line_width":0.125,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":50.8,"y":-27.94},"width":40.64,"height":2.54,"is_transparent":true}},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"fbc6d6eeb8b9dd48acc6":{"id":"fbc6d6eeb8b9dd48acc6","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":0.0,"y":-12.954},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Title"},"bb7339eafcdd883f8555":{"id":"bb7339eafcdd883f8555","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":0.0,"y":-20.574},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Size"},"112d936f69db220dc453":{"id":"112d936f69db220dc453","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":10.16,"y":-20.574},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Document
         Number"},"06a96e87b9ca7ab7391d":{"id":"06a96e87b9ca7ab7391d","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":83.82,"y":-20.574},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Rev"},"d2f3242ee4127f4686c4":{"id":"d2f3242ee4127f4686c4","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":0.0,"y":-28.194},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Date:"},"7264bc239fa1f632a148":{"id":"7264bc239fa1f632a148","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":50.8,"y":-28.194},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"Sheet"},"5929c05a5cdf12f4da87":{"id":"5929c05a5cdf12f4da87","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":71.12,"y":-28.194},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"of"}},"attributes":{"PAGE_CREATE_DATE":{"name":"PAGE_CREATE_DATE","value":"Test
         Date","symbol":"AllSymbols","position":{"x":7.366,"y":-28.448},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"DOC":{"name":"DOC","value":"","symbol":"AllSymbols","position":{"x":10.16,"y":-20.32},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"REVCODE":{"name":"REVCODE","value":"?","symbol":"AllSymbols","position":{"x":86.36,"y":-23.368},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"TITLE":{"name":"TITLE","value":"","symbol":"AllSymbols","position":{"x":10.16,"y":-12.7},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"ORGNAME":{"name":"ORGNAME","value":"","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"ORGADDR1":{"name":"ORGADDR1","value":"","symbol":"AllSymbols","position":{"x":0.0,"y":-5.08},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"PAGE_SIZE":{"name":"PAGE_SIZE","value":"A","symbol":"AllSymbols","position":{"x":2.54,"y":-23.368},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"PAGE_NUMBER":{"name":"PAGE_NUMBER","value":"1","symbol":"AllSymbols","position":{"x":63.5,"y":-28.448},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"PAGE_COUNT":{"name":"PAGE_COUNT","value":"1","symbol":"AllSymbols","position":{"x":78.74,"y":-28.448},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"},"COMMENT_BODY":{"name":"COMMENT_BODY","value":"TRUE","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CAP_NAME":{"name":"CAP_NAME","value":"TEST","display_text":"CAP_NAME=TEST","symbol":"AllSymbols","position":{"x":2.54,"y":-8.128},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}}}},"fonts":{"ff6e479d7bebe8199630":{"family":"Arial","pt":0.70556,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"4673f4dcabc47bd0fef8":{"family":"Arial","pt":0.52917,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"b38e33c7f12c94b3085a":{"family":"Arial","pt":0.44097,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"69b3123a15a6846347cf":{"family":"Arial","pt":0.26458,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"f3d97198d617dce3a288":{"family":"Arial","pt":0.88194,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"e3dcd5d795eddfadbd9f":{"family":"Arial","pt":1.32292,"weight":0.0,"is_italic":false,"is_bold":true,"is_truetype":false},"8ad435aeec8052135339":{"family":"Consolas","pt":1.94028,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"f5ed56dfb8d6c4f2d002":{"family":"Arial","pt":0.61736,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false},"b7a1925e06bff3b74a58":{"family":"Arial","pt":0.53804,"weight":0.0,"is_italic":false,"is_bold":false,"is_truetype":false}},"wires":{"6d8d1160f5b408451d85":{"id":"6d8d1160f5b408451d85","p1":{"x":132.08,"y":262.89},"p2":{"x":132.08,"y":267.97},"color":"#4200ff","width":0.125},"8da67b9212d04de588fb":{"id":"8da67b9212d04de588fb","p1":{"x":127.0,"y":231.14},"p2":{"x":127.0,"y":234.95},"color":"#4200ff","width":0.125},"28dbf78f2363e1cf77fa":{"id":"28dbf78f2363e1cf77fa","p1":{"x":152.4,"y":251.46},"p2":{"x":148.59,"y":251.46},"color":"#4200ff","width":0.125},"a3098b9eee373b03776f":{"id":"a3098b9eee373b03776f","p1":{"x":115.57,"y":251.46},"p2":{"x":96.52,"y":251.46},"color":"#4200ff","width":0.125},"4d3fe3e3d5682d06479c":{"id":"4d3fe3e3d5682d06479c","p1":{"x":127.0,"y":251.46},"p2":{"x":123.19,"y":251.46},"color":"#4200ff","width":0.125},"a30c98599c449a427f0f":{"id":"a30c98599c449a427f0f","p1":{"x":127.0,"y":242.57},"p2":{"x":127.0,"y":251.46},"color":"#4200ff","width":0.125},"cba714f0b7862986b847":{"id":"cba714f0b7862986b847","p1":{"x":132.08,"y":251.46},"p2":{"x":132.08,"y":255.27},"color":"#4200ff","width":0.125},"44211a0f6397207c71ee":{"id":"44211a0f6397207c71ee","p1":{"x":132.08,"y":251.46},"p2":{"x":127.0,"y":251.46},"color":"#4200ff","width":0.125},"288b010b0bc701629c3b":{"id":"288b010b0bc701629c3b","p1":{"x":133.35,"y":251.46},"p2":{"x":132.08,"y":251.46},"color":"#4200ff","width":0.125}},"junctions":{},"components":{"d23828684628d1e3e463":{"id":"d23828684628d1e3e463","position":{"x":132.08,"y":259.08},"rotation":0.0,"mirrored":false,"name":"","reference":"R1","attributes":{"LOCATION":{"name":"LOCATION","value":"R1","symbol":"AllSymbols","position":{"x":1.27,"y":1.143},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"VALUE":{"name":"VALUE","value":"1K","symbol":"AllSymbols","position":{"x":-3.175,"y":0.889},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"CDS_LIBRARY_ID":{"name":"CDS_LIBRARY_ID","value":"01HGE8KPXB1BPT1AWG000T1F68","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"JEDEC_TYPE":{"name":"JEDEC_TYPE","value":"smdres","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"NAME":{"name":"NAME","value":"Resistor_Test","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"PART_NAME":{"name":"PART_NAME","value":"RESISTOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_LMAN_SYM_OUTLINE":{"name":"CDS_LMAN_SYM_OUTLINE","value":"-25400,-12700,25400,12700","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CHIPS_PART_NAME":{"name":"CHIPS_PART_NAME","value":"RESISTOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_PART_NAME":{"name":"CDS_PART_NAME","value":"RESISTOR-SMDRES","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"SEC":{"name":"SEC","value":"1","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}},"pins":{"d0bd058db9781c98e45f":{"symbol":"AllSymbols","name":"2","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"2","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":-3.81},"length":0.0,"orientation":"Right"},"820fd40ae01e3b7a0f44":{"symbol":"AllSymbols","name":"1","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"1","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":3.81},"length":0.0,"orientation":"Left"}},"polylines":{"e96ce4d8e219757ec8c0":{"id":"e96ce4d8e219757ec8c0","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.016,"y":1.778},{"x":0.0,"y":2.286}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"2a3d2e49b7991c95ddaf":{"id":"2a3d2e49b7991c95ddaf","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.016,"y":1.016},{"x":1.016,"y":1.778}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"ddafc7591817812aff36":{"id":"ddafc7591817812aff36","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.016,"y":0.254},{"x":-1.016,"y":1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"dcc9a9cda85d853764de":{"id":"dcc9a9cda85d853764de","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.016,"y":-0.508},{"x":1.016,"y":0.254}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"c623f141e1549693dd09":{"id":"c623f141e1549693dd09","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.016,"y":-1.27},{"x":-1.016,"y":-0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"e598e85d1e53206f061e":{"id":"e598e85d1e53206f061e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.016,"y":-2.032},{"x":1.016,"y":-1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"fa03081e7aafeab1703c":{"id":"fa03081e7aafeab1703c","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-2.54},{"x":-1.016,"y":-2.032}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"ac5265cd104dfb03edf6":{"id":"ac5265cd104dfb03edf6","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":2.286},{"x":0.0,"y":2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"0e70f106decdc9c75f3d":{"id":"0e70f106decdc9c75f3d","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-2.54},{"x":0.0,"y":-3.81}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"5943fa985bddbc8cf106":{"id":"5943fa985bddbc8cf106","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":2.54},{"x":0.0,"y":3.81}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"da14d191e29848891d1d":{"id":"da14d191e29848891d1d","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"4673f4dcabc47bd0fef8","position":{"x":-1.27,"y":-1.27},"justification":{"horizontal":"Right","vertical":"Bottom"},"orientation":270.0,"text":"2"},"7a6307c2deff28c14794":{"id":"7a6307c2deff28c14794","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"4673f4dcabc47bd0fef8","position":{"x":-1.27,"y":1.27},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":270.0,"text":"1"}}},"d09414276a18e9264d4d":{"id":"d09414276a18e9264d4d","position":{"x":119.38,"y":251.46},"rotation":0.0,"mirrored":false,"name":"","reference":"R2","attributes":{"LOCATION":{"name":"LOCATION","value":"R2","symbol":"AllSymbols","position":{"x":-1.143,"y":1.27},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"VALUE":{"name":"VALUE","value":"4.7K","symbol":"AllSymbols","position":{"x":-0.889,"y":-3.175},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"CDS_LIBRARY_ID":{"name":"CDS_LIBRARY_ID","value":"01HGE8N899S511163C22XM0MW0","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"JEDEC_TYPE":{"name":"JEDEC_TYPE","value":"smdres","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"NAME":{"name":"NAME","value":"Resistor_Test-4.7k","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"PART_NAME":{"name":"PART_NAME","value":"RESISTOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_LMAN_SYM_OUTLINE":{"name":"CDS_LMAN_SYM_OUTLINE","value":"-25400,-12700,25400,12700","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CHIPS_PART_NAME":{"name":"CHIPS_PART_NAME","value":"RESISTOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_PART_NAME":{"name":"CDS_PART_NAME","value":"RESISTOR-SMDRES","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"SEC":{"name":"SEC","value":"1","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}},"pins":{"a7d92948c37ad2842f43":{"symbol":"AllSymbols","name":"2","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"2","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":3.81,"y":0.0},"length":0.0,"orientation":"Right"},"5f9b44efe31e1666afe9":{"symbol":"AllSymbols","name":"1","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"1","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":-3.81,"y":0.0},"length":0.0,"orientation":"Left"}},"polylines":{"ae2aceaac4699fddeb0b":{"id":"ae2aceaac4699fddeb0b","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.778,"y":1.016},{"x":-2.286,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"1bb7d95937a36612f2d8":{"id":"1bb7d95937a36612f2d8","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.016,"y":-1.016},{"x":-1.778,"y":1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"c6c164f526f911d461ba":{"id":"c6c164f526f911d461ba","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-0.254,"y":1.016},{"x":-1.016,"y":-1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"4d746224b4da3e0c80d0":{"id":"4d746224b4da3e0c80d0","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.508,"y":-1.016},{"x":-0.254,"y":1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"cfd4b15df3470bb2cc05":{"id":"cfd4b15df3470bb2cc05","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.27,"y":1.016},{"x":0.508,"y":-1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"b062ec851ff39a381731":{"id":"b062ec851ff39a381731","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.032,"y":-1.016},{"x":1.27,"y":1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"6c12252d05710d2fe8d9":{"id":"6c12252d05710d2fe8d9","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":0.0},{"x":2.032,"y":-1.016}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"6d6da645b17c6cbad490":{"id":"6d6da645b17c6cbad490","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-2.286,"y":0.0},{"x":-2.54,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"697c0c924e689d0d7618":{"id":"697c0c924e689d0d7618","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":0.0},{"x":3.81,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"5f374b9dff86de6487ac":{"id":"5f374b9dff86de6487ac","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-2.54,"y":0.0},{"x":-3.81,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"2dedeb04395a24beaa04":{"id":"2dedeb04395a24beaa04","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"4673f4dcabc47bd0fef8","position":{"x":1.27,"y":-1.27},"justification":{"horizontal":"Right","vertical":"Bottom"},"orientation":0.0,"text":"2"},"1fa0d5a87013af5c3f3c":{"id":"1fa0d5a87013af5c3f3c","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"4673f4dcabc47bd0fef8","position":{"x":-1.27,"y":-1.27},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"1"}}},"0aba3b094772926d9501":{"id":"0aba3b094772926d9501","position":{"x":127.0,"y":238.76},"rotation":0.0,"mirrored":false,"name":"","reference":"U1","attributes":{"LOCATION":{"name":"LOCATION","value":"U1","symbol":"AllSymbols","position":{"x":2.54,"y":-1.016},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Right","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"VALUE":{"name":"VALUE","value":"1uF","symbol":"AllSymbols","position":{"x":-4.572,"y":-1.016},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Right","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"CDS_LIBRARY_ID":{"name":"CDS_LIBRARY_ID","value":"01HGE8JD6PS4Y91CFH939Z1TDM","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"JEDEC_TYPE":{"name":"JEDEC_TYPE","value":"smdcap","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"NAME":{"name":"NAME","value":"Capacitor_Test","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"PART_NAME":{"name":"PART_NAME","value":"CAPACITOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"TOL":{"name":"TOL","value":"10","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_LMAN_SYM_OUTLINE":{"name":"CDS_LMAN_SYM_OUTLINE","value":"-12700,-25400,12700,25400","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CHIPS_PART_NAME":{"name":"CHIPS_PART_NAME","value":"CAPACITOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_PART_NAME":{"name":"CDS_PART_NAME","value":"CAPACITOR-SMDCAP","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"SEC":{"name":"SEC","value":"1","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}},"pins":{"820fd40ae01e3b7a0f44":{"symbol":"AllSymbols","name":"1","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"1","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":3.81},"length":0.0,"orientation":"Left"},"d0bd058db9781c98e45f":{"symbol":"AllSymbols","name":"2","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"2","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":-3.81},"length":0.0,"orientation":"Right"}},"polylines":{"f6df51934531544e7e45":{"id":"f6df51934531544e7e45","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.27,"y":0.508},{"x":1.27,"y":0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"6bfcacb4bbc76caa323e":{"id":"6bfcacb4bbc76caa323e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.27,"y":-0.508},{"x":1.27,"y":-0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"b533436e1af35761435e":{"id":"b533436e1af35761435e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-1.27},{"x":0.0,"y":-0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"2a02f13daea457d178c7":{"id":"2a02f13daea457d178c7","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":1.27},{"x":0.0,"y":0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"ec56055b4b5b9ef5651c":{"id":"ec56055b4b5b9ef5651c","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":3.81},{"x":0.0,"y":1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"66aa02796ef18cf314de":{"id":"66aa02796ef18cf314de","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-3.81},{"x":0.0,"y":-1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"a85ec2205267c8700515":{"id":"a85ec2205267c8700515","symbol":"AllSymbols","is_visible":true,"color":"#000000","font_id":"69b3123a15a6846347cf","position":{"x":0.0,"y":1.778},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":270.0,"text":"1"},"af0d3d4bf98ef5cc1104":{"id":"af0d3d4bf98ef5cc1104","symbol":"AllSymbols","is_visible":true,"color":"#000000","font_id":"69b3123a15a6846347cf","position":{"x":0.0,"y":-2.032},"justification":{"horizontal":"Right","vertical":"Bottom"},"orientation":270.0,"text":"2"}},"variants":{"fda64c8c6a68d4547130":{"id":"0aba3b094772926d9501","position":{"x":127.0,"y":238.76},"rotation":0.0,"mirrored":false,"name":"","reference":"U1","attributes":{"LOCATION":{"name":"LOCATION","value":"U1","symbol":"AllSymbols","position":{"x":2.54,"y":-1.016},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Right","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"VALUE":{"name":"VALUE","value":"4.7K","symbol":"AllSymbols","position":{"x":-4.572,"y":-1.016},"is_visible":true,"orientation":270.0,"justification":{"horizontal":"Right","vertical":"Bottom"},"color":"#000000","font_id":"b38e33c7f12c94b3085a"},"CDS_LIBRARY_ID":{"name":"CDS_LIBRARY_ID","value":"01HGE8N899S511163C22XM0MW0","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"JEDEC_TYPE":{"name":"JEDEC_TYPE","value":"smdres","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"NAME":{"name":"NAME","value":"Resistor_Test-4.7k","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"PART_NAME":{"name":"PART_NAME","value":"RESISTOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"TOL":{"name":"TOL","value":"5","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":270.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_LMAN_SYM_OUTLINE":{"name":"CDS_LMAN_SYM_OUTLINE","value":"-12700,-25400,12700,25400","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CHIPS_PART_NAME":{"name":"CHIPS_PART_NAME","value":"CAPACITOR","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"CDS_PART_NAME":{"name":"CDS_PART_NAME","value":"CAPACITOR-SMDCAP","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"},"SEC":{"name":"SEC","value":"1","symbol":"AllSymbols","position":{"x":0.0,"y":0.0},"is_visible":false,"orientation":0.0,"justification":{"horizontal":"Center","vertical":"Center"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}},"pins":{"820fd40ae01e3b7a0f44":{"symbol":"AllSymbols","name":"1","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"1","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":3.81},"length":0.0,"orientation":"Left"},"d0bd058db9781c98e45f":{"symbol":"AllSymbols","name":"2","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"2","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":0.0,"y":-3.81},"length":0.0,"orientation":"Right"}},"polylines":{"f6df51934531544e7e45":{"id":"f6df51934531544e7e45","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.27,"y":0.508},{"x":1.27,"y":0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"6bfcacb4bbc76caa323e":{"id":"6bfcacb4bbc76caa323e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-1.27,"y":-0.508},{"x":1.27,"y":-0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"b533436e1af35761435e":{"id":"b533436e1af35761435e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-1.27},{"x":0.0,"y":-0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"2a02f13daea457d178c7":{"id":"2a02f13daea457d178c7","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":1.27},{"x":0.0,"y":0.508}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"ec56055b4b5b9ef5651c":{"id":"ec56055b4b5b9ef5651c","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":3.81},{"x":0.0,"y":1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"66aa02796ef18cf314de":{"id":"66aa02796ef18cf314de","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":-3.81},{"x":0.0,"y":-1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"a85ec2205267c8700515":{"id":"a85ec2205267c8700515","symbol":"AllSymbols","is_visible":true,"color":"#000000","font_id":"69b3123a15a6846347cf","position":{"x":0.0,"y":1.778},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":270.0,"text":"1"},"af0d3d4bf98ef5cc1104":{"id":"af0d3d4bf98ef5cc1104","symbol":"AllSymbols","is_visible":true,"color":"#000000","font_id":"69b3123a15a6846347cf","position":{"x":0.0,"y":-2.032},"justification":{"horizontal":"Right","vertical":"Bottom"},"orientation":270.0,"text":"2"}}}}}},"ports":{"a504cb8b271702ac6aed":{"id":"a504cb8b271702ac6aed","position":{"x":129.54,"y":270.51},"rotation":0.0,"mirrored":false,"name":"","attributes":{"HDL_POWER":{"name":"HDL_POWER","value":"+5V","symbol":"AllSymbols","position":{"x":0.0,"y":-0.508},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"f5ed56dfb8d6c4f2d002"}},"pins":{"7026009ad292467b6a02":{"symbol":"AllSymbols","name":"$PIN0","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":2.54,"y":-2.54},"length":0.0,"orientation":"Left"}},"polylines":{"d000dcf169ff839098cc":{"id":"d000dcf169ff839098cc","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":-2.54},{"x":2.54,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"064a486dbf025aba3f9a":{"id":"064a486dbf025aba3f9a","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":3.81,"y":0.0},{"x":1.27,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"55569a342858ca905a84":{"id":"55569a342858ca905a84","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":-2.54},{"x":2.54,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"daaf3d0be215c9cca0b9":{"id":"daaf3d0be215c9cca0b9","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":3.81,"y":-4.318},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"$PIN0"}}},"1169e8a02fbc15887732":{"id":"1169e8a02fbc15887732","position":{"x":124.46,"y":231.14},"rotation":0.0,"mirrored":false,"name":"","attributes":{"HDL_POWER":{"name":"HDL_POWER","value":"GND","symbol":"AllSymbols","position":{"x":4.064,"y":-5.08},"is_visible":true,"orientation":0.0,"justification":{"horizontal":"Left","vertical":"Bottom"},"color":"#000000","font_id":"ff6e479d7bebe8199630"}},"pins":{"bb28c94a742103be66ed":{"symbol":"AllSymbols","name":"GND","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":2.54,"y":0.0},"length":0.0,"orientation":"Up"}},"polylines":{"f3db9185fe2727e8aac6":{"id":"f3db9185fe2727e8aac6","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":5.08,"y":0.0},{"x":0.0,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"2ac2fe9efef7c88d8af2":{"id":"2ac2fe9efef7c88d8af2","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":4.318,"y":-0.762},{"x":0.762,"y":-0.762}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"af3fac77e61d8f9fc6ec":{"id":"af3fac77e61d8f9fc6ec","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.524,"y":-1.524},{"x":3.556,"y":-1.524}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"f604ff980503d578fd23":{"id":"f604ff980503d578fd23","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.794,"y":-2.286},{"x":2.286,"y":-2.286}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"6306f9799b2f94f885ac":{"id":"6306f9799b2f94f885ac","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":0.0},{"x":2.54,"y":0.0}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"aac86b799dca8af16035":{"id":"aac86b799dca8af16035","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":5.08,"y":-4.318},"justification":{"horizontal":"Right","vertical":"Bottom"},"orientation":0.0,"text":"GND"}}},"5262815e071b13a36bc9":{"id":"5262815e071b13a36bc9","position":{"x":160.02,"y":248.92},"rotation":0.0,"mirrored":false,"name":"","attributes":{},"pins":{"dffe332c761785f24bad":{"symbol":"AllSymbols","name":"PORTBOTH-R","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":-7.62,"y":2.54},"length":0.0,"orientation":"Left"}},"polylines":{"ccd56767f2f6a7e7c219":{"id":"ccd56767f2f6a7e7c219","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-2.54,"y":1.27},{"x":0.0,"y":2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"99a6e31466f946264c85":{"id":"99a6e31466f946264c85","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-5.08,"y":1.27},{"x":-2.54,"y":1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"782ae3b1e8f0a0e60974":{"id":"782ae3b1e8f0a0e60974","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-7.62,"y":2.54},{"x":-5.08,"y":1.27}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"3946237643b994004b8a":{"id":"3946237643b994004b8a","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-5.08,"y":3.81},{"x":-7.62,"y":2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"1bef0ffa58a46b883696":{"id":"1bef0ffa58a46b883696","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-2.54,"y":3.81},{"x":-5.08,"y":3.81}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"46686755b4362abc476f":{"id":"46686755b4362abc476f","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":0.0,"y":2.54},{"x":-2.54,"y":3.81}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"c77ac638c8693c82c705":{"id":"c77ac638c8693c82c705","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":-7.62,"y":2.54},{"x":-7.62,"y":2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"5d19cdae88b14efbb230":{"id":"5d19cdae88b14efbb230","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":-8.89,"y":4.318},"justification":{"horizontal":"Right","vertical":"Top"},"orientation":0.0,"text":"PORTBOTH-R"}}},"2b9023e4d8afa209fa89":{"id":"2b9023e4d8afa209fa89","position":{"x":93.98,"y":254.0},"rotation":0.0,"mirrored":false,"name":"","attributes":{},"pins":{"7026009ad292467b6a02":{"symbol":"AllSymbols","name":"$PIN0","name_color":"#000000","name_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"is_name_visible":false,"description":"","designator":"","designator_position":{"margin":0.0,"orientation":"Parallel","relative_to":"Pin"},"designator_color":"#000000","is_designator_visible":false,"electrical_type":"Io","position":{"x":2.54,"y":-2.54},"length":0.0,"orientation":"Left"}},"polylines":{"2db92b2ded2bd22257d8":{"id":"2db92b2ded2bd22257d8","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.27,"y":-1.27},{"x":0.0,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"130067b0adb90c0b1288":{"id":"130067b0adb90c0b1288","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":1.27,"y":-3.81},{"x":0.0,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"c74b6695e09c5ff4d26a":{"id":"c74b6695e09c5ff4d26a","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":-1.27},{"x":1.27,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"7122bd2c2b029047134e":{"id":"7122bd2c2b029047134e","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":-3.81},{"x":1.27,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"55569a342858ca905a84":{"id":"55569a342858ca905a84","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":2.54,"y":-2.54},{"x":2.54,"y":-2.54}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"daaf3d0be215c9cca0b9":{"id":"daaf3d0be215c9cca0b9","symbol":"AllSymbols","is_visible":false,"color":"#004080","font_id":"f5ed56dfb8d6c4f2d002","position":{"x":3.81,"y":-4.318},"justification":{"horizontal":"Left","vertical":"Bottom"},"orientation":0.0,"text":"$PIN0"}}}},"sheet_refs":{},"no_connects":[],"graphics":{"polylines":{"549507e0113c4131442f":{"id":"549507e0113c4131442f","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":146.05,"y":250.19},{"x":134.62,"y":250.19}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"9436f20ef6869e4819c9":{"id":"9436f20ef6869e4819c9","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":134.62,"y":252.73},{"x":146.05,"y":252.73}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"b66dd395e62169c072ce":{"id":"b66dd395e62169c072ce","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":146.05,"y":252.73},{"x":147.32,"y":251.46}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"cdf8a4ab58db2632fc97":{"id":"cdf8a4ab58db2632fc97","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":147.32,"y":251.46},{"x":146.05,"y":250.19}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"b8ee56e81d3fca8371cb":{"id":"b8ee56e81d3fca8371cb","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":134.62,"y":252.73},{"x":134.62,"y":250.19}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"803f57f0c523ea2ef77a":{"id":"803f57f0c523ea2ef77a","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":134.62,"y":251.46},{"x":133.35,"y":251.46}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"},"c12fce620add6aadbc25":{"id":"c12fce620add6aadbc25","symbol":"AllSymbols","is_visible":true,"color":"#000000","points":[{"x":148.59,"y":251.46},{"x":147.32,"y":251.46}],"line_width":0.125,"is_filled":false,"fill_color":"#000000"}},"polygons":{},"rectangles":{"e7bc81788f45a4321ada":{"id":"e7bc81788f45a4321ada","symbol":"AllSymbols","is_visible":true,"color":"#fcd054","line_width":0.625,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":173.99,"y":269.24},"width":39.37,"height":10.16,"is_transparent":false},"0b0184a087bbbccf9662":{"id":"0b0184a087bbbccf9662","symbol":"AllSymbols","is_visible":true,"color":"#4200ff","line_width":1.5625,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":173.99,"y":256.54},"width":39.37,"height":10.16,"is_transparent":false},"da5c24ac81db27024b16":{"id":"da5c24ac81db27024b16","symbol":"AllSymbols","is_visible":true,"color":"#fcd054","line_width":0.625,"is_filled":false,"fill_color":"#000000","bottom_left":{"x":177.8,"y":220.98},"width":25.4,"height":25.4,"is_transparent":false}},"arcs":{},"ellipses":{},"beziers":{},"bitmaps":{},"texts":{"420ed51e27699ca06b17":{"id":"420ed51e27699ca06b17","symbol":"AllSymbols","is_visible":true,"color":"#000000","font_id":"f3d97198d617dce3a288","position":{"x":193.56915,"y":261.63695},"justification":{"horizontal":"Center","vertical":"Center"},"orientation":0.0,"text":"Box
         with Text"},"848388e1c1bd3a945c08":{"id":"848388e1c1bd3a945c08","symbol":"AllSymbols","is_visible":true,"color":"#0000ff","font_id":"e3dcd5d795eddfadbd9f","position":{"x":203.708,"y":405.33108},"justification":{"horizontal":"Left","vertical":"Top"},"orientation":0.0,"text":"Free
@@ -374,11 +338,11 @@ interactions:
       Content-Encoding:
       - gzip
       Content-Length:
-      - '21480'
+      - '21421'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Tue, 20 May 2025 16:40:35 GMT
+      - Wed, 17 Sep 2025 20:20:07 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -394,7 +358,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate
+      - gzip, deflate, zstd
       Connection:
       - keep-alive
       Content-Length:
@@ -412,7 +376,7 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Tue, 20 May 2025 16:40:35 GMT
+      - Wed, 17 Sep 2025 20:20:07 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:

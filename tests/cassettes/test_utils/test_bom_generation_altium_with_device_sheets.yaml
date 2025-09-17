@@ -16,18 +16,18 @@ interactions:
     uri: http://localhost:3000/api/v1/version
   response:
     body:
-      string: '{"version":"1.21.11+15-4-g567b1fc7ed"}
+      string: '{"version":"1.23.8+18-7-g8873dddf82"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '39'
+      - '38'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:58 GMT
+      - Wed, 17 Sep 2025 20:15:52 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -54,18 +54,18 @@ interactions:
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"en-US","is_admin":true,"last_login":"2024-10-07T16:00:23-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '501'
+      - '555'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:58 GMT
+      - Wed, 17 Sep 2025 20:15:52 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -87,7 +87,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '188'
+      - '187'
       Content-type:
       - application/json
       User-Agent:
@@ -96,7 +96,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2194,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets","full_name":"test/test-test_bom_generation_altium_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-11T14:52:58-04:00","updated_at":"2024-10-11T14:52:58-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2517,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets","full_name":"test/test-test_bom_generation_altium_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":27,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:15:52-04:00","updated_at":"2025-09-17T16:15:52-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -105,7 +105,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:58 GMT
+      - Wed, 17 Sep 2025 20:15:52 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -134,18 +134,18 @@ interactions:
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"en-US","is_admin":true,"last_login":"2024-10-07T16:00:23-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '501'
+      - '555'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:58 GMT
+      - Wed, 17 Sep 2025 20:15:52 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -172,7 +172,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets
   response:
     body:
-      string: '{"id":2194,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets","full_name":"test/test-test_bom_generation_altium_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":54,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-11T14:52:58-04:00","updated_at":"2024-10-11T14:52:58-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2517,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets","full_name":"test/test-test_bom_generation_altium_with_device_sheets","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":56,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:15:52-04:00","updated_at":"2025-09-17T16:15:52-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -181,7 +181,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:58 GMT
+      - Wed, 17 Sep 2025 20:15:52 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -205,7 +205,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '184'
+      - '183'
       Content-type:
       - application/json
       User-Agent:
@@ -214,7 +214,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2195,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets_reuse","full_name":"test/test-test_bom_generation_altium_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":25,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-11T14:52:58-04:00","updated_at":"2024-10-11T14:52:59-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2518,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets_reuse","full_name":"test/test-test_bom_generation_altium_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":27,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:15:52-04:00","updated_at":"2025-09-17T16:15:53-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -223,7 +223,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -252,18 +252,18 @@ interactions:
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"en-US","is_admin":true,"last_login":"2024-10-07T16:00:23-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '501'
+      - '555'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -290,7 +290,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse
   response:
     body:
-      string: '{"id":2195,"owner":{"id":1,"login":"test","login_name":"","full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets_reuse","full_name":"test/test-test_bom_generation_altium_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":54,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2024-10-11T14:52:58-04:00","updated_at":"2024-10-11T14:52:59-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"has_releases":true,"has_packages":true,"has_actions":false,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null}
+      string: '{"id":2518,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_altium_with_device_sheets_reuse","full_name":"test/test-test_bom_generation_altium_with_device_sheets_reuse","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":57,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_altium_with_device_sheets_reuse.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_altium_with_device_sheets_reuse.git","original_url":"https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:15:52-04:00","updated_at":"2025-09-17T16:15:53-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
 
         '
     headers:
@@ -299,7 +299,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -325,7 +325,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.PrjPcb?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
+    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/media/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.PrjPcb?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: "\uFEFF[Design]\nVersion=1.0\nHierarchyMode=0\nChannelRoomNamingStyle=0\nReleasesFolder=\nChannelDesignatorFormatString=$Component_$RoomName\nChannelRoomLevelSeperator=_\nOpenOutputs=1\nArchiveProject=0\nTimestampOutput=0\nSeparateFolders=0\nTemplateLocationPath=\nPinSwapBy_Netlabel=1\nPinSwapBy_Pin=1\nAllowPortNetNames=0\nAllowSheetEntryNetNames=1\nAppendSheetNumberToLocalNets=0\nNetlistSinglePinNets=0\nDefaultConfiguration=Sources\nUserID=0xFFFFFFFF\nDefaultPcbProtel=1\nDefaultPcbPcad=0\nReorderDocumentsOnCompile=1\nNameNetsHierarchically=0\nPowerPortNamesTakePriority=0\nAutoSheetNumbering=1\nAutoCrossReferences=1\nNewIndexingOfSheetSymbols=1\nPushECOToAnnotationFile=1\nDItemRevisionGUID=\nReportSuppressedErrorsInMessages=0\nFSMCodingStyle=eFMSDropDownList_OneProcess\nFSMEncodingStyle=eFMSDropDownList_OneHot\nIsProjectConflictPreventionWarningsEnabled=0\nConstraintManagerFlow=0\nIsVirtualBomDocumentRemoved=0\nOutputPath=\nLogFolderPath=\nManagedProjectGUID=\nIncludeDesignInRelease=0\nCrossRefSheetStyle=1\nCrossRefLocationStyle=1\nCrossRefPorts=3\nCrossRefCrossSheets=1\nCrossRefSheetEntries=0\nCrossRefFollowFromMainSettings=1\n\n[Preferences]\nPrefsVaultGUID=\nPrefsRevisionGUID=\n\n[Document1]\nDocumentPath=DCDC
@@ -451,11 +451,11 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Etag:
       - '"6ec84df8ec75c96e8569c7d9a91871d9b9f89c8b"'
       Last-Modified:
-      - Wed, 09 Oct 2024 13:24:23 GMT
+      - Wed, 09 Oct 2024 20:24:23 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -502,7 +502,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -546,7 +546,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -572,7 +572,7 @@ interactions:
       User-Agent:
       - python-requests/2.32.3
     method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/raw/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.Annotation?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
+    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/media/DCDC%20Regulators%20Breakout/DCDC%20Regulators%20Breakout.Annotation?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
       string: '[DesignatorManager]
@@ -1161,11 +1161,11 @@ interactions:
       Content-Type:
       - text/plain; charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Etag:
       - '"416269206286980792e4f5e572a4082e0f9aec49"'
       Last-Modified:
-      - Wed, 09 Oct 2024 13:32:10 GMT
+      - Wed, 09 Oct 2024 20:32:10 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -1201,7 +1201,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:53 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -1237,7 +1237,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:52:59 GMT
+      - Wed, 17 Sep 2025 20:15:54 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -1266,43 +1266,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
   response:
     body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Fri, 11 Oct 2024 18:53:00 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets/allspice_generated/json/DCDC%20Regulators%20Breakout/DCDC%20Regulators.SchDoc?ref=5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3
-  response:
-    body:
-      string: "{\n  \"html_id\": \"d-33abe596-fa46-4539-99f8-104e6f48015d\",\n  \"CKKFFKEU\":
+      string: "{\n  \"html_id\": \"d-5547af3b-82f1-4a6e-8565-cfef58030f45\",\n  \"CKKFFKEU\":
         {\n    \"color\": null,\n    \"unique_id\": \"CKKFFKEU\",\n    \"type\": \"Component\",\n
         \   \"name\": \"Header_Male_1R_02P\",\n    \"description\": null,\n    \"part_id\":
         \"CMP-1712-00002-6\",\n    \"pins\": [\n      {\n        \"color\": null,\n
@@ -3701,16 +3665,17 @@ interactions:
         null,\n    \"unique_id\": \"JEDEOSJC\",\n    \"type\": \"Parameter\",\n    \"name\":
         \"sheettotal\",\n    \"value\": \"5\"\n  },\n  \"variantname\": {\n    \"color\":
         null,\n    \"unique_id\": \"variantname\",\n    \"type\": \"Parameter\",\n
-        \   \"name\": \"variantname\",\n    \"value\": \"[No Variations]\"\n  }\n}"
+        \   \"name\": \"variantname\",\n    \"value\": \"[No Variations]\"\n  },\n
+        \ \"variants\": {}\n}"
     headers:
       Cache-Control:
       - public,max-age=86400
       Content-Length:
-      - '175482'
+      - '175500'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:55 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -3748,7 +3713,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:55 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
@@ -3792,7 +3757,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:55 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -3828,7 +3793,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:55 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -3857,7 +3822,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-3V3-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-1f5ebaef-cb74-4c8b-8f3b-40781a6bde28\",\n  \"DFYQLROK\":
+      string: "{\n  \"html_id\": \"d-d699b20e-9dd4-4464-a4c2-69b9bbb5bdda\",\n  \"DFYQLROK\":
         {\n    \"color\": null,\n    \"unique_id\": \"DFYQLROK\",\n    \"type\": \"Component\",\n
         \   \"name\": \"CMP-0069-00188-2\",\n    \"description\": \"SIMPLE SWITCHER\\u00ae
         High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263\",\n    \"part_id\":
@@ -5578,16 +5543,16 @@ interactions:
         \"Parameter\",\n    \"name\": \"documentname\",\n    \"value\": \"PSU-DCDC-3V3-TI-LM2678SX.SchDoc\"\n
         \ },\n  \"variantname\": {\n    \"color\": null,\n    \"unique_id\": \"variantname\",\n
         \   \"type\": \"Parameter\",\n    \"name\": \"variantname\",\n    \"value\":
-        \"[No Variations]\"\n  }\n}"
+        \"[No Variations]\"\n  },\n  \"variants\": {}\n}"
     headers:
       Cache-Control:
       - public,max-age=86400
       Content-Length:
-      - '126653'
+      - '126671'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:56 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -5621,7 +5586,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:53:01 GMT
+      - Wed, 17 Sep 2025 20:15:56 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -5650,43 +5615,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-5V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: ''
-    headers:
-      Cache-Control:
-      - max-age=0, private, must-revalidate, no-transform
-      Content-Length:
-      - '0'
-      Date:
-      - Fri, 11 Oct 2024 18:53:02 GMT
-      Retry-After:
-      - '1'
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
-    status:
-      code: 503
-      message: Service Unavailable
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate, zstd
-      Connection:
-      - keep-alive
-      Content-type:
-      - application/json
-      User-Agent:
-      - python-requests/2.32.3
-    method: GET
-    uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-5V0-TI-LM2678SX.SchDoc?ref=main
-  response:
-    body:
-      string: "{\n  \"html_id\": \"d-d2244761-bac1-4e4d-93ec-8b57797551e6\",\n  \"JFYXYGXI\":
+      string: "{\n  \"html_id\": \"d-aa83bbba-035a-4ea2-b63c-a46433eb1e3f\",\n  \"JFYXYGXI\":
         {\n    \"color\": null,\n    \"unique_id\": \"JFYXYGXI\",\n    \"type\": \"Component\",\n
         \   \"name\": \"7e88065a8287dcd79b9e61a875172dc\",\n    \"description\": \"IC
         REG BUCK 5V 5A TO263-7\",\n    \"part_id\": \"CMP-04918-000486-1\",\n    \"pins\":
@@ -7439,16 +7368,16 @@ interactions:
         \"Parameter\",\n    \"name\": \"documentname\",\n    \"value\": \"PSU-DCDC-5V0-TI-LM2678SX.SchDoc\"\n
         \ },\n  \"variantname\": {\n    \"color\": null,\n    \"unique_id\": \"variantname\",\n
         \   \"type\": \"Parameter\",\n    \"name\": \"variantname\",\n    \"value\":
-        \"[No Variations]\"\n  }\n}"
+        \"[No Variations]\"\n  },\n  \"variants\": {}\n}"
     headers:
       Cache-Control:
       - public,max-age=86400
       Content-Length:
-      - '128774'
+      - '128792'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:02 GMT
+      - Wed, 17 Sep 2025 20:15:57 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -7482,7 +7411,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:53:02 GMT
+      - Wed, 17 Sep 2025 20:15:57 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -7511,7 +7440,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-7a5db5a0-fcca-4da1-b96f-4d11dfeb7a75\",\n  \"FGTZIWAJ\":
+      string: "{\n  \"html_id\": \"d-47b88268-0f96-4faa-9263-e74293d95667\",\n  \"FGTZIWAJ\":
         {\n    \"color\": null,\n    \"unique_id\": \"FGTZIWAJ\",\n    \"type\": \"Component\",\n
         \   \"name\": \"RES-2\",\n    \"description\": \"Chip Resistor, 1 KOhm, +/-
         1%, 125 mW, -55 to 155 degC, 0805 (2012 Metric), RoHS, Tape and Reel\",\n
@@ -9582,16 +9511,16 @@ interactions:
         \"Parameter\",\n    \"name\": \"documentname\",\n    \"value\": \"PSU-DCDC-ADJ-9V0-TI-LM2678SX.SchDoc\"\n
         \ },\n  \"variantname\": {\n    \"color\": null,\n    \"unique_id\": \"variantname\",\n
         \   \"type\": \"Parameter\",\n    \"name\": \"variantname\",\n    \"value\":
-        \"[No Variations]\"\n  }\n}"
+        \"[No Variations]\"\n  },\n  \"variants\": {}\n}"
     headers:
       Cache-Control:
       - public,max-age=86400
       Content-Length:
-      - '152429'
+      - '152447'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:03 GMT
+      - Wed, 17 Sep 2025 20:15:59 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -9625,7 +9554,7 @@ interactions:
       Content-Length:
       - '0'
       Date:
-      - Fri, 11 Oct 2024 18:53:03 GMT
+      - Wed, 17 Sep 2025 20:15:59 GMT
       Retry-After:
       - '1'
       X-Content-Type-Options:
@@ -9654,7 +9583,7 @@ interactions:
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_altium_with_device_sheets_reuse/allspice_generated/json/PSU-DCDC-FIXED/PSU-DCDC-12V0-TI-LM2678SX.SchDoc?ref=main
   response:
     body:
-      string: "{\n  \"html_id\": \"d-e8b7c29a-6eaa-4f99-b400-e1bf8d46bba0\",\n  \"ASTIQASJ\":
+      string: "{\n  \"html_id\": \"d-7a8117c9-ef85-45eb-96c9-8ec27252df4e\",\n  \"ASTIQASJ\":
         {\n    \"color\": null,\n    \"unique_id\": \"ASTIQASJ\",\n    \"type\": \"Component\",\n
         \   \"name\": \"CMP-0069-00189-2\",\n    \"description\": \"SIMPLE SWITCHER\\u00ae
         High Efficiency 5A Step-Down Voltage Regulator, 7-pin TO-263\",\n    \"part_id\":
@@ -11375,16 +11304,16 @@ interactions:
         \"Parameter\",\n    \"name\": \"documentname\",\n    \"value\": \"PSU-DCDC-12V0-TI-LM2678SX.SchDoc\"\n
         \ },\n  \"variantname\": {\n    \"color\": null,\n    \"unique_id\": \"variantname\",\n
         \   \"type\": \"Parameter\",\n    \"name\": \"variantname\",\n    \"value\":
-        \"[No Variations]\"\n  }\n}"
+        \"[No Variations]\"\n  },\n  \"variants\": {}\n}"
     headers:
       Cache-Control:
       - public,max-age=86400
       Content-Length:
-      - '126654'
+      - '126672'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 11 Oct 2024 18:53:04 GMT
+      - Wed, 17 Sep 2025 20:16:00 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -11418,7 +11347,7 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Fri, 11 Oct 2024 18:53:04 GMT
+      - Wed, 17 Sep 2025 20:16:00 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
@@ -11452,7 +11381,7 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Fri, 11 Oct 2024 18:53:04 GMT
+      - Wed, 17 Sep 2025 20:16:00 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:

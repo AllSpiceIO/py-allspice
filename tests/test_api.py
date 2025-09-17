@@ -1,5 +1,7 @@
 import base64
 import datetime
+import os
+import subprocess
 import time
 import uuid
 
@@ -317,6 +319,56 @@ def test_get_raw_file(instance):
     readme_content = repo.get_raw_file("README.md")
     assert len(readme_content) > 0
     assert "descr" in str(readme_content)
+
+
+def test_lfs_upload_and_get_raw_file(instance, tmp_path, port):
+    org = Organization.request(instance, test_org)
+
+    lfs_repo_name = "lfs_test_" + uuid.uuid4().hex[:8]
+    repo = instance.create_repo(org, lfs_repo_name, "LFS test repository")
+    token = instance.headers["Authorization"].split(" ")[1]
+
+    clone_url = f"http://test:{token}@localhost:{port}/{test_org}/{lfs_repo_name}.git"
+    repo_dir = tmp_path / lfs_repo_name
+
+    try:
+        subprocess.run(["git", "lfs", "version"], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pytest.skip("Git LFS not available")
+
+    try:
+        subprocess.run(["git", "clone", clone_url, str(repo_dir)], check=True)
+
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"], cwd=repo_dir, check=True
+        )
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=repo_dir, check=True)
+
+        subprocess.run(["git", "lfs", "install"], cwd=repo_dir, check=True)
+        subprocess.run(["git", "lfs", "track", "*.bin"], cwd=repo_dir, check=True)
+
+        lfs_file_path = repo_dir / "large_file.bin"
+        lfs_file_content = os.urandom(1024)
+        with open(lfs_file_path, "wb") as f:
+            f.write(lfs_file_content)
+
+        subprocess.run(["git", "add", ".gitattributes"], cwd=repo_dir, check=True)
+        subprocess.run(["git", "add", "large_file.bin"], cwd=repo_dir, check=True)
+        subprocess.run(["git", "commit", "-m", "Add LFS file"], cwd=repo_dir, check=True)
+        subprocess.run(["git", "push", "origin", "master"], cwd=repo_dir, check=True)
+
+        raw_content = repo.get_raw_file("large_file.bin")
+
+        assert len(raw_content) == len(lfs_file_content)
+        assert raw_content == lfs_file_content
+        assert not raw_content.startswith(b"version https://git-lfs.github.com")
+
+        master_branch = repo.get_branch("master")
+        raw_content_with_ref = repo.get_raw_file("large_file.bin", master_branch)
+        assert raw_content_with_ref == lfs_file_content
+
+    finally:
+        repo.delete()
 
 
 def test_repo_download_file(instance, tmp_path):
