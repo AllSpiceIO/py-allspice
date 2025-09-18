@@ -566,7 +566,7 @@ class Repository(ApiObject):
     REPO_GET_LATEST_RELEASE = "/repos/{owner}/{repo}/releases/latest"
     REPO_GET_RELEASE_BY_TAG = "/repos/{owner}/{repo}/releases/tags/{tag}"
     REPO_GET_COMMIT_STATUS = "/repos/{owner}/{repo}/statuses/{sha}"
-    REPO_GET_RAW_FILE = "/repos/{owner}/{repo}/raw/{path}"
+    REPO_GET_MEDIA = "/repos/{owner}/{repo}/media/{path}"
     REPO_GET_TREE = "/repos/{owner}/{repo}/git/trees/{ref}"
 
     class ArchiveFormat(Enum):
@@ -1131,14 +1131,14 @@ class Repository(ApiObject):
         to download a large file, you might want to use `download_to_file`
         instead.
 
-        See https://hub.allspice.io/api/swagger#/repository/repoGetRawFile
+        See https://hub.allspice.io/api/swagger#/repository/repoGetRawFileOrLFS
 
         :param file_path: The path to the file to get.
         :param ref: The branch or commit to get the file from.  If not provided,
             the default branch is used.
         """
 
-        url = self.REPO_GET_RAW_FILE.format(
+        url = self.REPO_GET_MEDIA.format(
             owner=self.owner.username,
             repo=self.name,
             path=file_path,
@@ -1166,7 +1166,7 @@ class Repository(ApiObject):
         """
 
         url = self.allspice_client._AllSpice__get_url(
-            self.REPO_GET_RAW_FILE.format(
+            self.REPO_GET_MEDIA.format(
                 owner=self.owner.username,
                 repo=self.name,
                 path=file_path,
