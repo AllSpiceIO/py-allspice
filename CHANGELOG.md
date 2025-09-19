@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.11.1
+
+### Highlights
+
+* Support LFS in get_raw_file and download_to_file by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/255
+
+  These API functions now transparently support LFS access.
+
 ## v3.11.0
 
 ### Highlights
