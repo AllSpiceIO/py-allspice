@@ -711,7 +711,7 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
         ref="e03461e6bbe72f10b163462cf9325b0309e87201",
     )
 
-    assert len(bom) == 564
+    assert len(bom) == 551
     assert bom == csv_snapshot
 
 
@@ -893,7 +893,7 @@ def test_generate_bom_system_capture(request, instance, setup_for_generation, cs
         system_capture_attributes_mapping,
         ref="e03461e6bbe72f10b163462cf9325b0309e87201",
     )
-    assert len(bom) == 564
+    assert len(bom) == 551
     assert bom == csv_snapshot
 
 

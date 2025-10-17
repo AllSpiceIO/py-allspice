@@ -6,6 +6,7 @@ import functools
 import pathlib
 import posixpath
 import re
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
@@ -171,6 +172,7 @@ def list_components(
                 source_file,
                 variant=variant,
                 ref=ref,
+                combine_multi_part=combine_multi_part,
             )
         case SupportedTool.DEHDL:
             return list_components_for_dehdl(
@@ -420,6 +422,7 @@ def list_components_for_system_capture(
     sdax_path: str,
     variant: Optional[str] = None,
     ref: Ref = "main",
+    combine_multi_part: bool = False,
 ) -> list[ComponentAttributes]:
     """
     Get a list of all components in a System Capture SDAX schematic.
@@ -435,11 +438,18 @@ def list_components_for_system_capture(
         Variants are supported for all tools where AllSpice Hub shows variants.
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component.
     """
 
-    return _list_components_multi_page_schematic(
+    components = _list_components_multi_page_schematic(
         allspice_client, repository, sdax_path, variant, ref
     )
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_system_capture(components)
+
+    return components
 
 
 def list_components_for_dehdl(
@@ -996,6 +1006,36 @@ def _combine_multi_part_components_for_orcad(
         combined_component[PART_REFERENCE_ATTR_NAME] = designator
         combined_component["_reference"] = designator
         combined_components.append(combined_component)
+
+    return combined_components
+
+
+def _combine_multi_part_components_for_system_capture(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part System Capture components into a single component.
+
+    Multi-part System Capture components share the same LOCATION (reference
+    designator) but have different SEC (section) values. For multi-part
+    components, only the component with SEC=1 is kept as a representation the
+    complete component. Single-part components are always kept regardless of
+    their SEC value.
+    """
+
+    location_counts = Counter(comp["LOCATION"] for comp in components if comp.get("LOCATION"))
+
+    combined_components = []
+    for component in components:
+        location = component.get("LOCATION", "")
+        if not location:
+            combined_components.append(component)
+            continue
+
+        if location_counts[location] == 1:
+            combined_components.append(component)
+        elif component.get("SEC") == "1":
+            combined_components.append(component)
 
     return combined_components
 
