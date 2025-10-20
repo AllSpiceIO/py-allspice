@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.12.0
+
+### Highlights
+
+* Combine multi-part components for system capture by @shrik450 in
+  https://github.com/AllSpiceIO/py-allspice/pull/262
+
 ## v3.11.1
 
 ### Highlights
