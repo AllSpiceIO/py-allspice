@@ -539,9 +539,10 @@ def _list_components_multi_page_schematic(
             repository.get_generated_projectdata, schematic_path, ref
         )
         if "variants" in prj_data:
-            for id, name in prj_data["variants"].items():
-                if name == variant:
-                    variant_id = id
+            for variant_obj in prj_data["variants"]:
+                if variant_obj["name"] == variant:
+                    variant_id = variant_obj["id"]
+                    break
 
         if variant_id == "":
             raise NotFoundException("Variant %s does not exist in design." % variant)
