@@ -1419,7 +1419,7 @@ def _apply_annotation_file(
                 "No annotation found for component %s by unique ID, trying by designator.",
                 component_id,
             )
-            component_designator = component[DESIGNATOR_COLUMN_NAME]
+            component_designator = component[LOGICAL_DESIGNATOR]
             annotations_for_designator = annotations_by_sheet_and_designator.get(sheet_id, {}).get(
                 component_designator
             )
