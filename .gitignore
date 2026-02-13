@@ -1,6 +1,9 @@
 # pyenv
 .python-version
 
+# uv
+uv.lock
+
 # dotenv
 .env
 

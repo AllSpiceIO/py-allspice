@@ -1419,18 +1419,30 @@ def _apply_annotation_file(
                 "No annotation found for component %s by unique ID, trying by designator.",
                 component_id,
             )
-            component_designator = component[DESIGNATOR_COLUMN_NAME]
+            component_designator = component[LOGICAL_DESIGNATOR]
             annotations_for_designator = annotations_by_sheet_and_designator.get(sheet_id, {}).get(
                 component_designator
             )
-            if annotations_for_designator and len(annotations_for_designator) == 1:
-                logger.debug(
-                    "Found exact match for component %s, using annotation.", component_designator
-                )
-                annotation_for_component = annotations_for_designator[0]
+            if annotations_for_designator:
+                # Collapse to unique mappings by converting dicts to tuples and back
+                unique_annotations = [
+                    dict(t) for t in {tuple(sorted(d.items())) for d in annotations_for_designator}
+                ]
+
+                if len(unique_annotations) == 1:
+                    logger.debug(
+                        "Found exact match for component %s, using annotation.",
+                        component_designator,
+                    )
+                    annotation_for_component = unique_annotations[0]
+                else:
+                    logger.debug(
+                        "Found multiple unique annotations for designator %s; skipping.",
+                        component_designator,
+                    )
             else:
                 logger.debug(
-                    "Found multiple annotations for designator %s; skipping.", component_designator
+                    "No annotations found for designator %s; skipping.", component_designator
                 )
 
         if not annotation_for_component:

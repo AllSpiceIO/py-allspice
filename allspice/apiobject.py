@@ -1756,9 +1756,7 @@ class Commit(ReadonlyApiObject):
 
     _fields_to_parsers: ClassVar[dict] = {
         # NOTE: api may return None for commiters that are no allspice users
-        "author": lambda allspice_client, u: (
-            User.parse_response(allspice_client, u) if u else None
-        )
+        "author": lambda allspice_client, u: User.parse_response(allspice_client, u) if u else None
     }
 
     def __eq__(self, other):
@@ -1972,7 +1970,7 @@ class Issue(ApiObject):
         "assignees": lambda allspice_client, us: [
             User.parse_response(allspice_client, u) for u in us
         ],
-        "state": lambda _, s: (Issue.CLOSED if s == "closed" else Issue.OPENED),
+        "state": lambda _, s: Issue.CLOSED if s == "closed" else Issue.OPENED,
     }
 
     _parsers_to_fields: ClassVar[dict] = {
