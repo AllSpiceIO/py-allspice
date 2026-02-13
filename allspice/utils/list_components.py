@@ -1428,15 +1428,17 @@ def _apply_annotation_file(
                 unique_annotations = [
                     dict(t) for t in {tuple(sorted(d.items())) for d in annotations_for_designator}
                 ]
-                
+
                 if len(unique_annotations) == 1:
                     logger.debug(
-                        "Found exact match for component %s, using annotation.", component_designator
+                        "Found exact match for component %s, using annotation.",
+                        component_designator,
                     )
                     annotation_for_component = unique_annotations[0]
                 else:
                     logger.debug(
-                        "Found multiple unique annotations for designator %s; skipping.", component_designator
+                        "Found multiple unique annotations for designator %s; skipping.",
+                        component_designator,
                     )
             else:
                 logger.debug(
