@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.12.1
+
+### Highlights
+
+* Fix an issue with annotations by @yieterjoe and @McRaeAlex in
+  https://github.com/AllSpiceIO/py-allspice/pull/278 and https://github.com/AllSpiceIO/py-allspice/pull/279
+
 ## v3.12.0
 
 ### Highlights
