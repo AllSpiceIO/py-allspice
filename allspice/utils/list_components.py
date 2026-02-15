@@ -227,8 +227,19 @@ def list_components_for_altium(
     except UnicodeDecodeError:
         prjpcb_file_contents = raw_content.decode("iso-8859-1")
 
+    # We still need to read from the PrjPCB for unique id mappings and hierarchy
     prjpcb_ini = configparser.ConfigParser(interpolation=None)
     prjpcb_ini.read_string(prjpcb_file_contents)
+
+    allspice_client.logger.info(f"Fetching project data for {prjpcb_file=}")
+
+    # Fetch project data
+    prj_data = retry_not_yet_generated(repository.get_generated_projectdata, prjpcb_file, ref)
+
+    if "projects" not in prj_data or len(prj_data["projects"]) != 1:
+        raise ValueError(f"Data not found for project {prjpcb_file=}.")
+
+    prj_data = prj_data["projects"][0]
 
     if variant is not None:
         try:
@@ -241,7 +252,7 @@ def list_components_for_altium(
         # Ensuring variant_details is always bound, even if it is not used.
         variant_details = None
 
-    project_documents, device_sheets = _extract_schdoc_list_from_prjpcb(prjpcb_ini)
+    project_documents, device_sheets = _extract_schdoc_list_for_project(prj_data)
     allspice_client.logger.info("Found %d SchDoc files", len(project_documents))
     allspice_client.logger.info("Found %d Device Sheet files", len(device_sheets))
 
@@ -277,20 +288,17 @@ def list_components_for_altium(
     #    as the keys.
 
     for schdoc_file in project_documents:
-        schdoc_path_from_repo_root = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
-
         schdoc_json = retry_not_yet_generated(
             repository.get_generated_json,
-            schdoc_path_from_repo_root,
+            schdoc_file,
             ref,
         )
-        schdoc_jsons[schdoc_path_from_repo_root] = schdoc_json
+        schdoc_jsons[schdoc_file] = schdoc_json
 
     for device_sheet in device_sheets:
         device_sheet_repo, device_sheet_path = _find_device_sheet(
             device_sheet,
             repository,
-            prjpcb_file,
             design_reuse_repos,
             allspice_client.logger,
         )
@@ -539,9 +547,9 @@ def _list_components_multi_page_schematic(
             repository.get_generated_projectdata, schematic_path, ref
         )
         if "variants" in prj_data:
-            for id, name in prj_data["variants"].items():
-                if name == variant:
-                    variant_id = id
+            for variant_obj in prj_data["variants"]:
+                if variant_obj["name"] == variant:
+                    variant_id = variant_obj["id"]
 
         if variant_id == "":
             raise NotFoundException("Variant %s does not exist in design." % variant)
@@ -587,47 +595,30 @@ def _fetch_all_files_in_repo(repo: Repository) -> list[str]:
     return [file.path for file in tree]
 
 
-def _extract_schdoc_list_from_prjpcb(
-    prjpcb_ini: configparser.ConfigParser,
+def _extract_schdoc_list_for_project(
+    prj_data: dict,
 ) -> tuple[set[str], set[str]]:
     """
     Extract sets of all schematic files used in this project.
 
-    :param prjpcb_ini: The contents of the PrjPcb file as a ConfigParser.
+    :param prj_data: The project data containing the documents list.
     :returns: two sets. The first set is of relative paths from the project
         file to all the Schematic Documents in this project, and the second is
         of relative paths to device sheets from the project file.
     """
 
-    schdoc_files = set()
+    project_documents = set()
     device_sheets = set()
 
-    for section in prjpcb_ini.sections():
-        if section.casefold().startswith("document"):
-            document_path = prjpcb_ini[section].get("DocumentPath")
-            if document_path and document_path.casefold().endswith(".schdoc"):
-                schdoc_files.add(document_path)
-        elif section.casefold().startswith("devicesheet"):
-            document_path = prjpcb_ini[section].get("DocumentPath")
-            if document_path and document_path.casefold().endswith(".schdoc"):
-                device_sheets.add(document_path)
+    if "documents" in prj_data:
+        for doc in prj_data["documents"]:
+            if doc.get("path", "").lower().endswith(".schdoc"):
+                if doc.get("external", False):
+                    device_sheets.add(doc["path"])
+                else:
+                    project_documents.add(doc["path"])
 
-    return (schdoc_files, device_sheets)
-
-
-def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
-    """
-    Convert a relative path to the SchDoc file to an absolute path from the git
-    root based on the path to the PrjPcb file.
-    """
-
-    # The paths in the PrjPcb file are Windows paths, and ASH will store the
-    # paths as Posix paths. We need to resolve the SchDoc path relative to the
-    # PrjPcb path (which is a Posix Path, since it is from ASH), and then
-    # convert the result into a posix path as a string for use in ASH.
-    schdoc = pathlib.PureWindowsPath(schdoc_path)
-    prjpcb = pathlib.PurePosixPath(prjpcb_path)
-    return posixpath.normpath((prjpcb.parent / schdoc).as_posix())
+    return (project_documents, device_sheets)
 
 
 def _build_schdoc_hierarchy(
@@ -1218,7 +1209,6 @@ def _filter_blank_components(
 def _find_device_sheet(
     device_sheet: str,
     project_repository: Repository,
-    project_file_path: str,
     design_reuse_repos: list[Repository],
     logger: Logger,
 ) -> tuple[Repository, pathlib.PurePosixPath]:
@@ -1244,10 +1234,7 @@ def _find_device_sheet(
 
     # First, we'll resolve the actual path of the device sheet in the project
     # repo, and if that's a real file then we use that.
-    device_sheet_path_from_repo_root = _resolve_prjpcb_relative_path(
-        device_sheet,
-        project_file_path,
-    ).casefold()
+    device_sheet_path_from_repo_root = device_sheet.casefold()
     project_repo_tree = _fetch_all_files_in_repo(project_repository)
     for filepath in project_repo_tree:
         if device_sheet_path_from_repo_root == filepath.casefold():
