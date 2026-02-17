@@ -20,7 +20,9 @@ from allspice.utils.bom_generation import (
     generate_bom_for_system_capture,
 )
 from allspice.utils.list_components import (
+    AltiumChildSheet,
     _combine_multi_part_components_for_dehdl,
+    _expand_repeat_channels,
     _resolve_prjpcb_relative_path,
     list_components_for_altium,
     list_components_for_orcad,
@@ -1182,3 +1184,99 @@ def test_resolve_prjpcb_relative_path():
         _resolve_prjpcb_relative_path("..\\device-sheets\\sheet.SchDoc", "Project/Project.PrjPCB")
         == "device-sheets/sheet.SchDoc"
     )
+
+
+def test_expand_repeat_channels_basic():
+    hierarchy = {
+        "Sheet1.SchDoc": [
+            AltiumChildSheet(
+                kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
+                name="Sheet2.SchDoc",
+                unique_id="1",
+                channel_name="Repeat(Channel, 1, 3)",
+            )
+        ]
+    }
+
+    result = _expand_repeat_channels(hierarchy)
+
+    assert len(result["Sheet1.SchDoc"]) == 3
+    assert result["Sheet1.SchDoc"][0].channel_name == "Channel_1"
+    assert result["Sheet1.SchDoc"][1].channel_name == "Channel_2"
+    assert result["Sheet1.SchDoc"][2].channel_name == "Channel_3"
+
+
+def test_expand_repeat_channels_with_non_repeat():
+    hierarchy = {
+        "Sheet1.SchDoc": [
+            AltiumChildSheet(
+                kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
+                name="Sheet2.SchDoc",
+                unique_id="1",
+                channel_name="NormalChannel",
+            ),
+            AltiumChildSheet(
+                kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
+                name="Sheet3.SchDoc",
+                unique_id="2",
+                channel_name="Repeat(CH, 5, 7)",
+            ),
+        ]
+    }
+
+    result = _expand_repeat_channels(hierarchy)
+
+    assert len(result["Sheet1.SchDoc"]) == 4
+    assert result["Sheet1.SchDoc"][0].channel_name == "NormalChannel"
+    assert result["Sheet1.SchDoc"][1].channel_name == "CH_5"
+    assert result["Sheet1.SchDoc"][2].channel_name == "CH_6"
+    assert result["Sheet1.SchDoc"][3].channel_name == "CH_7"
+
+
+def test_expand_repeat_channels_preserves_other_fields():
+    hierarchy = {
+        "Sheet1.SchDoc": [
+            AltiumChildSheet(
+                kind=AltiumChildSheet.ChildSheetKind.DEVICE_SHEET,
+                name="DeviceSheet.SchDoc",
+                unique_id="ABC123",
+                channel_name="Repeat(DevCH, 1, 2)",
+            )
+        ]
+    }
+
+    result = _expand_repeat_channels(hierarchy)
+
+    assert len(result["Sheet1.SchDoc"]) == 2
+    assert result["Sheet1.SchDoc"][0].kind == AltiumChildSheet.ChildSheetKind.DEVICE_SHEET
+    assert result["Sheet1.SchDoc"][0].name == "DeviceSheet.SchDoc"
+    assert result["Sheet1.SchDoc"][0].unique_id == "ABC123"
+    assert result["Sheet1.SchDoc"][1].kind == AltiumChildSheet.ChildSheetKind.DEVICE_SHEET
+    assert result["Sheet1.SchDoc"][1].name == "DeviceSheet.SchDoc"
+    assert result["Sheet1.SchDoc"][1].unique_id == "ABC123"
+
+
+def test_expand_repeat_channels_empty_hierarchy():
+    hierarchy = {}
+    result = _expand_repeat_channels(hierarchy)
+    assert result == {}
+
+
+def test_expand_repeat_channels_complex_name():
+    hierarchy = {
+        "Sheet1.SchDoc": [
+            AltiumChildSheet(
+                kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
+                name="Sheet2.SchDoc",
+                unique_id="1",
+                channel_name="Repeat(CLAVID-325B RS422 RS485 Transceiver, 9, 11)",
+            )
+        ]
+    }
+
+    result = _expand_repeat_channels(hierarchy)
+
+    assert len(result["Sheet1.SchDoc"]) == 3
+    assert result["Sheet1.SchDoc"][0].channel_name == "CLAVID-325B RS422 RS485 Transceiver_9"
+    assert result["Sheet1.SchDoc"][1].channel_name == "CLAVID-325B RS422 RS485 Transceiver_10"
+    assert result["Sheet1.SchDoc"][2].channel_name == "CLAVID-325B RS422 RS485 Transceiver_11"
