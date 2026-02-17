@@ -1674,7 +1674,7 @@ def _expand_repeat_channels(
     Expands child sheets with Repeat keyword in channel_name into individual entries.
 
     Format: Repeat(name, start, end)
-    Example: Repeat(CLAVID-325B RS422 RS485 Transciever, 9, 24) creates entries 9-24
+    Example: Repeat(Sheet1, 9, 24) creates entries 9-24
 
     Args:
         hierarchy: Dictionary mapping sheet names to lists of AltiumChildSheet objects

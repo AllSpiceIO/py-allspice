@@ -1269,7 +1269,7 @@ def test_expand_repeat_channels_complex_name():
                 kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
                 name="Sheet2.SchDoc",
                 unique_id="1",
-                channel_name="Repeat(CLAVID-325B RS422 RS485 Transceiver, 9, 11)",
+                channel_name="Repeat(Device Sheet Transceiver, 9, 11)",
             )
         ]
     }
@@ -1277,6 +1277,6 @@ def test_expand_repeat_channels_complex_name():
     result = _expand_repeat_channels(hierarchy)
 
     assert len(result["Sheet1.SchDoc"]) == 3
-    assert result["Sheet1.SchDoc"][0].channel_name == "CLAVID-325B RS422 RS485 Transceiver_9"
-    assert result["Sheet1.SchDoc"][1].channel_name == "CLAVID-325B RS422 RS485 Transceiver_10"
-    assert result["Sheet1.SchDoc"][2].channel_name == "CLAVID-325B RS422 RS485 Transceiver_11"
+    assert result["Sheet1.SchDoc"][0].channel_name == "Device Sheet Transceiver_9"
+    assert result["Sheet1.SchDoc"][1].channel_name == "Device Sheet Transceiver_10"
+    assert result["Sheet1.SchDoc"][2].channel_name == "Device Sheet Transceiver_11"
