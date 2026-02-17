@@ -7,6 +7,7 @@ import pathlib
 import posixpath
 import re
 from collections import Counter
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
@@ -304,6 +305,7 @@ def list_components_for_altium(
         device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
 
     independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_jsons, device_sheet_jsons)
+    hierarchy = _expand_repeat_channels(hierarchy)
 
     unique_ids_mapping = _create_unique_ids_mapping(prjpcb_ini)
     if device_sheets:
@@ -1663,3 +1665,43 @@ def _create_unique_ids_mapping(prjpcb_ini: configparser.ConfigParser) -> dict:
         mapping_index += 1
 
     return unique_ids_mapping
+
+
+def _expand_repeat_channels(
+    hierarchy: dict[str, list[AltiumChildSheet]],
+) -> dict[str, list[AltiumChildSheet]]:
+    """
+    Expands child sheets with Repeat keyword in channel_name into individual entries.
+
+    Format: Repeat(name, start, end)
+    Example: Repeat(CLAVID-325B RS422 RS485 Transciever, 9, 24) creates entries 9-24
+
+    Args:
+        hierarchy: Dictionary mapping sheet names to lists of AltiumChildSheet objects
+
+    Returns:
+        Updated hierarchy dictionary with expanded repeat entries
+    """
+    repeat_pattern = re.compile(r"Repeat\(([^,]+),\s*(\d+),\s*(\d+)\)", re.IGNORECASE)
+
+    for sheet_name, children in hierarchy.items():
+        new_children = []
+
+        for child in children:
+            match = repeat_pattern.match(child.channel_name)
+
+            if match:
+                base_name = match.group(1).strip()
+                start_num = int(match.group(2))
+                end_num = int(match.group(3))
+
+                for i in range(start_num, end_num + 1):
+                    new_child = deepcopy(child)
+                    new_child.channel_name = f"{base_name}_{i}"
+                    new_children.append(new_child)
+            else:
+                new_children.append(child)
+
+        hierarchy[sheet_name] = new_children
+
+    return hierarchy
