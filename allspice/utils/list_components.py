@@ -59,7 +59,6 @@ class AltiumSheetRef:
 
     @staticmethod
     def from_legacy_sheet_ref(sheet_ref: dict) -> "AltiumSheetRef":
-        print(f"Legacy sheet ref: {sheet_ref}")
         return AltiumSheetRef(
             sheet_name=sheet_ref.get("sheet_name", {}).get("name", ""),
             filename=sheet_ref.get("filename", ""),
@@ -67,7 +66,6 @@ class AltiumSheetRef:
         )
     @staticmethod
     def from_dict(sheet_ref: dict) -> "AltiumSheetRef":
-        print(f"Sheet ref: {sheet_ref}")
         return AltiumSheetRef(
             sheet_name=sheet_ref["sheet_name"],
             filename=sheet_ref["filename"],
@@ -309,6 +307,7 @@ def list_components_for_altium(
             repository.get_generated_json,
             schdoc_path_from_repo_root,
             ref,
+            params={"use_new_schdoc_renderer": "true"},
         ))
         schdoc_jsons[schdoc_path_from_repo_root] = schdoc_json
 
@@ -326,6 +325,7 @@ def list_components_for_altium(
             # Note the default branch here - we can't assume the same ref is
             # available.
             device_sheet_repo.default_branch,
+            params={"use_new_schdoc_renderer": "true"},
         ))
         device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
 

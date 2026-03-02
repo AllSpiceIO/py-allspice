@@ -14,9 +14,10 @@ TReturn = TypeVar("TReturn")
 
 
 def retry_not_yet_generated(
-    method: Callable[[Union[Content, str], Optional[Ref]], TReturn],
+    method: Callable[[Union[Content, str], Optional[Ref], Optional[dict]], TReturn],
     file_path: Union[Content, str],
     ref: Optional[Ref] = None,
+    params: Optional[dict] = None,
 ) -> TReturn:
     """
     Request AllSpice generated endpoints with retries if not yet available
@@ -30,7 +31,7 @@ def retry_not_yet_generated(
     attempts = 0
     while attempts < MAX_RETRIES_FOR_GENERATED:
         try:
-            return method(file_path, ref)
+            return method(file_path, ref, params)
         except NotYetGeneratedException:
             attempts += 1
             time.sleep(SLEEP_FOR_GENERATED)

@@ -1184,7 +1184,12 @@ class Repository(ApiObject):
             if chunk:
                 io.write(chunk)
 
-    def get_generated_json(self, content: Union[Content, str], ref: Optional[Ref] = None) -> dict:
+    def get_generated_json(
+        self,
+        content: Union[Content, str],
+        ref: Optional[Ref] = None,
+        params: Optional[dict] = None,
+    ) -> dict:
         """
         Get the json blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
@@ -1205,9 +1210,19 @@ class Repository(ApiObject):
             content=content,
         )
         data = Util.data_params_for_ref(ref)
+        if params:
+            data.update(params)
+        use_new_schdoc_renderer = getattr(self.allspice_client, "use_new_schdoc_renderer", None)
+        if use_new_schdoc_renderer is not None:
+            data["use_new_schdoc_renderer"] = "true" if use_new_schdoc_renderer else "false"
         return self.allspice_client.requests_get(url, data)
 
-    def get_generated_svg(self, content: Union[Content, str], ref: Optional[Ref] = None) -> bytes:
+    def get_generated_svg(
+        self,
+        content: Union[Content, str],
+        ref: Optional[Ref] = None,
+        params: Optional[dict] = None,
+    ) -> bytes:
         """
         Get the svg blob for a cad file if it exists, otherwise enqueue
         a new job and return a 503 status.
@@ -1228,10 +1243,18 @@ class Repository(ApiObject):
             content=content,
         )
         data = Util.data_params_for_ref(ref)
+        if params:
+            data.update(params)
+        use_new_schdoc_renderer = getattr(self.allspice_client, "use_new_schdoc_renderer", None)
+        if use_new_schdoc_renderer is not None:
+            data["use_new_schdoc_renderer"] = "true" if use_new_schdoc_renderer else "false"
         return self.allspice_client.requests_get_raw(url, data)
 
     def get_generated_projectdata(
-        self, content: Union[Content, str], ref: Optional[Ref] = None
+        self,
+        content: Union[Content, str],
+        ref: Optional[Ref] = None,
+        params: Optional[dict] = None,
     ) -> dict:
         """
         Get the json project data based on the cad file provided
@@ -1251,6 +1274,8 @@ class Repository(ApiObject):
             content=content,
         )
         data = Util.data_params_for_ref(ref)
+        if params:
+            data.update(params)
         return self.allspice_client.requests_get(url, data)
 
     def create_file(self, file_path: str, content: str, data: Optional[dict] = None):
