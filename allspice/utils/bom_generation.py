@@ -486,6 +486,18 @@ def _group_entries(
     return rows
 
 
+def _altium_component_excluded_from_bom(component: ComponentAttributes) -> bool:
+    """
+    Determine if an Altium component should be excluded from the BOM.
+    """
+    # Multi-page format uses footprint flags to exclude components from the BOM.
+    footprint_flags = component.get("_footprint_flags")
+    if isinstance(footprint_flags, list) and "ExcludeFromBom" in footprint_flags:
+        return True
+
+    # Legacy format uses component kind to exclude components from the BOM.
+    return component.get("_kind") in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
+
 def _remove_altium_non_bom_components(
     components: list[ComponentAttributes],
 ) -> list[ComponentAttributes]:
@@ -496,7 +508,7 @@ def _remove_altium_non_bom_components(
     return [
         component
         for component in components
-        if component.get("_kind") not in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
+        if not _altium_component_excluded_from_bom(component)
     ]
 
 

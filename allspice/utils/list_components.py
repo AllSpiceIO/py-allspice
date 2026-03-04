@@ -900,6 +900,8 @@ def _component_attributes_altium_multi_page(component: dict) -> ComponentAttribu
     attributes.pop("_logical_reference", None)
 
     attributes["_part_id"] = component["name"]
+    if "footprint_flags" in component:
+        attributes["_footprint_flags"] = component["footprint_flags"]
     if "description" in component:
         attributes["_description"] = component["description"]
     attributes["_unique_id"] = component["id"]
