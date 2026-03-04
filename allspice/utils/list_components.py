@@ -892,12 +892,9 @@ def _component_attributes_altium_legacy(component: dict) -> ComponentAttributes:
 
 def _component_attributes_altium_multi_page(component: dict) -> ComponentAttributes:
     """
-    Extract attributes of a component from a multi-page Altiumdocument into a dict.
+    Extract attributes of a component from a multi-page Altium document into a dict.
     """
     attributes = _component_attributes_multi_page(component)
-    # TODO-NOW: Just for diffing, can leave these in.
-    attributes.pop("_reference", None)
-    attributes.pop("_logical_reference", None)
 
     attributes["_part_id"] = component["name"]
     if "footprint_flags" in component:
@@ -905,8 +902,16 @@ def _component_attributes_altium_multi_page(component: dict) -> ComponentAttribu
     if "description" in component:
         attributes["_description"] = component["description"]
     attributes["_unique_id"] = component["id"]
-    attributes[LOGICAL_DESIGNATOR] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
-    # TODO-NOW: Figure out a mapping for "kind"
+
+    # For multi-part components, the server provides logical_reference (the base
+    # designator, e.g. "U10") while the Designator attribute value has the suffix
+    # (e.g. "U10A"). Use logical_reference when available so that the combine
+    # function can group parts of the same component together.
+    if "_logical_reference" in attributes and attributes["_logical_reference"] is not None:
+        attributes[LOGICAL_DESIGNATOR] = attributes["_logical_reference"]
+    else:
+        attributes[LOGICAL_DESIGNATOR] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
+
     return attributes
 
 def _component_attributes_multi_page(component: dict) -> ComponentAttributes:
@@ -1026,29 +1031,43 @@ def _combine_multi_part_components_for_altium(
     """
     Combine multi-part Altium components into a single component.
 
-    Altium multi-part components can be distinguished by the `_part_count` and
-    `_current_part_id` attributes being present, which respectively store the
-    total number of parts and the current part number. If that is the case, the
-    `_logical_designator` attribute ties together the different parts of the
-    component.
+    In the legacy format, multi-part components have `_part_count` and
+    `_current_part_id` attributes. In the new multi-page format, multi-part
+    components have a `_logical_reference` attribute (the base designator).
+    In both cases, the `_logical_designator` attribute ties together the
+    different parts of the component.
     """
 
     combined_components = []
     multi_part_components_by_designator = {}
 
     for component in components:
-        if "_part_count" in component and "_current_part_id" in component:
+        # Legacy detection: _part_count + _current_part_id
+        # New format detection: _logical_reference present
+        is_multi_part = (
+            ("_part_count" in component and "_current_part_id" in component)
+            or "_logical_reference" in component
+        )
+        if is_multi_part:
             designator = component[LOGICAL_DESIGNATOR]
             multi_part_components_by_designator.setdefault(designator, []).append(component)
         else:
             combined_components.append(component)
 
     for designator, multi_part_components in multi_part_components_by_designator.items():
-        combined_component = multi_part_components[0].copy()
+        # Merge attributes from all parts, taking the first non-empty value
+        # for each key. In Altium, attributes can be placed on specific parts
+        # of a multi-part component (via OWNERPARTID), so some parts may be
+        # sparse while others have the full set of attributes.
+        combined_component = {}
+        for part in multi_part_components:
+            for key, value in part.items():
+                if key not in combined_component or not combined_component[key]:
+                    combined_component[key] = value
         combined_component[DESIGNATOR_COLUMN_NAME] = designator
         # The combined component shouldn't have the current part id, as it is
         # not any of the parts.
-        del combined_component["_current_part_id"]
+        combined_component.pop("_current_part_id", None)
         combined_components.append(combined_component)
 
     return combined_components

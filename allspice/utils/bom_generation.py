@@ -401,7 +401,9 @@ def _get_first_matching_key_value(
 
     for alternative in alternatives:
         if alternative in attributes:
-            return attributes[alternative]
+            value = attributes[alternative]
+            if value is not None and value != "":
+                return value
 
     return None
 
