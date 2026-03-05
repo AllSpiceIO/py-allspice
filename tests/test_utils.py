@@ -1182,3 +1182,653 @@ def test_resolve_prjpcb_relative_path():
         _resolve_prjpcb_relative_path("..\\device-sheets\\sheet.SchDoc", "Project/Project.PrjPCB")
         == "device-sheets/sheet.SchDoc"
     )
+
+
+# Legacy tests: these test the old Altium schdoc renderer by setting
+# use_new_schdoc_renderer = False on the instance.
+# They are a temporary solution to ensure backwards compatibility until we remove support
+# for the legacy renderer.
+
+@pytest.mark.vcr
+def test_bom_generation_flat_legacy(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+
+    assert len(bom) == 913
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_with_odd_line_endings_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    # We hard-code a ref so that this test is reproducible.
+    ref = "95719adde8107958bf40467ee092c45b6ddaba00"
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+
+    new_branch_name = "-".join(["odd-line-endings", request.node.name])
+    repo.add_branch(ref, new_branch_name)
+    ref = new_branch_name
+
+    files_in_repo = repo.get_git_content(ref=ref)
+    prjpcb_file = next((x for x in files_in_repo if x.path == "Archimajor.PrjPcb"), None)
+    assert prjpcb_file is not None
+
+    original_prjpcb_sha = prjpcb_file.sha
+    prjpcb_content = repo.get_raw_file(prjpcb_file.path, ref=ref).decode("utf-8")
+    new_prjpcb_content = prjpcb_content.replace("\r\n", "\n\r")
+    new_content_econded = base64.b64encode(new_prjpcb_content.encode("utf-8")).decode("utf-8")
+    repo.change_file(
+        "Archimajor.PrjPcb",
+        original_prjpcb_sha,
+        new_content_econded,
+        {"branch": ref},
+    )
+
+    # Sanity check that the file was changed.
+    prjpcb_content_now = repo.get_raw_file("Archimajor.PrjPcb", ref=ref).decode("utf-8")
+    assert prjpcb_content_now != prjpcb_content
+
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # Note that ref here is the branch, not a commit sha as in the previous
+        # test.
+        ref=ref,
+    )
+
+    assert len(bom) == 913
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_grouped_legacy(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        group_by=["part_number", "manufacturer", "description"],
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+
+    assert len(bom) == 108
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_with_folder_hierarchy_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    """Test Altium BOM generation where design documents are in folders
+    relative to the project file."""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorInFolders.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        group_by=["part_number"],
+        # We hard-code a ref so that this test is reproducible.
+        ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
+    )
+
+    assert len(bom) == 102
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_with_default_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+    """Test Altium BOM generation with the default variant (not explicitly specified)"""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        # For the variants tests, we don't want to remove non-BOM components
+        # because some of them are enabled by the variants, and we want to
+        # test that they are included when required.
+        remove_non_bom_components=False,
+    )
+
+    # Since we haven't specified a variant, this should have the same result
+    # as generating a flat BOM. This version of archimajor has a few parts
+    # removed even before the variations, so the number of parts is different.
+    assert len(bom) == 975
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_with_fitted_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+    """Test Altium BOM generation with a non-default variant"""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        variant="Fitted",
+        remove_non_bom_components=False,
+    )
+
+    # Exactly 42 rows should be removed, as that is the number of non-param
+    # variations.
+    assert len(bom) == 975 - 42
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_with_grouped_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        group_by=["part_number"],
+        ref="916e739f3ad9d956f4e2a293542050e1df9e6f9e",
+        variant="Fitted",
+        remove_non_bom_components=False,
+    )
+
+    assert len(bom) == 89
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_non_bom_components_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        remove_non_bom_components=False,
+    )
+
+    assert len(bom) == 1049
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_repeated_multi_part_component_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorRepeated.git",
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="1bb73a0c862e156557e05876fb268ba086e9d42d",
+        remove_non_bom_components=True,
+    )
+
+    assert len(bom) == 870
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_column_config_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+    columns = {
+        "description": ColumnConfig(
+            attributes="PART DESCRIPTION",
+            grouped_values_sort=ColumnConfig.SortOrder.DESC,
+            grouped_values_allow_duplicates=True,
+        ),
+        "designator": ColumnConfig(
+            attributes="Designator",
+            grouped_values_sort=ColumnConfig.SortOrder.DESC,
+            grouped_values_separator=";",
+        ),
+        "manufacturer": ColumnConfig(
+            attributes=["Manufacturer", "MANUFACTURER"],
+            sort=ColumnConfig.SortOrder.DESC,
+        ),
+        "tolerance": ColumnConfig(
+            attributes=["Tolerance", "TOLERANCE"],
+            sort=ColumnConfig.SortOrder.ASC,
+            remove_rows_matching="-NA-",
+            skip_in_output=True,
+        ),
+        "part_number": ColumnConfig(
+            attributes=["PART", "MANUFACTURER #"],
+            sort=ColumnConfig.SortOrder.ASC,
+        ),
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        columns,
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+        group_by=["part_number"],
+    )
+
+    assert len(bom) == 64
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_repeated_multi_part_component_variant_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
+    """Test Altium BOM generation with a repeated multipart component as well
+    as a non-default variant"""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorRepeatedVariant.git",
+    )
+    attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        attributes_mapping,
+        ref="3f8ddd6b5161aebc61a3ed87b665ba0a64cc6e89",
+        variant="Fitted",
+        remove_non_bom_components=True,
+    )
+
+    assert len(bom) == 869
+
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_device_sheets_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    """Test Altium BOM generation with a design reuse repo."""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets",
+    )
+    attributes_mapping = {
+        "Name": ["_name"],
+        "Designator": ["Designator"],
+        "Comment": ["Comment"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
+    )
+
+    assert len(bom) == 13
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_bom_generation_altium_with_external_device_sheet_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    """Test Altium BOM generation with design reuse against an Altium generated BOM.
+    Note: the design reuse repo is added as a submodule for use in testing future
+    submodule-based design reuse support."""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Usage-Demo",
+    )
+
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+    attributes_mapping = {
+        "Description": ["_description"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
+        "LibRef": ["_part_id"],
+    }
+
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        attributes_mapping,
+        group_by=["Comment"],
+        design_reuse_repos=[design_reuse_repo],
+        ref="kd/generate-bom",
+    )
+
+    assert len(bom) == 14
+    assert bom == csv_snapshot
+
+    golden_bytes = repo.get_raw_file("NestedDeviceSheets.csv", ref="kd/generate-bom").decode(
+        "windows-1252"
+    )
+    compare_golden_bom(golden_bytes, bom, ["Footprint"])
+
+
+@pytest.mark.vcr
+def test_generate_bom_altium_legacy(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    altium_attributes_mapping = {
+        "description": ["PART DESCRIPTION"],
+        "designator": ["Designator"],
+        "manufacturer": ["Manufacturer", "MANUFACTURER"],
+        "part_number": ["PART", "MANUFACTURER #"],
+    }
+    instance.use_new_schdoc_renderer = False
+    bom = generate_bom(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        altium_attributes_mapping,
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+    assert len(bom) == 913
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_legacy(request, instance, setup_for_generation, json_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorDemo.git",
+    )
+
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="95719adde8107958bf40467ee092c45b6ddaba00",
+    )
+
+    assert len(components) == 1061
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_folder_hierarchy_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorInFolders.git",
+    )
+
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="e39ecf4de0c191559f5f23478c840ac2b6676d58",
+    )
+
+    assert len(components) == 1049
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_fitted_variant_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
+    )
+
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "Archimajor.PrjPcb",
+        # We hard-code a ref so that this test is reproducible.
+        ref="fbde2fe9fb7576c7e32827368224ec18717a1ffe",
+        variant="Fitted",
+    )
+
+    assert len(components) == 953
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_device_sheets_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheet-Usage-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets",
+    )
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "DCDC Regulators Breakout/DCDC Regulators Breakout.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+        ref="5f2bdd30f57eb8ea6699dc9dcb098bc34d60f7a3",
+    )
+
+    assert len(components) == 38
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_annotations_legacy(
+    request, instance, setup_for_generation, json_snapshot
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/FlatSat",
+    )
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "FlatSat/FlatSat.PrjPCB",
+        ref="471d42ba87032682c7dc7a0235ffcc02808a3e37",
+    )
+
+    assert len(components) == 408
+    assert components == json_snapshot
+
+
+@pytest.mark.vcr
+def test_altium_components_list_with_hierarchical_device_sheets_and_annotations_legacy(
+    request,
+    instance,
+    setup_for_generation,
+    json_snapshot,
+):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/Altium-Hierarchical-Device-Sheet-Repetitions-Demo",
+    )
+    design_reuse_repo = setup_for_generation(
+        request.node.name + "_reuse",
+        "https://hub.allspice.io/NoIndexTests/Altium-Device-Sheets-Hierarchical-Repetitions",
+    )
+
+    instance.use_new_schdoc_renderer = False
+    components = list_components_for_altium(
+        instance,
+        repo,
+        "NestedDeviceSheets.PrjPcb",
+        design_reuse_repos=[design_reuse_repo],
+    )
+
+    components.sort(key=lambda x: x["Designator"])
+    assert len(components) == 980
+    assert components == json_snapshot
