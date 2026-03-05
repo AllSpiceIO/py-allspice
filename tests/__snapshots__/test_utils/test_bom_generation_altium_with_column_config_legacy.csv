@@ -33,7 +33,7 @@ Quantity,description,designator,manufacturer,part_number
 8,"4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric), 4.7µF ±10% 6.3V Ceramic Capacitor X7R 0603 (1608 Metric)",C131H;C131G;C131F;C131E;C131D;C131C;C131B;C131A,Samsung,CL10B475KQ8NQNC
 1,"10pF ±5% 50V Ceramic Capacitor C0G, NP0 0402 (1005 Metric)",C49,Samsung,CL05C100JB5NNNC
 3,"1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film, 1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film, 1M Ohm ±5% 0.1W, 1/10W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film",R61;R28;R156,Panasonic,ERJ2GEJ105X
-1,,Q13,On Semi,NCV8402ADDR2G
+2,", ",Q13;Q12,On Semi,NCV8402ADDR2G
 8,"470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C, 470µF 50V Aluminum Electrolytic Capacitors Radial, Can - SMD 80 mOhm @ 100kHz 3500 Hrs @ 125°C",C152H;C152G;C152F;C152E;C152D;C152C;C152B;C152A,Nichicon,UCZ1H471MNQ1MS
 2,"100µF 35V Aluminum Capacitors Radial, Can - SMD 1000 Hrs @ 105°C, 100µF 35V Aluminum Capacitors Radial, Can - SMD 1000 Hrs @ 105°C",C25;C210,Nichicon,UWT1V101MCL1GS
 4,"10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric), 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric), 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric), 10µF ±20% 50V Ceramic Capacitor X5R 1206 (3216 Metric)",C93;C38;C16;C14,Murata,490-10756-2-ND
@@ -58,7 +58,7 @@ Quantity,description,designator,manufacturer,part_number
 1,,L1,Bourns,SRP1038A-4R7M
 2,"3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric), 3pF ±0.1pF 50V Ceramic Capacitor C0G, NP0 0603 (1608 Metric)",C42;C41,AVX Corporation,06031A3R0BAT2A
 1,,C151,AVX,04025A220JAT2A
-9,", , , , , , , , ",Q12;P2H;P2G;P2F;P2E;P2D;P2C;P2B;P2A,,
+8,", , , , , , , ",P2H;P2G;P2F;P2E;P2D;P2C;P2B;P2A,,
 1,,C198,,DNI-C0402TBD
 10,", , , , , , , , , ",C9;C8;C50;C27;C211;C209;C154;C153;C11;C10,,DNI-C0603TBD
 9,", , , , , , , , ",R60;R17H;R17G;R17F;R17E;R17D;R17C;R17B;R17A,,DNI-R0402TBD

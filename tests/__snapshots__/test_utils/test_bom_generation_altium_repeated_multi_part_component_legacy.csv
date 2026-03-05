@@ -866,6 +866,6 @@ Quantity,description,designator,manufacturer,part_number
 1,ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U?D,Atmel,ATSAM3X8EA-AU
 1,ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U?E,Atmel,ATSAM3X8EA-AU
 1,"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)",U2,Texas Instruments,SN74AHCT125RGYR
-1,,Q12,,
+1,,Q12,On Semi,NCV8402ADDR2G
 1,,Q13,On Semi,NCV8402ADDR2G
 1,ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11,Atmel,ATSAM3X8EA-AU
