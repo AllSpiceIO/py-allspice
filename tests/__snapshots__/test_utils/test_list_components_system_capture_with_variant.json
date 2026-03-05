@@ -32,6 +32,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "62f6681566959c199b65",
         "orientation": "Right",
         "position": {
           "x": 0.0,
@@ -59,6 +60,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "d14a74399b6e839c51b7",
         "orientation": "Left",
         "position": {
           "x": 0.0,
@@ -102,6 +104,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "62f6681566959c199b65",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -129,6 +132,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "569b27ba9e0daab3baca",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -173,6 +177,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "62f6681566959c199b65",
         "orientation": "Left",
         "position": {
           "x": 0.0,
@@ -200,6 +205,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "b7f661bb612f249c008b",
         "orientation": "Right",
         "position": {
           "x": 0.0,
@@ -237,6 +243,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "8d776cb93af2cfb1e62b",
         "orientation": "Right",
         "position": {
           "x": -12.7,
@@ -264,6 +271,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "5f8d859cf9917dc06689",
         "orientation": "Right",
         "position": {
           "x": -12.7,
@@ -291,6 +299,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "40bca8f635262d6f2292",
         "orientation": "Right",
         "position": {
           "x": -12.7,
@@ -318,6 +327,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "9ece77c6f5fa2460da7e",
         "orientation": "Right",
         "position": {
           "x": -12.7,
@@ -345,6 +355,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "9e08379dc69641c9b835",
         "orientation": "Right",
         "position": {
           "x": 12.7,
@@ -372,6 +383,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "1eb268082bbf9017eafc",
         "orientation": "Right",
         "position": {
           "x": 12.7,
@@ -399,6 +411,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "8677fac2c024acc8585f",
         "orientation": "Right",
         "position": {
           "x": -2.54,
@@ -426,6 +439,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "dac3c5cf5ee3a5ddb7e2",
         "orientation": "Right",
         "position": {
           "x": 5.08,
@@ -462,6 +476,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "9e08379dc69641c9b835",
         "orientation": "Right",
         "position": {
           "x": -12.7,
@@ -693,6 +708,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "40bca8f635262d6f2292",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -720,6 +736,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "9e08379dc69641c9b835",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -763,6 +780,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "5f8d859cf9917dc06689",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -790,6 +808,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "dac3c5cf5ee3a5ddb7e2",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -833,6 +852,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "1eb268082bbf9017eafc",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -860,6 +880,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "8d776cb93af2cfb1e62b",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -903,6 +924,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "5ec66a0342594573c98f",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -930,6 +952,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "4fda56c3b63311790d6d",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -973,6 +996,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "dc4a7b3908735ac647d9",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -1000,6 +1024,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "f122fd5195af372138c9",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -1043,6 +1068,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "21ddf2facaffda0b8061",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -1070,6 +1096,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "3ba4274112294fc91cd8",
         "orientation": "Left",
         "position": {
           "x": -3.81,
@@ -1113,6 +1140,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "eefa192d9d188bafe2f2",
         "orientation": "Right",
         "position": {
           "x": 3.81,
@@ -1140,6 +1168,7 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "net_id": "9e08379dc69641c9b835",
         "orientation": "Left",
         "position": {
           "x": -3.81,
