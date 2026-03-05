@@ -21,7 +21,7 @@ Quantity,description,designator,manufacturer,part_number
 37,", 1k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film","R188, R187, R?, R177, R175, R176, R186, R174, R189, R108A, R108B, R108C, R108D, R108E, R108F, R108G, R108H, R198, R197, R74, R76, R19, R23, R191, R193, R72, R79, R102, R34, R36, R40, R41, R71",Yageo,RC0402FR-071KL
 50,Diode Schottky 30V 200mA (DC) Surface Mount SOD-523,"D57, D54, D50, D55, D52, D56, D53, D51, D20A, D20B, D20C, D20D, D20E, D20F, D20G, D20H, D19A, D19B, D19C, D19D, D19E, D19F, D19G, D19H, D12A, D12B, D12C, D12D, D12E, D12F, D12G, D12H, D40, D63, D74, D60, D62, D75, D61, D77, D70, D30, D5, D41, D76, D31, D36, D37, D28, D29",Diodes Incorporated,BAT54WX-TP
 4,,"R185, R173, R184, R172",Yageo,RC0402FR-071K8L
-17,,"TP2, TP8, TP1, TP18, TP17, P2A, P2B, P2C, P2D, P2E, P2F, P2G, P2H, TP69, TP4, TP7, Q12",,
+16,,"TP2, TP8, TP1, TP18, TP17, P2A, P2B, P2C, P2D, P2E, P2F, P2G, P2H, TP69, TP4, TP7",,
 13,"3 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold","J29, J31, J30, J22, J9, J5, J?, J32, J33, J6, J7, J11, J10",Molex,0705430002
 28,VARISTOR 6.8V 10A 0201,"RV5A, RV5B, RV5C, RV5D, RV5E, RV5F, RV5G, RV5H, RV7A, RV7B, RV7C, RV7D, RV7E, RV7F, RV7G, RV7H, RV6A, RV6B, RV6C, RV6D, RV6E, RV6F, RV6G, RV6H, RV4, RV1, RV2, RV3",TDK,AVRM0603C6R8NT101N
 32,"Mosfet Array 2 N-Channel (Dual) 40V 9.8A (Ta), 27A (Tc) 3.1W (Ta), 23W (Tc) Surface Mount 8-DFN (5x6) Dual Flag (SO8FL-Dual)","Q11A, Q11B, Q11C, Q11D, Q11E, Q11F, Q11G, Q11H, Q10A, Q10B, Q10C, Q10D, Q10E, Q10F, Q10G, Q10H, Q9A, Q9B, Q9C, Q9D, Q9E, Q9F, Q9G, Q9H, Q7A, Q7B, Q7C, Q7D, Q7E, Q7F, Q7G, Q7H",ON Semiconductor,NVMFD5C478NT1G
@@ -86,5 +86,5 @@ Quantity,description,designator,manufacturer,part_number
 2,"2 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold","J15, J14",Molex,0705430001
 4,"2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film","R87, R81, R44, R50",Yageo,RC0402FR-072K37L
 2,"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)","U10, U2",Texas Instruments,SN74AHCT125RGYR
-1,,Q13,On Semi,NCV8402ADDR2G
+2,,"Q12, Q13",On Semi,NCV8402ADDR2G
 1,ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11,Atmel,ATSAM3X8EA-AU

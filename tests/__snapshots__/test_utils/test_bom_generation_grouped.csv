@@ -38,7 +38,7 @@ Quantity,description,designator,manufacturer,part_number
 8,,"R107A, R107B, R107C, R107D, R107E, R107F, R107G, R107H",Yageo,RC0402JR-072R2L
 8,,"J2A, J2B, J2C, J2D, J2E, J2F, J2G, J2H",Molex,43045-0412
 8,0.022µF ±10% 100V Ceramic Capacitor X7R 0603 (1608 Metric),"C124A, C124B, C124C, C124D, C124E, C124F, C124G, C124H",Kemet,C0603C223K1RACTU
-9,,"P2A, P2B, P2C, P2D, P2E, P2F, P2G, P2H, Q12",,
+8,,"P2A, P2B, P2C, P2D, P2E, P2F, P2G, P2H",,
 8,,"U15A, U15B, U15C, U15D, U15E, U15F, U15G, U15H",Trinamic,TMC5160-TA
 9,"24 Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film","R43, R42, R48, R46, R45, R47, R82, R83, R77",Yageo,RC0402FR-0724RL
 3,"6.8k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Automotive AEC-Q200 Thick Film","R150, R49, R151",Vishay Dale,CRCW04026K80FKED
@@ -105,5 +105,5 @@ Quantity,description,designator,manufacturer,part_number
 3,"2 Positions Header, Shrouded Connector 0.100 (2.54mm) Through Hole Gold","J15, J14, J16",Molex,0705430001
 6,"2.37k Ohm ±1% 0.063W, 1/16W Chip Resistor 0402 (1005 Metric) Moisture Resistant Thick Film","R87, R92, R81, R44, R91, R50",Yageo,RC0402FR-072K37L
 2,"Buffer, Non-Inverting 4 Element 1 Bit per Element Push-Pull Output 14-VQFN (3.5x3.5)","U10, U2",Texas Instruments,SN74AHCT125RGYR
-1,,Q13,On Semi,NCV8402ADDR2G
+2,,"Q12, Q13",On Semi,NCV8402ADDR2G
 1,ARM® Cortex®-M3 SAM3X Microcontroller IC 32-Bit 84MHz 512KB (512K x 8) FLASH 144-LQFP (20x20),U11,Atmel,ATSAM3X8EA-AU
