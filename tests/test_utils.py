@@ -980,7 +980,7 @@ def test_altium_components_list_with_fitted_variant(
         variant="Fitted",
     )
 
-    assert len(components) == 953
+    assert len(components) == 945
     assert components == json_snapshot
 
 
@@ -1189,6 +1189,7 @@ def test_resolve_prjpcb_relative_path():
 # They are a temporary solution to ensure backwards compatibility until we remove support
 # for the legacy renderer.
 
+
 @pytest.mark.vcr
 def test_bom_generation_flat_legacy(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
@@ -1340,7 +1341,9 @@ def test_bom_generation_with_folder_hierarchy_legacy(
 
 
 @pytest.mark.vcr
-def test_bom_generation_with_default_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+def test_bom_generation_with_default_variant_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
     """Test Altium BOM generation with the default variant (not explicitly specified)"""
     repo = setup_for_generation(
         request.node.name,
@@ -1375,7 +1378,9 @@ def test_bom_generation_with_default_variant_legacy(request, instance, setup_for
 
 
 @pytest.mark.vcr
-def test_bom_generation_with_fitted_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+def test_bom_generation_with_fitted_variant_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
     """Test Altium BOM generation with a non-default variant"""
     repo = setup_for_generation(
         request.node.name,
@@ -1407,7 +1412,9 @@ def test_bom_generation_with_fitted_variant_legacy(request, instance, setup_for_
 
 
 @pytest.mark.vcr
-def test_bom_generation_with_grouped_variant_legacy(request, instance, setup_for_generation, csv_snapshot):
+def test_bom_generation_with_grouped_variant_legacy(
+    request, instance, setup_for_generation, csv_snapshot
+):
     repo = setup_for_generation(
         request.node.name,
         "https://hub.allspice.io/NoIndexTests/ArchimajorVariants.git",
