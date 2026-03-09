@@ -3,7 +3,6 @@
 import configparser
 import dataclasses
 import functools
-import json
 import pathlib
 import posixpath
 import re
