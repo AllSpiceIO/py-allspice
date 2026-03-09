@@ -1598,7 +1598,6 @@ def _apply_annotation_file(
     return final_components
 
 
-# TODO-NOW: Verify this works with multi-page output
 def _compute_repetitions(components: list[ComponentAttributes]) -> list[ComponentAttributes]:
     """
     In the absence of an Annotation file, manually append suffixes to repeated
@@ -1759,8 +1758,6 @@ def _correct_device_sheet_reference_unique_ids(
             # Filter out children that already have the correct ids.
             children_to_correct = []
             for child in children_of_name:
-                # TODO: Broken with new id format? Might be
-                # fixed by the mapping logic below.
                 if child.unique_id in ids:
                     ids.remove(child.unique_id)
                     final_children.append(child)

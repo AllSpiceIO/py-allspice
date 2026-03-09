@@ -492,13 +492,14 @@ def _altium_component_excluded_from_bom(component: ComponentAttributes) -> bool:
     """
     Determine if an Altium component should be excluded from the BOM.
     """
-    # Multi-page format uses footprint flags to exclude components from the BOM.
+    # Multi-page format uses flags to exclude components from the BOM.
     flags = component.get("_flags")
     if isinstance(flags, dict) and flags.get("exclude_from_bom", False):
         return True
 
     # Legacy format uses component kind to exclude components from the BOM.
     return component.get("_kind") in {"NET_TIE_NO_BOM", "STANDARD_NO_BOM"}
+
 
 def _remove_altium_non_bom_components(
     components: list[ComponentAttributes],
@@ -508,9 +509,7 @@ def _remove_altium_non_bom_components(
     """
 
     return [
-        component
-        for component in components
-        if not _altium_component_excluded_from_bom(component)
+        component for component in components if not _altium_component_excluded_from_bom(component)
     ]
 
 
