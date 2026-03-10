@@ -1212,9 +1212,10 @@ class Repository(ApiObject):
         data = Util.data_params_for_ref(ref)
         if params:
             data.update(params)
-        use_new_schdoc_renderer = getattr(self.allspice_client, "use_new_schdoc_renderer", None)
-        if use_new_schdoc_renderer is not None:
-            data["use_new_schdoc_renderer"] = "true" if use_new_schdoc_renderer else "false"
+        if self.allspice_client.use_new_schdoc_renderer is not None:
+            data["use_new_schdoc_renderer"] = (
+                "true" if self.allspice_client.use_new_schdoc_renderer else "false"
+            )
         return self.allspice_client.requests_get(url, data)
 
     def get_generated_svg(
@@ -1245,9 +1246,10 @@ class Repository(ApiObject):
         data = Util.data_params_for_ref(ref)
         if params:
             data.update(params)
-        use_new_schdoc_renderer = getattr(self.allspice_client, "use_new_schdoc_renderer", None)
-        if use_new_schdoc_renderer is not None:
-            data["use_new_schdoc_renderer"] = "true" if use_new_schdoc_renderer else "false"
+        if self.allspice_client.use_new_schdoc_renderer is not None:
+            data["use_new_schdoc_renderer"] = (
+                "true" if self.allspice_client.use_new_schdoc_renderer else "false"
+            )
         return self.allspice_client.requests_get_raw(url, data)
 
     def get_generated_projectdata(

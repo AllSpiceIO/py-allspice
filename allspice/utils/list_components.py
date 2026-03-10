@@ -1104,6 +1104,9 @@ def _combine_multi_part_components_for_altium(
         for part in sorted_multi_part_components:
             for key, value in part.items():
                 if key not in combined_component or not combined_component[key]:
+                    # The chain down to 'symbol' might be undefined at any level, which is equivalent to being
+                    # set to 'AllSymbols'. We're only trying to detect the uncommon case of 'symbol' being set and having a
+                    # value other than 'AllSymbols'.
                     is_single_part_attribute = (
                         part.get("_attributes", {}).get(key, {"symbol": "AllSymbols"}).get("symbol")
                         != "AllSymbols"

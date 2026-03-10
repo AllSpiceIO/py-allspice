@@ -26,6 +26,7 @@ def retry_not_yet_generated(
         NotYetGeneratedException, takes file_path and ref as arguments
     :param file_path: The path to the design document
     :param ref: The git ref to check.
+    :param params: Optional parameters to pass to the method.
     :returns: The return value of the method if successful
     """
     attempts = 0
