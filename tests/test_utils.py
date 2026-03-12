@@ -621,6 +621,43 @@ def test_bom_generation_altium_with_external_device_sheet(
 
 
 @pytest.mark.vcr
+def test_bom_generation_altium_with_managed_sheets(
+    request,
+    instance,
+    setup_for_generation,
+    csv_snapshot,
+):
+    """Test Altium BOM generation against a project that uses managed sheets.
+    These have a different directory structure than normal device sheet refs."""
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/ThunderScope.git",
+    )
+
+    attributes_mapping = {
+        "Part Number": ["Manufacturer Part Number"],
+        "Designator": ColumnConfig(
+            attributes=["Designator"],
+            grouped_values_sort=ColumnConfig.SortOrder.ASC,
+        ),
+        "Comment": ColumnConfig(attributes=["Comment"], sort=ColumnConfig.SortOrder.ASC),
+        "LibRef": ["_part_id"],
+    }
+
+    bom = generate_bom_for_altium(
+        instance,
+        repo,
+        "Hardware/Altium/Thunderscope_Rev5/Thunderscope_Rev5.PrjPCB",
+        attributes_mapping,
+        group_by=["Part Number"],
+        ref="2cb843cb78818ca94896b84907f5fe4c2df6bf30",
+    )
+
+    assert len(bom) == 83
+    assert bom == csv_snapshot
+
+
+@pytest.mark.vcr
 def test_bom_generation_orcad(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
         request.node.name,
