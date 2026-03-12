@@ -37,6 +37,7 @@ class AllSpice:
         verify=True,
         log_level="INFO",
         ratelimiting=(100, 60),
+        use_new_schdoc_renderer: Optional[bool] = None,
     ):
         """Initializing an instance of the AllSpice Hub Client
 
@@ -57,6 +58,9 @@ class AllSpice:
             ratelimiting (tuple[int, int], None): `(max_calls, period)`,
                 If None, no rate limiting is applied. By default, 100 calls
                 per minute are allowed.
+
+            use_new_schdoc_renderer (bool): Allows explicit override for using the new Altium schematic renderer. If set,
+            this will take precedence over the default behavior on the AllSpice Hub instance.
         """
 
         self.logger = logging.getLogger(__name__)
@@ -92,6 +96,8 @@ class AllSpice:
         self.requests.verify = verify
         if not verify:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        self.use_new_schdoc_renderer = use_new_schdoc_renderer
 
     def __get_url(self, endpoint):
         url = self.url + "/api/v1" + endpoint

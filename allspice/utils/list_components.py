@@ -10,7 +10,7 @@ from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from logging import Logger
-from typing import Optional
+from typing import Mapping, Optional
 
 from ..allspice import AllSpice
 from ..apiobject import Ref, Repository
@@ -47,6 +47,33 @@ class VariationKind(Enum):
     FITTED_MOD_PARAMS = 0
     NOT_FITTED = 1
     ALT_COMP = 2
+
+
+@dataclass
+class AltiumSheetRef:
+    """
+    An external sheet reference in an Altium Schematic document.
+    """
+
+    sheet_name: str
+    filename: str
+    unique_id: str
+
+    @staticmethod
+    def from_legacy_sheet_ref(sheet_ref: dict) -> "AltiumSheetRef":
+        return AltiumSheetRef(
+            sheet_name=sheet_ref.get("sheet_name", {}).get("name", ""),
+            filename=sheet_ref.get("filename", ""),
+            unique_id=sheet_ref.get("unique_id", ""),
+        )
+
+    @staticmethod
+    def from_dict(sheet_ref: dict) -> "AltiumSheetRef":
+        return AltiumSheetRef(
+            sheet_name=sheet_ref["sheet_name"],
+            filename=sheet_ref["filename"],
+            unique_id=sheet_ref["id"],
+        )
 
 
 @dataclass
@@ -279,10 +306,13 @@ def list_components_for_altium(
     for schdoc_file in project_documents:
         schdoc_path_from_repo_root = _resolve_prjpcb_relative_path(schdoc_file, prjpcb_file)
 
-        schdoc_json = retry_not_yet_generated(
-            repository.get_generated_json,
-            schdoc_path_from_repo_root,
-            ref,
+        schdoc_json = _normalize_schdoc_json(
+            retry_not_yet_generated(
+                repository.get_generated_json,
+                schdoc_path_from_repo_root,
+                ref,
+                params={"use_new_schdoc_renderer": "true"},
+            )
         )
         schdoc_jsons[schdoc_path_from_repo_root] = schdoc_json
 
@@ -294,16 +324,33 @@ def list_components_for_altium(
             design_reuse_repos,
             allspice_client.logger,
         )
-        device_sheet_json = retry_not_yet_generated(
-            device_sheet_repo.get_generated_json,
-            device_sheet_path.as_posix(),
-            # Note the default branch here - we can't assume the same ref is
-            # available.
-            device_sheet_repo.default_branch,
+        device_sheet_json = _normalize_schdoc_json(
+            retry_not_yet_generated(
+                device_sheet_repo.get_generated_json,
+                device_sheet_path.as_posix(),
+                # Note the default branch here - we can't assume the same ref is
+                # available.
+                device_sheet_repo.default_branch,
+                params={"use_new_schdoc_renderer": "true"},
+            )
         )
         device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
 
-    independent_sheets, hierarchy = _build_schdoc_hierarchy(schdoc_jsons, device_sheet_jsons)
+    found_legacy = any(_is_legacy_schdoc_json(schdoc_json) for schdoc_json in schdoc_jsons.values())
+    found_multi_page = any(
+        not _is_legacy_schdoc_json(schdoc_json) for schdoc_json in schdoc_jsons.values()
+    )
+
+    if found_legacy and found_multi_page:
+        raise ValueError(
+            "Schematic sheets must all use the same JSON format: "
+            "cannot mix legacy and multi-page schdoc JSONs."
+        )
+    use_legacy_processing = found_legacy
+
+    independent_sheets, hierarchy = _build_schdoc_hierarchy(
+        schdoc_jsons, device_sheet_jsons, use_legacy_processing
+    )
 
     unique_ids_mapping = _create_unique_ids_mapping(prjpcb_ini)
     if device_sheets:
@@ -319,19 +366,13 @@ def list_components_for_altium(
     # Now we can build a combined mapping of documents and device sheets:
     sheets_to_components = {}
     for schdoc_file, schdoc_json in schdoc_jsons.items():
-        schdoc_components = [
-            value
-            for value in schdoc_json.values()
-            if isinstance(value, dict) and value.get("type") == "Component"
-        ]
-        sheets_to_components[schdoc_file] = schdoc_components
+        sheets_to_components[schdoc_file] = _extract_components_from_schdoc_json(
+            schdoc_json, use_legacy_processing
+        )
     for device_sheet_name, device_sheet_json in device_sheet_jsons.items():
-        device_sheet_components = [
-            value
-            for value in device_sheet_json.values()
-            if isinstance(value, dict) and value.get("type") == "Component"
-        ]
-        sheets_to_components[device_sheet_name] = device_sheet_components
+        sheets_to_components[device_sheet_name] = _extract_components_from_schdoc_json(
+            device_sheet_json, use_legacy_processing
+        )
 
     components = []
 
@@ -343,6 +384,7 @@ def list_components_for_altium(
                 hierarchy,
                 parent_sheet_id="",
                 current_sheet=None,
+                use_legacy_processing=use_legacy_processing,
             )
         )
 
@@ -366,6 +408,10 @@ def list_components_for_altium(
         # them into a single component before applying variations, as Altium
         # variations will apply to the combined component.
         components = _combine_multi_part_components_for_altium(components)
+
+    # Remove temporary fields used for prcessing logic
+    for component in components:
+        component.pop("_attributes", None)
 
     if variant is not None:
         if variant_details is None:
@@ -513,6 +559,38 @@ The source file for generate_bom must be:
         """)
 
 
+def _is_legacy_schdoc_json(schdoc_json: dict) -> bool:
+    return "html_id" in schdoc_json
+
+
+def _normalize_schdoc_json(schdoc_json: dict) -> dict:
+    if _is_legacy_schdoc_json(schdoc_json):
+        return schdoc_json
+    else:
+        pages = schdoc_json.get("pages", [])
+        if len(pages) == 0:
+            raise ValueError("Multi-page schdoc JSON has no pages.")
+        return pages[0]
+
+
+def _extract_components_from_schdoc_json(
+    schdoc_json: dict, use_legacy_processing: bool
+) -> list[dict]:
+    """
+    Extract components from a schdoc JSON.
+    """
+    if use_legacy_processing:
+        return [
+            value
+            for value in schdoc_json.values()
+            if isinstance(value, dict) and value.get("type") == "Component"
+        ]
+    else:
+        return [
+            value for value in schdoc_json.get("components", {}).values() if isinstance(value, dict)
+        ]
+
+
 def _list_components_multi_page_schematic(
     allspice_client: AllSpice,
     repository: Repository,
@@ -631,8 +709,9 @@ def _resolve_prjpcb_relative_path(schdoc_path: str, prjpcb_path: str) -> str:
 
 
 def _build_schdoc_hierarchy(
-    schematic_document_jsons: dict[str, dict],
-    device_sheet_jsons: dict[str, dict],
+    schematic_document_jsons: Mapping[str, dict],
+    device_sheet_jsons: Mapping[str, dict],
+    use_legacy_processing: bool,
 ) -> tuple[set[str], SchdocHierarchy]:
     """
     Build a hierarchy of sheets from a mapping of sheet names to the references
@@ -653,25 +732,40 @@ def _build_schdoc_hierarchy(
 
     hierarchy: SchdocHierarchy = {}
 
-    schematic_document_entries = {
-        schdoc_file: [value for value in schdoc_json.values() if isinstance(value, dict)]
-        for schdoc_file, schdoc_json in schematic_document_jsons.items()
-    }
-    schematic_document_refs = {
-        schdoc_file: [entry for entry in entries if entry.get("type") == "SheetRef"]
-        for schdoc_file, entries in schematic_document_entries.items()
-    }
+    if use_legacy_processing:
+        schematic_document_refs = {
+            filename: [
+                AltiumSheetRef.from_legacy_sheet_ref(value)
+                for value in schdoc_json.values()
+                if isinstance(value, dict) and value.get("type") == "SheetRef"
+            ]
+            for filename, schdoc_json in schematic_document_jsons.items()
+        }
 
-    device_sheet_entries = {
-        device_sheet_name: [
-            value for value in device_sheet_json.values() if isinstance(value, dict)
-        ]
-        for device_sheet_name, device_sheet_json in device_sheet_jsons.items()
-    }
-    device_sheet_refs = {
-        device_sheet_name: [entry for entry in entries if entry.get("type") == "SheetRef"]
-        for device_sheet_name, entries in device_sheet_entries.items()
-    }
+        device_sheet_refs = {
+            filename: [
+                AltiumSheetRef.from_legacy_sheet_ref(value)
+                for value in schdoc_json.values()
+                if isinstance(value, dict) and value.get("type") == "SheetRef"
+            ]
+            for filename, schdoc_json in device_sheet_jsons.items()
+        }
+    else:
+        schematic_document_refs = {
+            filename: [
+                AltiumSheetRef.from_dict(value)
+                for value in schdoc_json.get("sheet_refs", {}).values()
+            ]
+            for filename, schdoc_json in schematic_document_jsons.items()
+        }
+
+        device_sheet_refs = {
+            filename: [
+                AltiumSheetRef.from_dict(value)
+                for value in schdoc_json.get("sheet_refs", {}).values()
+            ]
+            for filename, schdoc_json in device_sheet_jsons.items()
+        }
 
     # We start by assuming all the document sheets are independent. Device
     # sheets cannot be independent, as they must be referred to by a document
@@ -748,7 +842,7 @@ def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
     return posixpath.normpath((parent.parent / child).as_posix())
 
 
-def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
+def _extract_repetitions(sheet_refs: list[AltiumSheetRef]) -> list[AltiumChildSheet]:
     """
     Takes a list of sheet references and returns all child sheets, which include
     the repetition count for each child sheet.
@@ -757,14 +851,11 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
     repetitions: list[AltiumChildSheet] = []
 
     for sheet_ref in sheet_refs:
-        sheet_name = (sheet_ref.get("sheet_name", {}) or {}).get("name", "") or ""
-        try:
-            sheet_file_name = sheet_ref["filename"]
-        except Exception:
-            raise ValueError(f"Could not find sheet filename in {sheet_ref=}")
+        sheet_name = sheet_ref.sheet_name
+        sheet_file_name = sheet_ref.filename
         if sheet_file_name is None:
             raise ValueError(
-                "Sheet filename is null in for a sheet. Please check sheet references in this "
+                "Found a sheet reference with no filename attribute. Please check sheet references in this "
                 "project for an empty file path."
             )
 
@@ -782,7 +873,7 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
                         name=sheet_file_name,
                         # The UniqueID of this specific instance has to include
                         # the channel index before it.
-                        unique_id=f"{channel_index}{sheet_ref['unique_id']}",
+                        unique_id=f"{channel_index}{sheet_ref.unique_id}",
                         channel_name=f"{channel_identifier}{channel_index}",
                     )
                 )
@@ -793,7 +884,7 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
                     # we can't know if it is a device sheet or not.
                     kind=AltiumChildSheet.ChildSheetKind.DOCUMENT,
                     name=sheet_file_name,
-                    unique_id=sheet_ref["unique_id"],
+                    unique_id=sheet_ref.unique_id,
                     channel_name=sheet_name,
                 )
             )
@@ -801,7 +892,7 @@ def _extract_repetitions(sheet_refs: list[dict]) -> list[AltiumChildSheet]:
     return repetitions
 
 
-def _component_attributes_altium(component: dict) -> ComponentAttributes:
+def _component_attributes_altium_legacy(component: dict) -> ComponentAttributes:
     """
     Extract the attributes of a component into a dict.
 
@@ -834,6 +925,30 @@ def _component_attributes_altium(component: dict) -> ComponentAttributes:
         attributes["_current_part_id"] = component["current_part_id"]
     if "pins" in component:
         attributes["_pins"] = component["pins"]
+
+    return attributes
+
+
+def _component_attributes_altium_multi_page(component: dict) -> ComponentAttributes:
+    """
+    Extract attributes of a component from a multi-page Altium document into a dict.
+    """
+    attributes = _component_attributes_multi_page(component)
+
+    attributes["_part_id"] = component["name"]
+    if "flags" in component:
+        attributes["_flags"] = component["flags"]
+    if "description" in component:
+        attributes["_description"] = component["description"]
+    attributes["_unique_id"] = component["id"]
+
+    # Multi-part components have a _logical_reference attribute, which is the base designator.
+    if "_logical_reference" in attributes and attributes["_logical_reference"] is not None:
+        attributes[LOGICAL_DESIGNATOR] = attributes["_logical_reference"]
+        # Store a copy of raw attributes for merging multi-part components later.
+        attributes["_attributes"] = component["attributes"]
+    else:
+        attributes[LOGICAL_DESIGNATOR] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
 
     return attributes
 
@@ -889,6 +1004,7 @@ def _extract_components_altium(
     hierarchy: SchdocHierarchy,
     parent_sheet_id: str,
     current_sheet: AltiumChildSheet | None = None,
+    use_legacy_processing: bool = False,
 ) -> list[ComponentAttributes]:
     """
     Extract the components from a sheet in an Altium project.
@@ -919,10 +1035,10 @@ def _extract_components_altium(
         return components
 
     for entry in sheets_to_entries[sheet_name]:
-        if entry["type"] != "Component":
-            continue
-
-        component = _component_attributes_altium(entry)
+        if use_legacy_processing:
+            component = _component_attributes_altium_legacy(entry)
+        else:
+            component = _component_attributes_altium_multi_page(entry)
         component_unique_id = f"{current_sheet_id}\\{component['_unique_id']}"
         component["_unique_id"] = component_unique_id
         if current_sheet is not None:
@@ -940,6 +1056,7 @@ def _extract_components_altium(
             hierarchy,
             current_sheet_id,
             child_sheet,
+            use_legacy_processing,
         )
 
         components.extend(child_components)
@@ -953,29 +1070,53 @@ def _combine_multi_part_components_for_altium(
     """
     Combine multi-part Altium components into a single component.
 
-    Altium multi-part components can be distinguished by the `_part_count` and
-    `_current_part_id` attributes being present, which respectively store the
-    total number of parts and the current part number. If that is the case, the
-    `_logical_designator` attribute ties together the different parts of the
-    component.
+    In the legacy format, multi-part components have `_part_count` and
+    `_current_part_id` attributes. In the new multi-page format, multi-part
+    components have a `_logical_reference` attribute (the base designator).
+    In both cases, the `_logical_designator` attribute ties together the
+    different parts of the component.
     """
 
     combined_components = []
     multi_part_components_by_designator = {}
 
     for component in components:
-        if "_part_count" in component and "_current_part_id" in component:
+        # Legacy detection: _part_count + _current_part_id
+        # New format detection: _logical_reference present
+        is_multi_part = (
+            "_part_count" in component and "_current_part_id" in component
+        ) or "_logical_reference" in component
+        if is_multi_part:
             designator = component[LOGICAL_DESIGNATOR]
             multi_part_components_by_designator.setdefault(designator, []).append(component)
         else:
             combined_components.append(component)
 
     for designator, multi_part_components in multi_part_components_by_designator.items():
-        combined_component = multi_part_components[0].copy()
+        # Sort by _reference with a fallback to _current_part_id to make sure we use a consistent first part, which is the "anchor" part.
+        sorted_multi_part_components = sorted(
+            multi_part_components,
+            key=lambda x: x.get("_reference", x.get("_current_part_id", "")),
+        )
+        # Merge attributes from all parts, taking the first non-empty value
+        # for each key if it's not an attribute belonging to just that part.
+        combined_component = {}
+        for part in sorted_multi_part_components:
+            for key, value in part.items():
+                if key not in combined_component or not combined_component[key]:
+                    # The chain down to 'symbol' might be undefined at any level, which is equivalent to being
+                    # set to 'AllSymbols'. We're only trying to detect the uncommon case of 'symbol' being set and having a
+                    # value other than 'AllSymbols'.
+                    is_single_part_attribute = (
+                        part.get("_attributes", {}).get(key, {"symbol": "AllSymbols"}).get("symbol")
+                        != "AllSymbols"
+                    )
+                    if not is_single_part_attribute:
+                        combined_component[key] = value
         combined_component[DESIGNATOR_COLUMN_NAME] = designator
         # The combined component shouldn't have the current part id, as it is
         # not any of the parts.
-        del combined_component["_current_part_id"]
+        combined_component.pop("_current_part_id", None)
         combined_components.append(combined_component)
 
     return combined_components
