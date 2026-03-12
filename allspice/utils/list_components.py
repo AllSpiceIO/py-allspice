@@ -929,7 +929,22 @@ def _component_attributes_altium_multi_page(component: dict) -> ComponentAttribu
     """
     Extract attributes of a component from a multi-page Altium document into a dict.
     """
-    attributes = _component_attributes_multi_page(component)
+    attributes = {}
+    attributes["_name"] = component["name"]
+    if "reference" in component:
+        attributes["_reference"] = component.get("reference")
+    if "logical_reference" in component:
+        attributes["_logical_reference"] = component.get("logical_reference")
+    if "pins" in component:
+        attributes["_pins"] = list(component["pins"].values())
+
+    for attribute in component["attributes"].values():
+        value = attribute["value"]
+        # If value is a formula, attempt to use display_text instead
+        if isinstance(value, str) and value.startswith("="):
+            attributes[attribute["name"]] = attribute.get("display_text", value)
+        else:
+            attributes[attribute["name"]] = value
 
     attributes["_part_id"] = component["name"]
     if "flags" in component:
