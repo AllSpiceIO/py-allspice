@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.0.0b1
+
+### Highlights
+
+* Add support for new Altium Renderer by @schottra in  https://github.com/AllSpiceIO/py-allspice/pull/283
+* Fix an issue with managed device sheet resolution in Altium projects by @schottra in  https://github.com/AllSpiceIO/py-allspice/pull/285
+* Fix an issue with interpolated strings in Altium component/BOM output by @schottra in  https://github.com/AllSpiceIO/py-allspice/pull/286
+
+### BREAKING CHANGES
+The `list_components` and `generate_bom` functions, when used on Altium projects, will now default to passing `?use_new_schdoc_renderer=true` to API calls which fetch schematic JSON representations. This will cause the API to return a response in the same format used for other ECAD tools. However, this is significantly different than the legacy output format used for Altium schematics. `list_components` and `generate_bom` have been updated to detect either format and normalize the result. While the resulting output should be mostly backwards comptabile, some fields may be missing(ex: `_kind`) or returned in a different format.
+
+Outside of `list_components` and `generate_bom`, the new renderer is opt-in. So direct calls to `Repository.get_generated_json` will still be returned in the legacy format unless you enable the new renderer. You can explicitly enable or disable the new renderer globally by setting the `use_new_schdoc_renderer` flag on your AllSpice client instance when creating it. Or you can pass it as a flag in the new `params` argument to `Repository.get_generated_json` or `Repository.get_generated_svg`.
+
+
 ## v3.12.1
 
 ### Highlights
