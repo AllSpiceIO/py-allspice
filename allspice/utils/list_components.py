@@ -803,15 +803,26 @@ def _build_schdoc_hierarchy(
         repetitions = _extract_repetitions(refs)
 
         for child_sheet in repetitions:
-            child_path = _resolve_child_relative_path(
-                child_sheet.name, schematic_document_sheet
-            ).casefold()
-            if child_path in schematic_document_names_downcased:
-                child_name = schematic_document_names_downcased[child_path]
+            child_sheet_name_downcased = child_sheet.name.casefold()
+
+            # Search for path in document names that matches the end of the
+            # child sheet path. This is necessary due to managed sheets
+            # in Altium being stored in arbitrary subdirectories.
+            matching_path = next(
+                (
+                    p
+                    for p in schematic_document_names_downcased.keys()
+                    if p == child_sheet_name_downcased
+                    or p.endswith("/" + child_sheet_name_downcased)
+                ),
+                None,
+            )
+            if matching_path is not None:
+                child_name = schematic_document_names_downcased[matching_path]
             else:
                 # Note the `child_sheet` below - we use the bare text without
                 # any path resolution for device sheets.
-                child_name = device_sheet_names_downcased[child_sheet.name.casefold()]
+                child_name = device_sheet_names_downcased[child_sheet_name_downcased]
                 # Now we know that this child sheet is a Device Sheet, we can
                 # replace the kind.
                 child_sheet = dataclasses.replace(
@@ -825,21 +836,6 @@ def _build_schdoc_hierarchy(
             independent_sheets.discard(child_name)
 
     return (independent_sheets, hierarchy)
-
-
-def _resolve_child_relative_path(child_path: str, parent_path: str) -> str:
-    """
-    Converts a relative path in a sheet ref to a POSIX relative path from the
-    prjpcb file.
-
-    The returned path is POSIX as we convert them to POSIX paths when fetching
-    JSONs.
-    """
-
-    child = pathlib.PureWindowsPath(child_path)
-    parent = pathlib.PureWindowsPath(parent_path)
-
-    return posixpath.normpath((parent.parent / child).as_posix())
 
 
 def _extract_repetitions(sheet_refs: list[AltiumSheetRef]) -> list[AltiumChildSheet]:
