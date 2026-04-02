@@ -93169,6 +93169,15 @@
           "orientation": "Parallel",
           "relative_to": "Pin"
         },
+        "display_name": {
+          "display": "1OE",
+          "overlines": [
+            [
+              "1OE",
+              true
+            ]
+          ]
+        },
         "electrical_type": "Input",
         "is_designator_visible": true,
         "is_name_visible": true,
@@ -95723,6 +95732,19 @@
           "margin": 1.778,
           "orientation": "Parallel",
           "relative_to": "Pin"
+        },
+        "display_name": {
+          "display": "SQW/INT",
+          "overlines": [
+            [
+              "SQW/",
+              false
+            ],
+            [
+              "INT",
+              true
+            ]
+          ]
         },
         "electrical_type": "Passive",
         "is_designator_visible": true,
