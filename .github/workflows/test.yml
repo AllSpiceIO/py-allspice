@@ -124,7 +124,7 @@ jobs:
       - name: Upload coverage report
         # Only upload one of the coverage reports, since they should be the same.
         if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' && github.actor != 'dependabot[bot]' }}
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@v3
         with:
           message-path: coverage.md
       - name: Check attribute types
