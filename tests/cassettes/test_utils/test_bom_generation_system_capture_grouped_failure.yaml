@@ -5,35 +5,33 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: GET
     uri: http://localhost:3000/api/v1/version
   response:
     body:
-      string: '{"version":"1.23.8+18-7-g8873dddf82"}
+      string: '{"version":"1.24.0"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '38'
+      - '21'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 17 Sep 2025 20:17:00 GMT
+      - Wed, 15 Apr 2026 19:27:31 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 200
       message: OK
@@ -43,35 +41,33 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: GET
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"http://localhost:3000/avatars/e58f3c84717d597900333642874c837d","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2026-04-15T19:21:03Z","created":"2026-04-15T19:21:03Z","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '555'
+      - '528'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 17 Sep 2025 20:17:00 GMT
+      - Wed, 15 Apr 2026 19:27:31 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 200
       message: OK
@@ -83,7 +79,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-Length:
@@ -91,12 +87,12 @@ interactions:
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: POST
     uri: http://localhost:3000/api/v1/repos/migrate
   response:
     body:
-      string: '{"id":2525,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_system_capture_grouped_failure","full_name":"test/test-test_bom_generation_system_capture_grouped_failure","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":27,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_system_capture_grouped_failure.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:17:00-04:00","updated_at":"2025-09-17T16:17:01-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
+      string: '{"id":80,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"http://localhost:3000/avatars/e58f3c84717d597900333642874c837d","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2026-04-15T19:21:03Z","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_system_capture_grouped_failure","full_name":"test/test-test_bom_generation_system_capture_grouped_failure","description":"","empty":false,"private":false,"fork":false,"template":false,"mirror":false,"size":22,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure","link":"","ssh_url":"git@localhost:test/test-test_bom_generation_system_capture_grouped_failure.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2026-04-15T19:27:31Z","updated_at":"2026-04-15T19:27:32Z","archived_at":"1970-01-01T00:00:00Z","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":false,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","topics":[],"licenses":[]}
 
         '
     headers:
@@ -105,15 +101,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 17 Sep 2025 20:17:01 GMT
+      - Wed, 15 Apr 2026 19:27:32 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 201
       message: Created
@@ -123,35 +117,33 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: GET
     uri: http://localhost:3000/api/v1/user
   response:
     body:
-      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2025-08-04T12:24:10-04:00","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
+      string: '{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"http://localhost:3000/avatars/e58f3c84717d597900333642874c837d","html_url":"http://localhost:3000/test","language":"en-US","is_admin":true,"last_login":"2026-04-15T19:21:03Z","created":"2026-04-15T19:21:03Z","restricted":false,"active":true,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"}
 
         '
     headers:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Content-Length:
-      - '555'
+      - '528'
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 17 Sep 2025 20:17:01 GMT
+      - Wed, 15 Apr 2026 19:27:32 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 200
       message: OK
@@ -161,18 +153,18 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: GET
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure
   response:
     body:
-      string: '{"id":2525,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"https://secure.gravatar.com/avatar/e58f3c84717d597900333642874c837d?d=identicon","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2024-04-09T12:19:25-04:00","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_system_capture_grouped_failure","full_name":"test/test-test_bom_generation_system_capture_grouped_failure","description":"","empty":false,"private":false,"fork":false,"template":false,"parent":null,"mirror":false,"size":1541,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure","link":"","ssh_url":"shrik450@localhost:test/test-test_bom_generation_system_capture_grouped_failure.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2025-09-17T16:17:00-04:00","updated_at":"2025-09-17T16:17:01-04:00","archived_at":"1969-12-31T19:00:00-05:00","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":true,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","repo_transfer":null,"topics":[],"licenses":null}
+      string: '{"id":80,"owner":{"id":1,"login":"test","login_name":"","source_id":0,"full_name":"","email":"secondarytest@test.org","avatar_url":"http://localhost:3000/avatars/e58f3c84717d597900333642874c837d","html_url":"http://localhost:3000/test","language":"","is_admin":false,"last_login":"0001-01-01T00:00:00Z","created":"2026-04-15T19:21:03Z","restricted":false,"active":false,"prohibit_login":false,"location":"","website":"","description":"","visibility":"public","followers_count":0,"following_count":0,"starred_repos_count":0,"username":"test"},"name":"test-test_bom_generation_system_capture_grouped_failure","full_name":"test/test-test_bom_generation_system_capture_grouped_failure","description":"","empty":false,"private":false,"fork":false,"template":false,"mirror":false,"size":1536,"language":"","languages_url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure/languages","html_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure","url":"http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure","link":"","ssh_url":"git@localhost:test/test-test_bom_generation_system_capture_grouped_failure.git","clone_url":"http://localhost:3000/test/test-test_bom_generation_system_capture_grouped_failure.git","original_url":"https://hub.allspice.io/NoIndexTests/parallela-sdax.git","website":"","stars_count":0,"forks_count":0,"watchers_count":1,"open_issues_count":0,"open_pr_counter":0,"release_counter":0,"default_branch":"main","archived":false,"created_at":"2026-04-15T19:27:31Z","updated_at":"2026-04-15T19:27:32Z","archived_at":"1970-01-01T00:00:00Z","permissions":{"admin":true,"push":true,"pull":true},"has_issues":true,"internal_tracker":{"enable_time_tracker":false,"allow_only_contributors_to_track_time":true,"enable_issue_dependencies":true},"has_wiki":true,"has_pull_requests":true,"has_projects":true,"projects_mode":"all","has_releases":true,"has_packages":true,"has_actions":true,"ignore_whitespace_conflicts":false,"allow_merge_commits":true,"allow_rebase":true,"allow_rebase_explicit":true,"allow_squash_merge":true,"allow_fast_forward_only_merge":true,"allow_rebase_update":true,"default_delete_branch_after_merge":false,"default_merge_style":"merge","default_allow_maintainer_edit":false,"avatar_url":"","internal":false,"mirror_interval":"","object_format_name":"sha1","mirror_updated":"0001-01-01T00:00:00Z","topics":[],"licenses":[]}
 
         '
     headers:
@@ -181,15 +173,13 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 17 Sep 2025 20:17:01 GMT
+      - Wed, 15 Apr 2026 19:27:32 GMT
       Transfer-Encoding:
       - chunked
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 200
       message: OK
@@ -199,7 +189,7 @@ interactions:
       Accept:
       - '*/*'
       Accept-Encoding:
-      - gzip, deflate, zstd
+      - gzip, deflate
       Connection:
       - keep-alive
       Content-Length:
@@ -207,7 +197,7 @@ interactions:
       Content-type:
       - application/json
       User-Agent:
-      - python-requests/2.32.3
+      - python-requests/2.32.5
     method: DELETE
     uri: http://localhost:3000/api/v1/repos/test/test-test_bom_generation_system_capture_grouped_failure
   response:
@@ -217,13 +207,11 @@ interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate, no-transform
       Date:
-      - Wed, 17 Sep 2025 20:17:01 GMT
+      - Wed, 15 Apr 2026 19:27:32 GMT
       X-Content-Type-Options:
       - nosniff
       X-Frame-Options:
       - SAMEORIGIN
-      X-Gitea-Debug:
-      - RUN_MODE=dev
     status:
       code: 204
       message: No Content
