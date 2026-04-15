@@ -932,7 +932,11 @@ def _get_attribute_by_name(attributes: dict, name: str) -> dict:
     so a linear scan over values is required.
     """
     # Fast path: the dict may still be keyed by name (cassettes / old API).
-    if name in attributes and isinstance(attributes[name], dict) and attributes[name].get("name") == name:
+    if (
+        name in attributes
+        and isinstance(attributes[name], dict)
+        and attributes[name].get("name") == name
+    ):
         return attributes[name]
     for attr in attributes.values():
         if attr.get("name") == name:
