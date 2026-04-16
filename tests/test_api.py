@@ -482,9 +482,10 @@ def test_add_repo_to_team(instance):
 def test_create_team_without_units_map(instance):
     org = Organization.request(instance, test_org)
     team = instance.create_team(org, test_team + "1", "descr")
-    permission = team.permission
     assert set(team.units_map.keys()) == set(team.units)
-    assert list(team.units_map.values()) == [permission] * len(team.units)
+    # When no units_map is provided, the server populates units_map with the
+    # requested permission (default "read") for each unit.
+    assert list(team.units_map.values()) == ["read"] * len(team.units)
 
 
 def test_create_team_with_units_map(instance):
@@ -505,7 +506,11 @@ def test_patch_team(instance):
         "description": "patched description",
         "includes_all_repositories": True,
         "name": "newname",
+        # permission must be sent for includes_all_repositories to be processed
+        # by the API, but the response always returns "none" since actual
+        # permissions are now stored in units_map.
         "permission": "write",
+        "units_map": {"repo.code": "write", "repo.wiki": "admin"},
     }
     org = Organization.request(instance, test_org)
     team = instance.create_team(org, test_team[:1], "descr")
@@ -514,7 +519,12 @@ def test_patch_team(instance):
     team.commit()
     team = Team.request(instance, team.id)
     for field, value in fields.items():
-        assert getattr(team, field) == value
+        if field == "permission":
+            # permission is always "none" in the response now; actual
+            # permissions live in units_map.
+            assert team.permission == "none"
+        else:
+            assert getattr(team, field) == value
 
 
 def test_request_team(instance):

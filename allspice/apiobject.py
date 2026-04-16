@@ -516,7 +516,7 @@ class Repository(ApiObject):
     internal_tracker: Dict[str, bool]
     language: str
     languages_url: str
-    licenses: Any
+    licenses: List[Any]
     link: str
     mirror: bool
     mirror_interval: str
@@ -2346,7 +2346,7 @@ class DesignReview(ApiObject):
     repository: Optional["Repository"]
     requested_reviewers: Any
     requested_reviewers_teams: Any
-    review_comments: int
+    review_comments: Optional[int]
     state: str
     title: str
     updated_at: str
@@ -2933,7 +2933,9 @@ class Content(ReadonlyApiObject):
     encoding: Any
     git_url: str
     html_url: str
+    last_author_date: str
     last_commit_sha: str
+    last_committer_date: str
     name: str
     path: str
     sha: str

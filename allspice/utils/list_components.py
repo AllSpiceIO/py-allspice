@@ -925,6 +925,25 @@ def _component_attributes_altium_legacy(component: dict) -> ComponentAttributes:
     return attributes
 
 
+def _get_attribute_by_name(attributes: dict, name: str) -> dict:
+    """Look up a component attribute by its name.
+
+    The new Altium renderer keys attributes by hash ID rather than by name,
+    so a linear scan over values is required.
+    """
+    # Fast path: the dict may still be keyed by name (cassettes / old API).
+    if (
+        name in attributes
+        and isinstance(attributes[name], dict)
+        and attributes[name].get("name") == name
+    ):
+        return attributes[name]
+    for attr in attributes.values():
+        if attr.get("name") == name:
+            return attr
+    raise KeyError(name)
+
+
 def _component_attributes_altium_multi_page(component: dict) -> ComponentAttributes:
     """
     Extract attributes of a component from a multi-page Altium document into a dict.
@@ -956,10 +975,16 @@ def _component_attributes_altium_multi_page(component: dict) -> ComponentAttribu
     # Multi-part components have a _logical_reference attribute, which is the base designator.
     if "_logical_reference" in attributes and attributes["_logical_reference"] is not None:
         attributes[LOGICAL_DESIGNATOR] = attributes["_logical_reference"]
-        # Store a copy of raw attributes for merging multi-part components later.
-        attributes["_attributes"] = component["attributes"]
+        # Store a copy of raw attributes keyed by name for merging multi-part
+        # components later. The API may key attributes by hash ID, so we re-key
+        # by name here for consistent downstream lookups.
+        attributes["_attributes"] = {
+            attr["name"]: attr for attr in component["attributes"].values()
+        }
     else:
-        attributes[LOGICAL_DESIGNATOR] = component["attributes"][DESIGNATOR_COLUMN_NAME]["value"]
+        attributes[LOGICAL_DESIGNATOR] = _get_attribute_by_name(
+            component["attributes"], DESIGNATOR_COLUMN_NAME
+        )["value"]
 
     return attributes
 
