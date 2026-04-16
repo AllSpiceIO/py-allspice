@@ -24,7 +24,7 @@ from .apiobject import (
 )
 from .exceptions import AlreadyExistsException, NotFoundException
 
-__version__ = "4.0.0b1"
+__version__ = "4.0.0"
 
 __all__ = [
     "AllSpice",

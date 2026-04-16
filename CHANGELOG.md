@@ -1,5 +1,9 @@
 # Changelog
 
+## v4.0.0
+
+* Fix an issue with `list_components` when Hub returns component attributes mapped by ID by @schottra in https://github.com/AllSpiceIO/py-allspice/pull/295
+
 ## v4.0.0b1
 
 ### Highlights
