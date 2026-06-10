@@ -21,6 +21,7 @@ from allspice.utils.bom_generation import (
 )
 from allspice.utils.list_components import (
     _combine_multi_part_components_for_dehdl,
+    _combine_multi_part_components_for_dxdesigner,
     _resolve_prjpcb_relative_path,
     list_components_for_altium,
     list_components_for_orcad,
@@ -818,6 +819,29 @@ def test_combine_multi_part_components_for_dehdl():
     assert len(result) == 4
     locations = {comp["LOCATION"] for comp in result}
     assert locations == {"UT4", "UT7", "R1", "C1"}
+
+
+def test_combine_multi_part_components_for_dxdesigner():
+    """Multi-part DxDesigner components share one reference designator (they are
+    not suffixed and have no logical_reference). They should collapse to a single
+    component; a component without a reference designator is passed through."""
+    components = [
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "R46", "_name": "", "Part Number": "110-0001853"},
+        {"_reference": "R43", "_name": "", "Part Number": "110-0001853"},
+        {"_name": "", "Part Number": ""},  # no _reference key
+        {"_reference": "", "_name": "", "Part Number": ""},  # blank _reference
+    ]
+
+    result = _combine_multi_part_components_for_dxdesigner(components)
+
+    # CPU1 collapses to one; R46/R43 kept; components with a missing or blank
+    # reference designator are passed through.
+    assert len(result) == 5
+    references = [comp.get("_reference") for comp in result]
+    assert references == ["CPU1", "R46", "R43", None, ""]
 
 
 @pytest.mark.vcr

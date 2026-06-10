@@ -1243,6 +1243,37 @@ def _combine_multi_part_components_for_dehdl(
     return combined_components
 
 
+def _combine_multi_part_components_for_dxdesigner(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part DxDesigner components into a single component.
+
+    DxDesigner does not provide a logical_reference, and the parts of a
+    multi-part component are not suffixed: every symbol of a multi-part
+    component shares the same reference designator (e.g. a CPU spanning several
+    sheets all carry "CPU1"). Components that share a reference designator are
+    treated as a single physical component, so only the first occurrence is
+    kept. Components without a reference designator are passed through unchanged
+    so that no BOM line is silently dropped.
+    """
+
+    seen_references = set()
+    combined_components = []
+
+    for component in components:
+        reference = component.get("_reference", "")
+        if not reference:
+            combined_components.append(component)
+            continue
+
+        if reference not in seen_references:
+            seen_references.add(reference)
+            combined_components.append(component)
+
+    return combined_components
+
+
 def _extract_variations(
     variant: str,
     prjpcb_ini: configparser.ConfigParser,
