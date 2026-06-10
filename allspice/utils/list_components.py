@@ -41,6 +41,7 @@ class SupportedTool(Enum):
     ORCAD = "orcad"
     SYSTEM_CAPTURE = "system_capture"
     DEHDL = "dehdl"
+    DXDESIGNER = "dxdesigner"
 
 
 class VariationKind(Enum):
@@ -548,6 +549,8 @@ def infer_project_tool(source_file: str) -> SupportedTool:
         return SupportedTool.SYSTEM_CAPTURE
     elif source_file.lower().endswith(".cpm"):
         return SupportedTool.DEHDL
+    elif source_file.lower().endswith(".prj"):
+        return SupportedTool.DXDESIGNER
     else:
         raise ValueError("""
 The source file for generate_bom must be:
@@ -555,7 +558,8 @@ The source file for generate_bom must be:
 - A PrjPcb file for Altium projects; or
 - A DSN file for OrCAD projects; or
 - An SDAX file for System Capture projects; or
-- A CPM file for DeHDL projects.
+- A CPM file for DeHDL projects; or
+- A Prj file for DxDesigner projects.
         """)
 
 

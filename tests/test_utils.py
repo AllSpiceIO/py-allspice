@@ -844,6 +844,23 @@ def test_combine_multi_part_components_for_dxdesigner():
     assert references == ["CPU1", "R46", "R43", None, ""]
 
 
+def test_infer_project_tool_dxdesigner():
+    # A .prj file maps to the DxDesigner tool, case-insensitively.
+    assert (
+        list_components.infer_project_tool("Schematics/example.prj")
+        == list_components.SupportedTool.DXDESIGNER
+    )
+    assert (
+        list_components.infer_project_tool("EXAMPLE.PRJ")
+        == list_components.SupportedTool.DXDESIGNER
+    )
+    # A .prjpcb (Altium) file must NOT be misclassified as DxDesigner.
+    assert (
+        list_components.infer_project_tool("Archimajor.PrjPcb")
+        == list_components.SupportedTool.ALTIUM
+    )
+
+
 @pytest.mark.vcr
 def test_bom_generation_dehdl_uob(request, instance, setup_for_generation, csv_snapshot):
     repo = setup_for_generation(
