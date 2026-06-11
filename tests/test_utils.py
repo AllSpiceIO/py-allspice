@@ -3,7 +3,7 @@ import csv
 import io
 import os
 from collections import Counter
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from syrupy.extensions.json import JSONSnapshotExtension
@@ -859,6 +859,31 @@ def test_infer_project_tool_dxdesigner():
         list_components.infer_project_tool("Archimajor.PrjPcb")
         == list_components.SupportedTool.ALTIUM
     )
+
+
+def test_list_components_dispatches_dxdesigner_and_combines():
+    """list_components(".prj") routes to the DxDesigner path and combines
+    multi-part components when requested. The Hub fetch is patched out."""
+    sample = [
+        {"_reference": "CPU1", "_name": ""},
+        {"_reference": "CPU1", "_name": ""},
+        {"_reference": "R1", "_name": ""},
+    ]
+    client = MagicMock()
+    repo = MagicMock()
+
+    # Independent copies per call so `raw` stays isolated from the combined run.
+    with patch.object(
+        list_components,
+        "_list_components_multi_page_schematic",
+        side_effect=[list(sample), list(sample)],
+    ):
+        raw = list_components.list_components(client, repo, "foo.prj", combine_multi_part=False)
+        combined = list_components.list_components(client, repo, "foo.prj", combine_multi_part=True)
+
+    assert len(raw) == 3
+    assert len(combined) == 2
+    assert [c["_reference"] for c in combined] == ["CPU1", "R1"]
 
 
 @pytest.mark.vcr

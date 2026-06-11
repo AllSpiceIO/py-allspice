@@ -211,6 +211,15 @@ def list_components(
                 ref=ref,
                 combine_multi_part=combine_multi_part,
             )
+        case SupportedTool.DXDESIGNER:
+            return list_components_for_dxdesigner(
+                allspice_client,
+                repository,
+                source_file,
+                variant=variant,
+                ref=ref,
+                combine_multi_part=combine_multi_part,
+            )
 
 
 def list_components_for_altium(
@@ -532,6 +541,43 @@ def list_components_for_dehdl(
 
     if combine_multi_part:
         components = _combine_multi_part_components_for_dehdl(components)
+
+    return components
+
+
+def list_components_for_dxdesigner(
+    allspice_client: AllSpice,
+    repository: Repository,
+    prj_path: str,
+    variant: Optional[str] = None,
+    ref: Ref = "main",
+    combine_multi_part: bool = False,
+) -> list[ComponentAttributes]:
+    """
+    Get a list of all components in a DxDesigner PRJ schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the DxDesigner schematic.
+    :param prj_path: The path to the DxDesigner PRJ file from the repo root. For
+        example, if the schematic is in the folder "Schematics" and the file is
+        named "example.prj", the path would be "Schematics/example.prj".
+    :param variant: The variant to apply to the components. If not None, the
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component. This prevents double-counting components that
+        appear on multiple schematic pages but represent the same physical
+        component.
+    """
+
+    components = _list_components_multi_page_schematic(
+        allspice_client, repository, prj_path, variant, ref
+    )
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_dxdesigner(components)
 
     return components
 
