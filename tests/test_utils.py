@@ -25,6 +25,7 @@ from allspice.utils.list_components import (
     _combine_multi_part_components_for_dxdesigner,
     _resolve_prjpcb_relative_path,
     list_components_for_altium,
+    list_components_for_dxdesigner,
     list_components_for_orcad,
 )
 from allspice.utils.netlist_generation import generate_netlist
@@ -913,6 +914,61 @@ def test_generate_bom_for_dxdesigner_combines_multi_part():
     assert len(bom) == 2
     designators = sorted(row["Designator"] for row in bom)
     assert designators == ["CPU1", "R1"]
+
+
+@pytest.mark.vcr
+def test_dxdesigner_components_list(request, instance, setup_for_generation, json_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/E2E-Turbot-BOMGEN.git",
+    )
+
+    components = list_components_for_dxdesigner(
+        instance,
+        repo,
+        "Turbot.prj",
+        # We hard-code a ref so that this test is reproducible.
+        ref="05990542eebf7494ab9568ebcaeca5c0bea19065",
+    )
+
+    assert len(components) == 917
+    assert components == json_snapshot
+
+    # A multi-part component shares one reference designator across its symbols
+    # (e.g. the CPU1 SoC spans 13 symbols). Combining collapses these so the
+    # part is not counted 13 times in a BOM. Combine in-memory here to avoid
+    # re-fetching the (large) generated JSON; the combine_multi_part=True path
+    # through list_components_for_dxdesigner is covered by the unit tests.
+    combined = _combine_multi_part_components_for_dxdesigner(components)
+    assert len(combined) == 905
+
+
+@pytest.mark.vcr
+def test_bom_generation_dxdesigner(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/E2E-Turbot-BOMGEN.git",
+    )
+
+    attributes_mapping = {
+        "Designator": ["_reference", "Ref Designator"],
+        "Part Number": ["Part Number", "PartNum2", "GENERIC_PART_NUMBER"],
+        "Description": ["PartDescription", "Description"],
+        "Value": ["COMPVALUE", "Value"],
+    }
+
+    bom = generate_bom_for_dxdesigner(
+        instance,
+        repo,
+        "Turbot.prj",
+        attributes_mapping,
+        group_by=["Part Number", "Description"],
+        # We hard-code a ref so that this test is reproducible.
+        ref="05990542eebf7494ab9568ebcaeca5c0bea19065",
+    )
+
+    assert len(bom) > 0
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr
