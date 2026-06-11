@@ -146,21 +146,24 @@ def list_components(
     the project tool. For Altium projects, these are "_part_id",
     "_description", "_unique_id" and "_kind", which are the Library
     Reference, Description, Unique ID and Component Type respectively. For
-    OrCAD and System Capture projects, "_name" is added, which is the name
+    OrCAD, System Capture, DeHDL, and DxDesigner projects, "_name" is added, which is the name
     of the component, and "_reference" and "_logical_reference" may be
     added, which are the name of the component, and the logical reference
-    of a multi-part component respectively.
+    of a multi-part component respectively. DxDesigner does not provide a
+    logical reference, so "_logical_reference" is not set for DxDesigner
+    projects.
 
     :param client: An AllSpice client instance.
     :param repository: The repository containing the schematic.
     :param source_file: The path to the schematic file from the repo root. The
         source file must be a PrjPcb file for Altium projects, a DSN file for
-        OrCAD projects or an SDAX file for System Capture projects. For
+        OrCAD projects, an SDAX file for System Capture projects, a CPM file
+        for DeHDL projects, or a Prj file for DxDesigner projects. For
         example, if the schematic is in the folder "Schematics" and the file is
         named "example.DSN", the path would be "Schematics/example.DSN".
     :param variant: The variant to apply to the components. If not None, the
-        components will be filtered and modified according to the variant. Only
-        applies to Altium projects.
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
     :param combine_multi_part: If True, multi-part components will be combined

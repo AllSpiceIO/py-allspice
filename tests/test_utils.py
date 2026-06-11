@@ -16,6 +16,7 @@ from allspice.utils.bom_generation import (
     generate_bom,
     generate_bom_for_altium,
     generate_bom_for_dehdl,
+    generate_bom_for_dxdesigner,
     generate_bom_for_orcad,
     generate_bom_for_system_capture,
 )
@@ -884,6 +885,34 @@ def test_list_components_dispatches_dxdesigner_and_combines():
     assert len(raw) == 3
     assert len(combined) == 2
     assert [c["_reference"] for c in combined] == ["CPU1", "R1"]
+
+
+def test_generate_bom_for_dxdesigner_combines_multi_part():
+    """generate_bom_for_dxdesigner combines multi-part components (which share a
+    reference designator) so they are not double-counted. Hub fetch is patched."""
+    sample = [
+        {"_reference": "CPU1", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "Part Number": "140-0004628"},
+        {"_reference": "R1", "Part Number": "110-0001853"},
+    ]
+    columns = {
+        "Designator": ColumnConfig(attributes=["_reference"]),
+        "Part Number": ColumnConfig(attributes=["Part Number"]),
+    }
+    client = MagicMock()
+    repo = MagicMock()
+
+    with patch.object(
+        list_components,
+        "_list_components_multi_page_schematic",
+        return_value=list(sample),
+    ):
+        bom = generate_bom_for_dxdesigner(client, repo, "foo.prj", columns)
+
+    # CPU1 (x2) collapses to one row; R1 stays, so the BOM has 2 rows.
+    assert len(bom) == 2
+    designators = sorted(row["Designator"] for row in bom)
+    assert designators == ["CPU1", "R1"]
 
 
 @pytest.mark.vcr

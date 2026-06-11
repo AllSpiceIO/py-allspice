@@ -124,9 +124,10 @@ def generate_bom(
     :param allspice_client: The AllSpice client to use.
     :param repository: The repository to generate the BOM for.
     :param source_file: The path to the source file from the root of the
-        repository. The source file must be a PrjPcb file for Altium projects a
-        DSN file for OrCAD projects, an SDAX file for System Capture
-        projects, or a CPM file for DeHDL projects. For example, if the source file is in the root of the
+        repository. The source file must be a PrjPcb file for Altium projects, a
+        DSN file for OrCAD projects, an SDAX file for System Capture projects,
+        a CPM file for DeHDL projects, or a Prj file for DxDesigner projects.
+        For example, if the source file is in the root of the
         repository and is named "Archimajor.PrjPcb", the path would be
         "Archimajor.PrjPcb"; if the source file is in a folder called
         "Schematics" and is named "Beagleplay.dsn", the path would be
@@ -139,10 +140,12 @@ def generate_bom(
         the project tool. For Altium projects, these are "_part_id",
         "_description", "_unique_id" and "_kind", which are the Library
         Reference, Description, Unique ID and Component Type respectively. For
-        OrCAD, System Capture, and DeHDL projects, "_name" is added, which is the name
+        OrCAD, System Capture, DeHDL, and DxDesigner projects, "_name" is added, which is the name
         of the component, and "_reference" and "_logical_reference" may be
         added, which are the name of the component, and the logical reference
-        of a multi-part component respectively.
+        of a multi-part component respectively. DxDesigner does not provide a
+        logical reference, so "_logical_reference" is not set for DxDesigner
+        projects.
     :param group_by: A list of columns to group the BOM by. If this is provided,
         the BOM will be grouped by the values of these columns.
     :param variant: The variant of the project to generate the BOM for. If this
@@ -379,6 +382,53 @@ def generate_bom_for_dehdl(
         allspice_client,
         repository,
         cpm_path,
+        columns,
+        group_by,
+        variant=None,
+        ref=ref,
+        remove_non_bom_components=remove_non_bom_components,
+    )
+
+
+def generate_bom_for_dxdesigner(
+    allspice_client: AllSpice,
+    repository: Repository,
+    prj_path: str,
+    columns: ColumnsMapping,
+    group_by: Optional[list[str]] = None,
+    ref: Ref = "main",
+    remove_non_bom_components: bool = True,
+) -> Bom:
+    """
+    Generate a BOM for a DxDesigner PRJ schematic.
+
+    :param allspice_client: The AllSpice client to use.
+    :param repository: The repository to generate the BOM for.
+    :param prj_path: The path to the DxDesigner PRJ file from the root of the
+        repository.
+    :param columns: A mapping of the columns in the BOM to the attributes in the
+        PRJ schematic. The attributes are tried in order, and the first one
+        found is used as the value for that column.
+
+        Note that special attributes are added by this function, namely, "_name"
+        is added, which is the name of the component, and "_reference", which is
+        the reference designator of the component.
+    :param group_by: A list of columns to group the BOM by. If this is provided,
+        the BOM will be grouped by the values of these columns.
+    :param ref: The ref, i.e. branch, commit or git ref from which to take the
+        project files. Defaults to "main".
+    :param remove_non_bom_components: If True, components that should not be
+        included in the BOM will be removed. Defaults to True. No non-BOM
+        component filtering is defined for DxDesigner yet, so this currently
+        has no effect for DxDesigner projects.
+    :return: A list of BOM entries. Each entry is a dictionary where the key is
+        a column name and the value is the value for that column.
+    """
+
+    return generate_bom(
+        allspice_client,
+        repository,
+        prj_path,
         columns,
         group_by,
         variant=None,
