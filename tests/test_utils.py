@@ -3,7 +3,7 @@ import csv
 import io
 import os
 from collections import Counter
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from syrupy.extensions.json import JSONSnapshotExtension
@@ -16,13 +16,16 @@ from allspice.utils.bom_generation import (
     generate_bom,
     generate_bom_for_altium,
     generate_bom_for_dehdl,
+    generate_bom_for_dxdesigner,
     generate_bom_for_orcad,
     generate_bom_for_system_capture,
 )
 from allspice.utils.list_components import (
     _combine_multi_part_components_for_dehdl,
+    _combine_multi_part_components_for_dxdesigner,
     _resolve_prjpcb_relative_path,
     list_components_for_altium,
+    list_components_for_dxdesigner,
     list_components_for_orcad,
 )
 from allspice.utils.netlist_generation import generate_netlist
@@ -818,6 +821,154 @@ def test_combine_multi_part_components_for_dehdl():
     assert len(result) == 4
     locations = {comp["LOCATION"] for comp in result}
     assert locations == {"UT4", "UT7", "R1", "C1"}
+
+
+def test_combine_multi_part_components_for_dxdesigner():
+    """Multi-part DxDesigner components share one reference designator (they are
+    not suffixed and have no logical_reference). They should collapse to a single
+    component; a component without a reference designator is passed through."""
+    components = [
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "_name": "", "Part Number": "140-0004628"},
+        {"_reference": "R46", "_name": "", "Part Number": "110-0001853"},
+        {"_reference": "R43", "_name": "", "Part Number": "110-0001853"},
+        {"_name": "", "Part Number": ""},  # no _reference key
+        {"_reference": "", "_name": "", "Part Number": ""},  # blank _reference
+    ]
+
+    result = _combine_multi_part_components_for_dxdesigner(components)
+
+    # CPU1 collapses to one; R46/R43 kept; components with a missing or blank
+    # reference designator are passed through.
+    assert len(result) == 5
+    references = [comp.get("_reference") for comp in result]
+    assert references == ["CPU1", "R46", "R43", None, ""]
+
+
+def test_infer_project_tool_dxdesigner():
+    # A .prj file maps to the DxDesigner tool, case-insensitively.
+    assert (
+        list_components.infer_project_tool("Schematics/example.prj")
+        == list_components.SupportedTool.DXDESIGNER
+    )
+    assert (
+        list_components.infer_project_tool("EXAMPLE.PRJ")
+        == list_components.SupportedTool.DXDESIGNER
+    )
+    # A .prjpcb (Altium) file must NOT be misclassified as DxDesigner.
+    assert (
+        list_components.infer_project_tool("Archimajor.PrjPcb")
+        == list_components.SupportedTool.ALTIUM
+    )
+
+
+def test_list_components_dispatches_dxdesigner_and_combines():
+    """list_components(".prj") routes to the DxDesigner path and combines
+    multi-part components when requested. The Hub fetch is patched out."""
+    sample = [
+        {"_reference": "CPU1", "_name": ""},
+        {"_reference": "CPU1", "_name": ""},
+        {"_reference": "R1", "_name": ""},
+    ]
+    client = MagicMock()
+    repo = MagicMock()
+
+    # Independent copies per call so `raw` stays isolated from the combined run.
+    with patch.object(
+        list_components,
+        "_list_components_multi_page_schematic",
+        side_effect=[list(sample), list(sample)],
+    ):
+        raw = list_components.list_components(client, repo, "foo.prj", combine_multi_part=False)
+        combined = list_components.list_components(client, repo, "foo.prj", combine_multi_part=True)
+
+    assert len(raw) == 3
+    assert len(combined) == 2
+    assert [c["_reference"] for c in combined] == ["CPU1", "R1"]
+
+
+def test_generate_bom_for_dxdesigner_combines_multi_part():
+    """generate_bom_for_dxdesigner combines multi-part components (which share a
+    reference designator) so they are not double-counted. Hub fetch is patched."""
+    sample = [
+        {"_reference": "CPU1", "Part Number": "140-0004628"},
+        {"_reference": "CPU1", "Part Number": "140-0004628"},
+        {"_reference": "R1", "Part Number": "110-0001853"},
+    ]
+    columns = {
+        "Designator": ColumnConfig(attributes=["_reference"]),
+        "Part Number": ColumnConfig(attributes=["Part Number"]),
+    }
+    client = MagicMock()
+    repo = MagicMock()
+
+    with patch.object(
+        list_components,
+        "_list_components_multi_page_schematic",
+        return_value=list(sample),
+    ):
+        bom = generate_bom_for_dxdesigner(client, repo, "foo.prj", columns)
+
+    # CPU1 (x2) collapses to one row; R1 stays, so the BOM has 2 rows.
+    assert len(bom) == 2
+    designators = sorted(row["Designator"] for row in bom)
+    assert designators == ["CPU1", "R1"]
+
+
+@pytest.mark.vcr
+def test_dxdesigner_components_list(request, instance, setup_for_generation, json_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/E2E-Turbot-BOMGEN.git",
+    )
+
+    components = list_components_for_dxdesigner(
+        instance,
+        repo,
+        "Turbot.prj",
+        # We hard-code a ref so that this test is reproducible.
+        ref="05990542eebf7494ab9568ebcaeca5c0bea19065",
+    )
+
+    assert len(components) == 917
+    assert components == json_snapshot
+
+    # A multi-part component shares one reference designator across its symbols
+    # (e.g. the CPU1 SoC spans 13 symbols). Combining collapses these so the
+    # part is not counted 13 times in a BOM. Combine in-memory here to avoid
+    # re-fetching the (large) generated JSON; the combine_multi_part=True path
+    # through list_components_for_dxdesigner is covered by the unit tests.
+    combined = _combine_multi_part_components_for_dxdesigner(components)
+    assert len(combined) == 905
+
+
+@pytest.mark.vcr
+def test_bom_generation_dxdesigner(request, instance, setup_for_generation, csv_snapshot):
+    repo = setup_for_generation(
+        request.node.name,
+        "https://hub.allspice.io/NoIndexTests/E2E-Turbot-BOMGEN.git",
+    )
+
+    attributes_mapping = {
+        "Designator": ["_reference", "Ref Designator"],
+        "Part Number": ["Part Number", "PartNum2", "GENERIC_PART_NUMBER"],
+        "Description": ["PartDescription", "Description"],
+        "Value": ["COMPVALUE", "Value"],
+    }
+
+    bom = generate_bom_for_dxdesigner(
+        instance,
+        repo,
+        "Turbot.prj",
+        attributes_mapping,
+        group_by=["Part Number", "Description"],
+        # We hard-code a ref so that this test is reproducible.
+        ref="05990542eebf7494ab9568ebcaeca5c0bea19065",
+    )
+
+    assert len(bom) > 0
+    assert bom == csv_snapshot
 
 
 @pytest.mark.vcr

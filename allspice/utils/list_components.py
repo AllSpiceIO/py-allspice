@@ -41,6 +41,7 @@ class SupportedTool(Enum):
     ORCAD = "orcad"
     SYSTEM_CAPTURE = "system_capture"
     DEHDL = "dehdl"
+    DXDESIGNER = "dxdesigner"
 
 
 class VariationKind(Enum):
@@ -145,21 +146,24 @@ def list_components(
     the project tool. For Altium projects, these are "_part_id",
     "_description", "_unique_id" and "_kind", which are the Library
     Reference, Description, Unique ID and Component Type respectively. For
-    OrCAD and System Capture projects, "_name" is added, which is the name
+    OrCAD, System Capture, DeHDL, and DxDesigner projects, "_name" is added, which is the name
     of the component, and "_reference" and "_logical_reference" may be
     added, which are the name of the component, and the logical reference
-    of a multi-part component respectively.
+    of a multi-part component respectively. DxDesigner does not provide a
+    logical reference, so "_logical_reference" is not set for DxDesigner
+    projects.
 
     :param client: An AllSpice client instance.
     :param repository: The repository containing the schematic.
     :param source_file: The path to the schematic file from the repo root. The
         source file must be a PrjPcb file for Altium projects, a DSN file for
-        OrCAD projects or an SDAX file for System Capture projects. For
+        OrCAD projects, an SDAX file for System Capture projects, a CPM file
+        for DeHDL projects, or a Prj file for DxDesigner projects. For
         example, if the schematic is in the folder "Schematics" and the file is
         named "example.DSN", the path would be "Schematics/example.DSN".
     :param variant: The variant to apply to the components. If not None, the
-        components will be filtered and modified according to the variant. Only
-        applies to Altium projects.
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
     :param ref: Optional git ref to check. This can be a commit hash, branch
         name, or tag name. Default is "main", i.e. the main branch.
     :param combine_multi_part: If True, multi-part components will be combined
@@ -203,6 +207,15 @@ def list_components(
             )
         case SupportedTool.DEHDL:
             return list_components_for_dehdl(
+                allspice_client,
+                repository,
+                source_file,
+                variant=variant,
+                ref=ref,
+                combine_multi_part=combine_multi_part,
+            )
+        case SupportedTool.DXDESIGNER:
+            return list_components_for_dxdesigner(
                 allspice_client,
                 repository,
                 source_file,
@@ -535,6 +548,43 @@ def list_components_for_dehdl(
     return components
 
 
+def list_components_for_dxdesigner(
+    allspice_client: AllSpice,
+    repository: Repository,
+    prj_path: str,
+    variant: Optional[str] = None,
+    ref: Ref = "main",
+    combine_multi_part: bool = False,
+) -> list[ComponentAttributes]:
+    """
+    Get a list of all components in a DxDesigner PRJ schematic.
+
+    :param client: An AllSpice client instance.
+    :param repository: The repository containing the DxDesigner schematic.
+    :param prj_path: The path to the DxDesigner PRJ file from the repo root. For
+        example, if the schematic is in the folder "Schematics" and the file is
+        named "example.prj", the path would be "Schematics/example.prj".
+    :param variant: The variant to apply to the components. If not None, the
+        components will be filtered and modified according to the variant.
+        Variants are supported for all tools where AllSpice Hub shows variants.
+    :param ref: Optional git ref to check. This can be a commit hash, branch
+        name, or tag name. Default is "main", i.e. the main branch.
+    :param combine_multi_part: If True, multi-part components will be combined
+        into a single component. This prevents double-counting components that
+        appear on multiple schematic pages but represent the same physical
+        component.
+    """
+
+    components = _list_components_multi_page_schematic(
+        allspice_client, repository, prj_path, variant, ref
+    )
+
+    if combine_multi_part:
+        components = _combine_multi_part_components_for_dxdesigner(components)
+
+    return components
+
+
 def infer_project_tool(source_file: str) -> SupportedTool:
     """
     Infer the ECAD tool used in a project from the file extension.
@@ -548,6 +598,8 @@ def infer_project_tool(source_file: str) -> SupportedTool:
         return SupportedTool.SYSTEM_CAPTURE
     elif source_file.lower().endswith(".cpm"):
         return SupportedTool.DEHDL
+    elif source_file.lower().endswith(".prj"):
+        return SupportedTool.DXDESIGNER
     else:
         raise ValueError("""
 The source file for generate_bom must be:
@@ -555,7 +607,8 @@ The source file for generate_bom must be:
 - A PrjPcb file for Altium projects; or
 - A DSN file for OrCAD projects; or
 - An SDAX file for System Capture projects; or
-- A CPM file for DeHDL projects.
+- A CPM file for DeHDL projects; or
+- A Prj file for DxDesigner projects.
         """)
 
 
@@ -1238,6 +1291,37 @@ def _combine_multi_part_components_for_dehdl(
         location = component.get("LOCATION", "")
         if location and location not in seen_locations:
             seen_locations.add(location)
+            combined_components.append(component)
+
+    return combined_components
+
+
+def _combine_multi_part_components_for_dxdesigner(
+    components: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """
+    Combine multi-part DxDesigner components into a single component.
+
+    DxDesigner does not provide a logical_reference, and the parts of a
+    multi-part component are not suffixed: every symbol of a multi-part
+    component shares the same reference designator (e.g. a CPU spanning several
+    sheets all carry "CPU1"). Components that share a reference designator are
+    treated as a single physical component, so only the first occurrence is
+    kept. Components without a reference designator are passed through unchanged
+    so that no BOM line is silently dropped.
+    """
+
+    seen_references = set()
+    combined_components = []
+
+    for component in components:
+        reference = component.get("_reference", "")
+        if not reference:
+            combined_components.append(component)
+            continue
+
+        if reference not in seen_references:
+            seen_references.add(reference)
             combined_components.append(component)
 
     return combined_components
