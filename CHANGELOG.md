@@ -1,5 +1,9 @@
 # Changelog
 
+## v4.1.0
+
+* Add support for DxDesigner (.prj) BOM generation by @paigen11 in https://github.com/AllSpiceIO/py-allspice/pull/301
+
 ## v4.0.0
 
 * Fix an issue with `list_components` when Hub returns component attributes mapped by ID by @schottra in https://github.com/AllSpiceIO/py-allspice/pull/295
