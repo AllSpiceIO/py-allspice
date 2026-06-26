@@ -2,7 +2,7 @@ import time
 from typing import Callable, Optional, TypeVar, Union
 
 from ..apiobject import Content, Ref
-from ..exceptions import NotYetGeneratedException
+from ..exceptions import InternalServerException, NotYetGeneratedException, RenderException
 
 MAX_RETRIES_FOR_GENERATED = 10
 """The maximum number of times to retry fetching generated JSON files."""
@@ -36,6 +36,15 @@ def retry_not_yet_generated(
         except NotYetGeneratedException:
             attempts += 1
             time.sleep(SLEEP_FOR_GENERATED)
+        except InternalServerException as e:
+            render_exception = RenderException.from_internal(
+                e, str(file_path), str(ref) if ref is not None else None
+            )
+
+            if render_exception is not None:
+                raise render_exception from e
+            else:
+                raise
 
     raise TimeoutError(
         f"Failed to fetch JSON for {file_path} after {MAX_RETRIES_FOR_GENERATED} attempts."

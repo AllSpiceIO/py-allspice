@@ -22,11 +22,18 @@ from .apiobject import (
     Team,
     User,
 )
-from .exceptions import AlreadyExistsException, NotFoundException
+from .exceptions import (
+    AlreadyExistsException,
+    APIError,
+    InternalServerException,
+    NotFoundException,
+    RenderException,
+)
 
 __version__ = "4.1.0"
 
 __all__ = [
+    "APIError",
     "AllSpice",
     "AlreadyExistsException",
     "Branch",
@@ -35,11 +42,13 @@ __all__ = [
     "Content",
     "DesignReview",
     "DesignReviewReview",
+    "InternalServerException",
     "Issue",
     "Milestone",
     "NotFoundException",
     "Organization",
     "Release",
+    "RenderException",
     "Repository",
     "Team",
     "User",

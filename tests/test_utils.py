@@ -9,7 +9,12 @@ import pytest
 from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
-from allspice.exceptions import NotYetGeneratedException
+from allspice.exceptions import (
+    APIError,
+    InternalServerException,
+    NotYetGeneratedException,
+    RenderException,
+)
 from allspice.utils import list_components, retry_generated
 from allspice.utils.bom_generation import (
     ColumnConfig,
@@ -2027,3 +2032,82 @@ def test_altium_components_list_with_hierarchical_device_sheets_and_annotations_
     components.sort(key=lambda x: x["Designator"])
     assert len(components) == 980
     assert components == json_snapshot
+
+
+def test_api_error_from_json_valid():
+    assert APIError.from_json(
+        '{"message": "Something went wrong", "url": "https://hub.allspice.io/api/swagger", "category": "render"}'
+    ) == APIError("Something went wrong", "https://hub.allspice.io/api/swagger", "render")
+
+
+def test_api_error_from_json_partial():
+    assert APIError.from_json('{"message": "Render failure"}') == APIError(
+        "Render failure", None, None
+    )
+
+
+def test_api_error_from_json_category_only():
+    assert APIError.from_json('{"category": "render"}') == APIError(None, None, "render")
+
+
+@pytest.mark.parametrize(
+    "text", ["not json", "[1, 2]", "{}", '{"message": "", "url": ""}', '{"category": ""}']
+)
+def test_api_error_from_json_returns_none(text):
+    assert APIError.from_json(text) is None
+
+
+def test_render_exception_uses_server_message_and_diagnostic_url():
+    internal = InternalServerException(
+        "500",
+        APIError("Render Failed", "https://hub.allspice.io/-/admin/crysknife-reports", "render"),
+    )
+    message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
+    assert (
+        message
+        == "Render Failed; A diagnostic report for this failure can be downloaded by a site admin at https://hub.allspice.io/-/admin/crysknife-reports."
+    )
+
+
+def test_render_exception_drops_non_admin_url():
+    internal = InternalServerException(
+        "500", APIError("Something went wrong", "https://hub.allspice.io/api/swagger", "render")
+    )
+    message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
+    assert message == "Something went wrong; Check AllSpice Hub logs for more information."
+
+
+def test_render_exception_fallback_omits_ref_when_none():
+    internal = InternalServerException("500", APIError(None, None, "render"))
+    message = str(RenderException.from_internal(internal, "foo.SchDoc", None))
+    assert message == "Render failed for foo.SchDoc; Check AllSpice Hub logs for more information."
+
+
+def test_render_exception_fallback_includes_ref():
+    internal = InternalServerException("500", APIError(None, None, "render"))
+    message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
+    assert (
+        message
+        == "Render failed for foo.SchDoc at ref main; Check AllSpice Hub logs for more information."
+    )
+
+
+def test_retry_raises_render_exception_without_retrying():
+    method = MagicMock(side_effect=InternalServerException("500", APIError("", None, "render")))
+    with pytest.raises(RenderException):
+        retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main")
+    method.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        None,
+        APIError("upstream unavailable", None, "infra"),
+    ],
+)
+def test_retry_raises_internal_server_error_without_retrying(body):
+    method = MagicMock(side_effect=InternalServerException("500", body))
+    with pytest.raises(InternalServerException):
+        retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main")
+    method.assert_called_once()

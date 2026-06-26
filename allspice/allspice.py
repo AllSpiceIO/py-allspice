@@ -10,7 +10,9 @@ from frozendict import frozendict
 from .apiobject import Organization, Repository, Team, User
 from .exceptions import (
     AlreadyExistsException,
+    APIError,
     ConflictException,
+    InternalServerException,
     NotFoundException,
     NotYetGeneratedException,
 )
@@ -105,21 +107,23 @@ class AllSpice:
         return url
 
     def __get(self, endpoint: str, params: Mapping = frozendict()) -> requests.Response:
-        request = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=params)
-        if request.status_code not in [200, 201]:
-            message = f"Received status code: {request.status_code} ({request.url})"
-            if request.status_code in [404]:
+        response = self.requests.get(self.__get_url(endpoint), headers=self.headers, params=params)
+        if response.status_code not in [200, 201]:
+            message = f"Received status code: {response.status_code} ({response.url})"
+            if response.status_code in [404]:
                 raise NotFoundException(message)
-            if request.status_code in [403]:
+            if response.status_code in [403]:
                 raise Exception(
-                    f"Unauthorized: {request.url} - Check your permissions and try again! ({message})"
+                    f"Unauthorized: {response.url} - Check your permissions and try again! ({message})"
                 )
-            if request.status_code in [409]:
+            if response.status_code in [409]:
                 raise ConflictException(message)
-            if request.status_code in [503]:
+            if response.status_code in [503]:
                 raise NotYetGeneratedException(message)
+            if response.status_code in [500]:
+                raise InternalServerException(message, APIError.from_json(response.text))
             raise Exception(message)
-        return request
+        return response
 
     @staticmethod
     def parse_result(result) -> Dict:
@@ -184,20 +188,22 @@ class AllSpice:
     def requests_put(self, endpoint: str, data: Optional[dict] = None):
         if not data:
             data = {}
-        request = self.requests.put(
+        response = self.requests.put(
             self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
         )
-        if request.status_code not in [200, 204]:
-            message = f"Received status code: {request.status_code} ({request.url}) {request.text}"
+        if response.status_code not in [200, 204]:
+            message = (
+                f"Received status code: {response.status_code} ({response.url}) {response.text}"
+            )
             self.logger.error(message)
             raise Exception(message)
 
     def requests_delete(self, endpoint: str, data: Optional[dict] = None):
-        request = self.requests.delete(
+        response = self.requests.delete(
             self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
         )
-        if request.status_code not in [200, 204]:
-            message = f"Received status code: {request.status_code} ({request.url})"
+        if response.status_code not in [200, 204]:
+            message = f"Received status code: {response.status_code} ({response.url})"
             self.logger.error(message)
             raise Exception(message)
 
@@ -232,29 +238,29 @@ class AllSpice:
             args["headers"].pop("Content-type")
             args["files"] = files
 
-        request = self.requests.post(self.__get_url(endpoint), **args)
+        response = self.requests.post(self.__get_url(endpoint), **args)
 
-        if request.status_code not in [200, 201, 202]:
-            if "already exists" in request.text or "e-mail already in use" in request.text:
-                self.logger.warning(request.text)
+        if response.status_code not in [200, 201, 202]:
+            if "already exists" in response.text or "e-mail already in use" in response.text:
+                self.logger.warning(response.text)
                 raise AlreadyExistsException()
-            self.logger.error(f"Received status code: {request.status_code} ({request.url})")
+            self.logger.error(f"Received status code: {response.status_code} ({response.url})")
             self.logger.error(f"With info: {data} ({self.headers})")
-            self.logger.error(f"Answer: {request.text}")
+            self.logger.error(f"Answer: {response.text}")
             raise Exception(
-                f"Received status code: {request.status_code} ({request.url}), {request.text}"
+                f"Received status code: {response.status_code} ({response.url}), {response.text}"
             )
-        return self.parse_result(request)
+        return self.parse_result(response)
 
     def requests_patch(self, endpoint: str, data: dict):
-        request = self.requests.patch(
+        response = self.requests.patch(
             self.__get_url(endpoint), headers=self.headers, data=json.dumps(data)
         )
-        if request.status_code not in [200, 201]:
-            error_message = f"Received status code: {request.status_code} ({request.url}) {data}"
+        if response.status_code not in [200, 201]:
+            error_message = f"Received status code: {response.status_code} ({response.url}) {data}"
             self.logger.error(error_message)
             raise Exception(error_message)
-        return self.parse_result(request)
+        return self.parse_result(response)
 
     def get_orgs_public_members_all(self, orgname):
         path = "/orgs/" + orgname + "/public_members"
