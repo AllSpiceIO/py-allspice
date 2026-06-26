@@ -9,6 +9,7 @@ class APIError:
 
     message: Optional[str]
     url: Optional[str]
+    category: Optional[str]
 
     @classmethod
     def from_json(cls, text: str) -> Optional["APIError"]:
@@ -22,11 +23,12 @@ class APIError:
 
         message = data.get("message") or None
         url = data.get("url") or None
+        category = data.get("category") or None
 
-        if message is None and url is None:
+        if message is None and url is None and category is None:
             return None
 
-        return cls(message=message, url=url)
+        return cls(message=message, url=url, category=category)
 
 
 class InternalServerException(Exception):
@@ -41,9 +43,13 @@ class RenderException(Exception):
     @classmethod
     def from_internal(
         cls, internal: InternalServerException, file_path: str, ref: Optional[str]
-    ) -> "RenderException":
+    ) -> Optional["RenderException"]:
         body = internal.body
-        if body and body.message:
+
+        if body is None or body.category != "render":
+            return None
+
+        if body.message:
             message = body.message
         else:
             message = f"Render failed for {file_path}"
@@ -52,7 +58,7 @@ class RenderException(Exception):
 
         # Include a diagnostic url if present (a Hub link to the admin panel, don't include other links like swagger docs),
         # otherwise just ask them to check Hub logs
-        if body and body.url and "-/admin/" in body.url:
+        if body.url and "-/admin/" in body.url:
             message += f"; A diagnostic report for this failure can be downloaded by a site admin at {body.url}."
         else:
             message += "; Check AllSpice Hub logs for more information."

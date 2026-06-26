@@ -2036,22 +2036,31 @@ def test_altium_components_list_with_hierarchical_device_sheets_and_annotations_
 
 def test_api_error_from_json_valid():
     assert APIError.from_json(
-        '{"message": "Something went wrong", "url": "https://hub.allspice.io/api/swagger"}'
-    ) == APIError("Something went wrong", "https://hub.allspice.io/api/swagger")
+        '{"message": "Something went wrong", "url": "https://hub.allspice.io/api/swagger", "category": "render"}'
+    ) == APIError("Something went wrong", "https://hub.allspice.io/api/swagger", "render")
 
 
 def test_api_error_from_json_partial():
-    assert APIError.from_json('{"message": "Render failure"}') == APIError("Render failure", None)
+    assert APIError.from_json('{"message": "Render failure"}') == APIError(
+        "Render failure", None, None
+    )
 
 
-@pytest.mark.parametrize("text", ["not json", "[1, 2]", "{}", '{"message": "", "url": ""}'])
+def test_api_error_from_json_category_only():
+    assert APIError.from_json('{"category": "render"}') == APIError(None, None, "render")
+
+
+@pytest.mark.parametrize(
+    "text", ["not json", "[1, 2]", "{}", '{"message": "", "url": ""}', '{"category": ""}']
+)
 def test_api_error_from_json_returns_none(text):
     assert APIError.from_json(text) is None
 
 
 def test_render_exception_uses_server_message_and_diagnostic_url():
     internal = InternalServerException(
-        "500", APIError("Render Failed", "https://hub.allspice.io/-/admin/crysknife-reports")
+        "500",
+        APIError("Render Failed", "https://hub.allspice.io/-/admin/crysknife-reports", "render"),
     )
     message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
     assert (
@@ -2062,20 +2071,20 @@ def test_render_exception_uses_server_message_and_diagnostic_url():
 
 def test_render_exception_drops_non_admin_url():
     internal = InternalServerException(
-        "500", APIError("Something went wrong", "https://hub.allspice.io/api/swagger")
+        "500", APIError("Something went wrong", "https://hub.allspice.io/api/swagger", "render")
     )
     message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
     assert message == "Something went wrong; Check AllSpice Hub logs for more information."
 
 
 def test_render_exception_fallback_omits_ref_when_none():
-    internal = InternalServerException("500", None)
+    internal = InternalServerException("500", APIError(None, None, "render"))
     message = str(RenderException.from_internal(internal, "foo.SchDoc", None))
     assert message == "Render failed for foo.SchDoc; Check AllSpice Hub logs for more information."
 
 
 def test_render_exception_fallback_includes_ref():
-    internal = InternalServerException("500", None)
+    internal = InternalServerException("500", APIError(None, None, "render"))
     message = str(RenderException.from_internal(internal, "foo.SchDoc", "main"))
     assert (
         message
@@ -2084,7 +2093,28 @@ def test_render_exception_fallback_includes_ref():
 
 
 def test_retry_raises_render_exception_without_retrying():
-    method = MagicMock(side_effect=InternalServerException("500", APIError("", None)))
+    method = MagicMock(side_effect=InternalServerException("500", APIError("", None, "render")))
     with pytest.raises(RenderException):
         retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main")
     method.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        None,
+        APIError("upstream unavailable", None, "infra"),
+    ],
+)
+def test_retry_retries_transient_server_error_then_times_out(body):
+    method = MagicMock(side_effect=InternalServerException("500", body))
+    logger = MagicMock()
+    with (
+        patch.object(retry_generated, "SLEEP_FOR_GENERATED", 0),
+        patch.object(retry_generated, "MAX_RETRIES_FOR_GENERATED", 3),
+    ):
+        with pytest.raises(TimeoutError):
+            retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main", logger=logger)
+
+    assert method.call_count == 3
+    assert logger.warning.call_count == 3
