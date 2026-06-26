@@ -325,7 +325,6 @@ def list_components_for_altium(
                 schdoc_path_from_repo_root,
                 ref,
                 params={"use_new_schdoc_renderer": "true"},
-                logger=allspice_client.logger,
             )
         )
         schdoc_jsons[schdoc_path_from_repo_root] = schdoc_json
@@ -346,7 +345,6 @@ def list_components_for_altium(
                 # available.
                 device_sheet_repo.default_branch,
                 params={"use_new_schdoc_renderer": "true"},
-                logger=allspice_client.logger,
             )
         )
         device_sheet_jsons[device_sheet_path.stem] = device_sheet_json
@@ -669,7 +667,7 @@ def _list_components_multi_page_schematic(
     # verify that the provided variant exists and convert to an id
     if variant is not None:
         prj_data = retry_not_yet_generated(
-            repository.get_generated_projectdata, schematic_path, ref, logger=allspice_client.logger
+            repository.get_generated_projectdata, schematic_path, ref
         )
         if "variants" in prj_data:
             for id, name in prj_data["variants"].items():
@@ -680,9 +678,7 @@ def _list_components_multi_page_schematic(
             raise NotFoundException("Variant %s does not exist in design." % variant)
 
     # Get the generated JSON for the schematic.
-    schematic_json = retry_not_yet_generated(
-        repository.get_generated_json, schematic_path, ref, logger=allspice_client.logger
-    )
+    schematic_json = retry_not_yet_generated(repository.get_generated_json, schematic_path, ref)
     pages = schematic_json["pages"]
     components = []
 

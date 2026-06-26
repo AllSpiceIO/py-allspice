@@ -1,4 +1,3 @@
-import logging
 import time
 from typing import Callable, Optional, TypeVar, Union
 
@@ -19,7 +18,6 @@ def retry_not_yet_generated(
     file_path: Union[Content, str],
     ref: Optional[Ref] = None,
     params: Optional[dict] = None,
-    logger: Optional[logging.Logger] = None,
 ) -> TReturn:
     """
     Request AllSpice generated endpoints with retries if not yet available
@@ -29,8 +27,6 @@ def retry_not_yet_generated(
     :param file_path: The path to the design document
     :param ref: The git ref to check.
     :param params: Optional parameters to pass to the method.
-    :param logger: Optional logger used to record transient server errors before
-        retrying. Retries are silent if it is omitted.
     :returns: The return value of the method if successful
     """
     attempts = 0
@@ -41,21 +37,14 @@ def retry_not_yet_generated(
             attempts += 1
             time.sleep(SLEEP_FOR_GENERATED)
         except InternalServerException as e:
-            render_error = RenderException.from_internal(
+            render_exception = RenderException.from_internal(
                 e, str(file_path), str(ref) if ref is not None else None
             )
 
-            if render_error is not None:
-                raise render_error from e
-
-            if logger is not None:
-                detail = e.body.message if e.body else None
-                logger.warning(
-                    "Transient server error fetching %s: %s - retrying", file_path, detail or e
-                )
-
-            attempts += 1
-            time.sleep(SLEEP_FOR_GENERATED)
+            if render_exception is not None:
+                raise render_exception from e
+            else:
+                raise
 
     raise TimeoutError(
         f"Failed to fetch JSON for {file_path} after {MAX_RETRIES_FOR_GENERATED} attempts."

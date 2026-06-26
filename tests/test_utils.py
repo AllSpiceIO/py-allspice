@@ -2106,15 +2106,8 @@ def test_retry_raises_render_exception_without_retrying():
         APIError("upstream unavailable", None, "infra"),
     ],
 )
-def test_retry_retries_transient_server_error_then_times_out(body):
+def test_retry_raises_internal_server_error_without_retrying(body):
     method = MagicMock(side_effect=InternalServerException("500", body))
-    logger = MagicMock()
-    with (
-        patch.object(retry_generated, "SLEEP_FOR_GENERATED", 0),
-        patch.object(retry_generated, "MAX_RETRIES_FOR_GENERATED", 3),
-    ):
-        with pytest.raises(TimeoutError):
-            retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main", logger=logger)
-
-    assert method.call_count == 3
-    assert logger.warning.call_count == 3
+    with pytest.raises(InternalServerException):
+        retry_generated.retry_not_yet_generated(method, "foo.SchDoc", "main")
+    method.assert_called_once()
