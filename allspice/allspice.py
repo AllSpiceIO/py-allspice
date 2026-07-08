@@ -6,6 +6,8 @@ from typing import Any, Dict, List, Mapping, Optional, Union
 import requests
 import urllib3
 from frozendict import frozendict
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
 from .apiobject import Organization, Repository, Team, User
 from .exceptions import (
@@ -17,6 +19,24 @@ from .exceptions import (
     NotYetGeneratedException,
 )
 from .ratelimiter import RateLimitedSession
+
+DEFAULT_RETRY = Retry(
+    total=6,
+    backoff_factor=1.0,
+    backoff_max=30.0,
+    backoff_jitter=3.0,
+    # Only retry on 429s (server rate limiting) and 502 (gateway errors).
+    # However, urllib3 additionally retries 413s and 503s that carry a
+    # Retry-After header, which also covers Hub's behaviour of returning 503s
+    # with Retry-After when a generated file is not ready yet.
+    status_forcelist=frozenset({429, 502}),
+    # Retry on all verbs, including verbs that can mutate server state. This is
+    # why we only retry on the two error codes above.
+    allowed_methods=None,
+    # py-allspice has its own mechanism to convert error messages into
+    # exceptions, so we don't want urllib3 to raise on 429s or 502s.
+    raise_on_status=False,
+)
 
 
 class AllSpice:
@@ -39,6 +59,7 @@ class AllSpice:
         verify=True,
         log_level="INFO",
         ratelimiting=(100, 60),
+        retry: Union[Retry, int, None] = DEFAULT_RETRY,
         use_new_schdoc_renderer: Optional[bool] = None,
     ):
         """Initializing an instance of the AllSpice Hub Client
@@ -61,6 +82,19 @@ class AllSpice:
                 If None, no rate limiting is applied. By default, 100 calls
                 per minute are allowed.
 
+            retry (Retry, int, None): Set a retry policy for requests using a
+                urllib3 Retry object, an integer for the number of retries, or None
+                for no retries. This happens before py-allspice's own rate limiter.
+                The default is to retry all methods (even mutating methods)
+                only on 429s and 502s up to 6 times with exponential backoff
+                and jitter.
+
+                NOTE: AllSpice Hub responds with a 503 and a Retry-After header
+                when a generated file is not ready yet, and urllib3 retries any
+                503 that carries Retry-After. So with retries enabled, fetching
+                generated files transparently waits for generation instead of
+                raising NotYetGeneratedException, until retries are exhausted.
+
             use_new_schdoc_renderer (bool): Allows explicit override for using the new Altium schematic renderer. If set,
             this will take precedence over the default behavior on the AllSpice Hub instance.
         """
@@ -82,6 +116,11 @@ class AllSpice:
         else:
             (max_calls, period) = ratelimiting
             self.requests = RateLimitedSession(max_calls=max_calls, period=period)
+
+        if retry is not None:
+            adapter = HTTPAdapter(max_retries=retry)
+            self.requests.mount("https://", adapter)
+            self.requests.mount("http://", adapter)
 
         # Manage authentification
         if not token_text and not auth:
