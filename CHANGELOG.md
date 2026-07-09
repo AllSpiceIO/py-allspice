@@ -1,5 +1,10 @@
 # Changelog
 
+## v4.2.0
+
+* Add `RenderException` with better error messages for rendering failures by @MarcusSmith in https://github.com/AllSpiceIO/py-allspice/pull/303
+* Add configurable retries by @shrik450 in https://github.com/AllSpiceIO/py-allspice/pull/307
+
 ## v4.1.0
 
 * Add support for DxDesigner (.prj) BOM generation by @paigen11 in https://github.com/AllSpiceIO/py-allspice/pull/301
