@@ -20,7 +20,11 @@ def retry_not_yet_generated(
     params: Optional[dict] = None,
 ) -> TReturn:
     """
-    Request AllSpice generated endpoints with retries if not yet available
+    Request AllSpice generated endpoints with retries if not yet available.
+
+    Note: the default Retry mechanism in the allspice client will automatically
+    retry Hub's not yet generated errors up to 6 times, so this is only
+    necessary for cases when you want to retry more than that.
 
     :param method: The request method that may raise
         NotYetGeneratedException, takes file_path and ref as arguments

@@ -189,18 +189,6 @@ def test_get_repo_tree(instance):
     assert tree[0].path == "README.md"
 
 
-def test_get_json_before_generated(instance):
-    repo = Repository.request(instance, test_org, test_repo)
-    with pytest.raises(NotYetGeneratedException):
-        repo.get_generated_json("test.pcbdoc")
-
-
-def test_get_svg_before_generated(instance):
-    repo = Repository.request(instance, test_org, test_repo)
-    with pytest.raises(NotYetGeneratedException):
-        repo.get_generated_svg("test.pcbdoc")
-
-
 def test_get_generated_json(instance):
     repo = Repository.request(instance, test_org, test_repo)
     branch = repo.get_branches()[0]
