@@ -25,7 +25,9 @@ from allspice.apiobject import CommitStatusState, Util
 from allspice.exceptions import NotYetGeneratedException
 from allspice.utils.retry_generated import retry_not_yet_generated
 
-# put a ".token" file into your directory containg only the token for AllSpice Hub
+EXAMPLE_ATTACHMENT = os.path.join(os.path.dirname(__file__), "data", "example-attachment.txt")
+
+# put a ".token" file into the root directory containg only the token for AllSpice Hub
 
 
 @pytest.fixture(scope="session")
@@ -172,7 +174,7 @@ def test_get_repository(instance):
 
 def test_add_content_to_repo(instance):
     repo = Repository.request(instance, test_org, test_repo)
-    file_content = open("tests/data/test.pcbdoc", "rb").read()
+    file_content = open(os.path.join(os.path.dirname(__file__), "data", "test.pcbdoc"), "rb").read()
     file_content = base64.b64encode(file_content).decode("utf-8")
     repo.create_file("test.pcbdoc", file_content)
     assert len(repo.get_commits()) == 2
@@ -613,8 +615,8 @@ def test_create_issue_attachment(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
-    attachment = issue.create_attachment(open("requirements.txt", "rb"))
-    assert attachment.name == "requirements.txt"
+    attachment = issue.create_attachment(open(EXAMPLE_ATTACHMENT, "rb"))
+    assert attachment.name == "example-attachment.txt"
     assert attachment.download_count == 0
 
 
@@ -624,11 +626,11 @@ def test_get_issue_attachments(instance):
     issue = repo.get_issues()[0]
     attachments = issue.get_attachments()
     assert len(attachments) > 0
-    assert attachments[0].name == "requirements.txt"
+    assert attachments[0].name == "example-attachment.txt"
 
     issue = Issue.request(instance, org.username, repo.name, issue.number)
     assert len(issue.assets) == 1
-    assert issue.assets[0].name == "requirements.txt"
+    assert issue.assets[0].name == "example-attachment.txt"
 
 
 def test_create_issue_comment(instance):
@@ -678,8 +680,8 @@ def test_create_issue_comment_attachment(instance):
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
     comment = issue.create_comment("this is a comment that will have an attachment")
-    attachment = comment.create_attachment(open("requirements.txt", "rb"))
-    assert attachment.name == "requirements.txt"
+    attachment = comment.create_attachment(open(EXAMPLE_ATTACHMENT, "rb"))
+    assert attachment.name == "example-attachment.txt"
     assert attachment.download_count == 0
 
 
@@ -688,7 +690,7 @@ def test_create_issue_comment_attachment_with_name(instance):
     repo = Repository.request(instance, org.username, test_repo)
     issue = repo.get_issues()[0]
     comment = issue.create_comment("this is a comment that will have an attachment")
-    attachment = comment.create_attachment(open("requirements.txt", "rb"), "something else.txt")
+    attachment = comment.create_attachment(open(EXAMPLE_ATTACHMENT, "rb"), "something else.txt")
     assert attachment.name == "something else.txt"
     assert attachment.download_count == 0
 
@@ -700,7 +702,7 @@ def test_get_issue_comment_attachments(instance):
     comment = issue.get_comments()[0]
     attachments = comment.get_attachments()
     assert len(attachments) > 0
-    assert attachments[0].name == "requirements.txt"
+    assert attachments[0].name == "example-attachment.txt"
 
 
 def test_download_issue_comment_attachment(instance, tmp_path):
@@ -716,7 +718,7 @@ def test_download_issue_comment_attachment(instance, tmp_path):
         attachment.download_to_file(f)
 
     with open(filepath, "r") as actual_f:
-        with open("requirements.txt", "r") as expected_f:
+        with open(EXAMPLE_ATTACHMENT, "r") as expected_f:
             attachment_content = actual_f.read()
             assert len(attachment_content) > 0
 
@@ -828,8 +830,8 @@ def test_add_design_review_comment_attachment(instance):
     repo = Repository.request(instance, org.username, test_repo)
     dr = repo.get_design_reviews()[0]
     comment = dr.get_comments()[0]
-    attachment = comment.create_attachment(open("requirements.txt", "rb"))
-    assert attachment.name == "requirements.txt"
+    attachment = comment.create_attachment(open(EXAMPLE_ATTACHMENT, "rb"))
+    assert attachment.name == "example-attachment.txt"
     assert attachment.download_count == 0
 
 
@@ -840,7 +842,7 @@ def test_get_design_review_attachments(instance):
     comment = dr.get_comments()[0]
     attachments = comment.get_attachments()
     assert len(attachments) > 0
-    assert attachments[0].name == "requirements.txt"
+    assert attachments[0].name == "example-attachment.txt"
 
 
 def test_create_design_review_review(instance):
@@ -1009,8 +1011,8 @@ def test_create_release_asset(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     release = repo.get_latest_release()
-    asset = release.create_asset(open("requirements.txt", "rb"))
-    assert asset.name == "requirements.txt"
+    asset = release.create_asset(open(EXAMPLE_ATTACHMENT, "rb"))
+    assert asset.name == "example-attachment.txt"
     assert asset.download_count == 0
 
 
@@ -1018,7 +1020,7 @@ def test_create_release_asset_with_name(instance):
     org = Organization.request(instance, test_org)
     repo = Repository.request(instance, org.username, test_repo)
     release = repo.get_latest_release()
-    asset = release.create_asset(open("requirements.txt", "rb"), "something else.txt")
+    asset = release.create_asset(open(EXAMPLE_ATTACHMENT, "rb"), "something else.txt")
     assert asset.name == "something else.txt"
     assert asset.download_count == 0
 
@@ -1028,7 +1030,7 @@ def test_get_release_assets(instance):
     repo = Repository.request(instance, org.username, test_repo)
     release = repo.get_latest_release()
     assert len(release.assets) > 0
-    assert release.assets[0].name == "requirements.txt"
+    assert release.assets[0].name == "example-attachment.txt"
 
 
 def test_download_release_asset(instance):
@@ -1037,7 +1039,7 @@ def test_download_release_asset(instance):
     release = repo.get_latest_release()
     asset = release.assets[0]
     data = asset.download()
-    assert data == open("requirements.txt", "rb").read()
+    assert data == open(EXAMPLE_ATTACHMENT, "rb").read()
 
 
 def test_delete_release_asset(instance):
