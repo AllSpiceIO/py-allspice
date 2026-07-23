@@ -104,14 +104,14 @@ jobs:
       - name: Test with pytest without using casettes
         if: ${{ github.event_name == 'schedule' }}
         run: |
-          uv run python -m pytest --disable-recording
+          uv run python -m pytest --disable-recording packages/allspice/tests
       # Otherwise, we'll use the casettes to make the tests fast.
       - name: Test with pytest using casettes
         if: ${{ github.event_name != 'schedule' }}
         # We'll also generate code coverage, which we will later turn into a
         # coverage report if this pipeline is running on a pull request.
         run: |
-          uv run python -m coverage run --branch -m pytest --record-mode=none
+          uv run python -m coverage run --branch -m pytest --record-mode=none packages/allspice/tests
       - name: Generate coverage report
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -124,6 +124,21 @@ jobs:
         uses: mshick/add-pr-comment@v3
         with:
           message-path: coverage.md
+
+  generator:
+    name: Test generator
+    runs-on: ubuntu-22.04
+    if: github.repository == 'AllSpiceIO/py-allspice'
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked --all-packages --dev
+      - name: Run generator tests
+        run: uv run pytest packages/open-api-generator/tests
 
   # We might want to consider moving this to a new workflow if we add addition test jobs
   notifications:
