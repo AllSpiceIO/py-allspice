@@ -1363,7 +1363,9 @@ def test_netlist_generation(request, instance, setup_for_generation):
 
     nets.sort()
 
-    with open("tests/data/archimajor_netlist_expected.net", "r") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "data", "archimajor_netlist_expected.net"), "r"
+    ) as f:
         for net in nets:
             assert (net + "\n") == f.readline()
             pins_on_net = sorted(netlist[net])

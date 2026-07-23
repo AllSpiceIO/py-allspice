@@ -1,0 +1,25 @@
+[project]
+name = "py-allspice"
+authors = [{ name = "AllSpice, Inc.", email = "maintainers@allspice.io" }]
+description = "A python wrapper for the AllSpice Hub API"
+readme = "README.md"
+license = { text = "MIT" }
+keywords = ["AllSpice", "AllSpice Hub", "api", "wrapper"]
+urls = { Homepage = "https://github.com/AllSpiceIO/py-allspice" }
+requires-python = ">=3.10"
+dynamic = ["version"]
+dependencies = [
+    "requests~=2.33",
+    "urllib3~=2.0",
+    "frozendict~=2.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "allspice/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["allspice"]

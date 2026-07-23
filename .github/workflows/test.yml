@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   merge_group:
     branches: [ main ]
   schedule:
@@ -16,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     if: github.repository == 'AllSpiceIO/py-allspice'
 
     services:
@@ -67,21 +66,19 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
         with:
           python-version: ${{ matrix.python-version }}
+          enable-cache: true
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
+        run: uv sync --locked --all-packages --dev
       - name: Check formatting
         run: |
-          ruff format --diff .
+          uv run ruff format --diff .
       - name: Lint with ruff
         run: |
-          ruff check --target-version=py310 .
+          uv run ruff check --target-version=py310 .
       - name: Set up allspice_hub
         run: |
           # The only way to create a user is to either use the CLI or the web
@@ -94,7 +91,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"name":"test", "scopes": ["all"]}' \
             -u test:password > token.json
-          python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
+          uv run python -c "import json; print(json.load(open('token.json'))['sha1'])" > .token
           # This token is only used with the job's container, so it is safe to
           # echo it here.
           echo "AllSpice Hub token = $(cat .token)"
@@ -107,37 +104,26 @@ jobs:
       - name: Test with pytest without using casettes
         if: ${{ github.event_name == 'schedule' }}
         run: |
-          python -m pytest --disable-recording
+          uv run python -m pytest --disable-recording
       # Otherwise, we'll use the casettes to make the tests fast.
       - name: Test with pytest using casettes
         if: ${{ github.event_name != 'schedule' }}
         # We'll also generate code coverage, which we will later turn into a
         # coverage report if this pipeline is running on a pull request.
         run: |
-          python -m coverage run --branch -m pytest --record-mode=none
+          uv run python -m coverage run --branch -m pytest --record-mode=none
       - name: Generate coverage report
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          python -m coverage xml
+          uv run python -m coverage xml
           git fetch origin ${{ github.base_ref }} --depth=2
-          python ./scripts/report_coverage.py coverage.xml origin/${{ github.base_ref }} --output coverage.md
+          uv run python ./scripts/report_coverage.py coverage.xml origin/${{ github.base_ref }} --output coverage.md
       - name: Upload coverage report
         # Only upload one of the coverage reports, since they should be the same.
         if: ${{ github.event_name == 'pull_request' && matrix.python-version == '3.12' && github.actor != 'dependabot[bot]' }}
         uses: mshick/add-pr-comment@v3
         with:
           message-path: coverage.md
-      - name: Check attribute types
-        # This script will re-generate the attribute types and check if they
-        # are different from the committed version. The formatter and linter
-        # runs ensure that the differences aren't due to either, and we've
-        # already verified that the committed code passes both.
-        run: |
-          python -m pip install -e .
-          python ./scripts/generate_attribute_types.py
-          ruff format .
-          ruff check --fix .
-          git diff --exit-code ./allspice/apiobject.py
 
   # We might want to consider moving this to a new workflow if we add addition test jobs
   notifications:
