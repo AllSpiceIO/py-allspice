@@ -16,9 +16,16 @@ lint:
 typecheck:
     uv run pyright
 
-# Run the test suite (needs a local AllSpice Hub at :3000 and a .token)
-test:
-    uv run pytest
+# The allspice tests (and the full run) need a local Hub at :3000 and a .token; generator doesn't.
+# Run tests: `just test` (all), `just test generator`, `just test allspice`.
+test package="":
+    #!/usr/bin/env bash
+    case "{{package}}" in
+        generator) uv run pytest packages/open-api-generator/tests ;;
+        allspice)  uv run pytest packages/allspice/tests ;;
+        "")        uv run pytest ;;
+        *)         echo "unknown package '{{package}}' (use: generator, allspice)" >&2; exit 2 ;;
+    esac
 
 # Lint, type-check, and test
 check: lint typecheck test
@@ -38,3 +45,12 @@ build:
 # Generate API docs with pdoc
 docs:
     uv run pdoc --output-dir docs/ allspice
+
+# Generate the client from a Hub: `just generate local` or `just generate prod`
+generate target:
+    #!/usr/bin/env bash
+    case "{{target}}" in
+        local) uv run python -m open_api_generator http://localhost:3000 ;;
+        prod)  uv run python -m open_api_generator https://hub.allspice.io/ ;;
+        *)     echo "unknown target '{{target}}' (use: local, prod)" >&2; exit 2 ;;
+    esac
