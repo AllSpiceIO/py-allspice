@@ -597,12 +597,14 @@ version = "0.0.0"
 source = { editable = "packages/open-api-generator" }
 dependencies = [
     { name = "datamodel-code-generator" },
+    { name = "py-allspice" },
     { name = "requests" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "datamodel-code-generator", specifier = "~=0.68.1" },
+    { name = "py-allspice", editable = "packages/allspice" },
     { name = "requests", specifier = "~=2.33" },
 ]
 
