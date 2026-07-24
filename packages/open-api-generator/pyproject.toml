@@ -8,7 +8,11 @@ classifiers = ["Private :: Do Not Upload"]  # never published
 dependencies = [
     "datamodel-code-generator~=0.68.1",
     "requests~=2.33",
+    "py-allspice",
 ]
+
+[tool.uv.sources]
+py-allspice = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
