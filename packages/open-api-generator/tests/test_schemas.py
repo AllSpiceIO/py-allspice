@@ -39,7 +39,7 @@ def test_generate_initial_schemas(build_test_dir: Path) -> None:
     assert "deactivated = 'deactivated'" in source
 
     # PascalCase spec fields become snake_case attributes that keep the original name as an alias
-    # (snake_case_field), so the wire name still round-trips.
+    # (snake_case_field), so the api name still round-trips.
     assert "login: Annotated[str, Field(alias='Login')]" in source
     assert "source_id: Annotated[int | None, Field(alias='SourceID')] = None" in source
 

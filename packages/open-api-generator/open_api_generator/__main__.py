@@ -9,7 +9,9 @@ from open_api_generator.document import (
     get_input_only_schema_names,
     prune_document,
 )
+from open_api_generator.requests import generate_requests
 from open_api_generator.schemas import generate_schemas
+from open_api_generator.utils import ruff_fix
 
 BUILD_DIR = Path(__file__).resolve().parent.parent / "build"
 
@@ -53,6 +55,7 @@ def main() -> None:
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
     document_path = BUILD_DIR / "openapi.json"
     schema_path = BUILD_DIR / "schemas.py"
+    requests_path = BUILD_DIR / "requests.py"
 
     download_document(args.hub_base_url, document_path)
     document = json.loads(document_path.read_text())
@@ -68,7 +71,8 @@ def main() -> None:
 
     generate_schemas(document_path, schema_path, input_schemas, entity_names, _CURATED_TYPES)
 
-    # TODO: generate request objects from `document`
+    requests_path.write_text(generate_requests(document))
+    ruff_fix(requests_path)
 
 
 if __name__ == "__main__":

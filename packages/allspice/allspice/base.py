@@ -1,17 +1,170 @@
-"""Hand-written model base classes for the generated Hub API schemas.
+"""Hand-written foundation for the generated Hub API classes: the request base classes and the
+schema model bases. Not regenerated from the OpenAPI spec — the generated request and schema
+modules build on it."""
 
-Not regenerated from the OpenAPI spec — the stable foundation the generated models build on."""
-
+import re
+from dataclasses import dataclass
 from enum import Enum
+from typing import Any, ClassVar, Generic, TypeVar, cast
 
+import requests
 from pydantic import BaseModel, ConfigDict
+
+ResponseT = TypeVar("ResponseT")
+ItemT = TypeVar("ItemT")
+
+
+# --- API Requests ---
+
+# --- Request Field Markers: the second arg of Annotated[...] on a request field ---
+
+@dataclass(frozen=True)
+class RequestFieldMarker:
+    """A base marker class for any request field for converting any field into a request"""
+
+
+@dataclass(frozen=True)
+class ParamMarker(RequestFieldMarker):
+    """Base for param markers. `api_name` is the name the API expects, set only when it differs from
+    the Python field name."""
+
+    api_name: str | None = None
+
+
+class PathParam(ParamMarker):
+    """Substituted into the path template, e.g. the `{owner}` in the path."""
+
+
+class QueryParam(ParamMarker):
+    """Sent as a URL query parameter."""
+
+
+class HeaderParam(ParamMarker):
+    """Sent as a request header."""
+
+
+class JSONBody(RequestFieldMarker):
+    """Marks the field carrying the JSON request body."""
+
+
+@dataclass(frozen=True)
+class FileBody(RequestFieldMarker):
+    """Marks a field uploaded as a multipart file. `api_name` is the form-field name the server
+    expects, set only when it differs from the Python field name."""
+
+    api_name: str | None = None
+
+
+# --- Base class every generated request inherits ---
+
+
+class ApiRequest(BaseModel, Generic[ResponseT]):
+    method: ClassVar[str]
+    request_path: ClassVar[str]
+    response_model: ClassVar[Any]  # model class, X | Y union, list[X], NewType, or None — anything TypeAdapter validates
+
+    def path_params(self) -> dict[str, Any]:
+        """The PathParam field values, keyed by api_name."""
+        params: dict[str, Any] = {}
+        for name, field in type(self).model_fields.items():
+            marker = next((m for m in field.metadata if isinstance(m, ParamMarker)), None)
+            if isinstance(marker, PathParam):
+                params[getattr(marker, "api_name", None) or name] = getattr(self, name)
+        return params
+
+    def to_request(self, base_url: str) -> requests.Request:
+        """Build a `requests.Request` against `base_url` by
+        routing the declared fields into the path / query / headers / body.
+        """
+        path_values = self.path_params()
+        query: dict[str, Any] = {}
+        headers: dict[str, Any] = {}
+        files: dict[str, Any] = {}
+        body: BaseModel | None = None
+
+        for name, field in type(self).model_fields.items():
+            marker = next((m for m in field.metadata if isinstance(m, (ParamMarker, JSONBody, FileBody))), None)
+            value = getattr(self, name)
+            api_name = getattr(marker, "api_name", None) or name
+
+            if isinstance(marker, PathParam):
+                continue  # already captured by path_params()
+            elif isinstance(marker, QueryParam):
+                if value is not None:
+                    query[api_name] = value
+            elif isinstance(marker, HeaderParam):
+                if value is not None:
+                    headers[api_name] = value
+            elif isinstance(marker, JSONBody):
+                body = value
+            elif isinstance(marker, FileBody):
+                files[api_name] = value
+            else:
+                raise TypeError(
+                    f"{type(self).__name__}.{name} must be tagged with one of "
+                    "PathParam / QueryParam / HeaderParam / JSONBody / FileBody"
+                )
+
+        placeholders = set(re.findall(r"{(\w+)}", self.request_path))
+        missing = placeholders - path_values.keys()
+        if missing:
+            raise TypeError(
+                f"{type(self).__name__}: path {self.request_path!r} has unfilled "
+                f"placeholder(s) {sorted(missing)} — add a PathParam field for each."
+            )
+        extra = path_values.keys() - placeholders
+        if extra:
+            raise TypeError(
+                f"{type(self).__name__}: PathParam field(s) {sorted(extra)} have no "
+                f"matching placeholder in path {self.request_path!r}."
+            )
+
+        return requests.Request(
+            method=self.method,
+            url=base_url + self.request_path.format(**path_values),
+            params=query,
+            headers=headers,
+            # by_alias so bodies serialize under their api names (some models
+            # alias PascalCase keys to snake_case attrs), not the Python attr names.
+            # exclude_none drops unset optionals: Hub treats a missing key and an
+            # explicit null the same (its optionals are pointers), so we send only
+            # what the caller actually set.
+            json=body.model_dump(mode="json", by_alias=True, exclude_none=True) if body is not None else None,
+            files=files or None,
+        )
+
+
+# --- Paginated Requests ---
+
+
+class PaginatedRequest(ApiRequest[ResponseT], Generic[ResponseT, ItemT]):
+    """A request whose list response is paginated. `_page_key` is the page query-param name
+    (almost always "page"); `_page_items_attr` is the response attribute holding the page's list,
+    or None when the response *is* the list. Both are set by the generator per request."""
+
+    _page_key: ClassVar[str] = "page"
+    _page_items_attr: ClassVar[str | None] = None
+
+    def set_page(self, page: int) -> None:
+        """Set the page param for the next request; override if an endpoint pages differently."""
+        setattr(self, self._page_key, page)
+
+    def page_items(self, response: ResponseT) -> list[ItemT]:
+        """The page's list — the response itself, or the list held in its `_page_items_attr`."""
+        items = response if self._page_items_attr is None else getattr(response, self._page_items_attr)
+        return cast("list[ItemT]", items)
+
+
+# --- Models ---
+
+# --- Open enum base for generated enums ---
 
 
 class OpenEnum(Enum):
-    """Base for generated enum schema types. A wire value matching no member resolves to the
+    """Base for generated enum schema types. A value matching no member resolves to the
     subclass's `UNKNOWN` member (via `_missing_`) instead of raising, so a value added on the
     server later degrades gracefully rather than failing the whole response parse. Each generated
-    enum defines its own `UNKNOWN` — a client-only sentinel, never a real wire value."""
+    enum defines its own `UNKNOWN` — a client-only sentinel, never a real api value."""
 
     @classmethod
     def _missing_(cls, value: object) -> "OpenEnum":
@@ -27,9 +180,12 @@ class OpenEnum(Enum):
                 f"{type(value).__name__}.{value.name} ({value.value!r}) has no equivalent "
                 f"in {cls.__name__}"
             )
-        # A raw wire value this client version doesn't recognize degrades to UNKNOWN, so a value
+        # A raw api value this client version doesn't recognize degrades to UNKNOWN, so a value
         # added on the server later doesn't fail the whole response parse.
         return cls["UNKNOWN"]
+
+
+# --- Model base hierarchy ---
 
 
 class AllSpiceBaseModel(BaseModel):
@@ -53,6 +209,9 @@ class ReadOnlyModel(AllSpiceBaseModel):
 class InputModel(AllSpiceBaseModel):
     """Base for input only schema models (request bodies, parameters, etc) — mutable, 
     so callers can build them field by field."""
+
+
+# --- Entity base and capability mixins ---
 
 
 # TODO: empty placeholder — the client field and entity behavior are not implemented yet.
