@@ -10,7 +10,13 @@ from datamodel_code_generator.format import Formatter
 from open_api_generator.utils import GENERATED_HEADER, ruff_fix
 
 
-def generate_schemas(spec_path: Path, output_path: Path, input_schemas: set[str], entities: set[str], footer: str | None) -> None:
+def generate_schemas(
+    spec_path: Path,
+    output_path: Path,
+    input_schemas: set[str],
+    entities: set[str],
+    footer: str | None,
+) -> None:
     _generate_initial_schemas(spec_path, output_path)
 
     # Post processing transformations on the generated schemas
@@ -121,7 +127,9 @@ def _rewrite_root_model_aliases(source: str) -> str:
         future_import = "from __future__ import annotations\n"
         source = source.replace(future_import, future_import + "from typing import NewType\n", 1)
 
-    print(f"root-model aliases: {unwrapped_count} unwrapped, {len(newtyped_aliases)} branded as NewType")
+    print(
+        f"root-model aliases: {unwrapped_count} unwrapped, {len(newtyped_aliases)} branded as NewType"
+    )
     return source
 
 
@@ -130,7 +138,9 @@ def _add_import(source: str, import_line: str) -> str:
     Raises if that anchor is missing, since every generated file imports the base."""
     anchor = "from allspice.base import ReadOnlyModel\n"
     if anchor not in source:
-        raise SystemExit(f"can't add `{import_line.strip()}`: `{anchor.strip()}` not found in source")
+        raise SystemExit(
+            f"can't add `{import_line.strip()}`: `{anchor.strip()}` not found in source"
+        )
     return source.replace(anchor, anchor + import_line, 1)
 
 
@@ -198,7 +208,7 @@ def _apply_open_enums(source: str) -> str:
     source = _add_import(source, "from allspice.base import OpenEnum\n")
 
     print(f"updated {len(names)} to OpenEnum")
-    
+
     return source
 
 

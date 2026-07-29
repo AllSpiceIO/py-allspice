@@ -24,6 +24,7 @@ ItemT = TypeVar("ItemT")
 
 # --- Request Field Markers: the second arg of Annotated[...] on a request field ---
 
+
 @dataclass(frozen=True)
 class RequestFieldMarker:
     """A base marker class for any request field for converting any field into a request"""
@@ -67,7 +68,9 @@ class FileBody(RequestFieldMarker):
 class ApiRequest(BaseModel, Generic[ResponseT]):
     method: ClassVar[str]
     request_path: ClassVar[str]
-    response_model: ClassVar[Any]  # model class, X | Y union, list[X], NewType, or None — anything TypeAdapter validates
+    response_model: ClassVar[
+        Any
+    ]  # model class, X | Y union, list[X], NewType, or None — anything TypeAdapter validates
 
     def path_params(self) -> dict[str, Any]:
         """The PathParam field values, keyed by api_name."""
@@ -89,7 +92,10 @@ class ApiRequest(BaseModel, Generic[ResponseT]):
         body: BaseModel | None = None
 
         for name, field in type(self).model_fields.items():
-            marker = next((m for m in field.metadata if isinstance(m, (ParamMarker, JSONBody, FileBody))), None)
+            marker = next(
+                (m for m in field.metadata if isinstance(m, (ParamMarker, JSONBody, FileBody))),
+                None,
+            )
             value = getattr(self, name)
             api_name = getattr(marker, "api_name", None) or name
 
@@ -135,7 +141,9 @@ class ApiRequest(BaseModel, Generic[ResponseT]):
             # exclude_none drops unset optionals: Hub treats a missing key and an
             # explicit null the same (its optionals are pointers), so we send only
             # what the caller actually set.
-            json=body.model_dump(mode="json", by_alias=True, exclude_none=True) if body is not None else None,
+            json=body.model_dump(mode="json", by_alias=True, exclude_none=True)
+            if body is not None
+            else None,
             files=files or None,
         )
 
@@ -157,7 +165,9 @@ class PaginatedRequest(ApiRequest[ResponseT], Generic[ResponseT, ItemT]):
 
     def page_items(self, response: ResponseT) -> list[ItemT]:
         """The page's list — the response itself, or the list held in its `_page_items_attr`."""
-        items = response if self._page_items_attr is None else getattr(response, self._page_items_attr)
+        items = (
+            response if self._page_items_attr is None else getattr(response, self._page_items_attr)
+        )
         return cast("list[ItemT]", items)
 
 
@@ -175,8 +185,8 @@ class OpenEnum(Enum):
     @classmethod
     def _missing_(cls, value: object) -> "OpenEnum":
         # A member of another enum (e.g. a response's AccessMode fed into the input's
-        # AccessModeOption) maps to the member here that shares its value. 
-        # A foreign enum member with no counterpart is a bug in caller code, 
+        # AccessModeOption) maps to the member here that shares its value.
+        # A foreign enum member with no counterpart is a bug in caller code,
         # so fail loudly rather than silently sending UNKNOWN to the server.
         if isinstance(value, Enum):
             for member in cls:
@@ -213,7 +223,7 @@ class ReadOnlyModel(AllSpiceBaseModel):
 
 
 class InputModel(AllSpiceBaseModel):
-    """Base for input only schema models (request bodies, parameters, etc) — mutable, 
+    """Base for input only schema models (request bodies, parameters, etc) — mutable,
     so callers can build them field by field."""
 
 

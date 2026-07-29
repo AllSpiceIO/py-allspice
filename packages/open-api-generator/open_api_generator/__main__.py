@@ -67,7 +67,7 @@ def main() -> None:
 
     shutil.rmtree(BUILD_DIR, ignore_errors=True)
     BUILD_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     document_path = BUILD_DIR / "openapi.json"
     schema_path = BUILD_DIR / "schemas.py"
     schema_interface_path = BUILD_DIR / "schemas.pyi"

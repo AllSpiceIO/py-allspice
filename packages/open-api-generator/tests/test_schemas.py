@@ -6,7 +6,6 @@ so a field that goes missing or arrives unasked for fails rather than slipping p
 
 from pathlib import Path
 
-from open_api_generator.schemas import GENERATED_HEADER, _generate_initial_schemas, generate_schemas
 from schemas_helpers import (
     FOOTER,
     SAMPLE_DOCUMENT,
@@ -14,6 +13,8 @@ from schemas_helpers import (
     import_generated,
     use_sample_entities,
 )
+
+from open_api_generator.schemas import GENERATED_HEADER, _generate_initial_schemas, generate_schemas
 
 
 def test_generate_initial_schemas(build_test_dir: Path) -> None:
@@ -38,17 +39,22 @@ def test_generate_initial_schemas(build_test_dir: Path) -> None:
     )
 
     # An enum schema renders as a closed Enum carrying its spec values.
-    assert definition(source, "SampleUserState") == """class SampleUserState(Enum):
+    assert (
+        definition(source, "SampleUserState")
+        == """class SampleUserState(Enum):
     active = 'active'
     invited = 'invited'
     suspended = 'suspended'
     deactivated = 'deactivated'"""
+    )
 
     # The main object schema: required fields carry no default and optional ones are `X | None =
     # None`; a string's length constraints ride inside Annotated (field_constraints); a format: email
     # field is a plain str (type_mappings) rather than EmailStr, keeping email-validator out of the
     # generated models; and an integer-keyed map still has its constr(pattern=...) string key here.
-    assert definition(source, "SampleUser") == """class SampleUser(ReadOnlyModel):
+    assert (
+        definition(source, "SampleUser")
+        == """class SampleUser(ReadOnlyModel):
     id: SampleUserId
     login: Annotated[str, Field(max_length=40, min_length=1)]
     email: str | None = None
@@ -57,20 +63,27 @@ def test_generate_initial_schemas(build_test_dir: Path) -> None:
     roles: list[str] | None = None
     logins_by_year: dict[constr(pattern=r'^(0|[1-9][0-9]*)$'), int] | None = None
     profile: SampleUserProfile | None = None"""
+    )
     assert "EmailStr" not in source
 
     # PascalCase spec fields become snake_case attributes that keep the original name as an alias
     # (snake_case_field), so the api name still round-trips.
-    assert definition(source, "SampleUserOptions") == """class SampleUserOptions(ReadOnlyModel):
+    assert (
+        definition(source, "SampleUserOptions")
+        == """class SampleUserOptions(ReadOnlyModel):
     login: Annotated[str, Field(alias='Login')]
     full_name: Annotated[str | None, Field(alias='FullName')] = None
     source_id: Annotated[int | None, Field(alias='SourceID')] = None"""
+    )
 
     # A schema only reachable as another's field is generated the same way, at the top level.
     # descriptions on fields are added as part of Field
-    assert definition(source, "SampleUserProfile") == """class SampleUserProfile(ReadOnlyModel):
+    assert (
+        definition(source, "SampleUserProfile")
+        == """class SampleUserProfile(ReadOnlyModel):
     bio: Annotated[str | None, Field(description='A short user biography.')] = None
     company: str | None = None"""
+    )
 
     # The module imports cleanly: `from allspice.base import ...` resolves and pydantic builds every
     # model, so the output is valid, wired-up Python — not just the right text.
@@ -104,16 +117,21 @@ def test_generate_schemas(build_test_dir: Path) -> None:
 
     # Enum bases become OpenEnum with an injected UNKNOWN sentinel, so a value added on the server
     # later degrades instead of failing the parse.
-    assert definition(source, "SampleUserState") == """class SampleUserState(OpenEnum):
+    assert (
+        definition(source, "SampleUserState")
+        == """class SampleUserState(OpenEnum):
     UNKNOWN = 'unknown'
     active = 'active'
     invited = 'invited'
     suspended = 'suspended'
     deactivated = 'deactivated'"""
+    )
 
     # An entity schema is reparented onto its hand-written entity class, and the integer-keyed map is
     # retyped from its constr(pattern=...) string key back to int.
-    assert definition(source, "SampleUser") == """class SampleUser(SampleUserEntity):
+    assert (
+        definition(source, "SampleUser")
+        == """class SampleUser(SampleUserEntity):
     id: SampleUserId
     login: Annotated[str, Field(max_length=40, min_length=1)]
     email: str | None = None
@@ -122,24 +140,34 @@ def test_generate_schemas(build_test_dir: Path) -> None:
     roles: list[str] | None = None
     logins_by_year: dict[int, int] | None = None
     profile: SampleUserProfile | None = None"""
+    )
     assert "from allspice.entities import SampleUserEntity" in source
     assert "constr(" not in source
 
     # An input-only schema is reparented onto InputModel so callers can build one field by field.
-    assert definition(source, "SampleUserOptions") == """class SampleUserOptions(InputModel):
+    assert (
+        definition(source, "SampleUserOptions")
+        == """class SampleUserOptions(InputModel):
     login: Annotated[str, Field(alias='Login')]
     full_name: Annotated[str | None, Field(alias='FullName')] = None
     source_id: Annotated[int | None, Field(alias='SourceID')] = None"""
+    )
 
     # Anything that is neither an entity, an input, an enum, nor an alias stays a ReadOnlyModel.
-    assert definition(source, "SampleUserProfile") == """class SampleUserProfile(ReadOnlyModel):
+    assert (
+        definition(source, "SampleUserProfile")
+        == """class SampleUserProfile(ReadOnlyModel):
     bio: Annotated[str | None, Field(description='A short user biography.')] = None
     company: str | None = None"""
+    )
 
     # The footer is appended verbatim, after the generated classes it references.
-    assert definition(source, "is_active") == '''def is_active(user: SampleUser) -> bool:
+    assert (
+        definition(source, "is_active")
+        == '''def is_active(user: SampleUser) -> bool:
     """Return whether the user account is currently active."""
     return user.state is SampleUserState.active'''
+    )
 
     # The sample file uses sample entities, so swap the asserted import for sample_entities.py, then
     # import the file to prove the processed schema document is valid Python: SampleUser resolves its

@@ -11,8 +11,9 @@ from open_api_generator.utils import GENERATED_HEADER, HTTP_METHODS
 @dataclass
 class _ImportContext:
     """For keeping track of necessary imports across a generation"""
-    base: set[str] = field(default_factory=set)    # allspice.base names used
-    schemas: set[str] = field(default_factory=set) # allspice.schemas names referenced
+
+    base: set[str] = field(default_factory=set)  # allspice.base names used
+    schemas: set[str] = field(default_factory=set)  # allspice.schemas names referenced
 
 
 def generate_requests(document: dict[str, Any]) -> str:
@@ -25,7 +26,9 @@ def generate_requests(document: dict[str, Any]) -> str:
         for method in [key for key in path_methods if key in HTTP_METHODS]:
             operation = path_methods[method]
 
-            request_classes.append(_generate_request_for_operation(path, method, operation, components, imports))
+            request_classes.append(
+                _generate_request_for_operation(path, method, operation, components, imports)
+            )
 
     header = _generate_header(imports)
 
@@ -62,6 +65,7 @@ def _generate_import(module: str, names: set[str], always_wrap: bool = False) ->
 @dataclass
 class _RequestField:
     """For parsing different field-level properties an operation needs on its request"""
+
     name: str
     py_type: str
     marker: str  # the Annotated marker, already rendered: 'QueryParam(name="not")', "JSONBody()"
@@ -72,12 +76,19 @@ class _RequestField:
 @dataclass
 class _ResponseTypeInfo:
     """For holding information related to the return type and pagination details for a request"""
+
     response_type: str
     page_item_type: str | None
     page_item_response_key: str | None
 
 
-def _generate_request_for_operation(path: str, method: str, operation: dict[str, Any], components: dict[str, Any], imports: _ImportContext) -> str:
+def _generate_request_for_operation(
+    path: str,
+    method: str,
+    operation: dict[str, Any],
+    components: dict[str, Any],
+    imports: _ImportContext,
+) -> str:
     # Parse operation information
     operation_id = operation.get("operationId")
     if not operation_id:
@@ -97,7 +108,9 @@ def _generate_request_for_operation(path: str, method: str, operation: dict[str,
     ]
 
     if response_type_info.page_item_response_key:
-        request_lines.append(f'    _page_items_attr = "{response_type_info.page_item_response_key}"')
+        request_lines.append(
+            f'    _page_items_attr = "{response_type_info.page_item_response_key}"'
+        )
 
     if fields:
         request_lines.append("")
@@ -106,20 +119,24 @@ def _generate_request_for_operation(path: str, method: str, operation: dict[str,
     return "\n".join(request_lines)
 
 
-def _generate_request_class_definition(class_name: str, response_type_info: _ResponseTypeInfo, imports: _ImportContext) -> str:
+def _generate_request_class_definition(
+    class_name: str, response_type_info: _ResponseTypeInfo, imports: _ImportContext
+) -> str:
     if response_type_info.page_item_type:
         imports.base.add("PaginatedRequest")
         return f"class {class_name}(PaginatedRequest[{response_type_info.response_type}, {response_type_info.page_item_type}]):"
     else:
         imports.base.add("ApiRequest")
         return f"class {class_name}(ApiRequest[{response_type_info.response_type}]):"
-    
+
 
 # Base of the Hub swagger-UI URL; operation links are "{base}#/{tag}/{operationId}".
 SWAGGER_BASE = "https://hub.allspice.io/api/swagger"
 
 
-def _generate_doc_string(op_id: str, summary: str | None, tags: list[str] | None, fields: list[_RequestField]) -> str:
+def _generate_doc_string(
+    op_id: str, summary: str | None, tags: list[str] | None, fields: list[_RequestField]
+) -> str:
     lines: list[str] = []
     if summary:
         lines.append(summary)
@@ -132,7 +149,10 @@ def _generate_doc_string(op_id: str, summary: str | None, tags: list[str] | None
     if documented_fields:
         if lines:
             lines.append("")
-        lines += [f":param {request_field.name}: {request_field.description}" for request_field in documented_fields]
+        lines += [
+            f":param {request_field.name}: {request_field.description}"
+            for request_field in documented_fields
+        ]
 
     # Format based on number of available lines
     if not lines:
@@ -161,7 +181,9 @@ def _class_name_from_operation_id(op_id: str) -> str:
     return "".join(chunk[:1].upper() + chunk[1:] for chunk in chunks) + "Request"
 
 
-def _response_type_from_operation(operation: dict[str, Any], components: dict[str, Any], imports: _ImportContext) -> _ResponseTypeInfo:
+def _response_type_from_operation(
+    operation: dict[str, Any], components: dict[str, Any], imports: _ImportContext
+) -> _ResponseTypeInfo:
     """The operation's success response as a Python type, plus paging information if the request supports pagination"""
     schema = _response_schema_from_operation(operation, components)
     if schema is None:
@@ -177,7 +199,9 @@ def _response_type_from_operation(operation: dict[str, Any], components: dict[st
         return _ResponseTypeInfo(response_type, None, None)
 
     if schema.get("type") == "array":
-        return _ResponseTypeInfo(response_type, _py_type_from_schema(schema["items"], imports), None)
+        return _ResponseTypeInfo(
+            response_type, _py_type_from_schema(schema["items"], imports), None
+        )
 
     if "$ref" in schema:
         wrapper = components.get("schemas", {}).get(schema["$ref"].split("/")[-1], {})
@@ -190,12 +214,16 @@ def _response_type_from_operation(operation: dict[str, Any], components: dict[st
         }
         if len(item_arrays) == 1:
             ((items_key, array_schema),) = item_arrays.items()
-            return _ResponseTypeInfo(response_type, _py_type_from_schema(array_schema["items"], imports), items_key)
+            return _ResponseTypeInfo(
+                response_type, _py_type_from_schema(array_schema["items"], imports), items_key
+            )
 
     return _ResponseTypeInfo(response_type, None, None)
 
 
-def _response_schema_from_operation(operation: dict[str, Any], components: dict[str, Any]) -> dict[str, Any] | None:
+def _response_schema_from_operation(
+    operation: dict[str, Any], components: dict[str, Any]
+) -> dict[str, Any] | None:
     """The schema of the operation's success (2xx) response, or None when it answers with an empty
     body.
     """
@@ -237,7 +265,9 @@ def _has_page_param(operation: dict[str, Any]) -> bool:
     )
 
 
-def _fields_from_operation(operation: dict[str, Any], components: dict[str, Any], imports: _ImportContext) -> list[_RequestField]:
+def _fields_from_operation(
+    operation: dict[str, Any], components: dict[str, Any], imports: _ImportContext
+) -> list[_RequestField]:
     fields: list[_RequestField] = []
 
     # Get fields for each parameter
@@ -264,7 +294,9 @@ def _fields_from_operation(operation: dict[str, Any], components: dict[str, Any]
 _PARAM_MARKERS = {"path": "PathParam", "query": "QueryParam", "header": "HeaderParam"}
 
 
-def _field_from_parameter(parameter: dict[str, Any], imports: _ImportContext) -> _RequestField | None:
+def _field_from_parameter(
+    parameter: dict[str, Any], imports: _ImportContext
+) -> _RequestField | None:
     marker = _PARAM_MARKERS.get(parameter.get("in", ""))
     if marker is None:
         return None
@@ -277,13 +309,17 @@ def _field_from_parameter(parameter: dict[str, Any], imports: _ImportContext) ->
         name=field_name,
         py_type=_py_type_from_schema(parameter.get("schema", {}), imports),
         # The marker only needs the parameter name when sanitizing changed it
-        marker=f'{marker}(api_name="{parameter_name}")' if field_name != parameter_name else f"{marker}()",
+        marker=f'{marker}(api_name="{parameter_name}")'
+        if field_name != parameter_name
+        else f"{marker}()",
         required=bool(parameter.get("required")),
         description=parameter.get("description"),
     )
 
 
-def _field_from_request_body(resolved_body: dict[str, Any], imports: _ImportContext) -> _RequestField | None:
+def _field_from_request_body(
+    resolved_body: dict[str, Any], imports: _ImportContext
+) -> _RequestField | None:
     content = resolved_body.get("content", {})
     if not content:
         return None
@@ -306,11 +342,17 @@ def _field_from_request_body(resolved_body: dict[str, Any], imports: _ImportCont
     raise ValueError(f"no request body mapping for content types {sorted(content)}")
 
 
-def _file_field_from_multipart_schema(schema: dict[str, Any], imports: _ImportContext) -> _RequestField:
+def _file_field_from_multipart_schema(
+    schema: dict[str, Any], imports: _ImportContext
+) -> _RequestField:
     """The upload field for a multipart body. Only a lone binary property is supported — the request
     framework sends one file and carries no other form fields alongside it."""
     properties = schema.get("properties", {})
-    binary_names = [name for name, property_schema in properties.items() if property_schema.get("format") == "binary"]
+    binary_names = [
+        name
+        for name, property_schema in properties.items()
+        if property_schema.get("format") == "binary"
+    ]
 
     if len(properties) != 1 or len(binary_names) != 1:
         raise ValueError(f"multipart body is not a single binary property: {sorted(properties)}")

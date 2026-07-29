@@ -1,5 +1,6 @@
 {
   "enableTypeIgnoreComments": true,
   "deprecateTypingAliases": false,
-  "typeCheckingMode": "standard"
+  "typeCheckingMode": "standard",
+  "extraPaths": ["packages/allspice/tests", "packages/open-api-generator/tests"]
 }

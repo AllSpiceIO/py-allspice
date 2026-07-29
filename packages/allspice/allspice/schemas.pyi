@@ -30,25 +30,25 @@ class APIError(ReadOnlyModel):
     url: Final[str | None] = None
 
 class AccessMode(OpenEnum):
-    UNKNOWN = 'unknown'
-    none = 'none'
-    read = 'read'
-    write = 'write'
-    admin = 'admin'
-    owner = 'owner'
+    UNKNOWN = "unknown"
+    none = "none"
+    read = "read"
+    write = "write"
+    admin = "admin"
+    owner = "owner"
 
 class AccessModeOption(OpenEnum):
-    UNKNOWN = 'unknown'
-    read = 'read'
-    write = 'write'
-    admin = 'admin'
+    UNKNOWN = "unknown"
+    read = "read"
+    write = "write"
+    admin = "admin"
 
 class AddTimeOption(InputModel):
     created: AwareDatetime | None = None
     time: int
-    'time in seconds'
+    "time in seconds"
     user_name: str | None = None
-    'User who spent the time (optional)'
+    "User who spent the time (optional)"
 
 class Attachment(AttachmentEntity):
     browser_download_url: Final[str]
@@ -78,12 +78,12 @@ class CommitStats(ReadOnlyModel):
     total: Final[int | None] = None
 
 class CommitStatusState(OpenEnum):
-    UNKNOWN = 'unknown'
-    pending = 'pending'
-    success = 'success'
-    error = 'error'
-    failure = 'failure'
-    warning = 'warning'
+    UNKNOWN = "unknown"
+    pending = "pending"
+    success = "success"
+    error = "error"
+    failure = "failure"
+    warning = "warning"
 
 class CommitUser(ReadOnlyModel):
     date: Final[str | None] = None
@@ -92,24 +92,25 @@ class CommitUser(ReadOnlyModel):
 
 class CreateBranchRepoOption(InputModel):
     new_branch_name: str
-    'Name of the branch to create'
+    "Name of the branch to create"
     old_branch_name: str | None = None
-    'Deprecated: true\nName of the old branch to create from'
+    "Deprecated: true\nName of the old branch to create from"
     old_ref_name: str | None = None
-    'Name of the old branch/tag/commit to create from'
+    "Name of the old branch/tag/commit to create from"
 
 class Type(OpenEnum):
-    UNKNOWN = 'unknown'
-    dingtalk = 'dingtalk'
-    discord = 'discord'
-    gitea = 'gitea'
-    gogs = 'gogs'
-    msteams = 'msteams'
-    slack = 'slack'
-    telegram = 'telegram'
-    feishu = 'feishu'
-    wechatwork = 'wechatwork'
-    packagist = 'packagist'
+    UNKNOWN = "unknown"
+    dingtalk = "dingtalk"
+    discord = "discord"
+    gitea = "gitea"
+    gogs = "gogs"
+    msteams = "msteams"
+    slack = "slack"
+    telegram = "telegram"
+    feishu = "feishu"
+    wechatwork = "wechatwork"
+    packagist = "packagist"
+
 CreateHookOptionConfig = dict[str, str]
 
 class CreateIssueCommentOption(InputModel):
@@ -117,15 +118,15 @@ class CreateIssueCommentOption(InputModel):
 
 class CreateIssueOption(InputModel):
     assignee: str | None = None
-    'deprecated'
+    "deprecated"
     assignees: list[str] | None = None
     body: str | None = None
     closed: bool | None = None
     due_date: AwareDatetime | None = None
     labels: list[int] | None = None
-    'list of label ids'
+    "list of label ids"
     milestone: int | None = None
-    'milestone id'
+    "milestone id"
     ref: str | None = None
     title: str
 
@@ -145,11 +146,11 @@ class CreateDesignReviewOption(InputModel):
 class CreateDesignReviewReviewComment(InputModel):
     body: str | None = None
     new_position: int | None = None
-    'if comment to new file line or 0'
+    "if comment to new file line or 0"
     old_position: int | None = None
-    'if comment to old file line or 0'
+    "if comment to old file line or 0"
     path: str | None = None
-    'the tree path'
+    "the tree path"
     sub_path: str | None = None
 
 class CreateReleaseOption(InputModel):
@@ -161,44 +162,44 @@ class CreateReleaseOption(InputModel):
     target_commitish: str | None = None
 
 class ObjectFormatName(OpenEnum):
-    UNKNOWN = 'unknown'
-    sha1 = 'sha1'
-    sha256 = 'sha256'
+    UNKNOWN = "unknown"
+    sha1 = "sha1"
+    sha256 = "sha256"
 
 class TrustModel(OpenEnum):
-    UNKNOWN = 'unknown'
-    default = 'default'
-    collaborator = 'collaborator'
-    committer = 'committer'
-    collaboratorcommitter = 'collaboratorcommitter'
+    UNKNOWN = "unknown"
+    default = "default"
+    collaborator = "collaborator"
+    committer = "committer"
+    collaboratorcommitter = "collaboratorcommitter"
 
 class CreateRepoOption(InputModel):
     auto_init: bool | None = None
-    'Whether the repository should be auto-initialized?'
+    "Whether the repository should be auto-initialized?"
     create_develop_branch: bool | None = None
-    'Whether to initialize the repository with a secondary develop branch'
+    "Whether to initialize the repository with a secondary develop branch"
     default_branch: str | None = None
-    'DefaultBranch of the repository (used when initializes and in template)'
+    "DefaultBranch of the repository (used when initializes and in template)"
     description: str | None = None
-    'Description of the repository to create'
+    "Description of the repository to create"
     gitignores: str | None = None
-    'Gitignores to use'
+    "Gitignores to use"
     issue_labels: str | None = None
-    'Label-Set to use'
+    "Label-Set to use"
     license: str | None = None
-    'License to use'
+    "License to use"
     name: str
-    'Name of the repository to create'
+    "Name of the repository to create"
     object_format_name: ObjectFormatName | None = None
-    'ObjectFormatName of the underlying git repository'
+    "ObjectFormatName of the underlying git repository"
     private: bool | None = None
-    'Whether the repository is private'
+    "Whether the repository is private"
     readme: str | None = None
-    'Readme of the repository to create'
+    "Readme of the repository to create"
     template: bool | None = None
-    'Whether the repository is template'
+    "Whether the repository is template"
     trust_model: TrustModel | None = None
-    'TrustModel of the repository'
+    "TrustModel of the repository"
 
 class CreateStatusOption(InputModel):
     context: str | None = None
@@ -247,17 +248,17 @@ class Email(ReadOnlyModel):
 
 class ExternalTracker(ReadOnlyModel):
     external_tracker_format: Final[str | None] = None
-    'External Issue Tracker URL Format. Use the placeholders {user}, {repo} and {index} for the username, repository name and issue index.'
+    "External Issue Tracker URL Format. Use the placeholders {user}, {repo} and {index} for the username, repository name and issue index."
     external_tracker_regexp_pattern: Final[str | None] = None
-    'External Issue Tracker issue regular expression'
+    "External Issue Tracker issue regular expression"
     external_tracker_style: Final[str | None] = None
-    'External Issue Tracker Number Format, either `numeric`, `alphanumeric`, or `regexp`'
+    "External Issue Tracker Number Format, either `numeric`, `alphanumeric`, or `regexp`"
     external_tracker_url: Final[str | None] = None
-    'URL of external issue tracker.'
+    "URL of external issue tracker."
 
 class ExternalWiki(ReadOnlyModel):
     external_wiki_url: Final[str | None] = None
-    'URL of external wiki.'
+    "URL of external wiki."
 
 class FileCommitResponse(ReadOnlyModel):
     author: Final[CommitUser | None] = None
@@ -308,11 +309,11 @@ class Identity(InputModel):
 
 class InternalTracker(ReadOnlyModel):
     allow_only_contributors_to_track_time: Final[bool | None] = None
-    'Let only contributors track time (Built-in issue tracker)'
+    "Let only contributors track time (Built-in issue tracker)"
     enable_issue_dependencies: Final[bool | None] = None
-    'Enable dependencies for issues and design reviews (Built-in issue tracker)'
+    "Enable dependencies for issues and design reviews (Built-in issue tracker)"
     enable_time_tracker: Final[bool | None] = None
-    'Enable time tracking (Built-in issue tracker)'
+    "Enable time tracking (Built-in issue tracker)"
 
 class Label(ReadOnlyModel):
     color: Final[str | None] = None
@@ -324,13 +325,13 @@ class Label(ReadOnlyModel):
     url: Final[str | None] = None
 
 class Do(OpenEnum):
-    UNKNOWN = 'unknown'
-    merge = 'merge'
-    rebase = 'rebase'
-    rebase_merge = 'rebase-merge'
-    squash = 'squash'
-    fast_forward_only = 'fast-forward-only'
-    manually_merged = 'manually-merged'
+    UNKNOWN = "unknown"
+    merge = "merge"
+    rebase = "rebase"
+    rebase_merge = "rebase-merge"
+    squash = "squash"
+    fast_forward_only = "fast-forward-only"
+    manually_merged = "manually-merged"
 
 class MergeDesignReviewOption(InputModel):
     do: Do
@@ -345,7 +346,7 @@ class MergeDesignReviewOption(InputModel):
 class PayloadUser(ReadOnlyModel):
     email: Final[str | None] = None
     name: Final[str | None] = None
-    'Full name of the commit author'
+    "Full name of the commit author"
     username: Final[str | None] = None
 
 class Permission(ReadOnlyModel):
@@ -356,6 +357,7 @@ class Permission(ReadOnlyModel):
 class ProjectWarning(ReadOnlyModel):
     detail: Final[str | None] = None
     file_path: Final[str | None] = None
+
 ProjectWarnings = list[ProjectWarning]
 
 class DesignReviewMeta(ReadOnlyModel):
@@ -371,31 +373,32 @@ class RepositoryMeta(ReadOnlyModel):
     owner: Final[str | None] = None
 
 class ReviewStateType(OpenEnum):
-    UNKNOWN = 'unknown'
-    approved = 'APPROVED'
-    pending = 'PENDING'
-    comment = 'COMMENT'
-    request_changes = 'REQUEST_CHANGES'
-    request_review = 'REQUEST_REVIEW'
+    UNKNOWN = "unknown"
+    approved = "APPROVED"
+    pending = "PENDING"
+    comment = "COMMENT"
+    request_changes = "REQUEST_CHANGES"
+    request_review = "REQUEST_REVIEW"
 
 class ServerVersion(ReadOnlyModel):
     version: Final[str | None] = None
 
 class StateType(OpenEnum):
-    UNKNOWN = 'unknown'
-    open = 'open'
-    closed = 'closed'
+    UNKNOWN = "unknown"
+    open = "open"
+    closed = "closed"
 
 class StateTypeFilter(OpenEnum):
-    UNKNOWN = 'unknown'
-    open = 'open'
-    closed = 'closed'
-    all = 'all'
+    UNKNOWN = "unknown"
+    open = "open"
+    closed = "closed"
+    all = "all"
 
 class SubmitDesignReviewReviewOptions(InputModel):
     body: str | None = None
     event: ReviewStateType | None = None
-TimeStamp = NewType('TimeStamp', int)
+
+TimeStamp = NewType("TimeStamp", int)
 
 class TopicNamesResponse(ReadOnlyModel):
     topics: Final[list[str] | None] = None
@@ -403,116 +406,124 @@ class TopicNamesResponse(ReadOnlyModel):
 class TransferRepoOption(InputModel):
     new_owner: str
     team_ids: list[int] | None = None
-    'ID of the team or teams to add to the repository. Teams can only be added to organization-owned repositories.'
+    "ID of the team or teams to add to the repository. Teams can only be added to organization-owned repositories."
 
 class UpdateFileOptions(InputModel):
     author: Identity | None = None
     branch: str | None = None
-    'branch (optional) to base this file from. if not given, the default branch is used'
+    "branch (optional) to base this file from. if not given, the default branch is used"
     committer: Identity | None = None
     content: str
-    'content must be base64 encoded'
+    "content must be base64 encoded"
     dates: CommitDateOptions | None = None
     from_path: str | None = None
-    'from_path (optional) is the path of the original file which will be moved/renamed to the path in the URL'
+    "from_path (optional) is the path of the original file which will be moved/renamed to the path in the URL"
     message: str | None = None
-    'message (optional) for the commit of this file. if not supplied, a default message will be used'
+    "message (optional) for the commit of this file. if not supplied, a default message will be used"
     new_branch: str | None = None
-    'new_branch (optional) will make a new branch from `branch` before creating the file'
+    "new_branch (optional) will make a new branch from `branch` before creating the file"
     sha: str
-    'sha is the SHA for the file that already exists'
+    "sha is the SHA for the file that already exists"
     signoff: bool | None = None
-    'Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+    "Add a Signed-off-by trailer by the committer at the end of the commit log message."
 
 class UserHeatmapData(ReadOnlyModel):
     contributions: Final[int | None] = None
     timestamp: Final[TimeStamp | None] = None
 
 class VisibleType(OpenEnum):
-    UNKNOWN = 'unknown'
-    public = 'public'
-    limited = 'limited'
-    private = 'private'
-Angle = NewType('Angle', float)
-AttributeId = NewType('AttributeId', str)
-BezierId = NewType('BezierId', str)
-BitmapId = NewType('BitmapId', str)
+    UNKNOWN = "unknown"
+    public = "public"
+    limited = "limited"
+    private = "private"
+
+Angle = NewType("Angle", float)
+AttributeId = NewType("AttributeId", str)
+BezierId = NewType("BezierId", str)
+BitmapId = NewType("BitmapId", str)
 
 class BorderLabelDigits(OpenEnum):
-    UNKNOWN = 'unknown'
-    uppercase_alphabet = 'UppercaseAlphabet'
-    arabic_numeral = 'ArabicNumeral'
+    UNKNOWN = "unknown"
+    uppercase_alphabet = "UppercaseAlphabet"
+    arabic_numeral = "ArabicNumeral"
 
 class BoundsTag(OpenEnum):
-    UNKNOWN = 'unknown'
-    angle = 'angle'
-    point = 'point'
+    UNKNOWN = "unknown"
+    angle = "angle"
+    point = "point"
 
 class CadDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    project = 'Project'
-    pcb = 'Pcb'
-    pcb_component_library = 'PcbComponentLibrary'
-    schematic = 'Schematic'
-    schematic_component_library = 'SchematicComponentLibrary'
-Color = NewType('Color', str)
+    UNKNOWN = "unknown"
+    project = "Project"
+    pcb = "Pcb"
+    pcb_component_library = "PcbComponentLibrary"
+    schematic = "Schematic"
+    schematic_component_library = "SchematicComponentLibrary"
+
+Color = NewType("Color", str)
 
 class ComponentFlags(ReadOnlyModel):
     exclude_from_bom: Final[bool | None] = None
-ComponentId = NewType('ComponentId', str)
+
+ComponentId = NewType("ComponentId", str)
 
 class ComponentLink(ReadOnlyModel):
     path: Final[str]
     display_text: Final[str]
 
 class CornerRadius1(OpenEnum):
-    UNKNOWN = 'unknown'
-    none = 'None'
+    UNKNOWN = "unknown"
+    none = "None"
 
 class CustomPadDrawingOption1(OpenEnum):
-    UNKNOWN = 'unknown'
-    filled = 'Filled'
-Degree = Literal['degree']
-DirectiveLabelId = NewType('DirectiveLabelId', str)
-EllipseId = NewType('EllipseId', str)
+    UNKNOWN = "unknown"
+    filled = "Filled"
+
+Degree = Literal["degree"]
+DirectiveLabelId = NewType("DirectiveLabelId", str)
+EllipseId = NewType("EllipseId", str)
 
 class ExternalDesignBlock(ReadOnlyModel):
     id: Final[str]
     path: Final[str]
-    'Relative to the project root. Uses forward slashes as path separator.'
-FontId = NewType('FontId', str)
+    "Relative to the project root. Uses forward slashes as path separator."
+
+FontId = NewType("FontId", str)
 
 class HarnessConnectorSide(OpenEnum):
-    UNKNOWN = 'unknown'
-    right = 'Right'
-    left = 'Left'
-    up = 'Up'
-    down = 'Down'
-HarnessEntryId = NewType('HarnessEntryId', str)
-HarnessId = NewType('HarnessId', str)
+    UNKNOWN = "unknown"
+    right = "Right"
+    left = "Left"
+    up = "Up"
+    down = "Down"
+
+HarnessEntryId = NewType("HarnessEntryId", str)
+HarnessId = NewType("HarnessId", str)
 
 class HorizontalJustification(OpenEnum):
-    UNKNOWN = 'unknown'
-    left = 'Left'
-    center = 'Center'
-    right = 'Right'
-JunctionId = NewType('JunctionId', str)
-LayerId = NewType('LayerId', int)
-Length = NewType('Length', float)
+    UNKNOWN = "unknown"
+    left = "Left"
+    center = "Center"
+    right = "Right"
+
+JunctionId = NewType("JunctionId", str)
+LayerId = NewType("LayerId", int)
+Length = NewType("Length", float)
 
 class LineStyle(OpenEnum):
-    UNKNOWN = 'unknown'
-    solid = 'solid'
-    dashed = 'dashed'
-    dotted = 'dotted'
-    dash_dot = 'dash_dot'
-    dash_dot_dot = 'dash_dot_dot'
-    dense_dot = 'dense_dot'
-Meters = NewType('Meters', float)
-Millimeter = Literal['mm']
-NetId = NewType('NetId', str)
-NetLabelId = NewType('NetLabelId', str)
-NoConnectSymbolId = NewType('NoConnectSymbolId', str)
+    UNKNOWN = "unknown"
+    solid = "solid"
+    dashed = "dashed"
+    dotted = "dotted"
+    dash_dot = "dash_dot"
+    dash_dot_dot = "dash_dot_dot"
+    dense_dot = "dense_dot"
+
+Meters = NewType("Meters", float)
+Millimeter = Literal["mm"]
+NetId = NewType("NetId", str)
+NetLabelId = NewType("NetLabelId", str)
+NoConnectSymbolId = NewType("NoConnectSymbolId", str)
 
 class PadHoleCircle(ReadOnlyModel):
     radius: Final[Length]
@@ -522,17 +533,18 @@ class PadHoleRectangle(ReadOnlyModel):
     height: Final[Length]
 
 class PadHoleShape1(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     circle: Final[PadHoleCircle]
 
 class PadHoleShape3(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     rectangle: Final[PadHoleRectangle]
 
 class PadHoleSlot(ReadOnlyModel):
     width: Final[Length]
     height: Final[Length]
-PadId = NewType('PadId', str)
+
+PadId = NewType("PadId", str)
 
 class PadShapeCircle(ReadOnlyModel):
     radius: Final[Length]
@@ -550,7 +562,8 @@ class PadShapeRectangle(ReadOnlyModel):
     height: Final[Length]
     x_radius: Final[Length]
     y_radius: Final[Length]
-PadstackId = NewType('PadstackId', str)
+
+PadstackId = NewType("PadstackId", str)
 
 class PageBorderMargin(ReadOnlyModel):
     left: Final[Length]
@@ -559,131 +572,142 @@ class PageBorderMargin(ReadOnlyModel):
     bottom: Final[Length]
 
 class ParameterSetStyle(OpenEnum):
-    UNKNOWN = 'unknown'
-    large = 'Large'
-    tiny = 'Tiny'
-    differential_pair = 'DifferentialPair'
-PcbArcId = NewType('PcbArcId', str)
+    UNKNOWN = "unknown"
+    large = "Large"
+    tiny = "Tiny"
+    differential_pair = "DifferentialPair"
+
+PcbArcId = NewType("PcbArcId", str)
 
 class PcbComponentLibDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    pcb_component_lib = 'PcbComponentLib'
+    UNKNOWN = "unknown"
+    pcb_component_lib = "PcbComponentLib"
 
 class PcbDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    pcb = 'Pcb'
-PcbLibComponentId = NewType('PcbLibComponentId', str)
-PcbTextId = NewType('PcbTextId', str)
+    UNKNOWN = "unknown"
+    pcb = "Pcb"
+
+PcbLibComponentId = NewType("PcbLibComponentId", str)
+PcbTextId = NewType("PcbTextId", str)
 
 class PinElectricalType(OpenEnum):
-    UNKNOWN = 'unknown'
-    input = 'Input'
-    io = 'Io'
-    hi_z = 'HiZ'
-    open_collector = 'OpenCollector'
-    open_emitter = 'OpenEmitter'
-    output = 'Output'
-    passive = 'Passive'
-    power = 'Power'
-    no_connect = 'NoConnect'
-    unspecified = 'Unspecified'
-    power_in = 'PowerIn'
-    power_out = 'PowerOut'
-PinId = NewType('PinId', str)
+    UNKNOWN = "unknown"
+    input = "Input"
+    io = "Io"
+    hi_z = "HiZ"
+    open_collector = "OpenCollector"
+    open_emitter = "OpenEmitter"
+    output = "Output"
+    passive = "Passive"
+    power = "Power"
+    no_connect = "NoConnect"
+    unspecified = "Unspecified"
+    power_in = "PowerIn"
+    power_out = "PowerOut"
+
+PinId = NewType("PinId", str)
 
 class PinOrientation(OpenEnum):
-    UNKNOWN = 'unknown'
-    left = 'Left'
-    right = 'Right'
-    up = 'Up'
-    down = 'Down'
+    UNKNOWN = "unknown"
+    left = "Left"
+    right = "Right"
+    up = "Up"
+    down = "Down"
 
 class PinTextRelativeTo(OpenEnum):
-    UNKNOWN = 'unknown'
-    pin = 'Pin'
-    component = 'Component'
+    UNKNOWN = "unknown"
+    pin = "Pin"
+    component = "Component"
 
 class Point(ReadOnlyModel):
     x: Final[Length]
     y: Final[Length]
-PolygonId = NewType('PolygonId', str)
-PolylineId = NewType('PolylineId', str)
-PortId = NewType('PortId', str)
+
+PolygonId = NewType("PolygonId", str)
+PolylineId = NewType("PolylineId", str)
+PortId = NewType("PortId", str)
 
 class ProjectDocument(ReadOnlyModel):
     id: Final[str]
     path: Final[str]
-    'Relative to the project root. Uses forward slashes as path separator.'
+    "Relative to the project root. Uses forward slashes as path separator."
     ty: Final[CadDocumentType | None] = None
-    'The type of ECAD Document. Omitted if null.'
+    "The type of ECAD Document. Omitted if null."
 
 class ProjectDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    project = 'Project'
-Pt = NewType('Pt', float)
-RectangleId = NewType('RectangleId', str)
-RegionDirectiveId = NewType('RegionDirectiveId', str)
-RegionId = NewType('RegionId', str)
+    UNKNOWN = "unknown"
+    project = "Project"
+
+Pt = NewType("Pt", float)
+RectangleId = NewType("RectangleId", str)
+RegionDirectiveId = NewType("RegionDirectiveId", str)
+RegionId = NewType("RegionId", str)
 
 class RegionType(OpenEnum):
-    UNKNOWN = 'unknown'
-    fill = 'Fill'
-    cutout = 'Cutout'
-    keep_out = 'KeepOut'
-    cavity = 'Cavity'
-    board_cutout = 'BoardCutout'
+    UNKNOWN = "unknown"
+    fill = "Fill"
+    cutout = "Cutout"
+    keep_out = "KeepOut"
+    cavity = "Cavity"
+    board_cutout = "BoardCutout"
 
 class RelativePinTextOrientation(OpenEnum):
-    UNKNOWN = 'unknown'
-    parallel = 'Parallel'
-    perpendicular = 'Perpendicular'
+    UNKNOWN = "unknown"
+    parallel = "Parallel"
+    perpendicular = "Perpendicular"
+
 Overline = tuple[str, bool]
 
 class RichText(ReadOnlyModel):
     display: Final[str]
     overlines: Final[list[Overline] | None] = None
-    'null when no overlines.'
+    "null when no overlines."
     component_links: Final[list[ComponentLink] | None] = None
-SchArcId = NewType('SchArcId', str)
-SchComponentId = NewType('SchComponentId', str)
-SchLibComponentId = NewType('SchLibComponentId', str)
-SchTextId = NewType('SchTextId', str)
+
+SchArcId = NewType("SchArcId", str)
+SchComponentId = NewType("SchComponentId", str)
+SchLibComponentId = NewType("SchLibComponentId", str)
+SchTextId = NewType("SchTextId", str)
 
 class SchematicComponentLibDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    schematic_component_lib = 'SchematicComponentLib'
+    UNKNOWN = "unknown"
+    schematic_component_lib = "SchematicComponentLib"
 
 class SchematicDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    schematic = 'Schematic'
+    UNKNOWN = "unknown"
+    schematic = "Schematic"
 
 class SchematicNet(ReadOnlyModel):
     id: Final[NetId]
     name: Final[str]
-SchematicPageGroupId = NewType('SchematicPageGroupId', str)
+
+SchematicPageGroupId = NewType("SchematicPageGroupId", str)
 
 class SchematicPageGroupParentReference(ReadOnlyModel):
     parent_page_id: Final[str]
-SchematicPageId = NewType('SchematicPageId', str)
-SheetEntryId = NewType('SheetEntryId', str)
+
+SchematicPageId = NewType("SchematicPageId", str)
+SheetEntryId = NewType("SheetEntryId", str)
 
 class SheetEntryType(OpenEnum):
-    UNKNOWN = 'unknown'
-    input = 'Input'
-    output = 'Output'
-    bi_directional = 'BiDirectional'
-    tri_state = 'TriState'
-    passive = 'Passive'
-SheetRefId = NewType('SheetRefId', str)
-SymbolId = NewType('SymbolId', int)
+    UNKNOWN = "unknown"
+    input = "Input"
+    output = "Output"
+    bi_directional = "BiDirectional"
+    tri_state = "TriState"
+    passive = "Passive"
+
+SheetRefId = NewType("SheetRefId", str)
+SymbolId = NewType("SymbolId", int)
 
 class SymbolRef1(OpenEnum):
-    UNKNOWN = 'unknown'
-    all_symbols = 'AllSymbols'
+    UNKNOWN = "unknown"
+    all_symbols = "AllSymbols"
 
 class SymbolRef2(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     symbol: Final[SymbolId]
+
 SymbolRef = SymbolRef1 | SymbolRef2
 
 class TextDecorations(ReadOnlyModel):
@@ -703,7 +727,8 @@ class TextFrame(ReadOnlyModel):
     border_color: Final[Color]
     clip_to_bounds: Final[bool]
     wrap_width: Final[Meters | None] = None
-TitleBlockId = NewType('TitleBlockId', str)
+
+TitleBlockId = NewType("TitleBlockId", str)
 
 class Track(ReadOnlyModel):
     points: Final[list[Point]]
@@ -711,18 +736,20 @@ class Track(ReadOnlyModel):
     layer_id: Final[LayerId]
     net_id: Final[NetId | None] = None
     net_name: Final[str | None] = None
-TrackId = NewType('TrackId', str)
+
+TrackId = NewType("TrackId", str)
 
 class Variant(ReadOnlyModel):
     id: Final[str]
     description: Final[str]
-VariantId = NewType('VariantId', str)
+
+VariantId = NewType("VariantId", str)
 
 class VerticalJustification(OpenEnum):
-    UNKNOWN = 'unknown'
-    top = 'Top'
-    center = 'Center'
-    bottom = 'Bottom'
+    UNKNOWN = "unknown"
+    top = "Top"
+    center = "Center"
+    bottom = "Bottom"
 
 class Via(ReadOnlyModel):
     center: Final[Point]
@@ -730,22 +757,24 @@ class Via(ReadOnlyModel):
     padstack: Final[PadstackId]
     net_id: Final[NetId | None] = None
     net_name: Final[str | None] = None
-ViaId = NewType('ViaId', str)
+
+ViaId = NewType("ViaId", str)
 
 class Warning(ReadOnlyModel):
     file_path: Final[str]
-    'Uses forward slashes as path separator.'
+    "Uses forward slashes as path separator."
     detail: Final[str]
-WireAliasId = NewType('WireAliasId', str)
-WireId = NewType('WireId', str)
+
+WireAliasId = NewType("WireAliasId", str)
+WireId = NewType("WireId", str)
 
 class ContentsResponse(ReadOnlyModel):
     field_links: Final[FileLinksResponse | None] = None
     content: Final[str | None] = None
-    '`content` is populated when `type` is `file`, otherwise null'
+    "`content` is populated when `type` is `file`, otherwise null"
     download_url: Final[str | None] = None
     encoding: Final[str | None] = None
-    '`encoding` is populated when `type` is `file`, otherwise null'
+    "`encoding` is populated when `type` is `file`, otherwise null"
     git_url: Final[str | None] = None
     html_url: Final[str | None] = None
     last_author_date: Final[AwareDatetime]
@@ -756,27 +785,27 @@ class ContentsResponse(ReadOnlyModel):
     sha: Final[str]
     size: Final[int]
     submodule_git_url: Final[str | None] = None
-    '`submodule_git_url` is populated when `type` is `submodule`, otherwise null'
+    "`submodule_git_url` is populated when `type` is `submodule`, otherwise null"
     target: Final[str | None] = None
-    '`target` is populated when `type` is `symlink`, otherwise null'
+    "`target` is populated when `type` is `symlink`, otherwise null"
     type: Final[str]
-    '`type` will be `file`, `dir`, `symlink`, or `submodule`'
+    "`type` will be `file`, `dir`, `symlink`, or `submodule`"
     url: Final[str | None] = None
 
 class CreateFileOptions(InputModel):
     author: Identity | None = None
     branch: str | None = None
-    'branch (optional) to base this file from. if not given, the default branch is used'
+    "branch (optional) to base this file from. if not given, the default branch is used"
     committer: Identity | None = None
     content: str
-    'content must be base64 encoded'
+    "content must be base64 encoded"
     dates: CommitDateOptions | None = None
     message: str | None = None
-    'message (optional) for the commit of this file. if not supplied, a default message will be used'
+    "message (optional) for the commit of this file. if not supplied, a default message will be used"
     new_branch: str | None = None
-    'new_branch (optional) will make a new branch from `branch` before creating the file'
+    "new_branch (optional) will make a new branch from `branch` before creating the file"
     signoff: bool | None = None
-    'Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+    "Add a Signed-off-by trailer by the committer at the end of the commit log message."
 
 class CreateHookOption(InputModel):
     active: bool | None = False
@@ -825,21 +854,21 @@ class CreateUserOption(InputModel):
 class DeleteFileOptions(InputModel):
     author: Identity | None = None
     branch: str | None = None
-    'branch (optional) to base this file from. if not given, the default branch is used'
+    "branch (optional) to base this file from. if not given, the default branch is used"
     committer: Identity | None = None
     dates: CommitDateOptions | None = None
     message: str | None = None
-    'message (optional) for the commit of this file. if not supplied, a default message will be used'
+    "message (optional) for the commit of this file. if not supplied, a default message will be used"
     new_branch: str | None = None
-    'new_branch (optional) will make a new branch from `branch` before creating the file'
+    "new_branch (optional) will make a new branch from `branch` before creating the file"
     sha: str
-    'sha is the SHA for the file that already exists'
+    "sha is the SHA for the file that already exists"
     signoff: bool | None = None
-    'Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+    "Add a Signed-off-by trailer by the committer at the end of the commit log message."
 
 class EditIssueOption(InputModel):
     assignee: str | None = None
-    'deprecated'
+    "deprecated"
     assignees: list[str] | None = None
     body: str | None = None
     due_date: AwareDatetime | None = None
@@ -873,66 +902,66 @@ class EditDesignReviewOption(InputModel):
 
 class EditRepoOption(InputModel):
     allow_fast_forward_only_merge: bool | None = None
-    'either `true` to allow fast-forward-only merging design reviews, or `false` to prevent fast-forward-only merging.'
+    "either `true` to allow fast-forward-only merging design reviews, or `false` to prevent fast-forward-only merging."
     allow_manual_merge: bool | None = None
-    'either `true` to allow mark pr as merged manually, or `false` to prevent it.'
+    "either `true` to allow mark pr as merged manually, or `false` to prevent it."
     allow_merge_commits: bool | None = None
-    'either `true` to allow merging design reviews with a merge commit, or `false` to prevent merging design reviews with merge commits.'
+    "either `true` to allow merging design reviews with a merge commit, or `false` to prevent merging design reviews with merge commits."
     allow_rebase: bool | None = None
-    'either `true` to allow rebase-merging design reviews, or `false` to prevent rebase-merging.'
+    "either `true` to allow rebase-merging design reviews, or `false` to prevent rebase-merging."
     allow_rebase_explicit: bool | None = None
-    'either `true` to allow rebase with explicit merge commits (--no-ff), or `false` to prevent rebase with explicit merge commits.'
+    "either `true` to allow rebase with explicit merge commits (--no-ff), or `false` to prevent rebase with explicit merge commits."
     allow_rebase_update: bool | None = None
-    'either `true` to allow updating design review branch by rebase, or `false` to prevent it.'
+    "either `true` to allow updating design review branch by rebase, or `false` to prevent it."
     allow_squash_merge: bool | None = None
-    'either `true` to allow squash-merging design reviews, or `false` to prevent squash-merging.'
+    "either `true` to allow squash-merging design reviews, or `false` to prevent squash-merging."
     archived: bool | None = None
-    'set to `true` to archive this repository.'
+    "set to `true` to archive this repository."
     autodetect_manual_merge: bool | None = None
-    'either `true` to enable AutodetectManualMerge, or `false` to prevent it. Note: In some special cases, misjudgments can occur.'
+    "either `true` to enable AutodetectManualMerge, or `false` to prevent it. Note: In some special cases, misjudgments can occur."
     default_allow_maintainer_edit: bool | None = None
-    'set to `true` to allow edits from maintainers by default'
+    "set to `true` to allow edits from maintainers by default"
     default_branch: str | None = None
-    'sets the default branch for this repository.'
+    "sets the default branch for this repository."
     default_delete_branch_after_merge: bool | None = None
-    'set to `true` to delete pr branch after merge by default'
+    "set to `true` to delete pr branch after merge by default"
     default_merge_style: str | None = None
     'set to a merge style to be used by this repository: "merge", "rebase", "rebase-merge", "squash", or "fast-forward-only".'
     description: str | None = None
-    'a short description of the repository.'
+    "a short description of the repository."
     enable_prune: bool | None = None
-    'enable prune - remove obsolete remote-tracking references when mirroring'
+    "enable prune - remove obsolete remote-tracking references when mirroring"
     external_tracker: ExternalTracker | None = None
     external_wiki: ExternalWiki | None = None
     has_actions: bool | None = None
-    'either `true` to enable actions unit, or `false` to disable them.'
+    "either `true` to enable actions unit, or `false` to disable them."
     has_issues: bool | None = None
-    'either `true` to enable issues for this repository or `false` to disable them.'
+    "either `true` to enable issues for this repository or `false` to disable them."
     has_packages: bool | None = None
-    'either `true` to enable packages unit, or `false` to disable them.'
+    "either `true` to enable packages unit, or `false` to disable them."
     has_projects: bool | None = None
-    'either `true` to enable project unit, or `false` to disable them.'
+    "either `true` to enable project unit, or `false` to disable them."
     has_pull_requests: bool | None = None
-    'either `true` to allow design reviews, or `false` to prevent design review.'
+    "either `true` to allow design reviews, or `false` to prevent design review."
     has_releases: bool | None = None
-    'either `true` to enable releases unit, or `false` to disable them.'
+    "either `true` to enable releases unit, or `false` to disable them."
     has_wiki: bool | None = None
-    'either `true` to enable the wiki for this repository or `false` to disable it.'
+    "either `true` to enable the wiki for this repository or `false` to disable it."
     ignore_whitespace_conflicts: bool | None = None
-    'either `true` to ignore whitespace for conflicts, or `false` to not ignore whitespace.'
+    "either `true` to ignore whitespace for conflicts, or `false` to not ignore whitespace."
     internal_tracker: InternalTracker | None = None
     mirror_interval: str | None = None
-    'set to a string like `8h30m0s` to set the mirror interval time'
+    "set to a string like `8h30m0s` to set the mirror interval time"
     name: str | None = None
-    'name of the repository'
+    "name of the repository"
     private: bool | None = None
-    'either `true` to make the repository private or `false` to make it public.\nNote: you will get a 422 error if the organization restricts changing repository visibility to organization\nowners and a non-owner tries to change the value of private.'
+    "either `true` to make the repository private or `false` to make it public.\nNote: you will get a 422 error if the organization restricts changing repository visibility to organization\nowners and a non-owner tries to change the value of private."
     projects_mode: str | None = None
-    '`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both.'
+    "`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both."
     template: bool | None = None
-    'either `true` to make this repository a template or `false` to make it a normal repository'
+    "either `true` to make this repository a template or `false` to make it a normal repository"
     website: str | None = None
-    'a URL with more information about the repository.'
+    "a URL with more information about the repository."
 
 class EditUserOption(InputModel):
     active: bool | None = None
@@ -976,7 +1005,7 @@ class Organization(OrganizationEntity):
     name: Final[str]
     repo_admin_change_team_access: bool
     username: Final[str]
-    'deprecated'
+    "deprecated"
     visibility: VisibleType
     website: str
 
@@ -989,13 +1018,13 @@ class PayloadCommitVerification(ReadOnlyModel):
 
 class ProjectData(ReadOnlyModel):
     documents: Final[dict[str, str] | None] = None
-    'Mapping of component reference to the document path that defines it.'
+    "Mapping of component reference to the document path that defines it."
     external_design_blocks: Final[dict[str, str] | None] = None
-    'Mapping of external design block reference to the HTML URL of its sheet, used to resolve device sheets in submodules.'
+    "Mapping of external design block reference to the HTML URL of its sheet, used to resolve device sheets in submodules."
     project_path: Final[str | None] = None
-    'Path of the project file, relative to the repo root.'
+    "Path of the project file, relative to the repo root."
     variants: Final[dict[str, str] | None] = None
-    'Mapping of variant id to its human-readable name.'
+    "Mapping of variant id to its human-readable name."
     warnings: Final[ProjectWarnings | None] = None
 
 class RepoCommit(ReadOnlyModel):
@@ -1019,7 +1048,7 @@ class Team(TeamEntity):
 
 class User(UserEntity):
     active: bool | None = None
-    'Is user active'
+    "Is user active"
     avatar_url: Final[str]
     "URL to the user's avatar"
     created: Final[AwareDatetime]
@@ -1027,7 +1056,7 @@ class User(UserEntity):
     "the user's description"
     email: str
     followers_count: Final[int]
-    'user counts'
+    "user counts"
     following_count: Final[int]
     full_name: str
     "the user's full name"
@@ -1036,20 +1065,20 @@ class User(UserEntity):
     id: Final[int]
     "the user's id"
     is_admin: Final[bool | None] = None
-    'Is the user an administrator'
+    "Is the user an administrator"
     language: Final[str | None] = None
-    'User locale'
+    "User locale"
     last_login: Final[AwareDatetime | None] = None
     location: str
     "the user's location"
     login: Final[str]
     "the user's username"
-    login_name: str | None = 'empty'
+    login_name: str | None = "empty"
     "the user's authentication sign-in name."
     prohibit_login: bool | None = None
-    'Is user login prohibited'
+    "Is user login prohibited"
     restricted: bool
-    'Is user restricted'
+    "Is user restricted"
     source_id: int | None = None
     "The ID of the user's Authentication Source"
     starred_repos_count: Final[int]
@@ -1090,7 +1119,7 @@ class Circular(ReadOnlyModel):
     radius: Final[Meters]
 
 class CornerRadius2(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     circular: Final[Circular]
 
 class Xy(ReadOnlyModel):
@@ -1098,16 +1127,18 @@ class Xy(ReadOnlyModel):
     radius_y: Final[Meters]
 
 class CornerRadius3(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     xy: Final[Xy]
+
 CornerRadius = CornerRadius1 | CornerRadius2 | CornerRadius3
 
 class Outline(ReadOnlyModel):
     stroke_width: Final[Meters]
 
 class CustomPadDrawingOption2(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     outline: Final[Outline]
+
 CustomPadDrawingOption = CustomPadDrawingOption1 | CustomPadDrawingOption2
 
 class Ellipse(ReadOnlyModel):
@@ -1178,24 +1209,25 @@ class Pad(ReadOnlyModel):
     net_name: Final[str | None] = None
 
 class PadHoleShape2(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     slot: Final[PadHoleSlot]
+
 PadHoleShape = PadHoleShape1 | PadHoleShape2 | PadHoleShape3
 
 class PadShape1(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     circle: Final[PadShapeCircle]
 
 class PadShape2(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     pill: Final[PadShapePill]
 
 class PadShape3(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     rectangle: Final[PadShapeRectangle]
 
 class PadShape4(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     octagon: Final[PadShapeOctagon]
 
 class PageBorder(ReadOnlyModel):
@@ -1246,15 +1278,15 @@ class Project(ReadOnlyModel):
     variants: Final[list[Variant]]
     external_design_blocks: Final[list[ExternalDesignBlock]]
     altium_project_pcb_variants_file: Final[str | None] = None
-    'The path of the altium `.prjpcbvariants` file relative to the repo root. Omitted if null.'
+    "The path of the altium `.prjpcbvariants` file relative to the repo root. Omitted if null."
 
 class ProjectEntryExport(ReadOnlyModel):
     type: Final[ProjectDocumentType]
     path: Final[str]
-    'Path relative to the repo root. Uses forward slashes as path separator.'
+    "Path relative to the repo root. Uses forward slashes as path separator."
     project: Final[Project]
     warnings: Final[list[Warning]]
-    'Warnings that occurred during the generation of this project'
+    "Warnings that occurred during the generation of this project"
 
 class Rectangle(ReadOnlyModel):
     id: Final[RectangleId]
@@ -1362,6 +1394,7 @@ class CommitStatus(ReadOnlyModel):
     target_url: Final[str]
     updated_at: Final[AwareDatetime]
     url: Final[str]
+
 ContentsResponseOrList = ContentsResponse | list[ContentsResponse]
 
 class FileDeleteResponse(ReadOnlyModel):
@@ -1405,7 +1438,7 @@ class PayloadCommit(ReadOnlyModel):
     author: Final[PayloadUser | None] = None
     committer: Final[PayloadUser | None] = None
     id: Final[str | None] = None
-    'sha1 hash of the commit'
+    "sha1 hash of the commit"
     message: Final[str | None] = None
     modified: Final[list[str] | None] = None
     removed: Final[list[str] | None] = None
@@ -1514,7 +1547,7 @@ class Repository(RepositoryEntity):
     mirror_updated: Final[AwareDatetime]
     name: str
     object_format_name: Final[ObjectFormatName]
-    'ObjectFormatName of the underlying git repository'
+    "ObjectFormatName of the underlying git repository"
     open_issues_count: Final[int]
     open_pr_counter: Final[int]
     original_url: Final[str]
@@ -1544,11 +1577,11 @@ class TrackedTime(ReadOnlyModel):
     id: Final[int | None] = None
     issue: Final[Issue | None] = None
     issue_id: Final[int | None] = None
-    'deprecated (only for backwards compatibility)'
+    "deprecated (only for backwards compatibility)"
     time: Final[int | None] = None
-    'Time in seconds'
+    "Time in seconds"
     user_id: Final[int | None] = None
-    'deprecated (only for backwards compatibility)'
+    "deprecated (only for backwards compatibility)"
     user_name: Final[str | None] = None
 
 class Attribute(ReadOnlyModel):
@@ -1607,8 +1640,9 @@ class PadHole(ReadOnlyModel):
     hole: Final[PadHoleShape]
 
 class PadShape5(ReadOnlyModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     custom: Final[list[CustomPadShape]]
+
 PadShape = PadShape1 | PadShape2 | PadShape3 | PadShape4 | PadShape5
 
 class PadstackLayer(ReadOnlyModel):
@@ -1619,7 +1653,7 @@ class PcbText(ReadOnlyModel):
     text: Final[str]
     position: Final[Point]
     rotation: Final[Angle | None] = None
-    'Absent when zero.'
+    "Absent when zero."
     width: Final[Length | None] = None
     height: Final[Length]
     border: Final[Border | None] = None
@@ -1742,7 +1776,7 @@ class DesignReview(DesignReviewEntity):
     requested_reviewers: Final[list[User]]
     requested_reviewers_teams: Final[list[Team]]
     review_comments: Final[int | None] = None
-    'number of review comments made on the diff of a PR review (not including comments on commits or issues in a PR)'
+    "number of review comments made on the diff of a PR review (not including comments on commits or issues in a PR)"
     state: StateType
     title: str
     updated_at: Final[AwareDatetime | None] = None
@@ -1948,16 +1982,22 @@ class SchematicPage(ReadOnlyModel):
 class SchematicExport(ReadOnlyModel):
     type: Final[SchematicDocumentType]
     variants: Final[dict[VariantId, str] | None] = None
-    'Maps variant ID to variant name. Absent when the schematic has no variants.'
+    "Maps variant ID to variant name. Absent when the schematic has no variants."
     nets: Final[dict[NetId, SchematicNet]]
     pages: Final[list[SchematicPage]]
     page_groups: Final[dict[SchematicPageGroupId, SchematicPageGroup] | None] = None
-    'Maps group ID (`pages[].ui_group_id`) to page group, representing a hierarchical structure of groups, each with multiple pages. Absent when hierarchy has not been provided.'
-DocumentOutput = PcbComponentLibExport | PcbExport | ProjectEntryExport | SchematicComponentLibExport | SchematicExport
+    "Maps group ID (`pages[].ui_group_id`) to page group, representing a hierarchical structure of groups, each with multiple pages. Absent when hierarchy has not been provided."
+
+DocumentOutput = (
+    PcbComponentLibExport
+    | PcbExport
+    | ProjectEntryExport
+    | SchematicComponentLibExport
+    | SchematicExport
+)
 Repository.model_rebuild()
 SchComponent.model_rebuild()
 Ref = Branch | Commit | str
 Content = ContentsResponse
 
-def normalize_ref(ref: Ref) -> str:
-    ...
+def normalize_ref(ref: Ref) -> str: ...

@@ -85,6 +85,7 @@ class AdminGetAllOrgsRequest(PaginatedRequest[list[Organization], Organization])
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/admin/orgs"
     response_model = list[Organization]
@@ -104,6 +105,7 @@ class AdminSearchUsersRequest(PaginatedRequest[list[User], User]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/admin/users"
     response_model = list[User]
@@ -120,6 +122,7 @@ class AdminCreateUserRequest(ApiRequest[User]):
 
     https://hub.allspice.io/api/swagger#/admin/adminCreateUser
     """
+
     method = "POST"
     request_path = "/admin/users"
     response_model = User
@@ -136,6 +139,7 @@ class AdminDeleteUserRequest(ApiRequest[None]):
     :param username: username of user to delete
     :param purge: purge the user from the system completely
     """
+
     method = "DELETE"
     request_path = "/admin/users/{username}"
     response_model = None
@@ -152,6 +156,7 @@ class AdminEditUserRequest(ApiRequest[User]):
 
     :param username: username of user to edit
     """
+
     method = "PATCH"
     request_path = "/admin/users/{username}"
     response_model = User
@@ -168,6 +173,7 @@ class AdminCreateOrgRequest(ApiRequest[Organization]):
 
     :param username: username of the user that will own the created organization
     """
+
     method = "POST"
     request_path = "/admin/users/{username}/orgs"
     response_model = Organization
@@ -184,6 +190,7 @@ class AdminCreateRepoRequest(ApiRequest[Repository]):
 
     :param username: username of the user. This user will own the created repository
     """
+
     method = "POST"
     request_path = "/admin/users/{username}/repos"
     response_model = Repository
@@ -200,6 +207,7 @@ class OrgGetRequest(ApiRequest[Organization]):
 
     :param org: name of the organization to get
     """
+
     method = "GET"
     request_path = "/orgs/{org}"
     response_model = Organization
@@ -215,6 +223,7 @@ class OrgDeleteRequest(ApiRequest[None]):
 
     :param org: organization that is to be deleted
     """
+
     method = "DELETE"
     request_path = "/orgs/{org}"
     response_model = None
@@ -230,6 +239,7 @@ class OrgEditRequest(ApiRequest[Organization]):
 
     :param org: name of the organization to edit
     """
+
     method = "PATCH"
     request_path = "/orgs/{org}"
     response_model = Organization
@@ -248,6 +258,7 @@ class OrgListMembersRequest(PaginatedRequest[list[User], User]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/orgs/{org}/members"
     response_model = list[User]
@@ -266,6 +277,7 @@ class OrgIsMemberRequest(ApiRequest[None]):
     :param org: name of the organization
     :param username: username of the user
     """
+
     method = "GET"
     request_path = "/orgs/{org}/members/{username}"
     response_model = None
@@ -283,6 +295,7 @@ class OrgDeleteMemberRequest(ApiRequest[None]):
     :param org: name of the organization
     :param username: username of the user
     """
+
     method = "DELETE"
     request_path = "/orgs/{org}/members/{username}"
     response_model = None
@@ -301,6 +314,7 @@ class OrgListPublicMembersRequest(PaginatedRequest[list[User], User]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/orgs/{org}/public_members"
     response_model = list[User]
@@ -320,6 +334,7 @@ class OrgListReposRequest(PaginatedRequest[list[Repository], Repository]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/orgs/{org}/repos"
     response_model = list[Repository]
@@ -337,6 +352,7 @@ class CreateOrgRepoRequest(ApiRequest[Repository]):
 
     :param org: name of organization
     """
+
     method = "POST"
     request_path = "/orgs/{org}/repos"
     response_model = Repository
@@ -355,6 +371,7 @@ class OrgListTeamsRequest(PaginatedRequest[list[Team], Team]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/orgs/{org}/teams"
     response_model = list[Team]
@@ -372,6 +389,7 @@ class OrgCreateTeamRequest(ApiRequest[Team]):
 
     :param org: name of the organization
     """
+
     method = "POST"
     request_path = "/orgs/{org}/teams"
     response_model = Team
@@ -404,6 +422,7 @@ class RepoSearchRequest(PaginatedRequest[SearchResults, Repository]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/search"
     response_model = SearchResults
@@ -437,6 +456,7 @@ class RepoGetRequest(ApiRequest[Repository]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}"
     response_model = Repository
@@ -454,6 +474,7 @@ class RepoDeleteRequest(ApiRequest[None]):
     :param owner: owner of the repo to delete
     :param repo: name of the repo to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}"
     response_model = None
@@ -471,6 +492,7 @@ class RepoEditRequest(ApiRequest[Repository]):
     :param owner: owner of the repo to edit
     :param repo: name of the repo to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}"
     response_model = Repository
@@ -492,6 +514,7 @@ class RepoGetAllSpiceJSONRequest(ApiRequest[DocumentOutput]):
     :param ref: The name of the commit/branch/tag. Default the repository's default branch (usually main)
     :param Prefer: Set to 'respond-async' (RFC 7240) to receive a 202 Accepted response while generation is in progress, instead of 503. The 'wait' preference is not honored.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/allspice_generated/json/{filepath}"
     response_model = DocumentOutput
@@ -515,6 +538,7 @@ class RepoGetAllSpiceProjectRequest(ApiRequest[ProjectData]):
     :param ref: The name of the commit/branch/tag. Default the repository's default branch (usually main)
     :param Prefer: Set to 'respond-async' (RFC 7240) to receive a 202 Accepted response while generation is in progress, instead of 503. The 'wait' preference is not honored.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/allspice_generated/project/{filepath}"
     response_model = ProjectData
@@ -538,6 +562,7 @@ class RepoGetAllSpiceSVGRequest(ApiRequest[bytes]):
     :param ref: The name of the commit/branch/tag. Default the repository's default branch (usually main)
     :param Prefer: Set to 'respond-async' (RFC 7240) to receive a 202 Accepted response while generation is in progress, instead of 503. The 'wait' preference is not honored.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/allspice_generated/svg/{filepath}"
     response_model = bytes
@@ -559,6 +584,7 @@ class RepoGetArchiveRequest(ApiRequest[bytes]):
     :param repo: name of the repo
     :param archive: the git reference for download with attached archive format (e.g. master.zip)
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/archive/{archive}"
     response_model = bytes
@@ -579,6 +605,7 @@ class RepoListBranchesRequest(PaginatedRequest[list[Branch], Branch]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/branches"
     response_model = list[Branch]
@@ -598,6 +625,7 @@ class RepoCreateBranchRequest(ApiRequest[Branch]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/branches"
     response_model = Branch
@@ -617,6 +645,7 @@ class RepoGetBranchRequest(ApiRequest[Branch]):
     :param repo: name of the repo
     :param branch: branch to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/branches/{branch}"
     response_model = Branch
@@ -637,6 +666,7 @@ class RepoListCollaboratorsRequest(PaginatedRequest[list[User], User]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/collaborators"
     response_model = list[User]
@@ -657,6 +687,7 @@ class RepoCheckCollaboratorRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param collaborator: username of the collaborator
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/collaborators/{collaborator}"
     response_model = None
@@ -676,6 +707,7 @@ class RepoDeleteCollaboratorRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param collaborator: username of the collaborator to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/collaborators/{collaborator}"
     response_model = None
@@ -702,6 +734,7 @@ class RepoGetAllCommitsRequest(PaginatedRequest[list[Commit], Commit]):
     :param limit: page size of results (ignored if used with 'path')
     :param not_: commits that match the given specifier will not be listed.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/commits"
     response_model = list[Commit]
@@ -730,6 +763,7 @@ class RepoGetCombinedStatusByRefRequest(PaginatedRequest[CombinedStatus, CommitS
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/commits/{ref}/status"
     response_model = CombinedStatus
@@ -756,6 +790,7 @@ class RepoListStatusesByRefRequest(PaginatedRequest[list[CommitStatus], CommitSt
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/commits/{ref}/statuses"
     response_model = list[CommitStatus]
@@ -779,6 +814,7 @@ class RepoGetContentsListRequest(ApiRequest[list[ContentsResponse]]):
     :param repo: name of the repo
     :param ref: The name of the commit/branch/tag. Default to the repository's default branch.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/contents"
     response_model = list[ContentsResponse]
@@ -799,6 +835,7 @@ class RepoGetContentsRequest(ApiRequest[ContentsResponseOrList]):
     :param filepath: path of the dir, file, symlink or submodule in the repo
     :param ref: The name of the commit/branch/tag. Default to the repository's default branch.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/contents/{filepath}"
     response_model = ContentsResponseOrList
@@ -819,6 +856,7 @@ class RepoUpdateFileRequest(ApiRequest[FileResponse]):
     :param repo: name of the repo
     :param filepath: path of the file to update
     """
+
     method = "PUT"
     request_path = "/repos/{owner}/{repo}/contents/{filepath}"
     response_model = FileResponse
@@ -839,6 +877,7 @@ class RepoCreateFileRequest(ApiRequest[FileResponse]):
     :param repo: name of the repo
     :param filepath: path of the file to create
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/contents/{filepath}"
     response_model = FileResponse
@@ -859,6 +898,7 @@ class RepoDeleteFileRequest(ApiRequest[FileDeleteResponse]):
     :param repo: name of the repo
     :param filepath: path of the file to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/contents/{filepath}"
     response_model = FileDeleteResponse
@@ -882,6 +922,7 @@ class RepoGetTreeRequest(PaginatedRequest[GitTreeResponse, GitEntry]):
     :param page: page number; the 'truncated' field in the response will be true if there are still more items after this page, false if the last page
     :param per_page: number of items per page
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/git/trees/{sha}"
     response_model = GitTreeResponse
@@ -906,6 +947,7 @@ class RepoListHooksRequest(PaginatedRequest[list[Hook], Hook]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/hooks"
     response_model = list[Hook]
@@ -925,6 +967,7 @@ class RepoCreateHookRequest(ApiRequest[Hook]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/hooks"
     response_model = Hook
@@ -944,6 +987,7 @@ class RepoDeleteHookRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param id: id of the hook to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/hooks/{id}"
     response_model = None
@@ -974,6 +1018,7 @@ class IssueListIssuesRequest(PaginatedRequest[list[Issue], Issue]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues"
     response_model = list[Issue]
@@ -1003,6 +1048,7 @@ class IssueCreateIssueRequest(ApiRequest[Issue]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/issues"
     response_model = Issue
@@ -1022,6 +1068,7 @@ class IssueGetCommentRequest(ApiRequest[Comment]):
     :param repo: name of the repo
     :param id: id of the comment
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}"
     response_model = Comment
@@ -1041,6 +1088,7 @@ class IssueDeleteCommentRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param id: id of comment to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}"
     response_model = None
@@ -1060,6 +1108,7 @@ class IssueEditCommentRequest(ApiRequest[Comment]):
     :param repo: name of the repo
     :param id: id of the comment to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}"
     response_model = Comment
@@ -1080,6 +1129,7 @@ class IssueListIssueCommentAttachmentsRequest(ApiRequest[list[Attachment]]):
     :param repo: name of the repo
     :param id: id of the comment
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}/assets"
     response_model = list[Attachment]
@@ -1100,6 +1150,7 @@ class IssueCreateIssueCommentAttachmentRequest(ApiRequest[Attachment]):
     :param id: id of the comment
     :param name: name of the attachment
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}/assets"
     response_model = Attachment
@@ -1122,6 +1173,7 @@ class IssueDeleteIssueCommentAttachmentRequest(ApiRequest[None]):
     :param id: id of the comment
     :param attachment_id: id of the attachment to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}/assets/{attachment_id}"
     response_model = None
@@ -1143,6 +1195,7 @@ class IssueEditIssueCommentAttachmentRequest(ApiRequest[Attachment]):
     :param id: id of the comment
     :param attachment_id: id of the attachment to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/issues/comments/{id}/assets/{attachment_id}"
     response_model = Attachment
@@ -1164,6 +1217,7 @@ class IssueGetIssueRequest(ApiRequest[Issue]):
     :param repo: name of the repo
     :param index: index of the issue to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/{index}"
     response_model = Issue
@@ -1183,6 +1237,7 @@ class IssueEditIssueRequest(ApiRequest[Issue]):
     :param repo: name of the repo
     :param index: index of the issue to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/issues/{index}"
     response_model = Issue
@@ -1203,6 +1258,7 @@ class IssueListIssueAttachmentsRequest(ApiRequest[list[Attachment]]):
     :param repo: name of the repo
     :param index: index of the issue
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/{index}/assets"
     response_model = list[Attachment]
@@ -1223,6 +1279,7 @@ class IssueCreateIssueAttachmentRequest(ApiRequest[Attachment]):
     :param index: index of the issue
     :param name: name of the attachment
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/issues/{index}/assets"
     response_model = Attachment
@@ -1245,6 +1302,7 @@ class IssueDeleteIssueAttachmentRequest(ApiRequest[None]):
     :param index: index of the issue
     :param attachment_id: id of the attachment to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/issues/{index}/assets/{attachment_id}"
     response_model = None
@@ -1266,6 +1324,7 @@ class IssueEditIssueAttachmentRequest(ApiRequest[Attachment]):
     :param index: index of the issue
     :param attachment_id: id of the attachment to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/issues/{index}/assets/{attachment_id}"
     response_model = Attachment
@@ -1289,6 +1348,7 @@ class IssueGetCommentsRequest(ApiRequest[list[Comment]]):
     :param since: if provided, only comments updated since the specified time are returned.
     :param before: if provided, only comments updated before the provided time are returned.
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/{index}/comments"
     response_model = list[Comment]
@@ -1310,6 +1370,7 @@ class IssueCreateCommentRequest(ApiRequest[Comment]):
     :param repo: name of the repo
     :param index: index of the issue
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/issues/{index}/comments"
     response_model = Comment
@@ -1335,6 +1396,7 @@ class IssueTrackedTimesRequest(PaginatedRequest[list[TrackedTime], TrackedTime])
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/issues/{index}/times"
     response_model = list[TrackedTime]
@@ -1359,6 +1421,7 @@ class IssueAddTimeRequest(ApiRequest[TrackedTime]):
     :param repo: name of the repo
     :param index: index of the issue
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/issues/{index}/times"
     response_model = TrackedTime
@@ -1380,6 +1443,7 @@ class IssueDeleteTimeRequest(ApiRequest[None]):
     :param index: index of the issue
     :param id: id of time to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/issues/{index}/times/{id}"
     response_model = None
@@ -1401,6 +1465,7 @@ class RepoGetRawFileOrLFSRequest(ApiRequest[bytes]):
     :param filepath: path of the file to get, it should be "{ref}/{filepath}". If there is no ref could be inferred, it will be treated as the default branch
     :param ref: The name of the commit/branch/tag. Default the repository's default branch
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/media/{filepath}"
     response_model = bytes
@@ -1420,6 +1485,7 @@ class IssueCreateMilestoneRequest(ApiRequest[Milestone]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/milestones"
     response_model = Milestone
@@ -1439,6 +1505,7 @@ class IssueGetMilestoneRequest(ApiRequest[Milestone]):
     :param repo: name of the repo
     :param id: the milestone to get, identified by ID and if not available by name
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/milestones/{id}"
     response_model = Milestone
@@ -1465,6 +1532,7 @@ class RepoListDesignReviewsRequest(PaginatedRequest[list[DesignReview], DesignRe
     :param page: Page number of results to return (1-based)
     :param limit: Page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/pulls"
     response_model = list[DesignReview]
@@ -1490,6 +1558,7 @@ class RepoCreateDesignReviewRequest(ApiRequest[DesignReview]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/pulls"
     response_model = DesignReview
@@ -1509,6 +1578,7 @@ class RepoGetDesignReviewRequest(ApiRequest[DesignReview]):
     :param repo: name of the repo
     :param index: index of the design review to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/pulls/{index}"
     response_model = DesignReview
@@ -1528,6 +1598,7 @@ class RepoEditDesignReviewRequest(ApiRequest[DesignReview]):
     :param repo: name of the repo
     :param index: index of the design review to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/pulls/{index}"
     response_model = DesignReview
@@ -1548,6 +1619,7 @@ class RepoMergeDesignReviewRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param index: index of the design review to merge
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/merge"
     response_model = None
@@ -1558,7 +1630,9 @@ class RepoMergeDesignReviewRequest(ApiRequest[None]):
     body: Annotated[MergeDesignReviewOption, JSONBody()]
 
 
-class RepoListDesignReviewReviewsRequest(PaginatedRequest[list[DesignReviewReview], DesignReviewReview]):
+class RepoListDesignReviewReviewsRequest(
+    PaginatedRequest[list[DesignReviewReview], DesignReviewReview]
+):
     """
     List all reviews for a design review
 
@@ -1570,6 +1644,7 @@ class RepoListDesignReviewReviewsRequest(PaginatedRequest[list[DesignReviewRevie
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/reviews"
     response_model = list[DesignReviewReview]
@@ -1591,6 +1666,7 @@ class RepoCreateDesignReviewReviewRequest(ApiRequest[DesignReviewReview]):
     :param repo: name of the repo
     :param index: index of the design review
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/reviews"
     response_model = DesignReviewReview
@@ -1612,6 +1688,7 @@ class RepoSubmitDesignReviewReviewRequest(ApiRequest[DesignReviewReview]):
     :param index: index of the design review
     :param id: id of the review
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}"
     response_model = DesignReviewReview
@@ -1634,6 +1711,7 @@ class RepoDeleteDesignReviewReviewRequest(ApiRequest[None]):
     :param index: index of the design review
     :param id: id of the review
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}"
     response_model = None
@@ -1655,6 +1733,7 @@ class RepoGetDesignReviewReviewCommentsRequest(ApiRequest[list[DesignReviewRevie
     :param index: index of the design review
     :param id: id of the review
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}/comments"
     response_model = list[DesignReviewReviewComment]
@@ -1678,6 +1757,7 @@ class RepoListReleasesRequest(PaginatedRequest[list[Release], Release]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/releases"
     response_model = list[Release]
@@ -1699,6 +1779,7 @@ class RepoCreateReleaseRequest(ApiRequest[Release]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/releases"
     response_model = Release
@@ -1717,6 +1798,7 @@ class RepoGetLatestReleaseRequest(ApiRequest[Release]):
     :param owner: owner of the repo
     :param repo: name of the repo
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/releases/latest"
     response_model = Release
@@ -1735,6 +1817,7 @@ class RepoGetReleaseByTagRequest(ApiRequest[Release]):
     :param repo: name of the repo
     :param tag: tag name of the release to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/releases/tags/{tag}"
     response_model = Release
@@ -1754,6 +1837,7 @@ class RepoGetReleaseRequest(ApiRequest[Release]):
     :param repo: name of the repo
     :param id: id of the release to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/releases/{id}"
     response_model = Release
@@ -1773,6 +1857,7 @@ class RepoDeleteReleaseRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param id: id of the release to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/releases/{id}"
     response_model = None
@@ -1792,6 +1877,7 @@ class RepoEditReleaseRequest(ApiRequest[Release]):
     :param repo: name of the repo
     :param id: id of the release to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/releases/{id}"
     response_model = Release
@@ -1813,6 +1899,7 @@ class RepoCreateReleaseAttachmentRequest(ApiRequest[Attachment]):
     :param id: id of the release
     :param name: name of the attachment
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/releases/{id}/assets"
     response_model = Attachment
@@ -1835,6 +1922,7 @@ class RepoGetReleaseAttachmentRequest(ApiRequest[Attachment]):
     :param id: id of the release
     :param attachment_id: id of the attachment to get
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/releases/{id}/assets/{attachment_id}"
     response_model = Attachment
@@ -1856,6 +1944,7 @@ class RepoDeleteReleaseAttachmentRequest(ApiRequest[None]):
     :param id: id of the release
     :param attachment_id: id of the attachment to delete
     """
+
     method = "DELETE"
     request_path = "/repos/{owner}/{repo}/releases/{id}/assets/{attachment_id}"
     response_model = None
@@ -1877,6 +1966,7 @@ class RepoEditReleaseAttachmentRequest(ApiRequest[Attachment]):
     :param id: id of the release
     :param attachment_id: id of the attachment to edit
     """
+
     method = "PATCH"
     request_path = "/repos/{owner}/{repo}/releases/{id}/assets/{attachment_id}"
     response_model = Attachment
@@ -1902,6 +1992,7 @@ class RepoListStatusesRequest(PaginatedRequest[list[CommitStatus], CommitStatus]
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/statuses/{sha}"
     response_model = list[CommitStatus]
@@ -1925,6 +2016,7 @@ class RepoCreateStatusRequest(ApiRequest[CommitStatus]):
     :param repo: name of the repo
     :param sha: sha of the commit
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/statuses/{sha}"
     response_model = CommitStatus
@@ -1949,6 +2041,7 @@ class RepoTrackedTimesRequest(PaginatedRequest[list[TrackedTime], TrackedTime]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/times"
     response_model = list[TrackedTime]
@@ -1972,6 +2065,7 @@ class UserTrackedTimesRequest(ApiRequest[list[TrackedTime]]):
     :param repo: name of the repo
     :param user: username of user
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/times/{user}"
     response_model = list[TrackedTime]
@@ -1992,6 +2086,7 @@ class RepoListTopicsRequest(PaginatedRequest[TopicNamesResponse, str]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/repos/{owner}/{repo}/topics"
     response_model = TopicNamesResponse
@@ -2013,6 +2108,7 @@ class RepoAddTopicRequest(ApiRequest[None]):
     :param repo: name of the repo
     :param topic: name of the topic to add
     """
+
     method = "PUT"
     request_path = "/repos/{owner}/{repo}/topics/{topic}"
     response_model = None
@@ -2031,6 +2127,7 @@ class RepoTransferRequest(ApiRequest[Repository]):
     :param owner: owner of the repo to transfer
     :param repo: name of the repo to transfer
     """
+
     method = "POST"
     request_path = "/repos/{owner}/{repo}/transfer"
     response_model = Repository
@@ -2048,6 +2145,7 @@ class OrgGetTeamRequest(ApiRequest[Team]):
 
     :param id: id of the team to get
     """
+
     method = "GET"
     request_path = "/teams/{id}"
     response_model = Team
@@ -2063,6 +2161,7 @@ class OrgDeleteTeamRequest(ApiRequest[None]):
 
     :param id: id of the team to delete
     """
+
     method = "DELETE"
     request_path = "/teams/{id}"
     response_model = None
@@ -2078,6 +2177,7 @@ class OrgEditTeamRequest(ApiRequest[Team]):
 
     :param id: id of the team to edit
     """
+
     method = "PATCH"
     request_path = "/teams/{id}"
     response_model = Team
@@ -2096,6 +2196,7 @@ class OrgListTeamMembersRequest(PaginatedRequest[list[User], User]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/teams/{id}/members"
     response_model = list[User]
@@ -2114,6 +2215,7 @@ class OrgAddTeamMemberRequest(ApiRequest[None]):
     :param id: id of the team
     :param username: username of the user to add
     """
+
     method = "PUT"
     request_path = "/teams/{id}/members/{username}"
     response_model = None
@@ -2131,6 +2233,7 @@ class OrgRemoveTeamMemberRequest(ApiRequest[None]):
     :param id: id of the team
     :param username: username of the user to remove
     """
+
     method = "DELETE"
     request_path = "/teams/{id}/members/{username}"
     response_model = None
@@ -2149,6 +2252,7 @@ class OrgListTeamReposRequest(PaginatedRequest[list[Repository], Repository]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/teams/{id}/repos"
     response_model = list[Repository]
@@ -2168,6 +2272,7 @@ class OrgAddTeamRepositoryRequest(ApiRequest[None]):
     :param org: organization that owns the repo to add
     :param repo: name of the repo to add
     """
+
     method = "PUT"
     request_path = "/teams/{id}/repos/{org}/{repo}"
     response_model = None
@@ -2183,6 +2288,7 @@ class UserGetCurrentRequest(ApiRequest[User]):
 
     https://hub.allspice.io/api/swagger#/user/userGetCurrent
     """
+
     method = "GET"
     request_path = "/user"
     response_model = User
@@ -2194,6 +2300,7 @@ class UserListEmailsRequest(ApiRequest[list[Email]]):
 
     https://hub.allspice.io/api/swagger#/user/userListEmails
     """
+
     method = "GET"
     request_path = "/user/emails"
     response_model = list[Email]
@@ -2208,6 +2315,7 @@ class UserCurrentListReposRequest(PaginatedRequest[list[Repository], Repository]
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/user/repos"
     response_model = list[Repository]
@@ -2222,6 +2330,7 @@ class CreateCurrentUserRepoRequest(ApiRequest[Repository]):
 
     https://hub.allspice.io/api/swagger#/repository/createCurrentUserRepo
     """
+
     method = "POST"
     request_path = "/user/repos"
     response_model = Repository
@@ -2238,6 +2347,7 @@ class UserListTeamsRequest(PaginatedRequest[list[Team], Team]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/user/teams"
     response_model = list[Team]
@@ -2254,6 +2364,7 @@ class UserGetRequest(ApiRequest[User]):
 
     :param username: username of user to get
     """
+
     method = "GET"
     request_path = "/users/{username}"
     response_model = User
@@ -2269,6 +2380,7 @@ class UserGetHeatmapDataRequest(ApiRequest[list[UserHeatmapData]]):
 
     :param username: username of user to get
     """
+
     method = "GET"
     request_path = "/users/{username}/heatmap"
     response_model = list[UserHeatmapData]
@@ -2286,6 +2398,7 @@ class OrgListUserOrgsRequest(PaginatedRequest[list[Organization], Organization])
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/users/{username}/orgs"
     response_model = list[Organization]
@@ -2305,6 +2418,7 @@ class UserListReposRequest(PaginatedRequest[list[Repository], Repository]):
     :param page: page number of results to return (1-based)
     :param limit: page size of results
     """
+
     method = "GET"
     request_path = "/users/{username}/repos"
     response_model = list[Repository]
@@ -2320,6 +2434,7 @@ class GetVersionRequest(ApiRequest[ServerVersion]):
 
     https://hub.allspice.io/api/swagger#/miscellaneous/getVersion
     """
+
     method = "GET"
     request_path = "/version"
     response_model = ServerVersion

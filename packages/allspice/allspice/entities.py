@@ -92,6 +92,7 @@ class HasRepositoryParent(AllSpiceEntity):
 
 # TODO: All these classes will need convenience methods that the different apiobjects current have to keep their interface the same
 
+
 class RepositoryEntity(Committable, Deletable):
     @classmethod
     def _patch_request_type(cls) -> type["RepoEditRequest"]:

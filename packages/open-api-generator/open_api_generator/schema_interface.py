@@ -37,7 +37,9 @@ def generate_schema_interface(schemas_path: Path, interface_path: Path) -> None:
     _ensure_typing_import(tree, "Final")
 
     ast.fix_missing_locations(tree)
-    interface_path.write_text(GENERATED_HEADER + "\n\n" + ast.unparse(tree) + "\n", encoding="utf-8")
+    interface_path.write_text(
+        GENERATED_HEADER + "\n\n" + ast.unparse(tree) + "\n", encoding="utf-8"
+    )
     ruff_fix(interface_path)
 
     print(f"generated schemas interface -> {interface_path.name}")
@@ -76,10 +78,12 @@ def _rewrite_class_node(node: ast.ClassDef, schemas: ModuleType) -> None:
     schema_class = getattr(schemas, node.name, None)
     if not isinstance(schema_class, type):
         raise SystemExit(f"Unable to load {node.name} from schemas file")
-    
+
     # If Committable, freeze all non-patchable fields
     if issubclass(schema_class, Committable):
-        return _rewrite_class_fields(node, freeze_fields=True, writable=schema_class._compute_patchable_fields())
+        return _rewrite_class_fields(
+            node, freeze_fields=True, writable=schema_class._compute_patchable_fields()
+        )
     # If non-committable entity, or ReadOnly Model freeze all fields
     elif issubclass(schema_class, AllSpiceEntity):
         return _rewrite_class_fields(node, freeze_fields=True)
@@ -93,8 +97,9 @@ def _rewrite_class_node(node: ast.ClassDef, schemas: ModuleType) -> None:
         return
 
 
-
-def _rewrite_class_fields(node: ast.ClassDef, freeze_fields: bool, writable: set[str] = set()) -> None:
+def _rewrite_class_fields(
+    node: ast.ClassDef, freeze_fields: bool, writable: set[str] = set()
+) -> None:
     """Wrap the class's frozen fields in Final[...], and turn each field's description into an
     attribute docstring."""
     body: list[ast.stmt] = []
@@ -106,7 +111,9 @@ def _rewrite_class_fields(node: ast.ClassDef, freeze_fields: bool, writable: set
         bare_type, description = _parse_annotation(statement.annotation)
         freeze = freeze_fields and (statement.target.id not in writable)
         statement.annotation = (
-            ast.Subscript(value=ast.Name(id="Final", ctx=ast.Load()), slice=bare_type, ctx=ast.Load())
+            ast.Subscript(
+                value=ast.Name(id="Final", ctx=ast.Load()), slice=bare_type, ctx=ast.Load()
+            )
             if freeze
             else bare_type
         )
@@ -121,7 +128,7 @@ def _rewrite_class_fields(node: ast.ClassDef, freeze_fields: bool, writable: set
 class _AnnotationInfo(NamedTuple):
     bare_type: ast.expr
     description: str | None
-    
+
 
 def _parse_annotation(annotation: ast.expr) -> _AnnotationInfo:
     """Get bare_type and description from an annotation expression"""
@@ -146,9 +153,13 @@ def _find_description_from_annotation_metadata(metadata: list[ast.expr]) -> str 
         if isinstance(entry, ast.Call) and _is_field_call(entry.func):
             for keyword in entry.keywords:
                 # A Constant holds any literal; only a string is usable as a docstring.
-                if keyword.arg == "description" and isinstance(keyword.value, ast.Constant) and isinstance(keyword.value.value, str):
+                if (
+                    keyword.arg == "description"
+                    and isinstance(keyword.value, ast.Constant)
+                    and isinstance(keyword.value.value, str)
+                ):
                     return keyword.value.value
-                
+
     return None
 
 

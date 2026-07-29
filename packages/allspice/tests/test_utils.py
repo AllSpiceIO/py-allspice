@@ -6,6 +6,7 @@ from collections import Counter
 from unittest.mock import MagicMock, patch
 
 import pytest
+from csv_snapshot_extension import CSVSnapshotExtension
 from syrupy.extensions.json import JSONSnapshotExtension
 
 from allspice import AllSpice
@@ -34,8 +35,6 @@ from allspice.utils.list_components import (
     list_components_for_orcad,
 )
 from allspice.utils.netlist_generation import generate_netlist
-
-from csv_snapshot_extension import CSVSnapshotExtension
 
 
 @pytest.fixture(scope="session")

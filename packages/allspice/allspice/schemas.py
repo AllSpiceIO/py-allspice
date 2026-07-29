@@ -36,27 +36,25 @@ class APIError(ReadOnlyModel):
 
 
 class AccessMode(OpenEnum):
-    UNKNOWN = 'unknown'
-    none = 'none'
-    read = 'read'
-    write = 'write'
-    admin = 'admin'
-    owner = 'owner'
+    UNKNOWN = "unknown"
+    none = "none"
+    read = "read"
+    write = "write"
+    admin = "admin"
+    owner = "owner"
 
 
 class AccessModeOption(OpenEnum):
-    UNKNOWN = 'unknown'
-    read = 'read'
-    write = 'write'
-    admin = 'admin'
+    UNKNOWN = "unknown"
+    read = "read"
+    write = "write"
+    admin = "admin"
 
 
 class AddTimeOption(InputModel):
     created: AwareDatetime | None = None
-    time: Annotated[int, Field(description='time in seconds')]
-    user_name: Annotated[
-        str | None, Field(description='User who spent the time (optional)')
-    ] = None
+    time: Annotated[int, Field(description="time in seconds")]
+    user_name: Annotated[str | None, Field(description="User who spent the time (optional)")] = None
 
 
 class Attachment(AttachmentEntity):
@@ -92,12 +90,12 @@ class CommitStats(ReadOnlyModel):
 
 
 class CommitStatusState(OpenEnum):
-    UNKNOWN = 'unknown'
-    pending = 'pending'
-    success = 'success'
-    error = 'error'
-    failure = 'failure'
-    warning = 'warning'
+    UNKNOWN = "unknown"
+    pending = "pending"
+    success = "success"
+    error = "error"
+    failure = "failure"
+    warning = "warning"
 
 
 class CommitUser(ReadOnlyModel):
@@ -107,29 +105,29 @@ class CommitUser(ReadOnlyModel):
 
 
 class CreateBranchRepoOption(InputModel):
-    new_branch_name: Annotated[str, Field(description='Name of the branch to create')]
+    new_branch_name: Annotated[str, Field(description="Name of the branch to create")]
     old_branch_name: Annotated[
         str | None,
-        Field(description='Deprecated: true\nName of the old branch to create from'),
+        Field(description="Deprecated: true\nName of the old branch to create from"),
     ] = None
     old_ref_name: Annotated[
         str | None,
-        Field(description='Name of the old branch/tag/commit to create from'),
+        Field(description="Name of the old branch/tag/commit to create from"),
     ] = None
 
 
 class Type(OpenEnum):
-    UNKNOWN = 'unknown'
-    dingtalk = 'dingtalk'
-    discord = 'discord'
-    gitea = 'gitea'
-    gogs = 'gogs'
-    msteams = 'msteams'
-    slack = 'slack'
-    telegram = 'telegram'
-    feishu = 'feishu'
-    wechatwork = 'wechatwork'
-    packagist = 'packagist'
+    UNKNOWN = "unknown"
+    dingtalk = "dingtalk"
+    discord = "discord"
+    gitea = "gitea"
+    gogs = "gogs"
+    msteams = "msteams"
+    slack = "slack"
+    telegram = "telegram"
+    feishu = "feishu"
+    wechatwork = "wechatwork"
+    packagist = "packagist"
 
 
 CreateHookOptionConfig = dict[str, str]
@@ -140,13 +138,13 @@ class CreateIssueCommentOption(InputModel):
 
 
 class CreateIssueOption(InputModel):
-    assignee: Annotated[str | None, Field(description='deprecated')] = None
+    assignee: Annotated[str | None, Field(description="deprecated")] = None
     assignees: list[str] | None = None
     body: str | None = None
     closed: bool | None = None
     due_date: AwareDatetime | None = None
-    labels: Annotated[list[int] | None, Field(description='list of label ids')] = None
-    milestone: Annotated[int | None, Field(description='milestone id')] = None
+    labels: Annotated[list[int] | None, Field(description="list of label ids")] = None
+    milestone: Annotated[int | None, Field(description="milestone id")] = None
     ref: str | None = None
     title: str
 
@@ -167,13 +165,13 @@ class CreateDesignReviewOption(InputModel):
 
 class CreateDesignReviewReviewComment(InputModel):
     body: str | None = None
-    new_position: Annotated[
-        int | None, Field(description='if comment to new file line or 0')
-    ] = None
-    old_position: Annotated[
-        int | None, Field(description='if comment to old file line or 0')
-    ] = None
-    path: Annotated[str | None, Field(description='the tree path')] = None
+    new_position: Annotated[int | None, Field(description="if comment to new file line or 0")] = (
+        None
+    )
+    old_position: Annotated[int | None, Field(description="if comment to old file line or 0")] = (
+        None
+    )
+    path: Annotated[str | None, Field(description="the tree path")] = None
     sub_path: str | None = None
 
 
@@ -187,59 +185,51 @@ class CreateReleaseOption(InputModel):
 
 
 class ObjectFormatName(OpenEnum):
-    UNKNOWN = 'unknown'
-    sha1 = 'sha1'
-    sha256 = 'sha256'
+    UNKNOWN = "unknown"
+    sha1 = "sha1"
+    sha256 = "sha256"
 
 
 class TrustModel(OpenEnum):
-    UNKNOWN = 'unknown'
-    default = 'default'
-    collaborator = 'collaborator'
-    committer = 'committer'
-    collaboratorcommitter = 'collaboratorcommitter'
+    UNKNOWN = "unknown"
+    default = "default"
+    collaborator = "collaborator"
+    committer = "committer"
+    collaboratorcommitter = "collaboratorcommitter"
 
 
 class CreateRepoOption(InputModel):
     auto_init: Annotated[
         bool | None,
-        Field(description='Whether the repository should be auto-initialized?'),
+        Field(description="Whether the repository should be auto-initialized?"),
     ] = None
     create_develop_branch: Annotated[
         bool | None,
-        Field(
-            description='Whether to initialize the repository with a secondary develop branch'
-        ),
+        Field(description="Whether to initialize the repository with a secondary develop branch"),
     ] = None
     default_branch: Annotated[
         str | None,
         Field(
-            description='DefaultBranch of the repository (used when initializes and in template)'
+            description="DefaultBranch of the repository (used when initializes and in template)"
         ),
     ] = None
     description: Annotated[
-        str | None, Field(description='Description of the repository to create')
+        str | None, Field(description="Description of the repository to create")
     ] = None
-    gitignores: Annotated[str | None, Field(description='Gitignores to use')] = None
-    issue_labels: Annotated[str | None, Field(description='Label-Set to use')] = None
-    license: Annotated[str | None, Field(description='License to use')] = None
-    name: Annotated[str, Field(description='Name of the repository to create')]
+    gitignores: Annotated[str | None, Field(description="Gitignores to use")] = None
+    issue_labels: Annotated[str | None, Field(description="Label-Set to use")] = None
+    license: Annotated[str | None, Field(description="License to use")] = None
+    name: Annotated[str, Field(description="Name of the repository to create")]
     object_format_name: Annotated[
         ObjectFormatName | None,
-        Field(description='ObjectFormatName of the underlying git repository'),
+        Field(description="ObjectFormatName of the underlying git repository"),
     ] = None
-    private: Annotated[
-        bool | None, Field(description='Whether the repository is private')
-    ] = None
-    readme: Annotated[
-        str | None, Field(description='Readme of the repository to create')
-    ] = None
-    template: Annotated[
-        bool | None, Field(description='Whether the repository is template')
-    ] = None
-    trust_model: Annotated[
-        TrustModel | None, Field(description='TrustModel of the repository')
-    ] = None
+    private: Annotated[bool | None, Field(description="Whether the repository is private")] = None
+    readme: Annotated[str | None, Field(description="Readme of the repository to create")] = None
+    template: Annotated[bool | None, Field(description="Whether the repository is template")] = None
+    trust_model: Annotated[TrustModel | None, Field(description="TrustModel of the repository")] = (
+        None
+    )
 
 
 class CreateStatusOption(InputModel):
@@ -260,16 +250,16 @@ class CreateTeamOption(InputModel):
         Field(
             examples=[
                 [
-                    'repo.actions',
-                    'repo.code',
-                    'repo.issues',
-                    'repo.ext_issues',
-                    'repo.wiki',
-                    'repo.ext_wiki',
-                    'repo.pulls',
-                    'repo.releases',
-                    'repo.projects',
-                    'repo.ext_wiki',
+                    "repo.actions",
+                    "repo.code",
+                    "repo.issues",
+                    "repo.ext_issues",
+                    "repo.wiki",
+                    "repo.ext_wiki",
+                    "repo.pulls",
+                    "repo.releases",
+                    "repo.projects",
+                    "repo.ext_wiki",
                 ]
             ]
         ),
@@ -279,14 +269,14 @@ class CreateTeamOption(InputModel):
         Field(
             examples=[
                 {
-                    'repo.code': 'read',
-                    'repo.issues': 'write',
-                    'repo.ext_issues': 'none',
-                    'repo.wiki': 'admin',
-                    'repo.pulls': 'owner',
-                    'repo.releases': 'none',
-                    'repo.projects': 'none',
-                    'repo.ext_wiki': 'none',
+                    "repo.code": "read",
+                    "repo.issues": "write",
+                    "repo.ext_issues": "none",
+                    "repo.wiki": "admin",
+                    "repo.pulls": "owner",
+                    "repo.releases": "none",
+                    "repo.projects": "none",
+                    "repo.ext_wiki": "none",
                 }
             ]
         ),
@@ -321,14 +311,14 @@ class EditTeamOption(InputModel):
         Field(
             examples=[
                 [
-                    'repo.code',
-                    'repo.issues',
-                    'repo.ext_issues',
-                    'repo.wiki',
-                    'repo.pulls',
-                    'repo.releases',
-                    'repo.projects',
-                    'repo.ext_wiki',
+                    "repo.code",
+                    "repo.issues",
+                    "repo.ext_issues",
+                    "repo.wiki",
+                    "repo.pulls",
+                    "repo.releases",
+                    "repo.projects",
+                    "repo.ext_wiki",
                 ]
             ]
         ),
@@ -338,14 +328,14 @@ class EditTeamOption(InputModel):
         Field(
             examples=[
                 {
-                    'repo.code': 'read',
-                    'repo.ext_issues': 'none',
-                    'repo.ext_wiki': 'none',
-                    'repo.issues': 'write',
-                    'repo.projects': 'none',
-                    'repo.pulls': 'owner',
-                    'repo.releases': 'none',
-                    'repo.wiki': 'admin',
+                    "repo.code": "read",
+                    "repo.ext_issues": "none",
+                    "repo.ext_wiki": "none",
+                    "repo.issues": "write",
+                    "repo.projects": "none",
+                    "repo.pulls": "owner",
+                    "repo.releases": "none",
+                    "repo.wiki": "admin",
                 }
             ]
         ),
@@ -364,27 +354,25 @@ class ExternalTracker(ReadOnlyModel):
     external_tracker_format: Annotated[
         str | None,
         Field(
-            description='External Issue Tracker URL Format. Use the placeholders {user}, {repo} and {index} for the username, repository name and issue index.'
+            description="External Issue Tracker URL Format. Use the placeholders {user}, {repo} and {index} for the username, repository name and issue index."
         ),
     ] = None
     external_tracker_regexp_pattern: Annotated[
-        str | None, Field(description='External Issue Tracker issue regular expression')
+        str | None, Field(description="External Issue Tracker issue regular expression")
     ] = None
     external_tracker_style: Annotated[
         str | None,
         Field(
-            description='External Issue Tracker Number Format, either `numeric`, `alphanumeric`, or `regexp`'
+            description="External Issue Tracker Number Format, either `numeric`, `alphanumeric`, or `regexp`"
         ),
     ] = None
     external_tracker_url: Annotated[
-        str | None, Field(description='URL of external issue tracker.')
+        str | None, Field(description="URL of external issue tracker.")
     ] = None
 
 
 class ExternalWiki(ReadOnlyModel):
-    external_wiki_url: Annotated[
-        str | None, Field(description='URL of external wiki.')
-    ] = None
+    external_wiki_url: Annotated[str | None, Field(description="URL of external wiki.")] = None
 
 
 class FileCommitResponse(ReadOnlyModel):
@@ -443,21 +431,21 @@ class Identity(InputModel):
 class InternalTracker(ReadOnlyModel):
     allow_only_contributors_to_track_time: Annotated[
         bool | None,
-        Field(description='Let only contributors track time (Built-in issue tracker)'),
+        Field(description="Let only contributors track time (Built-in issue tracker)"),
     ] = None
     enable_issue_dependencies: Annotated[
         bool | None,
         Field(
-            description='Enable dependencies for issues and design reviews (Built-in issue tracker)'
+            description="Enable dependencies for issues and design reviews (Built-in issue tracker)"
         ),
     ] = None
     enable_time_tracker: Annotated[
-        bool | None, Field(description='Enable time tracking (Built-in issue tracker)')
+        bool | None, Field(description="Enable time tracking (Built-in issue tracker)")
     ] = None
 
 
 class Label(ReadOnlyModel):
-    color: Annotated[str | None, Field(examples=['00aabb'])] = None
+    color: Annotated[str | None, Field(examples=["00aabb"])] = None
     description: str | None = None
     exclusive: Annotated[bool | None, Field(examples=[False])] = None
     id: int | None = None
@@ -467,20 +455,20 @@ class Label(ReadOnlyModel):
 
 
 class Do(OpenEnum):
-    UNKNOWN = 'unknown'
-    merge = 'merge'
-    rebase = 'rebase'
-    rebase_merge = 'rebase-merge'
-    squash = 'squash'
-    fast_forward_only = 'fast-forward-only'
-    manually_merged = 'manually-merged'
+    UNKNOWN = "unknown"
+    merge = "merge"
+    rebase = "rebase"
+    rebase_merge = "rebase-merge"
+    squash = "squash"
+    fast_forward_only = "fast-forward-only"
+    manually_merged = "manually-merged"
 
 
 class MergeDesignReviewOption(InputModel):
-    do: Annotated[Do, Field(alias='Do')]
-    merge_commit_id: Annotated[str | None, Field(alias='MergeCommitID')] = None
-    merge_message_field: Annotated[str | None, Field(alias='MergeMessageField')] = None
-    merge_title_field: Annotated[str | None, Field(alias='MergeTitleField')] = None
+    do: Annotated[Do, Field(alias="Do")]
+    merge_commit_id: Annotated[str | None, Field(alias="MergeCommitID")] = None
+    merge_message_field: Annotated[str | None, Field(alias="MergeMessageField")] = None
+    merge_title_field: Annotated[str | None, Field(alias="MergeTitleField")] = None
     delete_branch_after_merge: bool | None = None
     force_merge: bool | None = None
     head_commit_id: str | None = None
@@ -489,9 +477,7 @@ class MergeDesignReviewOption(InputModel):
 
 class PayloadUser(ReadOnlyModel):
     email: str | None = None
-    name: Annotated[str | None, Field(description='Full name of the commit author')] = (
-        None
-    )
+    name: Annotated[str | None, Field(description="Full name of the commit author")] = None
     username: str | None = None
 
 
@@ -524,12 +510,12 @@ class RepositoryMeta(ReadOnlyModel):
 
 
 class ReviewStateType(OpenEnum):
-    UNKNOWN = 'unknown'
-    approved = 'APPROVED'
-    pending = 'PENDING'
-    comment = 'COMMENT'
-    request_changes = 'REQUEST_CHANGES'
-    request_review = 'REQUEST_REVIEW'
+    UNKNOWN = "unknown"
+    approved = "APPROVED"
+    pending = "PENDING"
+    comment = "COMMENT"
+    request_changes = "REQUEST_CHANGES"
+    request_review = "REQUEST_REVIEW"
 
 
 class ServerVersion(ReadOnlyModel):
@@ -537,16 +523,16 @@ class ServerVersion(ReadOnlyModel):
 
 
 class StateType(OpenEnum):
-    UNKNOWN = 'unknown'
-    open = 'open'
-    closed = 'closed'
+    UNKNOWN = "unknown"
+    open = "open"
+    closed = "closed"
 
 
 class StateTypeFilter(OpenEnum):
-    UNKNOWN = 'unknown'
-    open = 'open'
-    closed = 'closed'
-    all = 'all'
+    UNKNOWN = "unknown"
+    open = "open"
+    closed = "closed"
+    all = "all"
 
 
 class SubmitDesignReviewReviewOptions(InputModel):
@@ -566,7 +552,7 @@ class TransferRepoOption(InputModel):
     team_ids: Annotated[
         list[int] | None,
         Field(
-            description='ID of the team or teams to add to the repository. Teams can only be added to organization-owned repositories.'
+            description="ID of the team or teams to add to the repository. Teams can only be added to organization-owned repositories."
         ),
     ] = None
 
@@ -576,37 +562,35 @@ class UpdateFileOptions(InputModel):
     branch: Annotated[
         str | None,
         Field(
-            description='branch (optional) to base this file from. if not given, the default branch is used'
+            description="branch (optional) to base this file from. if not given, the default branch is used"
         ),
     ] = None
     committer: Identity | None = None
-    content: Annotated[str, Field(description='content must be base64 encoded')]
+    content: Annotated[str, Field(description="content must be base64 encoded")]
     dates: CommitDateOptions | None = None
     from_path: Annotated[
         str | None,
         Field(
-            description='from_path (optional) is the path of the original file which will be moved/renamed to the path in the URL'
+            description="from_path (optional) is the path of the original file which will be moved/renamed to the path in the URL"
         ),
     ] = None
     message: Annotated[
         str | None,
         Field(
-            description='message (optional) for the commit of this file. if not supplied, a default message will be used'
+            description="message (optional) for the commit of this file. if not supplied, a default message will be used"
         ),
     ] = None
     new_branch: Annotated[
         str | None,
         Field(
-            description='new_branch (optional) will make a new branch from `branch` before creating the file'
+            description="new_branch (optional) will make a new branch from `branch` before creating the file"
         ),
     ] = None
-    sha: Annotated[
-        str, Field(description='sha is the SHA for the file that already exists')
-    ]
+    sha: Annotated[str, Field(description="sha is the SHA for the file that already exists")]
     signoff: Annotated[
         bool | None,
         Field(
-            description='Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+            description="Add a Signed-off-by trailer by the committer at the end of the commit log message."
         ),
     ] = None
 
@@ -617,10 +601,10 @@ class UserHeatmapData(ReadOnlyModel):
 
 
 class VisibleType(OpenEnum):
-    UNKNOWN = 'unknown'
-    public = 'public'
-    limited = 'limited'
-    private = 'private'
+    UNKNOWN = "unknown"
+    public = "public"
+    limited = "limited"
+    private = "private"
 
 
 Angle = NewType("Angle", float)
@@ -636,24 +620,24 @@ BitmapId = NewType("BitmapId", str)
 
 
 class BorderLabelDigits(OpenEnum):
-    UNKNOWN = 'unknown'
-    uppercase_alphabet = 'UppercaseAlphabet'
-    arabic_numeral = 'ArabicNumeral'
+    UNKNOWN = "unknown"
+    uppercase_alphabet = "UppercaseAlphabet"
+    arabic_numeral = "ArabicNumeral"
 
 
 class BoundsTag(OpenEnum):
-    UNKNOWN = 'unknown'
-    angle = 'angle'
-    point = 'point'
+    UNKNOWN = "unknown"
+    angle = "angle"
+    point = "point"
 
 
 class CadDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    project = 'Project'
-    pcb = 'Pcb'
-    pcb_component_library = 'PcbComponentLibrary'
-    schematic = 'Schematic'
-    schematic_component_library = 'SchematicComponentLibrary'
+    UNKNOWN = "unknown"
+    project = "Project"
+    pcb = "Pcb"
+    pcb_component_library = "PcbComponentLibrary"
+    schematic = "Schematic"
+    schematic_component_library = "SchematicComponentLibrary"
 
 
 Color = NewType("Color", str)
@@ -672,16 +656,16 @@ class ComponentLink(ReadOnlyModel):
 
 
 class CornerRadius1(OpenEnum):
-    UNKNOWN = 'unknown'
-    none = 'None'
+    UNKNOWN = "unknown"
+    none = "None"
 
 
 class CustomPadDrawingOption1(OpenEnum):
-    UNKNOWN = 'unknown'
-    filled = 'Filled'
+    UNKNOWN = "unknown"
+    filled = "Filled"
 
 
-Degree = Literal['degree']
+Degree = Literal["degree"]
 
 
 DirectiveLabelId = NewType("DirectiveLabelId", str)
@@ -694,9 +678,7 @@ class ExternalDesignBlock(ReadOnlyModel):
     id: str
     path: Annotated[
         str,
-        Field(
-            description='Relative to the project root. Uses forward slashes as path separator.'
-        ),
+        Field(description="Relative to the project root. Uses forward slashes as path separator."),
     ]
 
 
@@ -704,11 +686,11 @@ FontId = NewType("FontId", str)
 
 
 class HarnessConnectorSide(OpenEnum):
-    UNKNOWN = 'unknown'
-    right = 'Right'
-    left = 'Left'
-    up = 'Up'
-    down = 'Down'
+    UNKNOWN = "unknown"
+    right = "Right"
+    left = "Left"
+    up = "Up"
+    down = "Down"
 
 
 HarnessEntryId = NewType("HarnessEntryId", str)
@@ -718,10 +700,10 @@ HarnessId = NewType("HarnessId", str)
 
 
 class HorizontalJustification(OpenEnum):
-    UNKNOWN = 'unknown'
-    left = 'Left'
-    center = 'Center'
-    right = 'Right'
+    UNKNOWN = "unknown"
+    left = "Left"
+    center = "Center"
+    right = "Right"
 
 
 JunctionId = NewType("JunctionId", str)
@@ -734,19 +716,19 @@ Length = NewType("Length", float)
 
 
 class LineStyle(OpenEnum):
-    UNKNOWN = 'unknown'
-    solid = 'solid'
-    dashed = 'dashed'
-    dotted = 'dotted'
-    dash_dot = 'dash_dot'
-    dash_dot_dot = 'dash_dot_dot'
-    dense_dot = 'dense_dot'
+    UNKNOWN = "unknown"
+    solid = "solid"
+    dashed = "dashed"
+    dotted = "dotted"
+    dash_dot = "dash_dot"
+    dash_dot_dot = "dash_dot_dot"
+    dense_dot = "dense_dot"
 
 
 Meters = NewType("Meters", float)
 
 
-Millimeter = Literal['mm']
+Millimeter = Literal["mm"]
 
 
 NetId = NewType("NetId", str)
@@ -769,16 +751,16 @@ class PadHoleRectangle(ReadOnlyModel):
 
 class PadHoleShape1(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    circle: Annotated[PadHoleCircle, Field(alias='Circle')]
+    circle: Annotated[PadHoleCircle, Field(alias="Circle")]
 
 
 class PadHoleShape3(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    rectangle: Annotated[PadHoleRectangle, Field(alias='Rectangle')]
+    rectangle: Annotated[PadHoleRectangle, Field(alias="Rectangle")]
 
 
 class PadHoleSlot(ReadOnlyModel):
@@ -821,23 +803,23 @@ class PageBorderMargin(ReadOnlyModel):
 
 
 class ParameterSetStyle(OpenEnum):
-    UNKNOWN = 'unknown'
-    large = 'Large'
-    tiny = 'Tiny'
-    differential_pair = 'DifferentialPair'
+    UNKNOWN = "unknown"
+    large = "Large"
+    tiny = "Tiny"
+    differential_pair = "DifferentialPair"
 
 
 PcbArcId = NewType("PcbArcId", str)
 
 
 class PcbComponentLibDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    pcb_component_lib = 'PcbComponentLib'
+    UNKNOWN = "unknown"
+    pcb_component_lib = "PcbComponentLib"
 
 
 class PcbDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    pcb = 'Pcb'
+    UNKNOWN = "unknown"
+    pcb = "Pcb"
 
 
 PcbLibComponentId = NewType("PcbLibComponentId", str)
@@ -847,36 +829,36 @@ PcbTextId = NewType("PcbTextId", str)
 
 
 class PinElectricalType(OpenEnum):
-    UNKNOWN = 'unknown'
-    input = 'Input'
-    io = 'Io'
-    hi_z = 'HiZ'
-    open_collector = 'OpenCollector'
-    open_emitter = 'OpenEmitter'
-    output = 'Output'
-    passive = 'Passive'
-    power = 'Power'
-    no_connect = 'NoConnect'
-    unspecified = 'Unspecified'
-    power_in = 'PowerIn'
-    power_out = 'PowerOut'
+    UNKNOWN = "unknown"
+    input = "Input"
+    io = "Io"
+    hi_z = "HiZ"
+    open_collector = "OpenCollector"
+    open_emitter = "OpenEmitter"
+    output = "Output"
+    passive = "Passive"
+    power = "Power"
+    no_connect = "NoConnect"
+    unspecified = "Unspecified"
+    power_in = "PowerIn"
+    power_out = "PowerOut"
 
 
 PinId = NewType("PinId", str)
 
 
 class PinOrientation(OpenEnum):
-    UNKNOWN = 'unknown'
-    left = 'Left'
-    right = 'Right'
-    up = 'Up'
-    down = 'Down'
+    UNKNOWN = "unknown"
+    left = "Left"
+    right = "Right"
+    up = "Up"
+    down = "Down"
 
 
 class PinTextRelativeTo(OpenEnum):
-    UNKNOWN = 'unknown'
-    pin = 'Pin'
-    component = 'Component'
+    UNKNOWN = "unknown"
+    pin = "Pin"
+    component = "Component"
 
 
 class Point(ReadOnlyModel):
@@ -897,19 +879,17 @@ class ProjectDocument(ReadOnlyModel):
     id: str
     path: Annotated[
         str,
-        Field(
-            description='Relative to the project root. Uses forward slashes as path separator.'
-        ),
+        Field(description="Relative to the project root. Uses forward slashes as path separator."),
     ]
     ty: Annotated[
         CadDocumentType | None,
-        Field(description='The type of ECAD Document. Omitted if null.'),
+        Field(description="The type of ECAD Document. Omitted if null."),
     ] = None
 
 
 class ProjectDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    project = 'Project'
+    UNKNOWN = "unknown"
+    project = "Project"
 
 
 Pt = NewType("Pt", float)
@@ -925,18 +905,18 @@ RegionId = NewType("RegionId", str)
 
 
 class RegionType(OpenEnum):
-    UNKNOWN = 'unknown'
-    fill = 'Fill'
-    cutout = 'Cutout'
-    keep_out = 'KeepOut'
-    cavity = 'Cavity'
-    board_cutout = 'BoardCutout'
+    UNKNOWN = "unknown"
+    fill = "Fill"
+    cutout = "Cutout"
+    keep_out = "KeepOut"
+    cavity = "Cavity"
+    board_cutout = "BoardCutout"
 
 
 class RelativePinTextOrientation(OpenEnum):
-    UNKNOWN = 'unknown'
-    parallel = 'Parallel'
-    perpendicular = 'Perpendicular'
+    UNKNOWN = "unknown"
+    parallel = "Parallel"
+    perpendicular = "Perpendicular"
 
 
 Overline = tuple[str, bool]
@@ -944,9 +924,7 @@ Overline = tuple[str, bool]
 
 class RichText(ReadOnlyModel):
     display: str
-    overlines: Annotated[
-        list[Overline] | None, Field(description='null when no overlines.')
-    ] = None
+    overlines: Annotated[list[Overline] | None, Field(description="null when no overlines.")] = None
     component_links: list[ComponentLink] | None = None
 
 
@@ -963,13 +941,13 @@ SchTextId = NewType("SchTextId", str)
 
 
 class SchematicComponentLibDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    schematic_component_lib = 'SchematicComponentLib'
+    UNKNOWN = "unknown"
+    schematic_component_lib = "SchematicComponentLib"
 
 
 class SchematicDocumentType(OpenEnum):
-    UNKNOWN = 'unknown'
-    schematic = 'Schematic'
+    UNKNOWN = "unknown"
+    schematic = "Schematic"
 
 
 class SchematicNet(ReadOnlyModel):
@@ -991,12 +969,12 @@ SheetEntryId = NewType("SheetEntryId", str)
 
 
 class SheetEntryType(OpenEnum):
-    UNKNOWN = 'unknown'
-    input = 'Input'
-    output = 'Output'
-    bi_directional = 'BiDirectional'
-    tri_state = 'TriState'
-    passive = 'Passive'
+    UNKNOWN = "unknown"
+    input = "Input"
+    output = "Output"
+    bi_directional = "BiDirectional"
+    tri_state = "TriState"
+    passive = "Passive"
 
 
 SheetRefId = NewType("SheetRefId", str)
@@ -1006,15 +984,15 @@ SymbolId = NewType("SymbolId", int)
 
 
 class SymbolRef1(OpenEnum):
-    UNKNOWN = 'unknown'
-    all_symbols = 'AllSymbols'
+    UNKNOWN = "unknown"
+    all_symbols = "AllSymbols"
 
 
 class SymbolRef2(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    symbol: Annotated[SymbolId, Field(alias='Symbol')]
+    symbol: Annotated[SymbolId, Field(alias="Symbol")]
 
 
 SymbolRef = SymbolRef1 | SymbolRef2
@@ -1063,10 +1041,10 @@ VariantId = NewType("VariantId", str)
 
 
 class VerticalJustification(OpenEnum):
-    UNKNOWN = 'unknown'
-    top = 'Top'
-    center = 'Center'
-    bottom = 'Bottom'
+    UNKNOWN = "unknown"
+    top = "Top"
+    center = "Center"
+    bottom = "Bottom"
 
 
 class Via(ReadOnlyModel):
@@ -1081,9 +1059,7 @@ ViaId = NewType("ViaId", str)
 
 
 class Warning(ReadOnlyModel):
-    file_path: Annotated[
-        str, Field(description='Uses forward slashes as path separator.')
-    ]
+    file_path: Annotated[str, Field(description="Uses forward slashes as path separator.")]
     detail: str
 
 
@@ -1094,19 +1070,15 @@ WireId = NewType("WireId", str)
 
 
 class ContentsResponse(ReadOnlyModel):
-    field_links: Annotated[FileLinksResponse | None, Field(alias='_links')] = None
+    field_links: Annotated[FileLinksResponse | None, Field(alias="_links")] = None
     content: Annotated[
         str | None,
-        Field(
-            description='`content` is populated when `type` is `file`, otherwise null'
-        ),
+        Field(description="`content` is populated when `type` is `file`, otherwise null"),
     ] = None
     download_url: str | None = None
     encoding: Annotated[
         str | None,
-        Field(
-            description='`encoding` is populated when `type` is `file`, otherwise null'
-        ),
+        Field(description="`encoding` is populated when `type` is `file`, otherwise null"),
     ] = None
     git_url: str | None = None
     html_url: str | None = None
@@ -1120,18 +1092,16 @@ class ContentsResponse(ReadOnlyModel):
     submodule_git_url: Annotated[
         str | None,
         Field(
-            description='`submodule_git_url` is populated when `type` is `submodule`, otherwise null'
+            description="`submodule_git_url` is populated when `type` is `submodule`, otherwise null"
         ),
     ] = None
     target: Annotated[
         str | None,
-        Field(
-            description='`target` is populated when `type` is `symlink`, otherwise null'
-        ),
+        Field(description="`target` is populated when `type` is `symlink`, otherwise null"),
     ] = None
     type: Annotated[
         str,
-        Field(description='`type` will be `file`, `dir`, `symlink`, or `submodule`'),
+        Field(description="`type` will be `file`, `dir`, `symlink`, or `submodule`"),
     ]
     url: str | None = None
 
@@ -1141,28 +1111,28 @@ class CreateFileOptions(InputModel):
     branch: Annotated[
         str | None,
         Field(
-            description='branch (optional) to base this file from. if not given, the default branch is used'
+            description="branch (optional) to base this file from. if not given, the default branch is used"
         ),
     ] = None
     committer: Identity | None = None
-    content: Annotated[str, Field(description='content must be base64 encoded')]
+    content: Annotated[str, Field(description="content must be base64 encoded")]
     dates: CommitDateOptions | None = None
     message: Annotated[
         str | None,
         Field(
-            description='message (optional) for the commit of this file. if not supplied, a default message will be used'
+            description="message (optional) for the commit of this file. if not supplied, a default message will be used"
         ),
     ] = None
     new_branch: Annotated[
         str | None,
         Field(
-            description='new_branch (optional) will make a new branch from `branch` before creating the file'
+            description="new_branch (optional) will make a new branch from `branch` before creating the file"
         ),
     ] = None
     signoff: Annotated[
         bool | None,
         Field(
-            description='Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+            description="Add a Signed-off-by trailer by the committer at the end of the commit log message."
         ),
     ] = None
 
@@ -1225,7 +1195,7 @@ class DeleteFileOptions(InputModel):
     branch: Annotated[
         str | None,
         Field(
-            description='branch (optional) to base this file from. if not given, the default branch is used'
+            description="branch (optional) to base this file from. if not given, the default branch is used"
         ),
     ] = None
     committer: Identity | None = None
@@ -1233,28 +1203,26 @@ class DeleteFileOptions(InputModel):
     message: Annotated[
         str | None,
         Field(
-            description='message (optional) for the commit of this file. if not supplied, a default message will be used'
+            description="message (optional) for the commit of this file. if not supplied, a default message will be used"
         ),
     ] = None
     new_branch: Annotated[
         str | None,
         Field(
-            description='new_branch (optional) will make a new branch from `branch` before creating the file'
+            description="new_branch (optional) will make a new branch from `branch` before creating the file"
         ),
     ] = None
-    sha: Annotated[
-        str, Field(description='sha is the SHA for the file that already exists')
-    ]
+    sha: Annotated[str, Field(description="sha is the SHA for the file that already exists")]
     signoff: Annotated[
         bool | None,
         Field(
-            description='Add a Signed-off-by trailer by the committer at the end of the commit log message.'
+            description="Add a Signed-off-by trailer by the committer at the end of the commit log message."
         ),
     ] = None
 
 
 class EditIssueOption(InputModel):
-    assignee: Annotated[str | None, Field(description='deprecated')] = None
+    assignee: Annotated[str | None, Field(description="deprecated")] = None
     assignees: list[str] | None = None
     body: str | None = None
     due_date: AwareDatetime | None = None
@@ -1293,64 +1261,64 @@ class EditRepoOption(InputModel):
     allow_fast_forward_only_merge: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow fast-forward-only merging design reviews, or `false` to prevent fast-forward-only merging.'
+            description="either `true` to allow fast-forward-only merging design reviews, or `false` to prevent fast-forward-only merging."
         ),
     ] = None
     allow_manual_merge: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow mark pr as merged manually, or `false` to prevent it.'
+            description="either `true` to allow mark pr as merged manually, or `false` to prevent it."
         ),
     ] = None
     allow_merge_commits: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow merging design reviews with a merge commit, or `false` to prevent merging design reviews with merge commits.'
+            description="either `true` to allow merging design reviews with a merge commit, or `false` to prevent merging design reviews with merge commits."
         ),
     ] = None
     allow_rebase: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow rebase-merging design reviews, or `false` to prevent rebase-merging.'
+            description="either `true` to allow rebase-merging design reviews, or `false` to prevent rebase-merging."
         ),
     ] = None
     allow_rebase_explicit: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow rebase with explicit merge commits (--no-ff), or `false` to prevent rebase with explicit merge commits.'
+            description="either `true` to allow rebase with explicit merge commits (--no-ff), or `false` to prevent rebase with explicit merge commits."
         ),
     ] = None
     allow_rebase_update: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow updating design review branch by rebase, or `false` to prevent it.'
+            description="either `true` to allow updating design review branch by rebase, or `false` to prevent it."
         ),
     ] = None
     allow_squash_merge: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow squash-merging design reviews, or `false` to prevent squash-merging.'
+            description="either `true` to allow squash-merging design reviews, or `false` to prevent squash-merging."
         ),
     ] = None
     archived: Annotated[
-        bool | None, Field(description='set to `true` to archive this repository.')
+        bool | None, Field(description="set to `true` to archive this repository.")
     ] = None
     autodetect_manual_merge: Annotated[
         bool | None,
         Field(
-            description='either `true` to enable AutodetectManualMerge, or `false` to prevent it. Note: In some special cases, misjudgments can occur.'
+            description="either `true` to enable AutodetectManualMerge, or `false` to prevent it. Note: In some special cases, misjudgments can occur."
         ),
     ] = None
     default_allow_maintainer_edit: Annotated[
         bool | None,
-        Field(description='set to `true` to allow edits from maintainers by default'),
+        Field(description="set to `true` to allow edits from maintainers by default"),
     ] = None
     default_branch: Annotated[
-        str | None, Field(description='sets the default branch for this repository.')
+        str | None, Field(description="sets the default branch for this repository.")
     ] = None
     default_delete_branch_after_merge: Annotated[
         bool | None,
-        Field(description='set to `true` to delete pr branch after merge by default'),
+        Field(description="set to `true` to delete pr branch after merge by default"),
     ] = None
     default_merge_style: Annotated[
         str | None,
@@ -1359,93 +1327,83 @@ class EditRepoOption(InputModel):
         ),
     ] = None
     description: Annotated[
-        str | None, Field(description='a short description of the repository.')
+        str | None, Field(description="a short description of the repository.")
     ] = None
     enable_prune: Annotated[
         bool | None,
         Field(
-            description='enable prune - remove obsolete remote-tracking references when mirroring'
+            description="enable prune - remove obsolete remote-tracking references when mirroring"
         ),
     ] = None
     external_tracker: ExternalTracker | None = None
     external_wiki: ExternalWiki | None = None
     has_actions: Annotated[
         bool | None,
-        Field(
-            description='either `true` to enable actions unit, or `false` to disable them.'
-        ),
+        Field(description="either `true` to enable actions unit, or `false` to disable them."),
     ] = None
     has_issues: Annotated[
         bool | None,
         Field(
-            description='either `true` to enable issues for this repository or `false` to disable them.'
+            description="either `true` to enable issues for this repository or `false` to disable them."
         ),
     ] = None
     has_packages: Annotated[
         bool | None,
-        Field(
-            description='either `true` to enable packages unit, or `false` to disable them.'
-        ),
+        Field(description="either `true` to enable packages unit, or `false` to disable them."),
     ] = None
     has_projects: Annotated[
         bool | None,
-        Field(
-            description='either `true` to enable project unit, or `false` to disable them.'
-        ),
+        Field(description="either `true` to enable project unit, or `false` to disable them."),
     ] = None
     has_pull_requests: Annotated[
         bool | None,
         Field(
-            description='either `true` to allow design reviews, or `false` to prevent design review.'
+            description="either `true` to allow design reviews, or `false` to prevent design review."
         ),
     ] = None
     has_releases: Annotated[
         bool | None,
-        Field(
-            description='either `true` to enable releases unit, or `false` to disable them.'
-        ),
+        Field(description="either `true` to enable releases unit, or `false` to disable them."),
     ] = None
     has_wiki: Annotated[
         bool | None,
         Field(
-            description='either `true` to enable the wiki for this repository or `false` to disable it.'
+            description="either `true` to enable the wiki for this repository or `false` to disable it."
         ),
     ] = None
     ignore_whitespace_conflicts: Annotated[
         bool | None,
         Field(
-            description='either `true` to ignore whitespace for conflicts, or `false` to not ignore whitespace.'
+            description="either `true` to ignore whitespace for conflicts, or `false` to not ignore whitespace."
         ),
     ] = None
     internal_tracker: InternalTracker | None = None
     mirror_interval: Annotated[
         str | None,
-        Field(
-            description='set to a string like `8h30m0s` to set the mirror interval time'
-        ),
+        Field(description="set to a string like `8h30m0s` to set the mirror interval time"),
     ] = None
-    name: Annotated[str | None, Field(description='name of the repository')] = None
+    name: Annotated[str | None, Field(description="name of the repository")] = None
     private: Annotated[
         bool | None,
         Field(
-            description='either `true` to make the repository private or `false` to make it public.\nNote: you will get a 422 error if the organization restricts changing repository visibility to organization\nowners and a non-owner tries to change the value of private.'
+            description="either `true` to make the repository private or `false` to make it public.\nNote: you will get a 422 error if the organization restricts changing repository visibility to organization\nowners and a non-owner tries to change the value of private."
         ),
     ] = None
     projects_mode: Annotated[
         str | None,
         Field(
-            description='`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both.'
+            description="`repo` to only allow repo-level projects, `owner` to only allow owner projects, `all` to allow both."
         ),
     ] = None
     template: Annotated[
         bool | None,
         Field(
-            description='either `true` to make this repository a template or `false` to make it a normal repository'
+            description="either `true` to make this repository a template or `false` to make it a normal repository"
         ),
     ] = None
     website: Annotated[
         str | None,
-        Field(description='a URL with more information about the repository.'),
+        Field(description="a URL with more information about the repository."),
     ] = None
 
 
@@ -1492,7 +1450,7 @@ class Organization(OrganizationEntity):
     location: str
     name: str
     repo_admin_change_team_access: bool
-    username: Annotated[str, Field(deprecated=True, description='deprecated')]
+    username: Annotated[str, Field(deprecated=True, description="deprecated")]
     visibility: VisibleType
     website: str
 
@@ -1508,23 +1466,21 @@ class PayloadCommitVerification(ReadOnlyModel):
 class ProjectData(ReadOnlyModel):
     documents: Annotated[
         dict[str, str] | None,
-        Field(
-            description='Mapping of component reference to the document path that defines it.'
-        ),
+        Field(description="Mapping of component reference to the document path that defines it."),
     ] = None
     external_design_blocks: Annotated[
         dict[str, str] | None,
         Field(
-            description='Mapping of external design block reference to the HTML URL of its sheet, used to resolve device sheets in submodules.'
+            description="Mapping of external design block reference to the HTML URL of its sheet, used to resolve device sheets in submodules."
         ),
     ] = None
     project_path: Annotated[
         str | None,
-        Field(description='Path of the project file, relative to the repo root.'),
+        Field(description="Path of the project file, relative to the repo root."),
     ] = None
     variants: Annotated[
         dict[str, str] | None,
-        Field(description='Mapping of variant id to its human-readable name.'),
+        Field(description="Mapping of variant id to its human-readable name."),
     ] = None
     warnings: ProjectWarnings | None = None
 
@@ -1552,14 +1508,14 @@ class Team(TeamEntity):
             deprecated=True,
             examples=[
                 [
-                    'repo.code',
-                    'repo.issues',
-                    'repo.ext_issues',
-                    'repo.wiki',
-                    'repo.pulls',
-                    'repo.releases',
-                    'repo.projects',
-                    'repo.ext_wiki',
+                    "repo.code",
+                    "repo.issues",
+                    "repo.ext_issues",
+                    "repo.wiki",
+                    "repo.pulls",
+                    "repo.releases",
+                    "repo.projects",
+                    "repo.ext_wiki",
                 ]
             ],
         ),
@@ -1569,14 +1525,14 @@ class Team(TeamEntity):
         Field(
             examples=[
                 {
-                    'repo.code': 'read',
-                    'repo.ext_issues': 'none',
-                    'repo.ext_wiki': 'none',
-                    'repo.issues': 'write',
-                    'repo.projects': 'none',
-                    'repo.pulls': 'owner',
-                    'repo.releases': 'none',
-                    'repo.wiki': 'admin',
+                    "repo.code": "read",
+                    "repo.ext_issues": "none",
+                    "repo.ext_wiki": "none",
+                    "repo.issues": "write",
+                    "repo.projects": "none",
+                    "repo.pulls": "owner",
+                    "repo.releases": "none",
+                    "repo.wiki": "admin",
                 }
             ]
         ),
@@ -1584,30 +1540,26 @@ class Team(TeamEntity):
 
 
 class User(UserEntity):
-    active: Annotated[bool | None, Field(description='Is user active')] = None
+    active: Annotated[bool | None, Field(description="Is user active")] = None
     avatar_url: Annotated[str, Field(description="URL to the user's avatar")]
     created: AwareDatetime
     description: Annotated[str, Field(description="the user's description")]
     email: str
-    followers_count: Annotated[int, Field(description='user counts')]
+    followers_count: Annotated[int, Field(description="user counts")]
     following_count: int
     full_name: Annotated[str, Field(description="the user's full name")]
     html_url: Annotated[str, Field(description="URL to the user's gitea page")]
     id: Annotated[int, Field(description="the user's id")]
-    is_admin: Annotated[
-        bool | None, Field(description='Is the user an administrator')
-    ] = None
-    language: Annotated[str | None, Field(description='User locale')] = None
+    is_admin: Annotated[bool | None, Field(description="Is the user an administrator")] = None
+    language: Annotated[str | None, Field(description="User locale")] = None
     last_login: AwareDatetime | None = None
     location: Annotated[str, Field(description="the user's location")]
     login: Annotated[str, Field(description="the user's username")]
     login_name: Annotated[
         str | None, Field(description="the user's authentication sign-in name.")
-    ] = 'empty'
-    prohibit_login: Annotated[
-        bool | None, Field(description='Is user login prohibited')
-    ] = None
-    restricted: Annotated[bool, Field(description='Is user restricted')]
+    ] = "empty"
+    prohibit_login: Annotated[bool | None, Field(description="Is user login prohibited")] = None
+    restricted: Annotated[bool, Field(description="Is user restricted")]
     source_id: Annotated[
         int | None, Field(description="The ID of the user's Authentication Source")
     ] = None
@@ -1655,9 +1607,9 @@ class Circular(ReadOnlyModel):
 
 class CornerRadius2(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    circular: Annotated[Circular, Field(alias='Circular')]
+    circular: Annotated[Circular, Field(alias="Circular")]
 
 
 class Xy(ReadOnlyModel):
@@ -1667,9 +1619,9 @@ class Xy(ReadOnlyModel):
 
 class CornerRadius3(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    xy: Annotated[Xy, Field(alias='Xy')]
+    xy: Annotated[Xy, Field(alias="Xy")]
 
 
 CornerRadius = CornerRadius1 | CornerRadius2 | CornerRadius3
@@ -1681,9 +1633,9 @@ class Outline(ReadOnlyModel):
 
 class CustomPadDrawingOption2(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    outline: Annotated[Outline, Field(alias='Outline')]
+    outline: Annotated[Outline, Field(alias="Outline")]
 
 
 CustomPadDrawingOption = CustomPadDrawingOption1 | CustomPadDrawingOption2
@@ -1767,9 +1719,9 @@ class Pad(ReadOnlyModel):
 
 class PadHoleShape2(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    slot: Annotated[PadHoleSlot, Field(alias='Slot')]
+    slot: Annotated[PadHoleSlot, Field(alias="Slot")]
 
 
 PadHoleShape = PadHoleShape1 | PadHoleShape2 | PadHoleShape3
@@ -1777,30 +1729,30 @@ PadHoleShape = PadHoleShape1 | PadHoleShape2 | PadHoleShape3
 
 class PadShape1(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    circle: Annotated[PadShapeCircle, Field(alias='Circle')]
+    circle: Annotated[PadShapeCircle, Field(alias="Circle")]
 
 
 class PadShape2(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    pill: Annotated[PadShapePill, Field(alias='Pill')]
+    pill: Annotated[PadShapePill, Field(alias="Pill")]
 
 
 class PadShape3(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    rectangle: Annotated[PadShapeRectangle, Field(alias='Rectangle')]
+    rectangle: Annotated[PadShapeRectangle, Field(alias="Rectangle")]
 
 
 class PadShape4(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    octagon: Annotated[PadShapeOctagon, Field(alias='Octagon')]
+    octagon: Annotated[PadShapeOctagon, Field(alias="Octagon")]
 
 
 class PageBorder(ReadOnlyModel):
@@ -1858,7 +1810,7 @@ class Project(ReadOnlyModel):
     altium_project_pcb_variants_file: Annotated[
         str | None,
         Field(
-            description='The path of the altium `.prjpcbvariants` file relative to the repo root. Omitted if null.'
+            description="The path of the altium `.prjpcbvariants` file relative to the repo root. Omitted if null."
         ),
     ] = None
 
@@ -1868,15 +1820,13 @@ class ProjectEntryExport(ReadOnlyModel):
     path: Annotated[
         str,
         Field(
-            description='Path relative to the repo root. Uses forward slashes as path separator.'
+            description="Path relative to the repo root. Uses forward slashes as path separator."
         ),
     ]
     project: Project
     warnings: Annotated[
         list[Warning],
-        Field(
-            description='Warnings that occurred during the generation of this project'
-        ),
+        Field(description="Warnings that occurred during the generation of this project"),
     ]
 
 
@@ -2044,7 +1994,7 @@ class PayloadCommit(ReadOnlyModel):
     added: list[str] | None = None
     author: PayloadUser | None = None
     committer: PayloadUser | None = None
-    id: Annotated[str | None, Field(description='sha1 hash of the commit')] = None
+    id: Annotated[str | None, Field(description="sha1 hash of the commit")] = None
     message: str | None = None
     modified: list[str] | None = None
     removed: list[str] | None = None
@@ -2159,7 +2109,7 @@ class Repository(RepositoryEntity):
     name: str
     object_format_name: Annotated[
         ObjectFormatName,
-        Field(description='ObjectFormatName of the underlying git repository'),
+        Field(description="ObjectFormatName of the underlying git repository"),
     ]
     open_issues_count: int
     open_pr_counter: int
@@ -2192,11 +2142,11 @@ class TrackedTime(ReadOnlyModel):
     id: int | None = None
     issue: Issue | None = None
     issue_id: Annotated[
-        int | None, Field(description='deprecated (only for backwards compatibility)')
+        int | None, Field(description="deprecated (only for backwards compatibility)")
     ] = None
-    time: Annotated[int | None, Field(description='Time in seconds')] = None
+    time: Annotated[int | None, Field(description="Time in seconds")] = None
     user_id: Annotated[
-        int | None, Field(description='deprecated (only for backwards compatibility)')
+        int | None, Field(description="deprecated (only for backwards compatibility)")
     ] = None
     user_name: str | None = None
 
@@ -2264,9 +2214,9 @@ class PadHole(ReadOnlyModel):
 
 class PadShape5(ReadOnlyModel):
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
-    custom: Annotated[list[CustomPadShape], Field(alias='Custom')]
+    custom: Annotated[list[CustomPadShape], Field(alias="Custom")]
 
 
 PadShape = PadShape1 | PadShape2 | PadShape3 | PadShape4 | PadShape5
@@ -2280,7 +2230,7 @@ class PadstackLayer(ReadOnlyModel):
 class PcbText(ReadOnlyModel):
     text: str
     position: Point
-    rotation: Annotated[Angle | None, Field(description='Absent when zero.')] = None
+    rotation: Annotated[Angle | None, Field(description="Absent when zero.")] = None
     width: Length | None = None
     height: Length
     border: Border | None = None
@@ -2414,7 +2364,7 @@ class DesignReview(DesignReviewEntity):
     review_comments: Annotated[
         int | None,
         Field(
-            description='number of review comments made on the diff of a PR review (not including comments on commits or issues in a PR)'
+            description="number of review comments made on the diff of a PR review (not including comments on commits or issues in a PR)"
         ),
     ] = None
     state: StateType
@@ -2639,7 +2589,7 @@ class SchematicExport(ReadOnlyModel):
     variants: Annotated[
         dict[VariantId, str] | None,
         Field(
-            description='Maps variant ID to variant name. Absent when the schematic has no variants.'
+            description="Maps variant ID to variant name. Absent when the schematic has no variants."
         ),
     ] = None
     nets: dict[NetId, SchematicNet]
@@ -2647,12 +2597,18 @@ class SchematicExport(ReadOnlyModel):
     page_groups: Annotated[
         dict[SchematicPageGroupId, SchematicPageGroup] | None,
         Field(
-            description='Maps group ID (`pages[].ui_group_id`) to page group, representing a hierarchical structure of groups, each with multiple pages. Absent when hierarchy has not been provided.'
+            description="Maps group ID (`pages[].ui_group_id`) to page group, representing a hierarchical structure of groups, each with multiple pages. Absent when hierarchy has not been provided."
         ),
     ] = None
 
 
-DocumentOutput = PcbComponentLibExport | PcbExport | ProjectEntryExport | SchematicComponentLibExport | SchematicExport
+DocumentOutput = (
+    PcbComponentLibExport
+    | PcbExport
+    | ProjectEntryExport
+    | SchematicComponentLibExport
+    | SchematicExport
+)
 
 
 Repository.model_rebuild()
