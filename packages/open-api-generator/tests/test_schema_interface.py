@@ -8,7 +8,7 @@ from pathlib import Path
 
 from open_api_generator.schema_interface import generate_schema_interface
 from open_api_generator.schemas import generate_schemas
-from tests.schemas_helpers import FOOTER, SAMPLE_DOCUMENT, definition, use_sample_entities
+from schemas_helpers import FOOTER, SAMPLE_DOCUMENT, definition, use_sample_entities
 
 
 def test_generate_schema_interface(build_test_dir: Path) -> None:

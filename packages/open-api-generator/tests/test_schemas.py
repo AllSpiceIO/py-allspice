@@ -7,7 +7,7 @@ so a field that goes missing or arrives unasked for fails rather than slipping p
 from pathlib import Path
 
 from open_api_generator.schemas import GENERATED_HEADER, _generate_initial_schemas, generate_schemas
-from tests.schemas_helpers import (
+from schemas_helpers import (
     FOOTER,
     SAMPLE_DOCUMENT,
     definition,

@@ -35,7 +35,7 @@ from allspice.utils.list_components import (
 )
 from allspice.utils.netlist_generation import generate_netlist
 
-from .csv_snapshot_extension import CSVSnapshotExtension
+from csv_snapshot_extension import CSVSnapshotExtension
 
 
 @pytest.fixture(scope="session")
