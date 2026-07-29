@@ -1,7 +1,7 @@
 import json
 import logging
 import sys
-from typing import Any, Dict, List, Mapping, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Union
 
 import requests
 import urllib3
@@ -19,6 +19,9 @@ from .exceptions import (
     NotYetGeneratedException,
 )
 from .ratelimiter import RateLimitedSession
+
+if TYPE_CHECKING:
+    from .base import ApiRequest, ResponseT
 
 DEFAULT_RETRY = Retry(
     total=6,
@@ -139,6 +142,13 @@ class AllSpice:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
         self.use_new_schdoc_renderer = use_new_schdoc_renderer
+
+    def send(self, api_request: "ApiRequest[ResponseT]") -> "ResponseT":
+        """Execute a typed request: build it, send it with auth, and parse the response into the
+        request's response model, attaching this client to every entity in the result so it can
+        make follow-up requests."""
+        # TODO: Implement this. Just stubbed for now to show how entities can work
+        raise NotImplementedError("AllSpice.send is not implemented yet")
 
     def __get_url(self, endpoint):
         url = self.url + "/api/v1" + endpoint

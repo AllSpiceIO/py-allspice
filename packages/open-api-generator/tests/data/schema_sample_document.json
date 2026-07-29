@@ -3,7 +3,7 @@
   "info": {
     "title": "py-allspice schema-generation test fixture",
     "version": "0.0.0-test",
-    "description": "Hand-built OpenAPI document for the schema-generation tests. Each schema exercises a specific behavior of generate_schemas and the post-passes: SampleUserId (trivial scalar -> RootModel alias -> NewType), SampleUserState (enum -> open enum), SampleUser (object -> ReadOnlyModel, carrying an email field, a length-constrained field, a scalar-alias id, and an enum ref), SampleUserOptions (PascalCase keys -> snake_case fields with aliases), SampleUserProfile (a nested object that stays ReadOnly when SampleUser is promoted to an entity), and SampleUserSelection (a oneOf union -> a bare-union alias, not a NewType)."
+    "description": "Hand-built OpenAPI document for the schema-generation tests. Each schema exercises a specific behavior of generate_schemas and the post-passes: SampleUserId (trivial scalar -> RootModel alias -> NewType), SampleUserState (enum -> open enum), SampleUser (object -> ReadOnlyModel, carrying an email field, a length-constrained field, a scalar-alias id, and an enum ref), SampleUserOptions (PascalCase keys -> snake_case fields with aliases), SampleUserProfile (a nested object that stays ReadOnly when SampleUser is promoted to an entity, and carries the one described field, which becomes an attribute docstring in the interface), and SampleUserSelection (a oneOf union -> a bare-union alias, not a NewType)."
   },
   "paths": {},
   "components": {
@@ -41,7 +41,10 @@
       "SampleUserProfile": {
         "type": "object",
         "properties": {
-          "bio": { "type": "string" },
+          "bio": {
+            "type": "string",
+            "description": "A short user biography."
+          },
           "company": { "type": "string" }
         }
       },

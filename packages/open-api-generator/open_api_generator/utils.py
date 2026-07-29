@@ -8,4 +8,6 @@ HTTP_METHODS = {"get", "put", "post", "delete", "patch"}
 def ruff_fix(*paths: Path) -> None:
     """Apply ruff's safe autofixes to the generated files — sorts imports and strips ones left
     unused by the rewrites, along with the project's other fixable rules."""
-    subprocess.run(["ruff", "check", "--fix", *(str(p) for p in paths)], check=True)
+    target_paths = [str(path) for path in paths]
+    print(f"Running ruff check --fix on {', '.join(target_paths)}")
+    subprocess.run(["ruff", "check", "--fix", *target_paths], check=True)
