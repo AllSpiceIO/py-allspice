@@ -6,8 +6,10 @@ HTTP_METHODS = {"get", "put", "post", "delete", "patch"}
 
 
 def ruff_fix(*paths: Path) -> None:
-    """Apply ruff's safe autofixes to the generated files — sorts imports and strips ones left
-    unused by the rewrites, along with the project's other fixable rules."""
+    """Bring the generated files up to the project's ruff config, so their diffs read like the rest of
+    the codebase. Fixes first — sorting imports and stripping ones left unused by the rewrites — then
+    formats, since formatting settles the final layout."""
     target_paths = [str(path) for path in paths]
-    print(f"Running ruff check --fix on {', '.join(target_paths)}")
+    print(f"Running ruff check --fix and ruff format on {', '.join(target_paths)}")
     subprocess.run(["ruff", "check", "--fix", *target_paths], check=True)
+    subprocess.run(["ruff", "format", *target_paths], check=True)

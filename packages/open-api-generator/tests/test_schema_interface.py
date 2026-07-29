@@ -53,7 +53,7 @@ def test_generate_schema_interface(build_test_dir: Path) -> None:
         definition(source, "SampleUserProfile")
         == """class SampleUserProfile(ReadOnlyModel):
     bio: Final[str | None] = None
-    'A short user biography.'
+    "A short user biography."
     company: Final[str | None] = None"""
     )
 
@@ -66,24 +66,24 @@ def test_generate_schema_interface(build_test_dir: Path) -> None:
     source_id: int | None = None"""
     )
 
-    # Enums and aliases are copied through untouched (ast.unparse normalizes to single quotes).
+    # Enums and aliases are copied through untouched.
     assert (
         definition(source, "SampleUserState")
-        == """class SampleUserState(OpenEnum):
-    UNKNOWN = 'unknown'
-    active = 'active'
-    invited = 'invited'
-    suspended = 'suspended'
-    deactivated = 'deactivated'"""
+        == '''class SampleUserState(OpenEnum):
+    UNKNOWN = "unknown"
+    active = "active"
+    invited = "invited"
+    suspended = "suspended"
+    deactivated = "deactivated"'''
     )
-    assert definition(source, "SampleUserId") == "SampleUserId = NewType('SampleUserId', int)"
+    assert definition(source, "SampleUserId") == 'SampleUserId = NewType("SampleUserId", int)'
     assert (
         definition(source, "SampleUserSelection")
         == "SampleUserSelection = SampleUserId | list[SampleUserId]"
     )
 
     # A stub carries signatures only, so a function keeps its signature and loses its body.
-    assert definition(source, "is_active") == "def is_active(user: SampleUser) -> bool:\n    ..."
+    assert definition(source, "is_active") == "def is_active(user: SampleUser) -> bool: ..."
 
     # The result is valid Python for a type checker to parse.
     compile(source, str(interface_path), "exec")

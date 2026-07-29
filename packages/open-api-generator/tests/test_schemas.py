@@ -119,12 +119,12 @@ def test_generate_schemas(build_test_dir: Path) -> None:
     # later degrades instead of failing the parse.
     assert (
         definition(source, "SampleUserState")
-        == """class SampleUserState(OpenEnum):
-    UNKNOWN = 'unknown'
-    active = 'active'
-    invited = 'invited'
-    suspended = 'suspended'
-    deactivated = 'deactivated'"""
+        == '''class SampleUserState(OpenEnum):
+    UNKNOWN = "unknown"
+    active = "active"
+    invited = "invited"
+    suspended = "suspended"
+    deactivated = "deactivated"'''
     )
 
     # An entity schema is reparented onto its hand-written entity class, and the integer-keyed map is
@@ -148,16 +148,16 @@ def test_generate_schemas(build_test_dir: Path) -> None:
     assert (
         definition(source, "SampleUserOptions")
         == """class SampleUserOptions(InputModel):
-    login: Annotated[str, Field(alias='Login')]
-    full_name: Annotated[str | None, Field(alias='FullName')] = None
-    source_id: Annotated[int | None, Field(alias='SourceID')] = None"""
+    login: Annotated[str, Field(alias="Login")]
+    full_name: Annotated[str | None, Field(alias="FullName")] = None
+    source_id: Annotated[int | None, Field(alias="SourceID")] = None"""
     )
 
     # Anything that is neither an entity, an input, an enum, nor an alias stays a ReadOnlyModel.
     assert (
         definition(source, "SampleUserProfile")
         == """class SampleUserProfile(ReadOnlyModel):
-    bio: Annotated[str | None, Field(description='A short user biography.')] = None
+    bio: Annotated[str | None, Field(description="A short user biography.")] = None
     company: str | None = None"""
     )
 
