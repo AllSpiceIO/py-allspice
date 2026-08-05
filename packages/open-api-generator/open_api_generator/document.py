@@ -7,14 +7,31 @@ from typing import Any, NamedTuple
 
 import requests
 
-HTTP_METHODS = {"get", "put", "post", "delete", "patch"}
+from open_api_generator.utils import HTTP_METHODS
+
+# Confusable characters ruff's ambiguous-unicode checks reject (RUF001/RUF002), folded to ASCII on
+# download so no source generated downstream trips those checks. Written with chr() so the
+# confusables stay out of this file too. Curly *double* quotes are intentionally excluded: ruff
+# doesn't flag them, and turning one into a straight " in the raw JSON would close the string it
+# sits in.
+_AMBIGUOUS_UNICODE = {
+    chr(0x2018): "'",  # left single quote
+    chr(0x2019): "'",  # right single quote
+    chr(0x2013): "-",  # en dash
+}
+
+
+def _fold_ambiguous_unicode(text: str) -> str:
+    for confusable, plain in _AMBIGUOUS_UNICODE.items():
+        text = text.replace(confusable, plain)
+    return text
 
 
 def download_document(hub_base_url: str, output_path: Path) -> None:
     url = hub_base_url.rstrip("/") + "/swagger.v1.json"
     response = requests.get(url)
     response.raise_for_status()
-    output_path.write_bytes(response.content)
+    output_path.write_text(_fold_ambiguous_unicode(response.text), encoding="utf-8")
 
 
 def get_document_version(document: dict[str, Any]) -> str:

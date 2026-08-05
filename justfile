@@ -46,11 +46,13 @@ build:
 docs:
     uv run pdoc --output-dir docs/ allspice
 
-# Generate the client from a Hub: `just generate local` or `just generate prod`
-generate target:
+# Generate the client from a Hub: `just generate local` or `just generate prod`.
+# prod installs its output into py-allspice; local leaves it in build/ to inspect.
+# Add --install to a local run to install from a Hub you're developing against.
+generate target *args:
     #!/usr/bin/env bash
     case "{{target}}" in
-        local) uv run python -m open_api_generator http://localhost:3000 ;;
-        prod)  uv run python -m open_api_generator https://hub.allspice.io/ ;;
+        local) uv run python -m open_api_generator http://localhost:3000 {{args}} ;;
+        prod)  uv run python -m open_api_generator https://hub.allspice.io/ --install {{args}} ;;
         *)     echo "unknown target '{{target}}' (use: local, prod)" >&2; exit 2 ;;
     esac
