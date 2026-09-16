@@ -140,3 +140,24 @@ python -m pytest -k <specifier for test> --snapshot-update
 When updating snapshots, try to run as few tests as possible to ensure you do
 not update snapshots that are unrelated to your changes, and double check
 snapshot changes to ensure they are what you expect.
+
+### Private test fixture sources
+
+Generation tests import private `AllSpiceIO/test-*` repositories from GitHub into
+the local Hub instance. For live tests and cassette recording, set
+`TEST_FIXTURES_TOKEN` to a token with Contents read access to those repositories.
+Hub performs the clone, so authenticating Git on the test runner alone is insufficient.
+The migration helper sends source credentials in the request body and filters them
+from recordings; clone URLs contain no credentials.
+
+CI mints the token from a GitHub App installed on the fixture repositories. Configure
+`TEST_FIXTURES_APP_ID` and `TEST_FIXTURES_APP_PRIVATE_KEY` as Actions secrets before
+merging this migration. Cassette replay does not itself need source credentials.
+
+Parallella tests now use `head/logic/head.sdax` in the full-project repository.
+Variant tests use `sch/synthetic/variant-test-1.sdax` in
+`test-cadence-system-capture-fixtures` at its pinned import commit. Re-record and
+review these System Capture cassettes and snapshots against a local Hub before
+merging: the previous recordings describe the retired standalone files. Other
+existing cassettes retain historical Hub clone URLs because they record past
+responses; they are not fixture source configuration.
