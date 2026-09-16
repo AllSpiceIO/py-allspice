@@ -150,9 +150,12 @@ Hub performs the clone, so authenticating Git on the test runner alone is insuff
 The migration helper sends source credentials in the request body and filters them
 from recordings; clone URLs contain no credentials.
 
-CI mints the token from a GitHub App installed on the fixture repositories. Configure
-`TEST_FIXTURES_APP_ID` and `TEST_FIXTURES_APP_PRIVATE_KEY` as Actions secrets before
-merging this migration. Cassette replay does not itself need source credentials.
+CI reads the PAT from the `TEST_FIXTURES_TOKEN` Actions secret and passes it as
+an environment variable of the same name. Use a fine-grained PAT issued by the
+company-managed GitHub account with Contents read access to the fixture repositories.
+Store it as an AllSpiceIO organization secret available only to `ficus`, `crysknife`,
+and `py-allspice`. Configure it before merging this migration. Cassette replay does
+not itself need source credentials.
 
 Parallella tests now use `head/logic/head.sdax` in the full-project repository.
 Variant tests use `sch/synthetic/variant-test-1.sdax` in
