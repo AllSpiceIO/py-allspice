@@ -147,20 +147,4 @@ Generation tests import private `AllSpiceIO/test-*` repositories from GitHub int
 the local Hub instance. For live tests and cassette recording, set
 `TEST_FIXTURES_TOKEN` to a token with Contents read access to those repositories.
 Hub performs the clone, so authenticating Git on the test runner alone is insufficient.
-The migration helper sends source credentials in the request body and filters them
-from recordings; clone URLs contain no credentials.
-
-CI reads the PAT from the `TEST_FIXTURES_TOKEN` Actions secret and passes it as
-an environment variable of the same name. Use a fine-grained PAT issued by the
-company-managed GitHub account with Contents read access to the fixture repositories.
-Store it as an AllSpiceIO organization secret available only to `ficus`, `crysknife`,
-and `py-allspice`. Configure it before merging this migration. Cassette replay does
-not itself need source credentials.
-
-Parallella tests now use `head/logic/head.sdax` in the full-project repository.
-Variant tests use `sch/synthetic/variant-test-1.sdax` in
-`test-cadence-system-capture-fixtures` at its pinned import commit. Re-record and
-review these System Capture cassettes and snapshots against a local Hub before
-merging: the previous recordings describe the retired standalone files. Other
-existing cassettes retain historical Hub clone URLs because they record past
-responses; they are not fixture source configuration.
+Cassette replay does not itself need source credentials.
