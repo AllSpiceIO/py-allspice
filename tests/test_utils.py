@@ -768,7 +768,7 @@ def test_bom_generation_system_capture(request, instance, setup_for_generation, 
         ref="c1cd71ee796487f38bf6243115f4a3dc03e91c2c",
     )
 
-    assert len(bom) == 551
+    assert len(bom) == 552
     assert bom == csv_snapshot
 
 
@@ -1098,7 +1098,7 @@ def test_generate_bom_system_capture(request, instance, setup_for_generation, cs
         system_capture_attributes_mapping,
         ref="c1cd71ee796487f38bf6243115f4a3dc03e91c2c",
     )
-    assert len(bom) == 551
+    assert len(bom) == 552
     assert bom == csv_snapshot
 
 
@@ -1281,7 +1281,7 @@ def test_system_capture_components_list(
         # We hard-code a ref so that this test is reproducible.
         ref="c1cd71ee796487f38bf6243115f4a3dc03e91c2c",
     )
-    assert len(components) == 564
+    assert len(components) == 565
     assert components == json_snapshot
 
 
@@ -1309,7 +1309,7 @@ def test_list_components_system_capture(
         # We hard-code a ref so that this test is reproducible.
         ref="c1cd71ee796487f38bf6243115f4a3dc03e91c2c",
     )
-    assert len(components) == 564
+    assert len(components) == 565
     assert components == json_snapshot
 
 
