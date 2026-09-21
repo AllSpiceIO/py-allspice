@@ -105,11 +105,15 @@ jobs:
       # If this test run fails, we should update the cassettes manually and
       # check the changes to see what needs to be changed.
       - name: Test with pytest without using casettes
+        env:
+          TEST_FIXTURES_TOKEN: ${{ secrets.TEST_FIXTURES_TOKEN }}
         if: ${{ github.event_name == 'schedule' }}
         run: |
           python -m pytest --disable-recording
       # Otherwise, we'll use the casettes to make the tests fast.
       - name: Test with pytest using casettes
+        env:
+          TEST_FIXTURES_TOKEN: ${{ secrets.TEST_FIXTURES_TOKEN }}
         if: ${{ github.event_name != 'schedule' }}
         # We'll also generate code coverage, which we will later turn into a
         # coverage report if this pipeline is running on a pull request.

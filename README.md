@@ -140,3 +140,11 @@ python -m pytest -k <specifier for test> --snapshot-update
 When updating snapshots, try to run as few tests as possible to ensure you do
 not update snapshots that are unrelated to your changes, and double check
 snapshot changes to ensure they are what you expect.
+
+### Private test fixture sources
+
+Generation tests import private `AllSpiceIO/test-*` repositories from GitHub into
+the local Hub instance. For live tests and cassette recording, set
+`TEST_FIXTURES_TOKEN` to a token with Contents read access to those repositories.
+Hub performs the clone, so authenticating Git on the test runner alone is insufficient.
+Cassette replay does not itself need source credentials.
