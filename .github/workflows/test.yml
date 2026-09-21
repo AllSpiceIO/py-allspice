@@ -151,7 +151,7 @@ jobs:
     if: always()
     steps:
       - name: Slack Notification
-        uses: slackapi/slack-github-action@v3
+        uses: slackapi/slack-github-action@v4
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_DEV_CI }}
           webhook-type: incoming-webhook
