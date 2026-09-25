@@ -849,7 +849,11 @@ def test_create_design_review_review(instance):
     dr = repo.get_design_reviews()[0]
     review = dr.create_review(
         body="New Review",
-        comments=[DesignReviewReview.ReviewComment("Comment within review", "new_file.txt")],
+        comments=[
+            DesignReviewReview.ReviewComment(
+                "Comment within review", "new_file.txt", severity="warning"
+            )
+        ],
     )
 
     assert review.body == "New Review"
@@ -875,6 +879,7 @@ def test_get_design_review_review_comments(instance):
 
     assert len(comments) == 1
     assert comments[0].body == "Comment within review"
+    assert comments[0].severity == "warning"
 
 
 def test_submit_design_review_review(instance):
