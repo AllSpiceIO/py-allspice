@@ -16,6 +16,7 @@ from typing import (
     FrozenSet,
     List,
     Literal,
+    Mapping,
     Optional,
     Sequence,
     Set,
@@ -2152,7 +2153,7 @@ class DesignReviewReviewComment(ApiObject):
     pull_request_review_id: int
     pull_request_url: str
     resolver: Any
-    severity: str
+    severity: Any
     sub_path: str
     updated_at: str
     user: User
@@ -2164,6 +2165,11 @@ class DesignReviewReviewComment(ApiObject):
         "resolver": lambda allspice_client, r: User.parse_response(allspice_client, r),
         "user": lambda allspice_client, u: User.parse_response(allspice_client, u),
     }
+
+    @classmethod
+    def _initialize(cls, allspice_client, api_object: Self, result: Mapping):
+        # Hub leaves severity out of a comment that has none.
+        super()._initialize(allspice_client, api_object, {"severity": None, **result})
 
 
 class DesignReviewReview(ReadonlyApiObject):
@@ -2214,9 +2220,10 @@ class DesignReviewReview(ReadonlyApiObject):
             change to add this comment on. Optional, leave unset if this is an ECAD
             file or the comment must be on the entire file.
         :param severity: The severity of the finding this comment reports, so
-            readers can filter comments by it. Optional, and only for reviewer
-            bots. AllSpice Hub rejects a value other than "error", "warning", or
-            "recommendation", and versions before severity support ignore it.
+            readers can filter comments by it. Optional. AllSpice Hub rejects it
+            unless the caller is DRCY or an Actions workflow, rejects a value
+            other than "error", "warning", or "recommendation", and versions
+            before severity support ignore it.
         """
 
         body: str

@@ -849,11 +849,7 @@ def test_create_design_review_review(instance):
     dr = repo.get_design_reviews()[0]
     review = dr.create_review(
         body="New Review",
-        comments=[
-            DesignReviewReview.ReviewComment(
-                "Comment within review", "new_file.txt", severity="warning"
-            )
-        ],
+        comments=[DesignReviewReview.ReviewComment("Comment within review", "new_file.txt")],
     )
 
     assert review.body == "New Review"
@@ -879,7 +875,7 @@ def test_get_design_review_review_comments(instance):
 
     assert len(comments) == 1
     assert comments[0].body == "Comment within review"
-    assert comments[0].severity == "warning"
+    assert comments[0].severity is None
 
 
 def test_submit_design_review_review(instance):
@@ -931,6 +927,19 @@ def test_delete_design_review_review(instance):
 
     reviews = dr.get_reviews()
     assert len(reviews) == 0
+
+
+def test_create_design_review_review_with_severity(instance):
+    # CI has no DRCY or Actions token, so Hub rejecting the severity is the
+    # proof that it was sent.
+    org = Organization.request(instance, test_org)
+    repo = Repository.request(instance, org.username, test_repo)
+    dr = repo.get_design_reviews()[0]
+    comment = DesignReviewReview.ReviewComment("Finding", "new_file.txt", severity="warning")
+
+    with pytest.raises(Exception, match="only DRCY or an Actions workflow"):
+        dr.create_review(body="Severity Review", comments=[comment])
+    assert len(dr.get_reviews()) == 0
 
 
 def test_merge_design_review(instance):
