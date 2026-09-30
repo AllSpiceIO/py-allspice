@@ -1,5 +1,9 @@
 # Changelog
 
+## v4.3.0
+
+* Add `severity` to design review review comments by @jaiman-p in https://github.com/AllSpiceIO/py-allspice/pull/315
+
 ## v4.2.0
 
 * Add `RenderException` with better error messages for rendering failures by @MarcusSmith in https://github.com/AllSpiceIO/py-allspice/pull/303
